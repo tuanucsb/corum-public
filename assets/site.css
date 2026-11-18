@@ -194,25 +194,28 @@ button, input, select { font: inherit; color: inherit; }
 .shape.dot { border-radius: 50%; }
 .shape.dia { transform: rotate(45deg) scale(.82); }
 /* graph marks */
-.gl { fill: var(--ink-3); font: 700 15px var(--display); text-anchor: middle; letter-spacing: .02em; }
+.gl { fill: var(--ink-3); font: 700 13px var(--display); font-size: calc(13px * var(--u, 1)); text-anchor: middle; letter-spacing: .02em; }
 .gring { fill: color-mix(in srgb, var(--g) 5%, transparent); stroke: color-mix(in srgb, var(--g) 28%, transparent); stroke-width: 1; }
 .e { stroke: var(--ink-3); stroke-width: 1; opacity: .16; fill: none; }
 .e.cited { stroke-dasharray: 6 4; }
 .e.judgment { stroke-dasharray: 1.5 4; }
 .e.contradicted { stroke-dasharray: 9 3 2 3; }
 .e.hide, .n.hide { display: none; }
-.e.on { opacity: .95; stroke-width: 2.2; }
+.e.on { opacity: .95; stroke-width: 2px; }
 .e.on.pos { stroke: var(--pos-fill); }
 .e.on.neg { stroke: var(--neg-fill); }
-.e.pick { stroke-width: 4; opacity: 1; }
+.e.pick { stroke-width: 3.5px; opacity: 1; }
 svg.sel .e:not(.on) { opacity: .04; }
 svg.sel .n:not(.on) { opacity: .2; }
 .n { cursor: pointer; }
 .n .s { fill: var(--g); stroke: var(--surface); stroke-width: 1.5; }
 .n.driver .s { fill: var(--surface); stroke: var(--ink); stroke-width: 2.2; }
-.n text { font: 600 11.5px var(--body); fill: var(--ink); text-anchor: middle; paint-order: stroke; stroke: var(--surface); stroke-width: 3.2px; stroke-linejoin: round; pointer-events: none; display: none; }
-.n.lab text, .n.on text, .n.driver text, svg.z2 .n text { display: block; }
-.n.driver text { font-weight: 700; font-size: 12.5px; }
+/* type on the map is sized in screen pixels (--u = map units per pixel), so zooming changes how many labels show, not how big they are */
+.n text { font: 600 11.5px var(--body); font-size: calc(11.5px * var(--u, 1)); fill: var(--ink); text-anchor: middle; paint-order: stroke; stroke: var(--surface); stroke-width: calc(3px * var(--u, 1)); stroke-linejoin: round; pointer-events: none; display: none; }
+.n.lab text, .n.on text, svg.z1 .n.driver text, svg.z2 .n text { display: block; }
+.n.driver text { font-weight: 700; font-size: calc(12px * var(--u, 1)); }
+svg.sel .n:not(.on) text { display: none; }
+.e, .ml, .gring, .n .s, .m .s { vector-effect: non-scaling-stroke; }
 .n.me .s { stroke: var(--ink); stroke-width: 3.5; }
 .n:focus-visible .s, .n:hover .s { stroke: var(--ink); stroke-width: 3; }
 svg.shock .n .s { fill: var(--surface-3); }
@@ -321,7 +324,7 @@ svg.shock .n.src text { display: block; font-weight: 800; }
   .scen-sel select { min-height: 44px; padding: 0 11px; border: 1px solid var(--line-2); border-radius: var(--r-sm); background: var(--surface); font-size: 16px; }
   .bars2 { grid-template-columns: 1fr; }
   .shock-out { padding: 16px 14px 18px; }
-  .brow { min-height: 44px; grid-template-columns: minmax(0, 9em) minmax(30px, 1fr) 3.4em; }
+  .brow { min-height: 44px; }
   .door { grid-template-columns: 1fr; }
   .stage { height: 62vh; min-height: 380px; }
   .tbl .sz { display: none; }
@@ -360,3 +363,166 @@ select, input { max-width: 100%; }
 }
 /* a one-column grid takes the page's width, never its longest line's */
 .hero, .shock, .sure, .sec-head, .eco-sec, .eco > li, .prose, .prose section, .reader, .panel, .shock-out, .path, .map-col { grid-template-columns: minmax(0, 1fr); }
+
+/* ---------- theme switch ---------- */
+.head-tools { display: flex; align-items: center; gap: 14px; }
+.theme { min-height: 32px; padding: 0 11px; border: 1px solid var(--line-2); border-radius: var(--r-sm); background: transparent; font-size: 14px; font-weight: 700; color: var(--ink-2); cursor: pointer; }
+.theme:hover { border-color: var(--ink); color: var(--ink); }
+
+/* ---------- map: title, second row of controls, how to read ---------- */
+.map-head { display: grid; gap: 4px; padding-block: 6px 8px; }
+.map-head h1 { font-size: clamp(1.45rem, 2.4vw, 2rem); letter-spacing: -.015em; }
+.map-sub { color: var(--ink-2); font-size: 15.5px; }
+.map-bar.two { align-items: center; padding-top: 0; gap: 10px 20px; }
+.map-bar.two .seg { align-self: center; }
+.map-bar.two .seg button { min-height: 34px; font-size: 14.5px; padding: 0 12px; }
+.map-bar.two .count { padding: 0; margin-left: auto; }
+.layers { display: flex; align-items: center; gap: 4px 16px; border: 0; margin: 0; padding: 0; font-size: 15px; }
+.layers legend { float: left; padding: 0; margin-right: 12px; font-size: 13.5px; font-weight: 700; color: var(--ink-2); }
+.layers label { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer; min-height: 32px; }
+.layers input { width: 17px; height: 17px; accent-color: var(--ink); }
+.rng { display: inline-flex; align-items: center; gap: 9px; font-size: 13.5px; font-weight: 700; color: var(--ink-2); }
+.rng input { width: 130px; accent-color: var(--ink); }
+.rng output { min-width: 2.6em; color: var(--ink); font-size: 15px; }
+.read { max-width: 78ch; display: grid; gap: 10px; padding-top: 34px; grid-template-columns: minmax(0, 1fr); }
+.read h2 { font-size: 1.35rem; }
+.read p { color: var(--ink-2); font-size: 16.5px; }
+.read b { color: var(--ink); }
+
+/* ---------- map: links tinted by sign; companies and funds ---------- */
+.e.pos { stroke: var(--pos-fill); }
+.e.neg { stroke: var(--neg-fill); }
+.e { opacity: .15; }
+svg.wide .e { opacity: .12; }
+.m { display: none; cursor: pointer; }
+svg.lco .m.co, svg.letf .m.etf, .m.me { display: block; }
+.m.hide { display: none !important; }
+.m .s { fill: color-mix(in srgb, var(--g) 62%, var(--surface)); stroke: var(--surface); stroke-width: .6; }
+.m.etf .s { fill: var(--surface); stroke: var(--g); stroke-width: 1.3; }
+.m text { font: 400 9.5px var(--mono); font-size: calc(9.5px * var(--u, 1)); fill: var(--ink-2); text-anchor: middle; paint-order: stroke; stroke: var(--surface); stroke-width: calc(2.4px * var(--u, 1)); stroke-linejoin: round; pointer-events: none; display: none; }
+svg.z3 .m text, svg.z2 .m.on text, .m.me text { display: block; }
+.m.on text { fill: var(--ink); }
+.m:hover .s { stroke: var(--ink); stroke-width: 1.4; }
+.m.me .s { stroke: var(--ink); stroke-width: 2.2; }
+svg.sel .m:not(.on) { opacity: .16; }
+svg.shock .m .s { fill: var(--surface-3); stroke: var(--surface); }
+svg.shock .m.up .s { fill: var(--pos-fill); fill-opacity: var(--a, .8); }
+svg.shock .m.dn .s { fill: var(--neg-fill); fill-opacity: var(--a, .8); }
+svg.shock .m.etf .s { stroke: var(--ink-3); stroke-width: .8; }
+.ml { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 2 3; opacity: .75; fill: none; pointer-events: none; }
+.lg-m { display: none !important; }
+.stage:has(svg.wide) .lg-m { display: inline-flex !important; }
+.shape.sm { width: 8px; height: 8px; }
+.shape.sq { width: 9px; height: 9px; background: transparent; border: 2px solid var(--ink-2); }
+
+/* ---------- panel: a name's rows, tags you can press ---------- */
+.memrow { padding: 9px 2px; display: grid; gap: 2px; }
+.memrow .rs { color: var(--ink-2); font-size: 15px; }
+button.tag { background: var(--surface); cursor: pointer; }
+button.tag:hover { border-color: var(--ink); color: var(--ink); }
+.why.small { font-size: 14.5px; }
+@media (max-width: 759px) {
+  .map-bar.two .count { margin-left: 0; flex: 1 1 100%; }
+  .rng input { width: 110px; }
+}
+
+/* ---------- map: the canvas fills what is left of the window (FINDING-002) ---------- */
+.map-main { padding-top: 8px; }
+.map-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 16px; padding-block: 4px 4px; }
+.map-head h1 { font-size: clamp(1.15rem, 1.7vw, 1.45rem); }
+.map-sub { font-size: 14.5px; }
+.map-bar { padding-block: 4px 6px; }
+.map-bar .fld input, .map-bar .fld select { min-height: 36px; }
+.map-bar .seg button { min-height: 36px; }
+.chips { gap: 5px; padding-bottom: 8px; }
+.chips .chip { min-height: 28px; padding: 0 9px; font-size: 13px; gap: 6px; }
+.chips .gdot { width: 9px; height: 9px; }
+.stage { height: max(440px, calc(100vh - var(--map-top, 290px))); min-height: 440px; }
+.panel { max-height: max(440px, calc(100vh - var(--map-top, 290px))); }
+@media (max-width: 1099px) { .stage { height: 64vh; min-height: 400px; } .panel { max-height: none; } }
+@media (max-width: 759px) { .chips .chip { min-height: 40px; } .map-bar .fld input, .map-bar .fld select, .map-bar .seg button { min-height: 44px; } }
+
+/* ---------- map: nodes keep a readable size when zoomed far out (FINDING-003) ---------- */
+.n .sc { transform: scale(var(--ns, 1)); }
+.m .sc { transform: scale(var(--ms, 1)); }
+
+/* ---------- panel: a caution beside a number that should be doubted (FINDING-010) ---------- */
+.panel .under .warn { border-top: 1px solid var(--line-2); padding-top: 6px; margin-top: 2px; color: var(--neg); font-weight: 600; font-size: 14.5px; }
+.panel .under .note { color: var(--ink-3); font-size: 14px; }
+
+/* ---------- home: the figure sits in the first screen; shocks in two columns (FINDING-005) ---------- */
+.hero { padding-block: 34px 2px; gap: 12px; }
+.hero h1 { font-size: clamp(2.1rem, 4.6vw, 3.3rem); }
+.shock { padding-top: 26px; gap: 14px; }
+.shock .sec-head { max-width: 86ch; }
+.shock .sec-head h2 { font-size: clamp(1.35rem, 2.4vw, 1.75rem); }
+.shock-grid { grid-template-columns: minmax(340px, 430px) minmax(0, 1fr); gap: 22px; }
+.scen { grid-template-columns: 1fr 1fr; gap: 4px 6px; }
+.scen-b { padding: 7px 10px; align-content: start; }
+.scen-b b { font-size: 15.5px; }
+.scen-b span { font-size: 13px; }
+.shock-out { padding: 18px 22px 20px; gap: 14px; }
+.brow { grid-template-columns: minmax(0, 1fr) 84px 3.6em; }   /* the name gets the room; the bar is a fixed scale */
+@media (max-width: 1099px) { .shock-grid { grid-template-columns: minmax(0, 1fr); } .scen { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); } }
+@media (max-width: 759px) { .brow { grid-template-columns: minmax(0, 1fr) 64px 3.4em; } }
+
+/* ---------- reports: the name is the link, the rest is a quieter second line (FINDING-006) ---------- */
+.tbl tbody th a { font-weight: 600; text-decoration-thickness: 1px; }
+.tbl .subt { display: block; margin-top: 2px; font-weight: 400; font-size: 14.5px; color: var(--ink-2); max-width: 78ch; }
+.tbl .nw { white-space: nowrap; color: var(--ink-2); }
+.reader-head .subt { color: var(--ink-2); font-size: 16px; max-width: 80ch; margin-top: 4px; }
+@media (max-width: 759px) { .tbl .nw { white-space: normal; } }
+
+/* ---------- how: the record behind an example is one click away (FINDING-007) ---------- */
+.ex details > summary { cursor: pointer; color: var(--link); font-size: 15px; font-weight: 600; }
+.ex details[open] > summary { margin-bottom: 6px; }
+
+/* ---------- ecosystems: what you can open sits at the right of each row (FINDING-008) ---------- */
+@media (min-width: 900px) {
+  .eco > li { grid-template-columns: minmax(0, 1fr) auto; column-gap: 28px; align-items: start; }
+  .eco > li > h3, .eco > li > .scale, .eco > li > .picks { grid-column: 1; }
+  .eco > li > .eco-btns { grid-column: 2; grid-row: 1 / span 3; flex-direction: column; align-items: stretch; padding-top: 2px; min-width: 170px; }
+  .eco-btns .btn.sm { justify-content: center; }
+  .off-note { align-self: center; }
+}
+.eco .picks .mono { color: var(--ink); }
+
+/* ---------- small things that are pressed with a thumb (FINDING-009) ---------- */
+@media (max-width: 759px) {
+  .foot-nav a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 4px; }
+  .theme { min-height: 40px; }
+  .crumb a, .path a, .sure a, .more { display: inline-flex; align-items: center; min-height: 40px; }
+  .layers label { min-height: 44px; }
+  button.tag, .tag { padding: 6px 9px; }
+}
+
+/* ---------- home: a name in the figure is never cut short; it wraps (FINDING-011) ---------- */
+.brow { grid-template-columns: minmax(0, 1fr) 64px 3.4em; align-items: center; padding-block: 5px; }
+.brow .nm { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.25; }
+
+/* ---------- map: on a phone the filters fold away so the list comes first (FINDING-012) ---------- */
+.filters > summary { display: none; }
+@media (max-width: 759px) {
+  .filters > summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; font-weight: 700; font-size: 15px; color: var(--link); }
+  .filters[open] > summary { margin-bottom: 4px; }
+}
+
+/* ---------- reports: on a phone the kind and theme sit under the name (FINDING-013) ---------- */
+.rowmeta { display: none; }
+@media (max-width: 759px) {
+  .tbl .nw { display: none; }
+  .rowmeta { display: block; margin-top: 3px; font-weight: 400; font-size: 14px; color: var(--ink-3); }
+}
+
+/* ---------- map: controls sized for a thumb on a phone (FINDING-014) ---------- */
+@media (max-width: 759px) {
+  .map-bar.two .seg button { min-height: 44px; }
+  .rng { min-height: 44px; }
+  .tbl thead button { min-height: 40px; }
+  #nodeTbl tbody a { display: inline-flex; align-items: center; min-height: 40px; }
+}
+
+/* ---------- home: one size for section headings (FINDING-015) ---------- */
+.sure .sec-head h2 { font-size: clamp(1.35rem, 2.4vw, 1.75rem); }
+.sure { padding-top: 40px; gap: 14px; }
+.doors { margin-top: 40px; }

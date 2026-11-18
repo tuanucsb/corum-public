@@ -1,0 +1,1475 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Institutional Deep Research &amp; Macro Network Graph Report: Memory (DRAM, HBM3e/HBM4, CXL Memory Expansion, Enterprise NAND/eSSD, MRAM &amp; Wafer/Packaging Metrology) for Data Center Hyperscaler Cloud &amp; Healthcare Policy Ecosystem · CORUM Research</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --ground: #faf8f3;
+      --paper: #fdfcf9;
+      --line: #e4ded3;
+      --line-soft: #efe9df;
+      --sand: #f1ece2;
+      --ink: #16191d;
+      --muted: #5f656c;
+      --teal: #1d4e5f;
+      --gold: #8a6d1f;
+      --gold-ink: #735a14;
+      --green: #14614a;
+      --red: #9c2f22;
+      --green-bg: #e1efe8;
+      --red-bg: #f6e3df;
+      --amber-bg: #fbf3e0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--ground);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 18px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--teal);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .15s ease;
+    }
+    .back-btn:hover {
+      border-color: var(--teal);
+      background: var(--sand);
+    }
+    .badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--teal);
+      color: #fff;
+    }
+    .stats {
+      margin-left: auto;
+      font-size: 12.5px;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .action-btn {
+      font: inherit;
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .action-btn:hover { border-color: var(--teal); }
+    .content-wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+    .article-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 12px 0 16px;
+      color: var(--ink);
+    }
+    h2 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 24px;
+      font-weight: 500;
+      margin: 36px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--ink);
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 24px 0 10px;
+      color: var(--ink);
+    }
+    h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 18px 0 8px;
+    }
+    p, ul, ol {
+      margin: 0 0 16px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    a {
+      color: var(--teal);
+      text-underline-offset: 3px;
+    }
+    a.ticker-chip {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 1px 6px;
+      margin: 0 2px;
+      background: #eef4f6;
+      border: 1px solid #c8d9df;
+      border-radius: 4px;
+      color: var(--teal);
+      text-decoration: none;
+    }
+    a.ticker-chip:hover {
+      background: var(--teal);
+      color: #fff;
+    }
+    .tablewrap {
+      overflow-x: auto;
+      margin: 20px 0 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      background: var(--sand);
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: top;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: #fbf9f5;
+    }
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      background: var(--sand);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #f4eee2;
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+    }
+    blockquote {
+      margin: 18px 0;
+      padding: 12px 18px;
+      background: var(--amber-bg);
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      font-size: 13.5px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 32px 0;
+    }
+    .article-body img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 6px;
+    }
+    @media (max-width: 768px) {
+      .content-wrap { padding: 20px 16px 60px; }
+      h1 { font-size: 26px; }
+      h2 { font-size: 20px; }
+      .topbar { padding: 8px 14px; }
+      .stats { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="../index.html" target="_top" class="back-btn">← Back to CORUM Reports</a>
+    <span class="badge">Institutional Research</span>
+    <span class="stats">34 min read · 7,503 words · November 4, 2026</span>
+    
+    <button onclick="window.print()" class="action-btn">Print / PDF</button>
+  </div>
+  <main class="content-wrap">
+    <article class="article-body">
+      <h1>Institutional Deep Research &amp; Macro Network Graph Report: Memory (DRAM, HBM3e/HBM4, CXL Memory Expansion, Enterprise NAND/eSSD, MRAM &amp; Wafer/Packaging Metrology) for Data Center Hyperscaler Cloud &amp; Healthcare Policy Ecosystem</h1>
+<p><strong>Date:</strong> November 4, 2026<br />
+<strong>Sector Skill:</strong> <code>memory-datacenter-rsi</code> (5-Round Recursive Self-Improvement Engine)<br />
+<strong>Domain Agent:</strong> <code>MemoryDatacenterSystemAgent</code> (<code>agentic-bridgewater</code> Macro Network Graph)<br />
+<strong>Coverage Universe:</strong> 41 Publicly Traded Equities + 13 Private Disruptors + 6 Government Agencies + 4 Statutory Healthcare Policy Mandates</p>
+<hr />
+<h2>1. Executive Summary &amp; The Physics of the Hyperscaler AI Memory Wall</h2>
+<p>While frontier AI GPU/XPU FLOPs have scaled by <strong>&gt;1,000x</strong> over the past eight years, off-chip memory bandwidth and capacity per accelerator socket have scaled by less than <strong>20x</strong>, creating the <strong>Hyperscaler AI Memory Wall</strong>. In large language model (LLM) autoregressive token generation, long-context Key-Value (KV) cache retention (128K–2M+ token context windows), multi-agent reasoning, and multimodal medical/genomic foundation models, <strong>accelerator utilization is no longer compute-bound—it is strictly memory-bandwidth and memory-capacity bound</strong>.</p>
+<p>To break the Memory Wall without violating data-center rack power envelopes (120 kW–140 kW per NVIDIA GB200/GB300 NVL72 rack), cloud hyperscalers (<code>MSFT</code>, <code>GOOGL</code>, <code>AMZN</code>, <code>META</code>, <code>ORCL</code>) have re-architected the cloud server around a <strong>5-Tier Coherent Memory &amp; Storage Hierarchy</strong>:</p>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Memory Tier</th>
+<th style="text-align:left">Bandwidth &amp; Latency Profile</th>
+<th style="text-align:left">Core Hardware Technologies</th>
+<th style="text-align:left">Primary Public Bottleneck Leaders</th>
+<th style="text-align:left"><code>agentic-bridgewater</code> Node</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Tier 0: Co-Packaged Accelerator HBM</strong></td>
+<td style="text-align:left"><strong>1.2–2.0+ TB/s per stack</strong> | <code>&lt;100 ns</code></td>
+<td style="text-align:left">8-Hi/12-Hi <strong>HBM3e</strong> &amp; 16-Hi <strong>HBM4</strong> (2048-bit interface, TSMC N4/N3 custom logic base die) on CoWoS-L interposers</td>
+<td style="text-align:left"><strong>Micron (<code>MU</code>)</strong>, SK Hynix, Samsung, <strong>TSMC (<code>TSM</code>)</strong>, <strong>NVIDIA (<code>NVDA</code>)</strong>, <strong>Broadcom (<code>AVGO</code>)</strong>, <strong>AMD (<code>AMD</code>)</strong></td>
+<td style="text-align:left"><code>MEM_HBM_DRAM_OLIGOPOLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Tier 1: Host Server High-Bandwidth DRAM</strong></td>
+<td style="text-align:left"><strong>400–800 GB/s per socket</strong> | <code>70–95 ns</code></td>
+<td style="text-align:left">High-capacity <strong>DDR5 RDIMM</strong>, <strong>MRDIMM</strong> (12,800 MT/s Multiplexed Rank), <strong>SOCAMM</strong> (LPCAMM2 server modules), RCD/DB/PMIC/SPD Hub chipsets</td>
+<td style="text-align:left"><strong>Rambus (<code>RMBS</code>)</strong>, <strong>Micron (<code>MU</code>)</strong>, <strong>Netlist (<code>NLST</code> — JEDEC IP)</strong>, Montage Technology</td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Tier 2: CXL 3.0/3.1 Memory Expansion &amp; Pooling + Non-Volatile Cache</strong></td>
+<td style="text-align:left"><strong>64–256 GB/s per link</strong> | <code>170–250 ns</code></td>
+<td style="text-align:left"><strong>Compute Express Link (CXL 3.0/3.1)</strong> Type-3 memory expanders, hardware memory pooling over PCIe Gen5/Gen6, plus <strong>STT-MRAM</strong> persistent write journals</td>
+<td style="text-align:left"><strong>Astera Labs (<code>ALAB</code>)</strong>, <strong>Rambus (<code>RMBS</code>)</strong>, <strong>Marvell (<code>MRVL</code>)</strong>, <strong>Broadcom (<code>AVGO</code>)</strong>, <strong>Credo (<code>CRDO</code>)</strong>, <strong>MACOM (<code>MTSI</code>)</strong>, <strong>Everspin (<code>MRAM</code>)</strong></td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Tier 3: AI KV-Cache Offload &amp; Petabyte eSSD Flash</strong></td>
+<td style="text-align:left"><strong>14–28 GB/s per PCIe Gen5/6 SSD</strong> | <code>10–50 µs</code></td>
+<td style="text-align:left"><strong>218L–300L+ 3D TLC/QLC NAND</strong>, <strong>61.44TB–122.88TB Enterprise SSDs (eSSDs)</strong>, DirectFlash Modules, GPUDirect Storage parallel file systems</td>
+<td style="text-align:left"><strong>SanDisk (<code>SNDK</code>)</strong>, <strong>Silicon Motion (<code>SIMO</code>)</strong>, <strong>Pure Storage (<code>PSTG</code>)</strong>, <strong>NetApp (<code>NTAP</code>)</strong>, <strong>Western Digital (<code>WDC</code>)</strong>, <strong>Seagate (<code>STX</code>)</strong></td>
+<td style="text-align:left"><code>MEM_NAND_ESSD_FLASH</code> &amp; <code>MEM_AI_STORAGE_FABRIC</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Tier 4: Atomic TSV Etch, Hybrid Bonding &amp; 3D Metrology</strong></td>
+<td style="text-align:left"><strong>Physical Manufacturing Chokepoint</strong></td>
+<td style="text-align:left">High-Aspect-Ratio (HAR) TSV cryo-etch, ALD barrier films, EUV lithography, 3D optical/X-ray TSV void inspection, MEMS probe cards, wafer-level burn-in</td>
+<td style="text-align:left"><strong>Lam Research (<code>LRCX</code>)</strong>, <strong>KLA (<code>KLAC</code>)</strong>, <strong>ASML (<code>ASML</code>)</strong>, <strong>Applied Materials (<code>AMAT</code>)</strong>, <strong>Onto (<code>ONTO</code>)</strong>, <strong>Camtek (<code>CAMT</code>)</strong>, <strong>FormFactor (<code>FORM</code>)</strong>, <strong>Teradyne (<code>TER</code>)</strong>, <strong>Aehr (<code>AEHR</code>)</strong></td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Top Weekly Portfolio Conviction Summary (Post-Round 5 RSI Convergence)</h3>
+<p>After executing our <strong>5-Round Recursive Self-Improvement (RSI)</strong> loop across all 41 publicly traded equities—incorporating through-cycle CapEx-adjusted Free Cash Flow (FCF), HBM 3:1 wafer trade-off physics, JEDEC/PTAB patent survival forensics, AI KV-cache QLC eSSD displacement, Government (DOC BIS/CHIPS) &amp; Healthcare Policy (<code>HIPAA</code>, <code>FDA 21 CFR Part 11</code>, <code>CMS-0057-F</code>, <code>NIH GDS</code>) demand hooks, and live Weinstein Stage / Wilder RSI technical gates—our <strong>Top 8 Weekly <code>STRONG BUY</code> Recommendations</strong> (55.0% combined Half-Kelly allocation) and <strong>Top <code>BUY (Pullback / Accumulate)</code> Recommendations</strong> (45.0% combined Half-Kelly allocation) are:</p>
+<ol>
+<li><strong><code>TSM</code> (Taiwan Semiconductor — R5 Score: 98.8, #1 | Half-Kelly: 7.6% | <code>STRONG BUY</code>)</strong>: Absolute physical gatekeeper of CoWoS-L/CoWoS-S interposers, SoIC 3D stacking, and the N4P/N3P logic base die for HBM4; trading in a high-conviction <code>Stage 2 Pullback (Buy Zone)</code> (<code>RSI-14 = 36.1</code>) right onto 200-day SMA support.</li>
+<li><strong><code>NVDA</code> (NVIDIA Corp. — R5 Score: 98.8, #2 | Half-Kelly: 7.6% | <code>STRONG BUY</code>)</strong>: Consumes &gt;65% of global HBM3e/HBM4 bits and pioneers custom SOCAMM server memory modules and BlueField-3 KV-cache offload; <code>Stage 2 Pullback (Buy Zone)</code> (<code>RSI-14 = 36.1</code>, Rule of X = <code>116.8</code>).</li>
+<li><strong><code>RMBS</code> (Rambus Inc. — R5 Score: 97.3, #3 | Half-Kelly: 7.1% | <code>STRONG BUY</code>)</strong>: Debt-free (<code>-2.8x</code> Net Debt/EBITDA), 81.2% gross margin, 38.5% FCF margin oligopoly in DDR5 Registering Clock Drivers (RCDs, &gt;40% global share), MRDIMM, and HBM4/CXL 3.1 controller IP; <code>Stage 2 Pullback (Buy Zone)</code> (<code>RSI-14 = 37.8</code>).</li>
+<li><strong><code>MU</code> (Micron Technology — R5 Score: 96.4, #4 | Half-Kelly: 6.9% | <code>STRONG BUY</code>)</strong>: Only US-domiciled HBM3e/HBM4 producer, backed by $6.14B CHIPS Act funding and ~20% lower power consumption on 1-beta 12-Hi HBM3e for NVIDIA GB200/GB300; <code>Stage 2 Pullback (Buy Zone)</code> (<code>RSI-14 = 35.6</code>).</li>
+<li><strong><code>AVGO</code> (Broadcom Inc. — R5 Score: 96.3, #5 | Half-Kelly: 6.8% | <code>STRONG BUY</code>)</strong>: #1 custom AI XPU architect (Google TPU v6/v7, Meta MTIA) integrating 8–12 HBM stacks per package alongside PEX PCIe Gen5/Gen6/CXL fabric switches; <code>Stage 2 (Uptrend)</code> (<code>RSI-14 = 42.3</code>, 41.2% FCF margin).</li>
+<li><strong><code>KLAC</code> (KLA Corp. — R5 Score: 95.2, #6 | Half-Kelly: 6.5% | <code>STRONG BUY</code>)</strong>: Monopoly (&gt;55% share) in optical/e-beam wafer defect inspection and 3D packaging metrology required to prevent $30,000 CoWoS module scrap; <code>Stage 2 Pullback (Buy Zone)</code> (<code>RSI-14 = 35.7</code>).</li>
+<li><strong><code>LRCX</code> (Lam Research — R5 Score: 94.7, #7 | Half-Kelly: 6.3% | <code>STRONG BUY</code>)</strong>: Near-100% market share in High-Aspect-Ratio (HAR) TSV etching for 12-Hi/16-Hi HBM and cryogenic dielectric etch for 218L–300L+ 3D NAND; <code>Stage 2 Pullback (Buy Zone)</code> (<code>RSI-14 = 29.5</code>).</li>
+<li><strong><code>ALAB</code> (Astera Labs — R5 Score: 94.2, #8 | Half-Kelly: 6.2% | <code>STRONG BUY</code>)</strong>: First-mover pure-play monopoly in cloud-scale Leo CXL 3.0/3.1 Smart Memory Controllers, Aries PCIe Gen5/Gen6 retimers, and Scorpio switches; <code>Stage 2 (Uptrend)</code> pullback (<code>RSI-14 = 31.0</code>, Rule of X = <code>89.7</code>).</li>
+<li><strong>Key <code>BUY (Pullback / Accumulate)</code> Sleeves</strong>: <strong><code>ONTO</code></strong> (#9, <code>93.7</code>, 3.9% Kelly), <strong><code>META</code></strong> (#10, <code>93.7</code>, 3.9%), <strong><code>PSTG</code></strong> (#11, <code>93.2</code>, 3.8%), <strong><code>VEEV</code></strong> (#12, <code>92.4</code>, 3.6%), <strong><code>CAMT</code></strong> (#13, <code>92.1</code>, 3.6%), <strong><code>MSFT</code></strong> (#15, <code>91.9</code>, 3.6%), <strong><code>AMD</code></strong> (#16, <code>91.6</code>, 3.5%), <strong><code>SNDK</code> (SanDisk Corp., #17, <code>91.3</code>, 3.4% Kelly — Pure-Play BiCS8 Enterprise Flash Spin-Off)</strong>, <strong><code>MRVL</code></strong> (#18, <code>90.2</code>, 3.3%), <strong><code>CRDO</code></strong> (#19, <code>89.7</code>, 3.2%), <strong><code>GOOGL</code></strong> (#20, <code>89.6</code>, 3.1%), <strong><code>AMAT</code></strong> (#21, <code>89.4</code>, 3.1%), and <strong><code>NTAP</code></strong> (#22, <code>88.6</code>, 3.0%).</li>
+<li><strong>Special Forensic &amp; Legal Situation (<code>NLST</code> — Netlist Inc., #40, R5 Score: 51.1 | <code>CATALYST WATCH / SPECULATIVE LEGAL CALL OPTION</code>)</strong>: Rated <code>0.0%</code> core Half-Kelly weight (capped at a <code>0.50%</code> speculative call-option budget) due to <code>-18.5%</code> GAAP FCF burn and binary USPTO PTAB Inter Partes Review (IPR) invalidations currently under appeal at the U.S. Court of Appeals for the Federal Circuit (CAFC) across its <strong>$866M+</strong> EDTX jury verdicts against Samsung and Micron.</li>
+</ol>
+<hr />
+<h2>2. Deep Dive into Big &amp; Small Ecosystem Companies (Featuring SanDisk <code>SNDK</code> &amp; Netlist <code>NLST</code>)</h2>
+<h3>2.1 Spotlight Deep Dive #1: SanDisk Corporation (<code>SNDK</code>) — Pure-Play Hyperscale BiCS8 eSSD &amp; AI KV-Cache Challenger</h3>
+<ul>
+<li><strong>Corporate Structure &amp; Spin-Off Genesis</strong>: On <strong>February 21–24, 2025</strong>, Western Digital (<code>WDC</code>) completed the tax-free separation of its Flash business into <strong>SanDisk Corporation (<code>NASDAQ: SNDK</code>)</strong>, restoring one of the most iconic names in non-volatile memory as an independent pure-play NAND flash and enterprise SSD company, while <code>WDC</code> retained the nearline HDD business.</li>
+<li><strong>The Kioxia Manufacturing Joint Venture (Yokkaichi &amp; Kitakami, Japan)</strong>: SanDisk's core technological asset is its 25-year+ R&amp;D and wafer-fabrication joint venture with <strong>Kioxia</strong> (formerly Toshiba Memory) in Yokkaichi and Kitakami, Japan. Together, the SanDisk–Kioxia JV commands <strong>&gt;30% of global NAND flash wafer capacity</strong>, giving <code>SNDK</code> multi-billion-dollar fab scale at half the standalone R&amp;D and cleanroom CapEx burden.</li>
+<li><strong>BiCS8 (218-Layer) CBA Architecture</strong>: SanDisk's 8th-generation 3D NAND (<strong>BiCS8</strong>, 218 layers) utilizes <strong>CMOS directly Bonded to Array (CBA)</strong> wafer-to-wafer hybrid bonding. Instead of fabricating peripheral CMOS logic under the memory array (which degrades logic transistors during high-temperature NAND annealing), CBA fabricates the peripheral CMOS logic on a separate wafer at optimal logic temperatures and hybrid-bonds it face-to-face with the 218-layer 3D NAND cell wafer. This delivers a <strong>50% increase in I/O interface speed (3.2–3.6 Gbps)</strong>, <strong>20% lower write power</strong>, and industry-leading bit density per square millimeter.</li>
+<li><strong>Hyperscaler AI Cloud Growth Vector (64TB–128TB PCIe Gen5 QLC eSSDs)</strong>:
+<ol>
+<li><strong>LLM KV-Cache Offloading</strong>: As frontier AI models expand context windows from 128K to 2M+ tokens, storing persistent multi-turn KV-caches in HBM ($15–$20/GB) or DDR5 ($4–$6/GB) is economically impossible. Hyperscalers are deploying ultra-dense <strong>PCIe Gen5 NVMe QLC eSSDs ($0.10–$0.15/GB)</strong> coupled with NVIDIA BlueField-3 DPUs and GPUDirect Storage to page warm KV-caches at 14.5 GB/s per drive.</li>
+<li><strong>Legacy 10K/15K &amp; Nearline HDD Replacement</strong>: In power-constrained hyperscale data centers (<code>GRID_CONGESTION</code>), a single 2U all-flash enclosure populated with <strong>SanDisk 64TB/128TB UltraQLC eSSDs</strong> replaces an entire rack of spinning disks while cutting storage power and cooling by <strong>75–82%</strong>.</li>
+</ol>
+</li>
+<li><strong>Survivability, Risks &amp; 5-Round RSI Verdict on <code>SNDK</code></strong>:
+<ul>
+<li><strong>Progress &amp; Growth Likelihood (<code>84.2%</code>)</strong>: Hyperscaler qualification of SanDisk's PCIe Gen5 TLC and 64TB/128TB QLC eSSDs is driving a structural mix shift from volatile consumer/client SD cards and smartphone UFS toward higher-margin cloud enterprise SSDs.</li>
+<li><strong>Survivability Score (<code>73.5 / 100</code>) &amp; Kill-Switch</strong>: Unlike fabless controller vendors (<code>RMBS</code>, <code>ALAB</code>, <code>SIMO</code>), <code>SNDK</code> carries JV fab fixed-cost absorption risk, ~$1.6B net debt inherited at spin-off (<code>0.9x</code> Net Debt/EBITDA), and consumer PC/smartphone NAND spot-price cyclicality (<code>commodity_spot_ptab_risk = 44.0</code>).</li>
+<li><strong>Technical &amp; Actionable Verdict</strong>: Trading in a <code>Stage 2 Pullback (Buy Zone)</code> (<code>RSI-14 = 30.4</code> oversold pullback toward rising medium-term support), <code>SNDK</code> ranks <strong>#17 overall (<code>R5 Score = 91.3</code>, <code>BUY — Pullback / Accumulate</code>, <code>3.4%</code> Half-Kelly weight)</strong>.</li>
+</ul>
+</li>
+</ul>
+<h3>2.2 Spotlight Deep Dive #2: Netlist, Inc. (<code>NLST</code>) — JEDEC DDR5/LRDIMM/HBM Patent Enforcer &amp; Speculative Legal Call Option</h3>
+<ul>
+<li><strong>Role in the Data Center Memory Ecosystem</strong>: Headquartered in Irvine, California, <strong>Netlist (<code>NLST</code>)</strong> was founded in 2000 by former LG Semicon memory executives and pioneered the foundational electrical architectures for high-capacity server memory modules:
+<ol>
+<li><strong>Rank Multiplication &amp; Distributed Data Buffering (LRDIMM / MRDIMM)</strong>: When cloud servers populate 8–16 high-density DRAM ranks per channel, capacitive electrical loading on the memory bus collapses signal integrity above 3,200–4,800 MT/s. Netlist's foundational patents (including <strong>U.S. Patent Nos. 7,619,912 (<code>'912</code>)</strong>, <strong>11,093,417 (<code>'417</code>)</strong>, <strong>9,858,215</strong>, and <strong>10,268,608 (<code>'608</code>)</strong>) cover rank-multiplying phase-locked loops, register clock driver (RCD) command decoding, and distributed per-nibble data buffers used in JEDEC-standard <strong>DDR4 LRDIMM</strong>, <strong>DDR5 RDIMM/MRDIMM</strong>, and <strong>CXL memory modules</strong>.</li>
+<li><strong>HBM Through-Silicon Via (TSV) Die-Stacking Patents</strong>: Netlist's <strong>U.S. Patent Nos. 8,787,060 (<code>'060</code>)</strong> and <strong>9,318,160 (<code>'160</code>)</strong> cover load-isolation and array die-interconnect techniques across stacked DRAM dies connected via Through-Silicon Vias (TSVs) in <strong>HBM2e/HBM3/HBM3e</strong>.</li>
+<li><strong>Commercial Hardware &amp;SK Hynix Supply Partnership</strong>: In April 2021, <strong>SK Hynix</strong> signed a landmark 5-year cross-license and strategic supply agreement with Netlist ($40M upfront cash + $600M in preferred access to SK Hynix DDR5/SSD silicon through 2026), which Netlist resells alongside its proprietary <strong>NVvault</strong> (NVDIMM-N persistent battery/supercap-backed cache), <strong>HybriDIMM</strong>, and <strong>Lightning NVMe/CXL</strong> server products.</li>
+</ol>
+</li>
+<li><strong>The $866M+ Federal Jury Verdict Track Record vs. Samsung &amp; Micron</strong>:
+<ul>
+<li><strong>May 2023 (EDTX — Judge Rodney Gilstrap)</strong>: Federal jury awarded Netlist <strong>$303.15 million</strong> against <strong>Samsung</strong> for willful infringement of five DDR4 LRDIMM, DDR5 RDIMM/UDIMM (on-module PMIC), and HBM patents (<code>'912</code>, <code>'417</code>, <code>'608</code>, <code>'060</code>, <code>'160</code>), plus ongoing royalty proceedings and a separate District Court declaratory judgment confirming Netlist properly terminated Samsung's 2015 Joint Development and License Agreement (JDLA) following Samsung's material breach.</li>
+<li><strong>May 2024 (EDTX)</strong>: Federal jury awarded Netlist <strong>$445.0 million</strong> against <strong>Micron (<code>MU</code>)</strong> for willful infringement of the <code>'912</code> and <code>'417</code> DDR4 LRDIMM/RDIMM patents.</li>
+<li><strong>November 2024 (EDTX)</strong>: Federal jury awarded Netlist an additional <strong>$118.0 million</strong> against <strong>Samsung</strong> following the Ninth Circuit remand and retrial on the JDLA breach/patent damages.</li>
+</ul>
+</li>
+<li><strong>Why Round 2–5 RSI Demotes <code>NLST</code> to #40 (<code>CATALYST WATCH / SPECULATIVE LEGAL CALL OPTION</code> — 0.0% Core Kelly)</strong>:
+<ul>
+<li><strong>The PTAB IPR Invalidation Trap</strong>: In parallel with the Texas jury trials, Samsung and Micron petitioned the <strong>USPTO Patent Trial and Appeal Board (PTAB)</strong> for <strong>Inter Partes Review (IPR)</strong> of every asserted Netlist patent. Between 2023 and 2025, the PTAB issued Final Written Decisions finding the challenged claims of <code>'912</code>, <code>'417</code>, <code>'608</code>, <code>'060</code>, and <code>'160</code> <strong>unpatentable as obvious</strong>. Under binding Federal Circuit precedent (<em>XY, LLC v. Trans Ova Genetics</em> and <em>Fresenius USA v. Baxter</em>), <strong>if the U.S. Court of Appeals for the Federal Circuit (CAFC) affirms a PTAB IPR invalidation before the district court damages judgment becomes final and non-appealable, the multi-hundred-million-dollar jury verdict is vacated in its entirety</strong>.</li>
+<li><strong>Forensic Balance Sheet &amp; Cash Burn</strong>: Excluding uncollected litigation judgments, Netlist generates low gross margins (~9.5% largely from reselling SK Hynix modules), burns <strong>-18.5% GAAP FCF margin</strong> due to $25M–$40M/year in legal/trial expenses, faces the <strong>2026 expiration of its 5-year SK Hynix supply agreement</strong>, and relies on periodic at-the-market (ATM) and registered direct equity offerings (<code>Survivability Score = 43.2 / 100</code>).</li>
+<li><strong>Actionable Institutional Playbook on <code>NLST</code></strong>: Do <strong>not</strong> hold <code>NLST</code> as a core compounded equity (<code>0.0%</code> core Half-Kelly weight). Treat <code>NLST</code> strictly as a <strong>binary legal call option (<code>&lt;=0.50%</code> speculative risk budget)</strong> ahead of <strong>CAFC appellate oral arguments and decisions on the <code>'912</code>/<code>'417</code> PTAB IPRs and the Samsung JDLA termination affirmance</strong>, where a single CAFC reversal of PTAB invalidation would unlock $300M–$445M+ in escrowed/collectible damages (3x–5x Netlist's enterprise value).</li>
+</ul>
+</li>
+</ul>
+<h3>2.3 Comprehensive Layer-by-Layer Analysis of the 41 Public Equities &amp; 13 Private Disruptors</h3>
+<h4>Layer 1: HBM3e/HBM4 &amp; Advanced DRAM Oligopoly (<code>MEM_HBM_DRAM_OLIGOPOLY</code>)</h4>
+<ul>
+<li><strong>The 3:1 HBM Wafer Trade-Off Physics</strong>: An HBM3e/HBM4 die is roughly <strong>2x larger</strong> than a standard DDR5 die of equivalent gigabit density (due to the 1024-bit/2048-bit TSV physical interface area) and suffers <strong>15–25% lower stacked Known-Good-Die (KGD) packaging yield</strong>. Consequently, producing <strong>1 bit of HBM consumes ~3 bits of standard DDR5 wafer capacity</strong>. As HBM rises from 8% to &gt;25% of global DRAM wafer starts, it creates an artificial supply famine in standard server DDR5 RDIMMs and LPDDR5X (<code>MEM_DC_R0</code>).</li>
+<li><strong>Public Leaders</strong>:
+<ul>
+<li><strong>Micron Technology (<code>MU</code> — #4, R5: 96.4)</strong>: Only US-headquartered memory maker; 1-beta (1β) 12-Hi 36GB HBM3e delivers ~20% lower power consumption than Korean peers, winning prime allocation on NVIDIA GB200/GB300 and AMD MI325X/MI350X. Backed by <strong>$6.14B in US CHIPS Act grants</strong> for Boise, ID and Clay, NY megafabs.</li>
+<li><strong>TSMC (<code>TSM</code> — #1, R5: 98.8)</strong>: Controls two irreplaceable chokepoints in HBM: (1) <strong>CoWoS-L / CoWoS-S</strong> interposer assembly connecting 8–12 HBM stacks to AI GPUs/XPUs, and (2) fabrication of the <strong>custom N4P/N3P logic base die for HBM4</strong>, where SK Hynix and Micron have outsourced the HBM4 base die to TSMC to support 2048-bit interfaces and custom hyperscaler inline ECC/compute logic.</li>
+<li><strong>NVIDIA (<code>NVDA</code> — #2, R5: 98.8)</strong> &amp; <strong>AMD (<code>AMD</code> — #16, R5: 91.6)</strong>: Primary demand engines; NVIDIA's Rubin (R100) platform transitions to 8–12 stacks of HBM4 alongside NVIDIA's proprietary <strong>SOCAMM</strong> (Small Outline Compression Attached Memory Module) server memory standard.</li>
+</ul>
+</li>
+<li><strong>Global &amp; Private Peers</strong>: <strong>SK Hynix</strong> (<code>000660.KS</code>, &gt;50% global HBM share via MR-MUF mass reflow molded underfill), <strong>Samsung Electronics</strong> (<code>005930.KS</code>, TC-NCF non-conductive film HBM3e + turnkey HBM4 foundry/memory integration), and <strong>CXMT (ChangXin Memory Technologies)</strong> (China's domestic DDR4/DDR5/HBM2 challenger constrained by DOC BIS Dec 2024 export bans).</li>
+</ul>
+<h4>Layer 2: CXL 3.0/3.1 Controllers, DDR5 Buffers (RCD/MRDIMM), Interconnects &amp; JEDEC IP (<code>MEM_CXL_CONTROLLER_IP</code>)</h4>
+<ul>
+<li><strong>Public Leaders</strong>:
+<ul>
+<li><strong>Rambus (<code>RMBS</code> — #3, R5: 97.3)</strong>: Commands <strong>&gt;40% global market share in DDR5 Registering Clock Drivers (RCDs)</strong> and is ramping the complete server memory interface chipset (PMICs, SPD Hubs, Temperature Sensors, and <strong>MRDIMM</strong> 12,800 MT/s multiplexers) plus Silicon IP for HBM4 and CXL 3.1 controllers, reinforced by a bulletproof JEDEC patent portfolio with multi-year Samsung/SK Hynix/Micron license renewals.</li>
+<li><strong>Astera Labs (<code>ALAB</code> — #8, R5: 94.2)</strong>: Dominates PCIe Gen5/Gen6 <strong>Aries Smart Retimers</strong>, <strong>Scorpio Fabric Switches</strong>, and <strong>Leo CXL 3.0/3.1 Smart Memory Controllers</strong>, enabling AWS, Azure, and Meta to expand server memory capacity up to 2TB–4TB per socket and pool stranded DRAM across racks.</li>
+<li><strong>Broadcom (<code>AVGO</code> — #5, R5: 96.3)</strong>, <strong>Marvell (<code>MRVL</code> — #18, R5: 90.2)</strong>, <strong>Credo (<code>CRDO</code> — #19, R5: 89.7)</strong>, &amp; <strong>MACOM (<code>MTSI</code> — #26, R5: 84.4)</strong>: Custom HBM-integrated AI XPUs (<code>AVGO</code> for Google/Meta/ByteDance; <code>MRVL</code> for AWS Trainium/Maia + Structera CXL ASICs) and low-power AEC/optical memory-fabric interconnects (<code>CRDO</code>, <code>MTSI</code>).</li>
+<li><strong>Everspin Technologies (<code>MRAM</code> — #35, R5: 73.0)</strong>: Sole commercial supplier of discrete Toggle MRAM and high-density Spin-Transfer Torque MRAM (<strong>STT-MRAM</strong>). Used as the ultra-fast, non-volatile write-journal cache in enterprise SSD controllers, RAID cards, CXL persistent memory buffers, and radiation-hardened DoD/aerospace systems without supercapacitors.</li>
+<li><strong>Netlist (<code>NLST</code> — #40, R5: 51.1)</strong>: JEDEC LRDIMM/DDR5/HBM patent holder (<code>CATALYST WATCH</code> pending CAFC appeals of PTAB IPRs).</li>
+</ul>
+</li>
+<li><strong>Private Disruptors</strong>: <strong>Eliyan</strong> (NuLink UCIe chiplet PHY allowing HBM+DDR memory links over standard organic substrates without CoWoS interposers), <strong>Panmnesia</strong> (ultra-low-latency CXL 3.1 fabric switches &amp; IP), <strong>Enfabrica</strong> (ACF SuperNIC bridging 8TB+ of CXL DRAM directly to 100G/400G RoCEv2 GPU networks), <strong>Celestial AI</strong> (Photonic Fabric optical HBM memory disaggregation), <strong>Lightmatter</strong> (Passage photonic interposer), <strong>Rain AI</strong> &amp; <strong>d-Matrix</strong> (Digital In-Memory Compute / SRAM-DRAM inference accelerators).</li>
+</ul>
+<h4>Layer 3: Enterprise NAND Flash, High-Capacity QLC eSSDs &amp; SSD Controllers (<code>MEM_NAND_ESSD_FLASH</code>)</h4>
+<ul>
+<li><strong>Public Leaders</strong>:
+<ul>
+<li><strong>SanDisk Corporation (<code>SNDK</code> — #17, R5: 91.3)</strong>: Pure-play 218L BiCS8 CBA NAND and 64TB–128TB PCIe Gen5 QLC eSSD challenger.</li>
+<li><strong>Silicon Motion (<code>SIMO</code> — #31, R5: 82.4)</strong>: Merchant NAND controller leader ramping the <strong>MonTitan SM8366</strong> PCIe Gen5 (14+ GB/s, 8-to-16 channel) enterprise SSD controller with PerformaShape QoS and FDP (Flexible Data Placement) across tier-1 hyperscalers.</li>
+<li><strong>Western Digital (<code>WDC</code> — #24, R5: 86.7)</strong> &amp; <strong>Seagate (<code>STX</code> — #27, R5: 84.3)</strong>: Post-SanDisk spin-off, <code>WDC</code> and <code>STX</code> operate a rationalized 2-player nearline HDD oligopoly (30TB–36TB+ UltraSMR and MoZAIC 3+ HAMR drives) storing the raw exabyte data lakes that feed eSSD staging tiers.</li>
+</ul>
+</li>
+<li><strong>Private / Global Peers</strong>: <strong>Kioxia</strong> (<code>SNDK</code> JV partner in Japan), <strong>Solidigm</strong> (SK Hynix's US enterprise SSD subsidiary leading in 61.44TB and 122.88TB Floating-Gate QLC AI eSSDs), and <strong>YMTC (Yangtze Memory Technologies)</strong> (China's Xtacking 3D NAND pioneer restricted on the DOC BIS Entity List).</li>
+</ul>
+<h4>Layer 4: All-Flash AI Data Fabric, Parallel RAG Storage &amp; Server OEMs (<code>MEM_AI_STORAGE_FABRIC</code>)</h4>
+<ul>
+<li><strong>Public Leaders</strong>:
+<ul>
+<li><strong>Pure Storage (<code>PSTG</code> — #11, R5: 93.2)</strong>: Replaces commodity SSDs with proprietary <strong>DirectFlash Modules (DFMs)</strong> (75TB, 150TB, and 300TB raw NAND managed directly by Purity OS without an intermediate FTL controller), achieving <strong>3x–5x higher density per watt</strong> and certified integration with NVIDIA DGX BasePOD/SuperPOD and Evergreen//One AI RAG subscriptions.</li>
+<li><strong>NetApp (<code>NTAP</code> — #22, R5: 88.6)</strong>: Hybrid-cloud storage authority whose <strong>ONTAP AI</strong> and native cloud file services (AWS FSx for NetApp ONTAP, Azure NetApp Files, Google Cloud NetApp Volumes) allow enterprises and healthcare systems to govern regulated datasets across on-prem all-flash arrays and hyperscaler GPU clouds.</li>
+<li><strong>Dell Technologies (<code>DELL</code> — #33, R5: 76.3)</strong>, <strong>Hewlett Packard Enterprise (<code>HPE</code> — #36, R5: 72.5)</strong>, &amp; <strong>Super Micro Computer (<code>SMCI</code> — #41, R5: 50.5 — <code>AVOID</code>)</strong>: AI server rack integrators and storage OEMs (<code>DELL</code> PowerScale F910/Project Lightning; <code>HPE</code> Cray Exascale + Alletra MP). <code>SMCI</code> fails our Round 2 and Round 5 gates due to 11.4% gross margin server commoditization, negative working-capital FCF (<code>-4.2%</code>), and <code>Stage 3 (Distribution)</code> technical breakdown.</li>
+</ul>
+</li>
+<li><strong>Private Disruptors</strong>: <strong>VAST Data</strong> (Disaggregated Shared-Everything DASE architecture using QLC Flash + SCM over NVMe-oF for xAI/CoreWeave), <strong>WEKA</strong> (WekaFS GPUDirect Storage software), and <strong>HammerSpace</strong> (Global Data Environment orchestrating Tier-0 local GPU NVMe and Tier-3 S3 lakes).</li>
+</ul>
+<h4>Layer 5: Memory Wafer Fab Equipment (WFE), TSV/Hybrid Bonding, 3D Metrology &amp; KGD Test (<code>MEM_WAFER_PACKAGING_METROLOGY</code>)</h4>
+<ul>
+<li><strong>Public Leaders</strong>:
+<ul>
+<li><strong>Lam Research (<code>LRCX</code> — #7, R5: 94.7)</strong>: Undisputed leader in <strong>Syndion</strong> deep silicon Through-Silicon Via (TSV) etch for HBM3e/HBM4, <strong>Lam Cryo 3.0</strong> cryogenic high-aspect-ratio channel etching for 218L–300L+ 3D NAND, and pulsed-laser/ALD molybdenum metallization.</li>
+<li><strong>KLA Corp. (<code>KLAC</code> — #6, R5: 95.2)</strong>, <strong>Onto Innovation (<code>ONTO</code> — #9, R5: 93.7)</strong>, &amp; <strong>Camtek (<code>CAMT</code> — #13, R5: 92.1)</strong>: The 3D HBM/CoWoS inspection triad. Because a single defective micro-bump or TSV void ruins an entire 12-Hi HBM stack and CoWoS GPU module, every additional HBM layer requires 100% inline 2D/3D optical and acoustic metrology (<code>KLAC</code> Kronos/ICOS, <code>ONTO</code> Dragonfly G3 &amp; Echo, <code>CAMT</code> Eagle G5).</li>
+<li><strong>ASML (<code>ASML</code> — #14, R5: 91.9)</strong> &amp; <strong>Applied Materials (<code>AMAT</code> — #21, R5: 89.4)</strong>: <code>ASML</code> holds a 100% monopoly in EUV lithography required for 1-alpha/1-beta/1-gamma DRAM capacitor patterning; <code>AMAT</code> leads inDRAM capacitor PVD/CVD/ALD, Kinex die-to-wafer hybrid bonding (with Besi), and Sym3 etch.</li>
+<li><strong>FormFactor (<code>FORM</code> — #23, R5: 87.7)</strong>, <strong>Teradyne (<code>TER</code> — #25, R5: 86.1)</strong>, <strong>Cohu (<code>COHU</code> — #37, R5: 67.2)</strong>, <strong>Axcelis (<code>ACLS</code> — #38, R5: 64.9)</strong>, &amp; <strong>Aehr Test Systems (<code>AEHR</code> — #39, R5: 61.0)</strong>: Known-Good-Die (KGD) wafer-sort test and burn-in. <code>FORM</code> dominates high-pin-count SmartMatrix MEMS probe cards touching thousands of HBM micro-bumps simultaneously at 7+ Gbps; <code>TER</code> (Magnum Epic) and <code>COHU</code> supply high-speed HBM3e/DDR5 automated test equipment; <code>AEHR</code> is expanding FOX-XP wafer-level burn-in from SiC into AI processors and HBM/flash memory.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2>3. Government Agencies, Sovereign Industrial Policy &amp; Healthcare Policy Mandates</h2>
+<h3>3.1 Government Agencies Shaping the Memory &amp; Hyperscaler Cloud Ecosystem</h3>
+<ol>
+<li><strong>U.S. Department of Commerce — Bureau of Industry and Security (DOC BIS)</strong>:
+<ul>
+<li><strong>Export Administration Regulations (EAR) Dec 2024 / 2025 HBM Package Rules</strong>: Imposed a strict <strong>memory bandwidth density threshold (&gt;1.4 GB/s/mm²)</strong> that legally prohibits the export of HBM2e, HBM3, HBM3e, and HBM4 stacks—as well as high-aspect-ratio TSV etch (<code>LRCX</code>), EUV (<code>ASML</code>), and advanced metrology (<code>KLAC</code>, <code>ONTO</code>)—to China (<code>CXMT</code>, <code>YMTC</code>, Huawei/SMIC). This structural barrier protects the 3-player HBM oligopoly (<code>MU</code>, SK Hynix, Samsung) from Chinese state-subsidized oversupply through at least 2028 (<code>MEM_DC_R2</code>).</li>
+</ul>
+</li>
+<li><strong>CHIPS Program Office (DOC / NIST) &amp; National Advanced Packaging Manufacturing Program (NAPMP)</strong>:
+<ul>
+<li>Awarded <strong>$6.14 billion in direct CHIPS grants</strong> (plus $7.5B in federal loan authority and 25% Section 48D Advanced Manufacturing Investment Tax Credits) to <strong>Micron (<code>MU</code>)</strong> to build leading-edge DRAM/HBM megafabs in Boise, Idaho and Clay, New York, alongside <strong>$6.6B to TSMC (<code>TSM</code>)</strong> in Arizona and <strong>$3.0B in NIST NAPMP</strong> awards for US advanced substrates, glass core interposers, and 3D packaging.</li>
+</ul>
+</li>
+<li><strong>USPTO, Patent Trial and Appeal Board (PTAB), USITC &amp; U.S. Court of Appeals for the Federal Circuit (CAFC)</strong>:
+<ul>
+<li>Serves as the ultimate judicial arbiter of JEDEC memory standard-essential and implementation patents. While <strong>Rambus (<code>RMBS</code>)</strong> successfully navigated PTAB/CAFC challenges over the past decade to cement long-term royalty streams from every major DRAM maker, <strong>Netlist (<code>NLST</code>)</strong> is currently locked in decisive CAFC appeals (<code>MEM_DC_R4</code>) to overturn PTAB IPR invalidations of its <code>'912</code>, <code>'417</code>, <code>'608</code>, <code>'060</code>, and <code>'160</code> patents and collect its $866M+ EDTX jury verdicts.</li>
+</ul>
+</li>
+<li><strong>DoD Microelectronics Commons &amp; Defense Threat Reduction Agency (DTRA)</strong>:
+<ul>
+<li>Funds radiation-hardened non-volatile <strong>STT-MRAM (<code>MRAM</code>)</strong>, trusted US foundry packaging, and classified sovereign cloud enclaves (<code>MSFT</code> Azure Government Secret, <code>AMZN</code> AWS Top Secret, <code>ORCL</code> National Security Regions).</li>
+</ul>
+</li>
+<li><strong>Department of Energy (DOE) Office of Science &amp; NNSA Exascale Supercomputing</strong>:
+<ul>
+<li>Operates Oak Ridge (<em>Frontier</em>), Argonne (<em>Aurora</em>), and Lawrence Livermore (<em>El Capitan</em> — <code>AMD</code> MI300A APUs with 128GB unified HBM3 + <code>HPE</code> Cray Slingshot/Lustre all-flash storage), co-funding next-generation HBM4, CXL 3.1 memory pooling, and optical memory fabrics.</li>
+</ul>
+</li>
+</ol>
+<h3>3.2 Statutory Healthcare Policy Mandates Driving Hyperscaler Memory &amp; Immutable Flash Demand</h3>
+<p>A central insight of our <code>agentic-bridgewater</code> macro network graph (<code>MEM_DC_R5</code>) is that <strong>federal healthcare regulations are one of the largest non-discretionary, recession-proof demand drivers for enterprise all-flash storage, CXL in-memory graph databases, and HBM-accelerated clinical cloud compute</strong>:</p>
+<ol>
+<li><strong>HHS Office for Civil Rights (OCR) — HIPAA Security Rule (45 CFR §164.312) &amp; 2025/2026 Hospital Cyber Resiliency</strong>:
+<ul>
+<li>Following catastrophic healthcare ransomware attacks (e.g., Change Healthcare, Ascension), the strengthened HHS OCR HIPAA Security Rule mandates <strong>hardware-enforced encryption at rest, immutable audit logs, and rapid recovery verification (&lt;72 hours)</strong> for electronic Protected Health Information (ePHI).</li>
+<li>Because legacy tape and spinning-disk backups cannot restore 500+ terabytes of Epic EHR and PACS imaging databases within a 72-hour clinical downtime window, US health systems are migrating en masse to <strong>Pure Storage (<code>PSTG</code>) FlashArray//E &amp; FlashBlade//S with SafeMode immutable snapshots</strong> and <strong>NetApp (<code>NTAP</code>) ONTAP Autonomous Ransomware Protection (ARP)</strong> (<code>MEM_AI_STORAGE_FABRIC</code>).</li>
+</ul>
+</li>
+<li><strong>FDA 21 CFR Part 11 (Electronic Records) &amp; FDA AI/ML-Based Software as a Medical Device (SaMD) Action Plan</strong>:
+<ul>
+<li><strong>21 CFR Part 11</strong> requires biopharma sponsors to maintain tamper-evident, time-stamped, auditable electronic clinical trial records (eTMF, regulatory submissions, pharmacovigilance) for decades—anchoring <strong>Veeva Systems (<code>VEEV</code> — #12, R5: 92.4)</strong> as the cloud system of record on AWS/hyperscale NVMe flash.</li>
+<li>Simultaneously, the <strong>FDA PCCP (Predetermined Change Control Plan) for AI/ML SaMD</strong> requires medical imaging (<code>GEHC</code> photon-counting CT/MRI) and digital pathology developers to version-control multi-petabyte 3D DICOM and whole-slide histology training cohorts. A single 3D whole-slide pathology scan consumes <strong>1–5 GB</strong>, requiring <strong>HBM3e/HBM4 (<code>MU</code>, <code>NVDA</code>)</strong> and <strong>CXL memory expansion (<code>ALAB</code>, <code>RMBS</code>)</strong> to hold uncompressed volumetric tensors in memory during model training and inference without GPU Out-of-Memory (OOM) faults.</li>
+</ul>
+</li>
+<li><strong>CMS Interoperability &amp; Prior Authorization Final Rule (CMS-0057-F)</strong>:
+<ul>
+<li>Enforces mandatory <strong>2026–2027 HL7 FHIR API compliance</strong> across Medicare Advantage, Medicaid, CHIP, and Qualified Health Plans, requiring payers and providers (<code>ORCL</code> Health/Cerner, <code>MSFT</code> Azure Health Data Services / Nuance DAX) to adjudicate urgent prior authorizations within <strong>72 hours</strong> (and standard requests within 7 days) via automated APIs.</li>
+<li>Real-time FHIR patient longitudinal graph traversal and clinical LLM prior-authorization matching require <strong>high-capacity DDR5/MRDIMM (<code>RMBS</code>, <code>MU</code>) and CXL 3.1 memory pooling (<code>ALAB</code>)</strong> to keep millions of patient clinical knowledge graphs resident in sub-200ns RAM.</li>
+</ul>
+</li>
+<li><strong>NIH Genomic Data Sharing (GDS) Policy &amp; All-of-Us / Gabriella Miller Kids First Programs</strong>:
+<ul>
+<li>High-throughput whole-genome sequencing (<strong>Illumina <code>ILMN</code></strong> NovaSeq X) and structural biology (<strong>Thermo Fisher <code>TMO</code></strong> Krios Cryo-EM + AlphaFold 3) generate tens of petabytes of BAM/CRAM/FASTQ and 3D electron-density maps per year. De novo genome assembly and variant calling (<code>DRAGEN</code> FPGA/GPU pipelines) are acutely bottlenecked by memory capacity and NVMe IOPS, driving hyperscale biobank deployments of <strong>64TB–122TB PCIe Gen5 eSSDs (<code>SNDK</code>, <code>PSTG</code>)</strong> and <strong>CXL Type-3 memory expanders (<code>ALAB</code>, <code>MRVL</code>)</strong>.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>4. <code>agentic-bridgewater</code> Macro Network Graph &amp; <code>MemoryDatacenterSystemAgent</code></h2>
+<h3>4.1 7 New Sector Nodes &amp; Hierarchy in <code>bridgewater/sectors.py</code></h3>
+<p>We engineered a 7-node hierarchy under <code>MEMORY</code> in <code></code>:</p>
+<pre><code class="language-mermaid">flowchart TD
+    AI_DEMAND[&quot;Macro Drivers: AI_DEMAND · AI_CAPABILITY · GRID_CONGESTION · TARIFFS · HEALTHCARE_POLICY&quot;]
+    MEM_ROOT[&quot;MEMORY_DATACENTER_ECOSYSTEM (Roll-Up Node · Proxy: MU)&quot;]
+    
+    L1[&quot;MEM_HBM_DRAM_OLIGOPOLY (HBM3e/HBM4 &amp; DRAM · Proxy: MU)\nMU · TSM · NVDA · AMD · SK Hynix · Samsung&quot;]
+    L2[&quot;MEM_CXL_CONTROLLER_IP (CXL 3.1, DDR5 RCD/MRDIMM, MRAM &amp; JEDEC IP · Proxy: RMBS)\nRMBS · ALAB · AVGO · MRVL · CRDO · MTSI · MRAM · NLST&quot;]
+    L3[&quot;MEM_NAND_ESSD_FLASH (218L-300L+ 3D NAND &amp; 64TB-128TB QLC eSSDs · Proxy: SNDK)\nSNDK · SIMO · WDC · STX · Kioxia · Solidigm&quot;]
+    L4[&quot;MEM_AI_STORAGE_FABRIC (All-Flash AI RAG Fabric &amp; OEMs · Proxy: PSTG)\nPSTG · NTAP · DELL · HPE · SMCI · VAST Data · WEKA&quot;]
+    L5[&quot;MEM_WAFER_PACKAGING_METROLOGY (TSV Etch, Hybrid Bond, 3D Metrology &amp; KGD · Proxy: LRCX)\nLRCX · KLAC · ASML · AMAT · ONTO · CAMT · FORM · TER · COHU · ACLS · AEHR&quot;]
+    L6[&quot;MEM_HYPERSCALE_MED_GOV_CLOUD (Hyperscalers &amp; FDA/HIPAA/CMS/NIH Cloud · Proxy: NVDA)\nMSFT · GOOGL · AMZN · META · ORCL · VEEV · ILMN · TMO · GEHC&quot;]
+
+    AI_DEMAND --&gt; L1
+    AI_DEMAND --&gt; L2
+    AI_DEMAND --&gt; L3
+    AI_DEMAND --&gt; L6
+    L5 --&gt;|&quot;+0.88 TSV Etch, EUV &amp; 3D Metrology&quot;| L1
+    L5 --&gt;|&quot;+0.80 Cryo HAR Etch for 218L+ NAND&quot;| L3
+    L1 --&gt;|&quot;+0.86 Co-Packaged HBM3e/HBM4&quot;| L6
+    L1 --&gt;|&quot;+0.79 3:1 HBM Wafer Trade-Off Tightens DDR5&quot;| L2
+    L2 --&gt;|&quot;+0.82 CXL 3.1 Memory Pooling &amp; MRDIMM&quot;| L6
+    L2 --&gt;|&quot;+0.76 PCIe Gen5/6 Retimers &amp; MRAM Write Cache&quot;| L3
+    L3 --&gt;|&quot;+0.85 64TB-128TB QLC eSSD &amp; DirectFlash&quot;| L4
+    L4 --&gt;|&quot;+0.83 GPUDirect RAG &amp; HIPAA/FDA Immutable Lakes&quot;| L6
+    L1 --&gt; MEM_ROOT
+    L2 --&gt; MEM_ROOT
+    L3 --&gt; MEM_ROOT
+    L4 --&gt; MEM_ROOT
+    L5 --&gt; MEM_ROOT
+    L6 --&gt; MEM_ROOT
+</code></pre>
+<h3>4.2 7 State Rules (<code>MEM_DC_R0</code> through <code>MEM_DC_R6</code>) in <code>state_rules.json</code></h3>
+<ol>
+<li><strong><code>MEM_DC_R0</code> (HBM3e/HBM4 3:1 Wafer Trade-Off &amp; CoWoS Packaging Bottleneck)</strong>: Triggered when <code>AI_DEMAND &gt;= 0.8σ</code>; amplifies <code>AI_DEMAND -&gt; MEM_HBM_DRAM_OLIGOPOLY</code> and <code>MEM_HBM_DRAM_OLIGOPOLY -&gt; MEM_WAFER_PACKAGING_METROLOGY</code> by <strong>1.45x</strong>.</li>
+<li><strong><code>MEM_DC_R1</code> (CXL 3.0/3.1 Memory Pooling &amp; DDR5 MRDIMM Server Cycle)</strong>: Triggered when <code>AI_CAPABILITY &gt;= 0.8σ</code>; amplifies <code>MEM_CXL_CONTROLLER_IP -&gt; MEM_HYPERSCALE_MED_GOV_CLOUD</code> by <strong>1.38x</strong>.</li>
+<li><strong><code>MEM_DC_R2</code> (DOC BIS HBM Bandwidth-Density Export Ban &amp; US CHIPS Act Shield)</strong>: Triggered when <code>TARIFFS &gt;= 0.8σ</code>; amplifies sovereign protection on <code>MEM_HBM_DRAM_OLIGOPOLY</code> while modeling China WFE shipment friction (<code>1.35x</code>).</li>
+<li><strong><code>MEM_DC_R3</code> (AI KV-Cache Offloading &amp; 61TB–122TB QLC eSSD Power Squeeze)</strong>: Triggered when <code>GRID_CONGESTION &gt;= 0.7σ</code>; amplifies <code>MEM_NAND_ESSD_FLASH -&gt; MEM_AI_STORAGE_FABRIC</code> by <strong>1.40x</strong> as hyperscalers swap spinning HDDs for 64TB–128TB QLC eSSDs (<code>SNDK</code>, <code>PSTG</code>).</li>
+<li><strong><code>MEM_DC_R4</code> (JEDEC DDR5/LRDIMM/HBM Patent Enforcement &amp; PTAB/CAFC Verdict Shock)</strong>: Triggered when <code>CREDIT_SPREAD &gt;= 0.6σ</code>; models royalty enforcement vs. PTAB IPR invalidation risk across <code>MEM_CXL_CONTROLLER_IP</code> (<code>RMBS</code>, <code>NLST</code>, <code>1.28x</code>).</li>
+<li><strong><code>MEM_DC_R5</code> (Healthcare Policy HIPAA, FDA 21 CFR Part 11, CMS-0057-F &amp; NIH Genomics Surge)</strong>: Triggered when <code>HEALTHCARE_POLICY &gt;= 0.6σ</code>; amplifies <code>HEALTHCARE_POLICY -&gt; MEM_HYPERSCALE_MED_GOV_CLOUD</code> and <code>MEM_AI_STORAGE_FABRIC</code> by <strong>1.36x</strong>.</li>
+<li><strong><code>MEM_DC_R6</code> (Hyperscaler CapEx Digestion &amp; Commodity NAND/DRAM Spot Cyclicality)</strong>: Triggered when <code>LONG_RATE &gt;= 0.9σ</code>; models inventory digestion across commodity NAND/DRAM while rewarding contracted HBM LTAs (<code>1.30x</code>).</li>
+</ol>
+<hr />
+<h2>5. 5-Round Recursive Self-Improvement (RSI) Loop &amp; Weekly Stock Selection</h2>
+<h3>5.1 Round-by-Round Critic → Sub-Skill Development → Re-Ranking Trajectory</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">RSI Round</th>
+<th style="text-align:left">Sector Sub-Skill Developed</th>
+<th style="text-align:left">Critic Flaw Identified &amp; Fixed</th>
+<th style="text-align:left">Formula / Quantitative Gate Added</th>
+<th style="text-align:left">Top 5 Tickers After Round</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Round 1</strong></td>
+<td style="text-align:left"><strong>Baseline Heuristic Growth &amp; Multiple Screen</strong></td>
+<td style="text-align:left">Naive screen mixes cyclical spot memory, litigation-dependent micro-caps (<code>NLST</code> #25), and software names (<code>NTAP</code> #5) with true physical HBM/CoWoS chokepoints (<code>TSM</code> #15, <code>KLAC</code> #21, <code>LRCX</code> #32).</td>
+<td style="text-align:left"><code>R1 = 0.35*Growth + 0.30*GM + 0.20*Val + 0.15*Momentum</code></td>
+<td style="text-align:left"><code>ALAB</code>, <code>MU</code>, <code>NVDA</code>, <code>VEEV</code>, <code>NTAP</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Round 2</strong></td>
+<td style="text-align:left"><strong>Sub-Skill 1: Through-Cycle CapEx-Adjusted FCF &amp; HBM 3:1 Wafer Economics Auditor</strong></td>
+<td style="text-align:left">Headline EBITDA ignores 25–35% fab CapEx intensity, &gt;14% SBC dilution, and litigation cash burn (<code>NLST</code> <code>-18.5%</code> FCF margin drops <code>#25 -&gt; #41</code>; <code>SMCI</code> <code>-4.2%</code> FCF drops <code>#39 -&gt; #40</code>).</td>
+<td style="text-align:left"><code>CapEx_Adj_Rule_of_X = 1.30*EffGrowth + FCF_Margin + 0.22*(LTA_Vis - 95) - 1.25*SBC - LevDrag</code></td>
+<td style="text-align:left"><code>ALAB</code>, <code>MU</code>, <code>NVDA</code>, <code>CRDO</code>, <code>RMBS</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Round 3</strong></td>
+<td style="text-align:left"><strong>Sub-Skill 2: HBM3e/HBM4 Stacking Yield, CXL/MRDIMM Monopoly &amp; Risk-Adjusted JEDEC IP Filter</strong></td>
+<td style="text-align:left">Separates unassailable physical monopolies (<code>TSM</code> CoWoS/HBM4 base die <code>#8 -&gt; #4</code>, <code>RMBS</code> DDR5 RCD + JEDEC IP <code>#5</code>, <code>KLAC</code> <code>#12 -&gt; #7</code>, <code>LRCX</code> <code>#17 -&gt; #8</code>) from PTAB IPR invalidation traps (<code>NLST</code>).</td>
+<td style="text-align:left"><code>Arch_Chokepoint_Net = 0.45*HBM_CXL + 0.35*TSV_KGD_Yield + 0.20*JEDEC_IP - 0.45*(Spot_PTAB_Risk - 15)</code></td>
+<td style="text-align:left"><code>NVDA</code>, <code>MU</code>, <code>ALAB</code>, <code>TSM</code>, <code>RMBS</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Round 4</strong></td>
+<td style="text-align:left"><strong>Sub-Skill 3 &amp; 4: AI KV-Cache QLC eSSD Power Alpha + Gov (DOC BIS/CHIPS) &amp; Healthcare Policy Scorer</strong></td>
+<td style="text-align:left">Captures 64TB–128TB QLC eSSD KV-cache offloading (<code>SNDK</code> rises <code>#18 -&gt; #14</code>, <code>PSTG</code> <code>#19 -&gt; #17</code>), US CHIPS Act / BIS export shields (<code>MU</code> <code>#1</code>, <code>TSM</code> <code>#2</code>), and FDA/HIPAA/CMS/NIH petabyte storage mandates (<code>VEEV</code>, <code>MSFT</code>).</td>
+<td style="text-align:left"><code>KV_Policy = 0.38*KV_QLC_Alpha + 0.34*Gov_BIS_CHIPS + 0.28*Healthcare_Hook - China_WFE_Penalty</code></td>
+<td style="text-align:left"><code>MU</code>, <code>TSM</code>, <code>NVDA</code>, <code>ALAB</code>, <code>RMBS</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Round 5</strong></td>
+<td style="text-align:left"><strong>Sub-Skill 5: Devil's Advocate 5-Vector Red-Team + Weinstein Stage &amp; Multi-Timeframe RSI Gate</strong></td>
+<td style="text-align:left">Stress-tests every stock against 5 crash vectors (HBM yield war, NAND/DDR5 spot glut, BIS China ban, PTAB/CAFC IP &amp; dilution, hyperscale CapEx rate shock) and rewards <code>Stage 2 Pullback (Buy Zone)</code> entries (<code>TSM</code>, <code>NVDA</code>, <code>RMBS</code>, <code>MU</code>, <code>KLAC</code>, <code>LRCX</code>).</td>
+<td style="text-align:left"><code>R5 = 0.54*R4 + 0.26*RedTeam_Avg + 0.20*Arch_Chokepoint + 0.65*Tech_Gate_Adj</code></td>
+<td style="text-align:left"><strong><code>TSM</code>, <code>NVDA</code>, <code>RMBS</code>, <code>MU</code>, <code>AVGO</code></strong></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>6. Final Hardened 41-Stock Recommendation Matrix (All 6 Memory &amp; Hyperscaler Cloud Layers)</h2>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:center">R5 Rank</th>
+<th style="text-align:center">Ticker</th>
+<th style="text-align:left">Company Name</th>
+<th style="text-align:left">Sub-Sector Node</th>
+<th style="text-align:center">R1</th>
+<th style="text-align:center">R2 (RuleX)</th>
+<th style="text-align:center">R3 (Arch)</th>
+<th style="text-align:center">R4 (Policy)</th>
+<th style="text-align:center"><strong>R5 Final</strong></th>
+<th style="text-align:center">Rule of X</th>
+<th style="text-align:center">Surv / 3Y Gr</th>
+<th style="text-align:center">Price</th>
+<th style="text-align:center">RSI-14 / Wk</th>
+<th style="text-align:left">Weinstein Stage</th>
+<th style="text-align:center">Buy Entry Zone</th>
+<th style="text-align:center">Stop Loss</th>
+<th style="text-align:center">12M Target</th>
+<th style="text-align:center">Kelly Wt</th>
+<th style="text-align:left">Final Hardened Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>#01</strong></td>
+<td style="text-align:center"><strong><code>TSM</code></strong></td>
+<td style="text-align:left">Taiwan Semiconductor</td>
+<td style="text-align:left"><code>MEM_HBM_DRAM_OLIGOPOLY</code></td>
+<td style="text-align:center">68.9</td>
+<td style="text-align:center">84.9</td>
+<td style="text-align:center">94.3</td>
+<td style="text-align:center">98.0</td>
+<td style="text-align:center"><strong>98.8</strong></td>
+<td style="text-align:center">70.4</td>
+<td style="text-align:center">93.7 / 97%</td>
+<td style="text-align:center">$394.45</td>
+<td style="text-align:center">36.1 / 46</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$380.64 - $396.42</td>
+<td style="text-align:center">$359.74 (-8.8%)</td>
+<td style="text-align:center">$506.87 (+28.5%)</td>
+<td style="text-align:center"><strong>7.6%</strong></td>
+<td style="text-align:left"><strong>STRONG BUY (Top Weekly Pick)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#02</strong></td>
+<td style="text-align:center"><strong><code>NVDA</code></strong></td>
+<td style="text-align:left">NVIDIA Corporation</td>
+<td style="text-align:left"><code>MEM_HBM_DRAM_OLIGOPOLY</code></td>
+<td style="text-align:center">76.7</td>
+<td style="text-align:center">88.4</td>
+<td style="text-align:center">98.0</td>
+<td style="text-align:center">98.0</td>
+<td style="text-align:center"><strong>98.8</strong></td>
+<td style="text-align:center">116.8</td>
+<td style="text-align:center">99.0 / 98%</td>
+<td style="text-align:center">$202.52</td>
+<td style="text-align:center">36.1 / 42</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$195.43 - $203.53</td>
+<td style="text-align:center">$184.70 (-8.8%)</td>
+<td style="text-align:center">$260.24 (+28.5%)</td>
+<td style="text-align:center"><strong>7.6%</strong></td>
+<td style="text-align:left"><strong>STRONG BUY (Top Weekly Pick)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#03</strong></td>
+<td style="text-align:center"><strong><code>RMBS</code></strong></td>
+<td style="text-align:left">Rambus Inc.</td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+<td style="text-align:center">72.8</td>
+<td style="text-align:center">86.7</td>
+<td style="text-align:center">93.9</td>
+<td style="text-align:center">97.5</td>
+<td style="text-align:center"><strong>97.3</strong></td>
+<td style="text-align:center">60.3</td>
+<td style="text-align:center">95.8 / 93%</td>
+<td style="text-align:center">$82.21</td>
+<td style="text-align:center">37.8 / 38</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$79.33 - $82.62</td>
+<td style="text-align:center">$74.98 (-8.8%)</td>
+<td style="text-align:center">$105.64 (+28.5%)</td>
+<td style="text-align:center"><strong>7.1%</strong></td>
+<td style="text-align:left"><strong>STRONG BUY (Top Weekly Pick)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#04</strong></td>
+<td style="text-align:center"><strong><code>MU</code></strong></td>
+<td style="text-align:left">Micron Technology</td>
+<td style="text-align:left"><code>MEM_HBM_DRAM_OLIGOPOLY</code></td>
+<td style="text-align:center">77.7</td>
+<td style="text-align:center">88.9</td>
+<td style="text-align:center">95.1</td>
+<td style="text-align:center">98.0</td>
+<td style="text-align:center"><strong>96.4</strong></td>
+<td style="text-align:center">72.6</td>
+<td style="text-align:center">80.1 / 98%</td>
+<td style="text-align:center">$799.41</td>
+<td style="text-align:center">35.6 / 47</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$771.43 - $803.41</td>
+<td style="text-align:center">$729.06 (-8.8%)</td>
+<td style="text-align:center">$1027.24 (+28.5%)</td>
+<td style="text-align:center"><strong>6.9%</strong></td>
+<td style="text-align:left"><strong>STRONG BUY (Top Weekly Pick)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#05</strong></td>
+<td style="text-align:center"><strong><code>AVGO</code></strong></td>
+<td style="text-align:left">Broadcom Inc.</td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+<td style="text-align:center">70.5</td>
+<td style="text-align:center">85.6</td>
+<td style="text-align:center">93.4</td>
+<td style="text-align:center">96.7</td>
+<td style="text-align:center"><strong>96.3</strong></td>
+<td style="text-align:center">65.2</td>
+<td style="text-align:center">98.8 / 98%</td>
+<td style="text-align:center">$326.05</td>
+<td style="text-align:center">42.3 / 43</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$314.64 - $327.68</td>
+<td style="text-align:center">$297.36 (-8.8%)</td>
+<td style="text-align:center">$418.97 (+28.5%)</td>
+<td style="text-align:center"><strong>6.8%</strong></td>
+<td style="text-align:left"><strong>STRONG BUY (Top Weekly Pick)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#06</strong></td>
+<td style="text-align:center"><strong><code>KLAC</code></strong></td>
+<td style="text-align:left">KLA Corporation</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">64.6</td>
+<td style="text-align:center">83.0</td>
+<td style="text-align:center">91.4</td>
+<td style="text-align:center">93.2</td>
+<td style="text-align:center"><strong>95.2</strong></td>
+<td style="text-align:center">55.8</td>
+<td style="text-align:center">91.9 / 88%</td>
+<td style="text-align:center">$148.71</td>
+<td style="text-align:center">35.7 / 42</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$143.51 - $149.45</td>
+<td style="text-align:center">$135.62 (-8.8%)</td>
+<td style="text-align:center">$191.09 (+28.5%)</td>
+<td style="text-align:center"><strong>6.5%</strong></td>
+<td style="text-align:left"><strong>STRONG BUY (Top Weekly Pick)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#07</strong></td>
+<td style="text-align:center"><strong><code>LRCX</code></strong></td>
+<td style="text-align:left">Lam Research Corp.</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">62.5</td>
+<td style="text-align:center">82.0</td>
+<td style="text-align:center">90.2</td>
+<td style="text-align:center">93.0</td>
+<td style="text-align:center"><strong>94.7</strong></td>
+<td style="text-align:center">54.2</td>
+<td style="text-align:center">89.2 / 89%</td>
+<td style="text-align:center">$219.88</td>
+<td style="text-align:center">29.5 / 40</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$212.18 - $220.98</td>
+<td style="text-align:center">$200.53 (-8.8%)</td>
+<td style="text-align:center">$282.55 (+28.5%)</td>
+<td style="text-align:center"><strong>6.3%</strong></td>
+<td style="text-align:left"><strong>STRONG BUY (Top Weekly Pick)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#08</strong></td>
+<td style="text-align:center"><strong><code>ALAB</code></strong></td>
+<td style="text-align:left">Astera Labs</td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+<td style="text-align:center">78.9</td>
+<td style="text-align:center">89.4</td>
+<td style="text-align:center">94.5</td>
+<td style="text-align:center">97.6</td>
+<td style="text-align:center"><strong>94.2</strong></td>
+<td style="text-align:center">89.7</td>
+<td style="text-align:center">86.1 / 98%</td>
+<td style="text-align:center">$219.90</td>
+<td style="text-align:center">31.0 / 43</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$212.20 - $221.00</td>
+<td style="text-align:center">$200.55 (-8.8%)</td>
+<td style="text-align:center">$282.57 (+28.5%)</td>
+<td style="text-align:center"><strong>6.2%</strong></td>
+<td style="text-align:left"><strong>STRONG BUY (Top Weekly Pick)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#09</strong></td>
+<td style="text-align:center"><strong><code>ONTO</code></strong></td>
+<td style="text-align:left">Onto Innovation</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">65.7</td>
+<td style="text-align:center">83.0</td>
+<td style="text-align:center">89.9</td>
+<td style="text-align:center">92.1</td>
+<td style="text-align:center"><strong>93.7</strong></td>
+<td style="text-align:center">54.1</td>
+<td style="text-align:center">83.8 / 92%</td>
+<td style="text-align:center">$183.64</td>
+<td style="text-align:center">31.5 / 38</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$177.21 - $184.56</td>
+<td style="text-align:center">$167.48 (-8.8%)</td>
+<td style="text-align:center">$235.98 (+28.5%)</td>
+<td style="text-align:center"><strong>3.9%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#10</strong></td>
+<td style="text-align:center"><strong><code>META</code></strong></td>
+<td style="text-align:left">Meta Platforms</td>
+<td style="text-align:left"><code>MEM_HYPERSCALE_MED_GOV_CLOUD</code></td>
+<td style="text-align:center">73.2</td>
+<td style="text-align:center">84.0</td>
+<td style="text-align:center">89.4</td>
+<td style="text-align:center">93.3</td>
+<td style="text-align:center"><strong>93.7</strong></td>
+<td style="text-align:center">47.1</td>
+<td style="text-align:center">91.5 / 92%</td>
+<td style="text-align:center">$629.52</td>
+<td style="text-align:center">39.9 / 41</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$607.49 - $632.67</td>
+<td style="text-align:center">$574.12 (-8.8%)</td>
+<td style="text-align:center">$808.93 (+28.5%)</td>
+<td style="text-align:center"><strong>3.9%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#11</strong></td>
+<td style="text-align:center"><strong><code>PSTG</code></strong></td>
+<td style="text-align:left">Pure Storage Inc.</td>
+<td style="text-align:left"><code>MEM_AI_STORAGE_FABRIC</code></td>
+<td style="text-align:center">73.7</td>
+<td style="text-align:center">78.5</td>
+<td style="text-align:center">85.1</td>
+<td style="text-align:center">91.1</td>
+<td style="text-align:center"><strong>93.2</strong></td>
+<td style="text-align:center">36.2</td>
+<td style="text-align:center">81.9 / 90%</td>
+<td style="text-align:center">$63.40</td>
+<td style="text-align:center">45.8 / 50</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$61.18 - $63.72</td>
+<td style="text-align:center">$57.82 (-8.8%)</td>
+<td style="text-align:center">$81.47 (+28.5%)</td>
+<td style="text-align:center"><strong>3.8%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#12</strong></td>
+<td style="text-align:center"><strong><code>VEEV</code></strong></td>
+<td style="text-align:left">Veeva Systems</td>
+<td style="text-align:left"><code>MEM_HYPERSCALE_MED_GOV_CLOUD</code></td>
+<td style="text-align:center">75.6</td>
+<td style="text-align:center">85.1</td>
+<td style="text-align:center">89.1</td>
+<td style="text-align:center">94.2</td>
+<td style="text-align:center"><strong>92.4</strong></td>
+<td style="text-align:center">46.3</td>
+<td style="text-align:center">94.5 / 93%</td>
+<td style="text-align:center">$310.12</td>
+<td style="text-align:center">57.3 / 67</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$299.27 - $311.67</td>
+<td style="text-align:center">$282.83 (-8.8%)</td>
+<td style="text-align:center">$398.50 (+28.5%)</td>
+<td style="text-align:center"><strong>3.6%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#13</strong></td>
+<td style="text-align:center"><strong><code>CAMT</code></strong></td>
+<td style="text-align:left">Camtek Ltd.</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">65.4</td>
+<td style="text-align:center">83.3</td>
+<td style="text-align:center">89.3</td>
+<td style="text-align:center">90.7</td>
+<td style="text-align:center"><strong>92.1</strong></td>
+<td style="text-align:center">57.7</td>
+<td style="text-align:center">85.6 / 92%</td>
+<td style="text-align:center">$100.39</td>
+<td style="text-align:center">28.2 / 37</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$96.88 - $100.89</td>
+<td style="text-align:center">$91.56 (-8.8%)</td>
+<td style="text-align:center">$129.00 (+28.5%)</td>
+<td style="text-align:center"><strong>3.6%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#14</strong></td>
+<td style="text-align:center"><strong><code>ASML</code></strong></td>
+<td style="text-align:left">ASML Holding N.V.</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">62.5</td>
+<td style="text-align:center">80.3</td>
+<td style="text-align:center">90.2</td>
+<td style="text-align:center">92.3</td>
+<td style="text-align:center"><strong>91.9</strong></td>
+<td style="text-align:center">51.0</td>
+<td style="text-align:center">89.6 / 89%</td>
+<td style="text-align:center">$1490.72</td>
+<td style="text-align:center">34.4 / 45</td>
+<td style="text-align:left">Stage 1 (Accumulation)</td>
+<td style="text-align:center">$1438.54 - $1498.17</td>
+<td style="text-align:center">$1341.65 (-10.0%)</td>
+<td style="text-align:center">$1759.05 (+18.0%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#15</strong></td>
+<td style="text-align:center"><strong><code>MSFT</code></strong></td>
+<td style="text-align:left">Microsoft Corp.</td>
+<td style="text-align:left"><code>MEM_HYPERSCALE_MED_GOV_CLOUD</code></td>
+<td style="text-align:center">73.2</td>
+<td style="text-align:center">83.4</td>
+<td style="text-align:center">89.3</td>
+<td style="text-align:center">95.6</td>
+<td style="text-align:center"><strong>91.9</strong></td>
+<td style="text-align:center">46.7</td>
+<td style="text-align:center">93.7 / 94%</td>
+<td style="text-align:center">$557.98</td>
+<td style="text-align:center">65.0 / 61</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$538.45 - $560.77</td>
+<td style="text-align:center">$508.88 (-8.8%)</td>
+<td style="text-align:center">$717.00 (+28.5%)</td>
+<td style="text-align:center"><strong>3.6%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#16</strong></td>
+<td style="text-align:center"><strong><code>AMD</code></strong></td>
+<td style="text-align:left">Advanced Micro Devices</td>
+<td style="text-align:left"><code>MEM_HBM_DRAM_OLIGOPOLY</code></td>
+<td style="text-align:center">71.4</td>
+<td style="text-align:center">82.6</td>
+<td style="text-align:center">87.3</td>
+<td style="text-align:center">91.3</td>
+<td style="text-align:center"><strong>91.6</strong></td>
+<td style="text-align:center">48.7</td>
+<td style="text-align:center">78.6 / 96%</td>
+<td style="text-align:center">$482.37</td>
+<td style="text-align:center">38.2 / 49</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$465.49 - $484.78</td>
+<td style="text-align:center">$439.92 (-8.8%)</td>
+<td style="text-align:center">$619.85 (+28.5%)</td>
+<td style="text-align:center"><strong>3.5%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#17</strong></td>
+<td style="text-align:center"><strong><code>SNDK</code></strong></td>
+<td style="text-align:left"><strong>SanDisk Corporation</strong></td>
+<td style="text-align:left"><code>MEM_NAND_ESSD_FLASH</code></td>
+<td style="text-align:center">66.4</td>
+<td style="text-align:center">82.4</td>
+<td style="text-align:center">86.4</td>
+<td style="text-align:center">91.8</td>
+<td style="text-align:center"><strong>91.3</strong></td>
+<td style="text-align:center">54.2</td>
+<td style="text-align:center">73.5 / 84%</td>
+<td style="text-align:center">$1031.73</td>
+<td style="text-align:center">30.4 / 43</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$995.62 - $1036.89</td>
+<td style="text-align:center">$940.94 (-8.8%)</td>
+<td style="text-align:center">$1325.77 (+28.5%)</td>
+<td style="text-align:center"><strong>3.4%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#18</strong></td>
+<td style="text-align:center"><strong><code>MRVL</code></strong></td>
+<td style="text-align:left">Marvell Technology</td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+<td style="text-align:center">69.7</td>
+<td style="text-align:center">82.7</td>
+<td style="text-align:center">87.7</td>
+<td style="text-align:center">90.3</td>
+<td style="text-align:center"><strong>90.2</strong></td>
+<td style="text-align:center">50.0</td>
+<td style="text-align:center">81.9 / 94%</td>
+<td style="text-align:center">$156.03</td>
+<td style="text-align:center">26.2 / 40</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$150.57 - $156.81</td>
+<td style="text-align:center">$142.30 (-8.8%)</td>
+<td style="text-align:center">$200.50 (+28.5%)</td>
+<td style="text-align:center"><strong>3.3%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#19</strong></td>
+<td style="text-align:center"><strong><code>CRDO</code></strong></td>
+<td style="text-align:left">Credo Technology Group</td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+<td style="text-align:center">73.1</td>
+<td style="text-align:center">86.8</td>
+<td style="text-align:center">90.1</td>
+<td style="text-align:center">91.7</td>
+<td style="text-align:center"><strong>89.7</strong></td>
+<td style="text-align:center">93.1</td>
+<td style="text-align:center">79.2 / 98%</td>
+<td style="text-align:center">$135.58</td>
+<td style="text-align:center">35.8 / 45</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$130.83 - $136.26</td>
+<td style="text-align:center">$123.65 (-8.8%)</td>
+<td style="text-align:center">$174.22 (+28.5%)</td>
+<td style="text-align:center"><strong>3.2%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#20</strong></td>
+<td style="text-align:center"><strong><code>GOOGL</code></strong></td>
+<td style="text-align:left">Alphabet Inc.</td>
+<td style="text-align:left"><code>MEM_HYPERSCALE_MED_GOV_CLOUD</code></td>
+<td style="text-align:center">63.1</td>
+<td style="text-align:center">74.1</td>
+<td style="text-align:center">80.5</td>
+<td style="text-align:center">85.8</td>
+<td style="text-align:center"><strong>89.6</strong></td>
+<td style="text-align:center">37.2</td>
+<td style="text-align:center">88.2 / 91%</td>
+<td style="text-align:center">$291.71</td>
+<td style="text-align:center">32.2 / 47</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$281.50 - $293.17</td>
+<td style="text-align:center">$266.04 (-8.8%)</td>
+<td style="text-align:center">$374.85 (+28.5%)</td>
+<td style="text-align:center"><strong>3.1%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#21</strong></td>
+<td style="text-align:center"><strong><code>AMAT</code></strong></td>
+<td style="text-align:left">Applied Materials</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">60.2</td>
+<td style="text-align:center">76.7</td>
+<td style="text-align:center">83.5</td>
+<td style="text-align:center">85.0</td>
+<td style="text-align:center"><strong>89.4</strong></td>
+<td style="text-align:center">35.3</td>
+<td style="text-align:center">85.8 / 81%</td>
+<td style="text-align:center">$364.32</td>
+<td style="text-align:center">32.6 / 47</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$351.57 - $366.14</td>
+<td style="text-align:center">$332.26 (-8.8%)</td>
+<td style="text-align:center">$468.15 (+28.5%)</td>
+<td style="text-align:center"><strong>3.1%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#22</strong></td>
+<td style="text-align:center"><strong><code>NTAP</code></strong></td>
+<td style="text-align:left">NetApp Inc.</td>
+<td style="text-align:left"><code>MEM_AI_STORAGE_FABRIC</code></td>
+<td style="text-align:center">74.5</td>
+<td style="text-align:center">77.6</td>
+<td style="text-align:center">81.2</td>
+<td style="text-align:center">86.1</td>
+<td style="text-align:center"><strong>88.6</strong></td>
+<td style="text-align:center">33.5</td>
+<td style="text-align:center">82.8 / 80%</td>
+<td style="text-align:center">$187.89</td>
+<td style="text-align:center">37.2 / 49</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$181.31 - $188.83</td>
+<td style="text-align:center">$171.36 (-8.8%)</td>
+<td style="text-align:center">$241.44 (+28.5%)</td>
+<td style="text-align:center"><strong>3.0%</strong></td>
+<td style="text-align:left"><strong>BUY (Pullback / Accumulate)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#23</strong></td>
+<td style="text-align:center"><strong><code>FORM</code></strong></td>
+<td style="text-align:left">FormFactor Inc.</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">62.8</td>
+<td style="text-align:center">74.5</td>
+<td style="text-align:center">80.7</td>
+<td style="text-align:center">82.3</td>
+<td style="text-align:center"><strong>87.7</strong></td>
+<td style="text-align:center">29.8</td>
+<td style="text-align:center">72.1 / 85%</td>
+<td style="text-align:center">$84.71</td>
+<td style="text-align:center">35.3 / 44</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$81.75 - $85.13</td>
+<td style="text-align:center">$77.26 (-8.8%)</td>
+<td style="text-align:center">$108.85 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#24</strong></td>
+<td style="text-align:center"><strong><code>WDC</code></strong></td>
+<td style="text-align:left">Western Digital Corp.</td>
+<td style="text-align:left"><code>MEM_NAND_ESSD_FLASH</code></td>
+<td style="text-align:center">62.6</td>
+<td style="text-align:center">77.9</td>
+<td style="text-align:center">81.0</td>
+<td style="text-align:center">84.2</td>
+<td style="text-align:center"><strong>86.7</strong></td>
+<td style="text-align:center">40.3</td>
+<td style="text-align:center">75.0 / 81%</td>
+<td style="text-align:center">$326.07</td>
+<td style="text-align:center">36.8 / 45</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$314.66 - $327.70</td>
+<td style="text-align:center">$297.38 (-8.8%)</td>
+<td style="text-align:center">$419.00 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#25</strong></td>
+<td style="text-align:center"><strong><code>TER</code></strong></td>
+<td style="text-align:left">Teradyne Inc.</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">64.9</td>
+<td style="text-align:center">76.4</td>
+<td style="text-align:center">80.5</td>
+<td style="text-align:center">81.8</td>
+<td style="text-align:center"><strong>86.1</strong></td>
+<td style="text-align:center">34.4</td>
+<td style="text-align:center">79.4 / 82%</td>
+<td style="text-align:center">$248.71</td>
+<td style="text-align:center">26.8 / 41</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$240.01 - $249.95</td>
+<td style="text-align:center">$226.82 (-8.8%)</td>
+<td style="text-align:center">$319.59 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#26</strong></td>
+<td style="text-align:center"><strong><code>MTSI</code></strong></td>
+<td style="text-align:left">MACOM Technology</td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+<td style="text-align:center">64.2</td>
+<td style="text-align:center">76.2</td>
+<td style="text-align:center">79.5</td>
+<td style="text-align:center">81.2</td>
+<td style="text-align:center"><strong>84.4</strong></td>
+<td style="text-align:center">41.2</td>
+<td style="text-align:center">80.7 / 87%</td>
+<td style="text-align:center">$223.18</td>
+<td style="text-align:center">37.2 / 46</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$215.37 - $224.30</td>
+<td style="text-align:center">$203.54 (-8.8%)</td>
+<td style="text-align:center">$286.79 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#27</strong></td>
+<td style="text-align:center"><strong><code>STX</code></strong></td>
+<td style="text-align:left">Seagate Technology</td>
+<td style="text-align:left"><code>MEM_NAND_ESSD_FLASH</code></td>
+<td style="text-align:center">62.7</td>
+<td style="text-align:center">76.1</td>
+<td style="text-align:center">79.4</td>
+<td style="text-align:center">81.7</td>
+<td style="text-align:center"><strong>84.3</strong></td>
+<td style="text-align:center">44.9</td>
+<td style="text-align:center">68.3 / 82%</td>
+<td style="text-align:center">$560.76</td>
+<td style="text-align:center">30.9 / 44</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$541.13 - $563.56</td>
+<td style="text-align:center">$511.41 (-8.8%)</td>
+<td style="text-align:center">$720.58 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#28</strong></td>
+<td style="text-align:center"><strong><code>ORCL</code></strong></td>
+<td style="text-align:left">Oracle Corporation</td>
+<td style="text-align:left"><code>MEM_HYPERSCALE_MED_GOV_CLOUD</code></td>
+<td style="text-align:center">66.0</td>
+<td style="text-align:center">67.4</td>
+<td style="text-align:center">72.0</td>
+<td style="text-align:center">77.7</td>
+<td style="text-align:center"><strong>83.1</strong></td>
+<td style="text-align:center">22.6</td>
+<td style="text-align:center">66.7 / 89%</td>
+<td style="text-align:center">$125.02</td>
+<td style="text-align:center">43.4 / 45</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$120.64 - $125.65</td>
+<td style="text-align:center">$114.02 (-8.8%)</td>
+<td style="text-align:center">$160.65 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">AVOID / REDUCE (3.4x Net Debt/EBITDA)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#29</strong></td>
+<td style="text-align:center"><strong><code>ILMN</code></strong></td>
+<td style="text-align:left">Illumina Inc.</td>
+<td style="text-align:left"><code>MEM_HYPERSCALE_MED_GOV_CLOUD</code></td>
+<td style="text-align:center">71.1</td>
+<td style="text-align:center">71.1</td>
+<td style="text-align:center">73.3</td>
+<td style="text-align:center">78.3</td>
+<td style="text-align:center"><strong>83.1</strong></td>
+<td style="text-align:center">25.0</td>
+<td style="text-align:center">75.7 / 74%</td>
+<td style="text-align:center">$226.71</td>
+<td style="text-align:center">38.1 / 48</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$218.78 - $227.84</td>
+<td style="text-align:center">$206.76 (-8.8%)</td>
+<td style="text-align:center">$291.32 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#30</strong></td>
+<td style="text-align:center"><strong><code>AMZN</code></strong></td>
+<td style="text-align:left">Amazon.com Inc.</td>
+<td style="text-align:left"><code>MEM_HYPERSCALE_MED_GOV_CLOUD</code></td>
+<td style="text-align:center">61.1</td>
+<td style="text-align:center">67.4</td>
+<td style="text-align:center">73.1</td>
+<td style="text-align:center">79.1</td>
+<td style="text-align:center"><strong>82.6</strong></td>
+<td style="text-align:center">26.8</td>
+<td style="text-align:center">75.8 / 90%</td>
+<td style="text-align:center">$267.88</td>
+<td style="text-align:center">60.9 / 58</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$258.50 - $269.22</td>
+<td style="text-align:center">$244.31 (-8.8%)</td>
+<td style="text-align:center">$344.23 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#31</strong></td>
+<td style="text-align:center"><strong><code>SIMO</code></strong></td>
+<td style="text-align:left">Silicon Motion Tech.</td>
+<td style="text-align:left"><code>MEM_NAND_ESSD_FLASH</code></td>
+<td style="text-align:center">63.6</td>
+<td style="text-align:center">75.0</td>
+<td style="text-align:center">76.3</td>
+<td style="text-align:center">79.1</td>
+<td style="text-align:center"><strong>82.4</strong></td>
+<td style="text-align:center">34.4</td>
+<td style="text-align:center">75.4 / 79%</td>
+<td style="text-align:center">$180.30</td>
+<td style="text-align:center">36.2 / 45</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$173.99 - $181.20</td>
+<td style="text-align:center">$164.43 (-8.8%)</td>
+<td style="text-align:center">$231.69 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#32</strong></td>
+<td style="text-align:center"><strong><code>TMO</code></strong></td>
+<td style="text-align:left">Thermo Fisher Scientific</td>
+<td style="text-align:left"><code>MEM_HYPERSCALE_MED_GOV_CLOUD</code></td>
+<td style="text-align:center">62.8</td>
+<td style="text-align:center">67.6</td>
+<td style="text-align:center">70.1</td>
+<td style="text-align:center">74.5</td>
+<td style="text-align:center"><strong>77.6</strong></td>
+<td style="text-align:center">23.0</td>
+<td style="text-align:center">74.8 / 74%</td>
+<td style="text-align:center">$703.29</td>
+<td style="text-align:center">59.8 / 58</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$678.67 - $706.81</td>
+<td style="text-align:center">$641.40 (-8.8%)</td>
+<td style="text-align:center">$903.73 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#33</strong></td>
+<td style="text-align:center"><strong><code>DELL</code></strong></td>
+<td style="text-align:left">Dell Technologies</td>
+<td style="text-align:left"><code>MEM_AI_STORAGE_FABRIC</code></td>
+<td style="text-align:center">61.3</td>
+<td style="text-align:center">65.4</td>
+<td style="text-align:center">65.6</td>
+<td style="text-align:center">69.0</td>
+<td style="text-align:center"><strong>76.3</strong></td>
+<td style="text-align:center">20.1</td>
+<td style="text-align:center">65.7 / 73%</td>
+<td style="text-align:center">$367.77</td>
+<td style="text-align:center">30.8 / 44</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$354.90 - $369.61</td>
+<td style="text-align:center">$335.41 (-8.8%)</td>
+<td style="text-align:center">$472.58 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#34</strong></td>
+<td style="text-align:center"><strong><code>GEHC</code></strong></td>
+<td style="text-align:left">GE HealthCare Tech.</td>
+<td style="text-align:left"><code>MEM_HYPERSCALE_MED_GOV_CLOUD</code></td>
+<td style="text-align:center">63.9</td>
+<td style="text-align:center">64.1</td>
+<td style="text-align:center">65.9</td>
+<td style="text-align:center">70.9</td>
+<td style="text-align:center"><strong>74.8</strong></td>
+<td style="text-align:center">16.0</td>
+<td style="text-align:center">66.8 / 74%</td>
+<td style="text-align:center">$86.64</td>
+<td style="text-align:center">85.7 / 69</td>
+<td style="text-align:left">Stage 2 (Uptrend)</td>
+<td style="text-align:center">$83.61 - $87.07</td>
+<td style="text-align:center">$79.02 (-8.8%)</td>
+<td style="text-align:center">$111.33 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Overbought RSI 85.7)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#35</strong></td>
+<td style="text-align:center"><strong><code>MRAM</code></strong></td>
+<td style="text-align:left">Everspin Technologies</td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+<td style="text-align:center">62.9</td>
+<td style="text-align:center">65.6</td>
+<td style="text-align:center">67.1</td>
+<td style="text-align:center">68.6</td>
+<td style="text-align:center"><strong>73.0</strong></td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">69.4 / 73%</td>
+<td style="text-align:center">$12.96</td>
+<td style="text-align:center">40.0 / 48</td>
+<td style="text-align:left">Stage 1 (Accumulation)</td>
+<td style="text-align:center">$12.51 - $13.02</td>
+<td style="text-align:center">$11.66 (-10.0%)</td>
+<td style="text-align:center">$15.29 (+18.0%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#36</strong></td>
+<td style="text-align:center"><strong><code>HPE</code></strong></td>
+<td style="text-align:left">Hewlett Packard Ent.</td>
+<td style="text-align:left"><code>MEM_AI_STORAGE_FABRIC</code></td>
+<td style="text-align:center">62.4</td>
+<td style="text-align:center">62.7</td>
+<td style="text-align:center">61.5</td>
+<td style="text-align:center">63.8</td>
+<td style="text-align:center"><strong>72.5</strong></td>
+<td style="text-align:center">13.8</td>
+<td style="text-align:center">62.7 / 69%</td>
+<td style="text-align:center">$49.39</td>
+<td style="text-align:center">34.9 / 44</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$47.66 - $49.64</td>
+<td style="text-align:center">$45.04 (-8.8%)</td>
+<td style="text-align:center">$63.47 (+28.5%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#37</strong></td>
+<td style="text-align:center"><strong><code>COHU</code></strong></td>
+<td style="text-align:left">Cohu Inc.</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">59.8</td>
+<td style="text-align:center">64.1</td>
+<td style="text-align:center">62.8</td>
+<td style="text-align:center">62.2</td>
+<td style="text-align:center"><strong>67.2</strong></td>
+<td style="text-align:center">17.6</td>
+<td style="text-align:center">65.2 / 71%</td>
+<td style="text-align:center">$43.69</td>
+<td style="text-align:center">34.1 / 44</td>
+<td style="text-align:left">Stage 1 (Accumulation)</td>
+<td style="text-align:center">$42.16 - $43.91</td>
+<td style="text-align:center">$39.32 (-10.0%)</td>
+<td style="text-align:center">$51.55 (+18.0%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#38</strong></td>
+<td style="text-align:center"><strong><code>ACLS</code></strong></td>
+<td style="text-align:left">Axcelis Technologies</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">57.6</td>
+<td style="text-align:center">65.0</td>
+<td style="text-align:center">63.3</td>
+<td style="text-align:center">60.1</td>
+<td style="text-align:center"><strong>64.9</strong></td>
+<td style="text-align:center">23.8</td>
+<td style="text-align:center">74.4 / 66%</td>
+<td style="text-align:center">$91.75</td>
+<td style="text-align:center">31.7 / 42</td>
+<td style="text-align:left">Stage 1 (Accumulation)</td>
+<td style="text-align:center">$88.54 - $92.21</td>
+<td style="text-align:center">$82.58 (-10.0%)</td>
+<td style="text-align:center">$108.26 (+18.0%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#39</strong></td>
+<td style="text-align:center"><strong><code>AEHR</code></strong></td>
+<td style="text-align:left">Aehr Test Systems</td>
+<td style="text-align:left"><code>MEM_WAFER_PACKAGING_METROLOGY</code></td>
+<td style="text-align:center">60.9</td>
+<td style="text-align:center">61.1</td>
+<td style="text-align:center">56.8</td>
+<td style="text-align:center">55.3</td>
+<td style="text-align:center"><strong>61.0</strong></td>
+<td style="text-align:center">17.2</td>
+<td style="text-align:center">64.1 / 73%</td>
+<td style="text-align:center">$59.07</td>
+<td style="text-align:center">40.9 / 48</td>
+<td style="text-align:left">Stage 1 (Accumulation)</td>
+<td style="text-align:center">$57.00 - $59.37</td>
+<td style="text-align:center">$53.16 (-10.0%)</td>
+<td style="text-align:center">$69.70 (+18.0%)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:left">HOLD (Core / Wait for Stage 2 Trigger)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#40</strong></td>
+<td style="text-align:center"><strong><code>NLST</code></strong></td>
+<td style="text-align:left"><strong>Netlist Inc.</strong></td>
+<td style="text-align:left"><code>MEM_CXL_CONTROLLER_IP</code></td>
+<td style="text-align:center">63.4</td>
+<td style="text-align:center">44.3</td>
+<td style="text-align:center">36.6</td>
+<td style="text-align:center">34.7</td>
+<td style="text-align:center"><strong>51.1</strong></td>
+<td style="text-align:center">-11.4</td>
+<td style="text-align:center">43.2 / 69%</td>
+<td style="text-align:center">$5.91</td>
+<td style="text-align:center">47.7 / 53</td>
+<td style="text-align:left">Stage 2 Pullback (Buy Zone)</td>
+<td style="text-align:center">$5.70 - $5.94</td>
+<td style="text-align:center">$5.39 (-8.8%)</td>
+<td style="text-align:center">$7.59 (+28.5%)</td>
+<td style="text-align:center"><strong>0.0%</strong></td>
+<td style="text-align:left"><strong>CATALYST WATCH / SPECULATIVE LEGAL CALL OPTION (CAFC/PTAB)</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>#41</strong></td>
+<td style="text-align:center"><strong><code>SMCI</code></strong></td>
+<td style="text-align:left">Super Micro Computer</td>
+<td style="text-align:left"><code>MEM_AI_STORAGE_FABRIC</code></td>
+<td style="text-align:center">59.9</td>
+<td style="text-align:center">56.2</td>
+<td style="text-align:center">48.8</td>
+<td style="text-align:center">48.0</td>
+<td style="text-align:center"><strong>50.5</strong></td>
+<td style="text-align:center">8.1</td>
+<td style="text-align:center">53.2 / 78%</td>
+<td style="text-align:center">$29.61</td>
+<td style="text-align:center">35.2 / 39</td>
+<td style="text-align:left">Stage 3 (Distribution)</td>
+<td style="text-align:center">$28.57 - $29.76</td>
+<td style="text-align:center">$26.65 (-10.0%)</td>
+<td style="text-align:center">$34.94 (+18.0%)</td>
+<td style="text-align:center"><strong>0.0%</strong></td>
+<td style="text-align:left"><strong>AVOID / REDUCE (Red-Team / Stage Gate)</strong></td>
+</tr>
+</tbody>
+</table></div>
+
+    </article>
+  </main>
+  
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

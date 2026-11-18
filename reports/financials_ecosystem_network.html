@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financials, Private Credit/BDCs, Alts & Insurance Ecosystem — Interactive MacroGraph & 5-Round RSI</title>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: #070b14;
+      --bg-panel: #0f172a;
+      --bg-card: #1e293b;
+      --border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #ec4899;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-teal: #14b8a6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #064e3b 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #f8fafc, #93c5fd, #6ee7b7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      color: #cbd5e1;
+      font-size: 0.92rem;
+      margin-top: 6px;
+      max-width: 980px;
+    }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .kpi-card {
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+    .kpi-val { font-size: 1.18rem; font-weight: 800; color: #f8fafc; margin-top: 2px; }
+    .kpi-sub { font-size: 0.75rem; color: #34d399; margin-top: 2px; }
+    .container { max-width: 1680px; margin: 0 auto; padding: 20px 28px; }
+
+    /* Filter bar */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+    .toolbar-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-right: 6px; }
+    .btn {
+      background: var(--bg-card);
+      color: #e2e8f0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn:hover, .btn.active {
+      background: #2563eb;
+      border-color: #60a5fa;
+      color: #ffffff;
+    }
+
+    /* Graph + Inspector Grid */
+    .graph-workspace {
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1150px) {
+      .graph-workspace { grid-template-columns: 1fr; }
+    }
+    #network-canvas {
+      width: 100%;
+      height: 680px;
+      background: radial-gradient(circle at center, #0f172a 0%, #050811 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .inspector-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      height: 680px;
+      overflow-y: auto;
+    }
+    .inspector-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.15);
+      font-size: 0.82rem;
+    }
+    .meta-key { color: var(--text-muted); }
+    .meta-val { font-weight: 700; color: #f1f5f9; text-align: right; }
+    .detail-box {
+      background: rgba(30, 41, 59, 0.65);
+      border-left: 3px solid #3b82f6;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+    }
+    .detail-box.risk { border-left-color: #ef4444; }
+    .detail-box.cat { border-left-color: #10b981; }
+
+    /* RSI 5-Round Cards */
+    .section-header {
+      margin: 28px 0 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+    .section-title { font-size: 1.3rem; font-weight: 800; color: #f8fafc; }
+    .rsi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+    .rsi-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-top: 3px solid #3b82f6;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .rsi-card h3 { font-size: 0.92rem; color: #93c5fd; margin-bottom: 6px; }
+    .rsi-card p { font-size: 0.8rem; color: #cbd5e1; margin-top: 6px; }
+
+    /* Table Styles */
+    .table-wrap {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    th {
+      background: #1e293b;
+      color: #cbd5e1;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+      padding: 11px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+    }
+    td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.55);
+      vertical-align: middle;
+    }
+    tr:hover { background: rgba(59, 130, 246, 0.12); }
+    .mono { font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; }
+    .rank-cell { font-weight: 800; color: #93c5fd; font-size: 0.88rem; }
+    .ticker-pill { font-weight: 800; color: #f8fafc; font-size: 0.9rem; }
+    .sub-text { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+    .r5-cell { font-weight: 800; color: #34d399; font-size: 0.92rem; background: rgba(16, 185, 129, 0.08); }
+    .target-cell { font-weight: 700; color: #f8fafc; }
+    .upside-text { font-size: 0.72rem; color: #34d399; font-weight: 700; }
+
+    .layer-tag {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+    .layer-L1 { background: rgba(59, 130, 246, 0.22); color: #93c5fd; border: 1px solid #3b82f6; }
+    .layer-L2 { background: rgba(139, 92, 246, 0.22); color: #c4b5fd; border: 1px solid #8b5cf6; }
+    .layer-L3 { background: rgba(236, 72, 153, 0.22); color: #f9a8d4; border: 1px solid #ec4899; }
+    .layer-L4 { background: rgba(16, 185, 129, 0.22); color: #6ee7b7; border: 1px solid #10b981; }
+    .layer-L5 { background: rgba(245, 158, 11, 0.22); color: #fcd34d; border: 1px solid #f59e0b; }
+
+    .stage-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .stage-2 { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .stage-1 { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+    .stage-3 { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+    .stage-4 { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+
+    .action-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .badge-core { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid #10b981; }
+    .badge-acc { background: rgba(59, 130, 246, 0.22); color: #93c5fd; border: 1px solid #3b82f6; }
+    .badge-tac { background: rgba(245, 158, 11, 0.22); color: #fcd34d; border: 1px solid #f59e0b; }
+    .badge-hold { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid #ef4444; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div>
+        <h1>FINANCIALS, PRIVATE CREDIT/BDCs, ALTS &amp; INSURANCE MACROGRAPH</h1>
+        <p class="subtitle">
+          5-Layer Institutional Network Topology &amp; 5-Round Recursive Self-Improvement (RSI) Execution Engine across 32 Public Equities, 8 Private Challengers/Sidecars, 6 Prudential Regulators &amp; 5 Healthcare Actuarial Intersections (Live <code>yfinance</code> Verified)
+        </p>
+      </div>
+      <div class="mono" style="font-size:0.78rem; color:#93c5fd; background:rgba(15,23,42,0.8); padding:8px 14px; border-radius:8px; border:1px solid #334155;">
+        agentic-bridgewater v2.6 | 20 E1 Causal Edges | 32/32 Live Tickers
+      </div>
+    </div>
+    <div class="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-label">#1 Overall RSI Pick</div>
+        <div class="kpi-val">PGR ($228.07)</div>
+        <div class="kpi-sub">R5: 90.8 | 88.2% CR | Target $286.23 (+25.5%)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Top L1 Custody / Platform</div>
+        <div class="kpi-val">BLK (#02) &amp; BNY (#04)</div>
+        <div class="kpi-sub">R5: 90.1 &amp; 89.8 | Aladdin/GIP/HPS &amp; $52T AUC/A</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Top L5 Insurance Brokers</div>
+        <div class="kpi-val">MMC (#03) &amp; AJG (#05)</div>
+        <div class="kpi-sub">R5: 89.9 &amp; 89.7 | Zero Underwriting Balance-Sheet Risk</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Top L2 Private Credit &amp; ABF</div>
+        <div class="kpi-val">ARES (#06) &amp; APO (#07)</div>
+        <div class="kpi-sub">R5: 89.6 &amp; 89.5 | Hyperscaler AI Infra &amp; Athene Flywheel</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Top L4 Bermuda Reinsurance</div>
+        <div class="kpi-val">RNR (#08) &amp; ACGL (#10)</div>
+        <div class="kpi-sub">R5: 88.7 &amp; 88.6 | 81.5% &amp; 82.4% Combined Ratios</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Top L1 G-SIB &amp; L3 BDC</div>
+        <div class="kpi-val">JPM (#12) &amp; ARCC (#24)</div>
+        <div class="kpi-sub">15.3% CET1 Fortress &amp; 9.0% Yield (0.7% Non-Accrual)</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Interactive Filter Controls -->
+    <div class="toolbar">
+      <span class="toolbar-label">Layer &amp; Node Filters:</span>
+      <button class="btn active" onclick="filterGraph('ALL', this)">All Ecosystem (55 Nodes)</button>
+      <button class="btn" onclick="filterGraph('L1', this)">L1: Banks, IB &amp; Custodians (11)</button>
+      <button class="btn" onclick="filterGraph('L2', this)">L2: Alts &amp; Infra/Credit GPs (6)</button>
+      <button class="btn" onclick="filterGraph('L3', this)">L3: Direct Lending BDCs (3)</button>
+      <button class="btn" onclick="filterGraph('L4', this)">L4: P&amp;C &amp; Reinsurance (7)</button>
+      <button class="btn" onclick="filterGraph('L5', this)">L5: Life &amp; Brokers (5)</button>
+      <button class="btn" onclick="filterGraph('PRIVATE', this)">Private Titans &amp; Sidecars (8)</button>
+      <button class="btn" onclick="filterGraph('GOV', this)">Prudential Regulators (6)</button>
+      <button class="btn" onclick="filterGraph('HC', this)">Healthcare Policy &amp; Tort (5)</button>
+      <button class="btn" onclick="filterGraph('CORE_BUY', this)">Tier-1 CORE BUYS Only (12)</button>
+    </div>
+
+    <!-- Network Graph + Node Inspector -->
+    <div class="graph-workspace">
+      <div id="network-canvas"></div>
+      <div class="inspector-panel" id="node-inspector">
+        <div class="inspector-title" id="insp-title">Click Any Node to Inspect Forensics</div>
+        <div id="insp-body">
+          <p style="font-size:0.84rem; color:#94a3b8; margin-bottom:12px;">
+            Select any of the <strong>32 public equities</strong>, <strong>8 private challengers/sidecars</strong>, <strong>6 regulatory agencies</strong>, or <strong>5 healthcare actuarial nodes</strong> in the graph or table below to inspect live <code>yfinance</code> technicals, R1–R5 RSI scores, and causal transmission edges.
+          </p>
+          <div class="detail-box">
+            <strong>State Rule FIN_R1 (+1.5):</strong> Steepening 2s10s curve + Basel III Endgame RWA relief + WFC asset cap lift supercharges L1 G-SIBs &amp; Custodians (<code>BLK</code>, <code>BNY</code>, <code>JPM</code>, <code>MS</code>).
+          </div>
+          <div class="detail-box cat">
+            <strong>State Rule FIN_R2 (+1.6):</strong> Insurance-Credit-AI Infrastructure Supercycle links captive annuity float (<code>ATHENE</code>/<code>APO</code>, <code>GLOBAL_ATLANTIC</code>/<code>KKR</code>) with $2T+ hyperscaler data-center &amp; power project finance (<code>BX</code>, <code>ARES</code>, <code>OWL</code>, <code>BLK</code>).
+          </div>
+          <div class="detail-box risk">
+            <strong>State Rules FIN_R4 &amp; FIN_R5 (-1.4):</strong> Penalizes long-tail US casualty reserve charges (<code>EG</code> $1.5B charge) and 2021 healthcare LBO PIK creep (<code>OBDC</code> 9.2% PIK, Stage 4).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5-Round RSI Methodology Cards -->
+    <div class="section-header">
+      <div class="section-title">5-Round Recursive Self-Improvement (RSI) Loop: Critic &rarr; Sub-Skill &rarr; Re-Ranking</div>
+    </div>
+    <div class="rsi-grid">
+      <div class="rsi-card">
+        <h3>Round 1: Baseline ROTCE, Fee Share &amp; Growth</h3>
+        <p><strong>Logic:</strong> Screens headline ROTCE/ROE, NII/FRE growth, and fee revenue share.</p>
+        <p><strong>Critic Flaw:</strong> Over-rewards levered credit growth and ignores non-cash PIK interest in BDCs (<code>OBDC</code>) and bank HTM securities drag (<code>BAC</code>).</p>
+      </div>
+      <div class="rsi-card" style="border-top-color:#ec4899;">
+        <h3>Round 2: Credit Quality, PIK &amp; Non-Accrual Forensics</h3>
+        <p><strong>Sub-Skill:</strong> Audits BDC PIK % of Total Investment Income, non-accruals at cost, and bank NPL/HTM AOCI drag.</p>
+        <p><strong>Impact:</strong> Slashes <code>OBDC</code> (9.2% PIK, 1.6% non-accrual) from 52.0 to 47.9; elevates <code>ARCC</code> (0.7% non-accrual, $1.25/sh spillover) and zero-credit-loss custodians/brokers (<code>BNY</code>, <code>MMC</code>, <code>BLK</code>).</p>
+      </div>
+      <div class="rsi-card" style="border-top-color:#8b5cf6;">
+        <h3>Round 3: ABF, Hyperscaler AI Infra &amp; Perpetual Float</h3>
+        <p><strong>Sub-Skill:</strong> Scores Investment-Grade Asset-Based Finance (ABF), bank forward-flow JVs, and hyperscaler data-center/power debt origination.</p>
+        <p><strong>Impact:</strong> Elevates <code>BX</code> (99), <code>APO</code> (98), <code>KKR</code> (96), <code>OWL</code> (95), <code>ARES</code> (94), and <code>BLK</code> (92) on $2T+ AI infrastructure financing moat.</p>
+      </div>
+      <div class="rsi-card" style="border-top-color:#10b981;">
+        <h3>Round 4: Prudential Capital &amp; Combined Ratio Stress</h3>
+        <p><strong>Sub-Skill:</strong> Audits Basel III CET1 buffers, NAIC RBC / Bermuda BSCR solvency, P&amp;C combined ratios, and social inflation reserve development.</p>
+        <p><strong>Impact:</strong> Penalizes <code>EG</code> (96.4% CR after $1.5B casualty reserve charge); boosts <code>PGR</code> (88.2% CR), <code>RNR</code> (81.5% CR), <code>ACGL</code> (82.4% CR), and <code>CB</code> (86.6% CR).</p>
+      </div>
+      <div class="rsi-card" style="border-top-color:#f59e0b;">
+        <h3>Round 5: Devil's Advocate &amp; Live Weinstein/RSI Gate</h3>
+        <p><strong>Sub-Skill:</strong> Applies live <code>yfinance</code> Weinstein Stage (1–4), Daily/Weekly RSI-14, ConnorsRSI, and ATR-14 stop losses.</p>
+        <p><strong>Impact:</strong> Penalizes Stage 4 declining charts (<code>KKR</code>, <code>CG</code>, <code>OBDC</code>) and isolates 12 Tier-1 <code>CORE BUY</code> compounders led by <code>PGR</code> (#01), <code>BLK</code> (#02), <code>MMC</code> (#03), and <code>BNY</code> (#04).</p>
+      </div>
+    </div>
+
+    <!-- Hardened 32-Ticker Recommendation Matrix -->
+    <section id="hardened-financials-recommendation-matrix">
+      <div class="section-header">
+        <div class="section-title">Hardened 32-Ticker Financials, Private Credit &amp; Insurance Recommendation Matrix (Live <code>yfinance</code>)</div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn active" onclick="filterTable('ALL')">All 32 Equities</button>
+          <button class="btn" onclick="filterTable('CORE BUY')">CORE BUY (12)</button>
+          <button class="btn" onclick="filterTable('ACCUMULATE')">ACCUMULATE (13)</button>
+          <button class="btn" onclick="filterTable('HOLD')">TACTICAL / HOLD (7)</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="rsi-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Ticker &amp; Company</th>
+              <th>Layer</th>
+              <th>Live Price</th>
+              <th>ROTCE/ROE &amp; Valuation</th>
+              <th>PIK / NPL / CR</th>
+              <th>R1</th>
+              <th>R2</th>
+              <th>R3</th>
+              <th>R4</th>
+              <th>R5 Final</th>
+              <th>Daily / Wk RSI</th>
+              <th>Weinstein Stage</th>
+              <th>Buy Zone &amp; Stop</th>
+              <th>12M Target</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+        <tr data-layer="L4" data-action="CORE BUY" onclick="focusNode('PGR')" style="cursor:pointer;">
+          <td class="mono rank-cell">#01</td>
+          <td>
+            <div class="ticker-pill">PGR</div>
+            <div class="sub-text">The Progressive Corporation</div>
+          </td>
+          <td><span class="layer-tag layer-L4">L4</span><div class="sub-text">INSURANCE_PC</div></td>
+          <td class="mono">$228.07<div class="sub-text">52W: $190-$234</div></td>
+          <td class="mono">33.5%<div class="sub-text">18.4x Fwd P/E (5.4x P/BV)</div></td>
+          <td class="mono">0.2% / 0.10%<div class="sub-text">CR: 88.2%</div></td>
+          <td class="mono">86.1</td>
+          <td class="mono">88.8</td>
+          <td class="mono">88.5</td>
+          <td class="mono">89.1</td>
+          <td class="mono r5-cell">90.8</td>
+          <td class="mono">63.8 / 60.0<div class="sub-text">CRSI: 72.6</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +9.3%</div></td>
+          <td class="mono">$212.71 - $220.27<div class="sub-text">Stop: $194.63</div></td>
+          <td class="mono target-cell">$286.23<div class="upside-text">+25.5%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="CORE BUY" onclick="focusNode('BLK')" style="cursor:pointer;">
+          <td class="mono rank-cell">#02</td>
+          <td>
+            <div class="ticker-pill">BLK</div>
+            <div class="sub-text">BlackRock, Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$1,118.25<div class="sub-text">52W: $913-$1,177</div></td>
+          <td class="mono">17.5%<div class="sub-text">21.2x Fwd P/E (15.4x EV/EBITDA)</div></td>
+          <td class="mono">1.2% / 0.30%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">81.7</td>
+          <td class="mono">83.0</td>
+          <td class="mono">86.5</td>
+          <td class="mono">88.1</td>
+          <td class="mono r5-cell">90.1</td>
+          <td class="mono">55.3 / 55.4<div class="sub-text">CRSI: 21.2</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +6.1%</div></td>
+          <td class="mono">$1079.11 - $1124.54<div class="sub-text">Stop: $987.39</div></td>
+          <td class="mono target-cell">$1,394.46<div class="upside-text">+24.7%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L5" data-action="CORE BUY" onclick="focusNode('MMC')" style="cursor:pointer;">
+          <td class="mono rank-cell">#03</td>
+          <td>
+            <div class="ticker-pill">MMC</div>
+            <div class="sub-text">Marsh & McLennan Companies, Inc. (MRSH / MMC)</div>
+          </td>
+          <td><span class="layer-tag layer-L5">L5</span><div class="sub-text">INSURANCE_HEALTH</div></td>
+          <td class="mono">$197.48<div class="sub-text">52W: $156-$199</div></td>
+          <td class="mono">32.0%<div class="sub-text">23.2x Fwd P/E (17.2x EV/EBITDA)</div></td>
+          <td class="mono">0.0% / 0.05%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">89.2</td>
+          <td class="mono">91.1</td>
+          <td class="mono">88.8</td>
+          <td class="mono">91.0</td>
+          <td class="mono r5-cell">89.9</td>
+          <td class="mono">75.6 / 63.7<div class="sub-text">CRSI: 71.4</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +12.8%</div></td>
+          <td class="mono">$178.19 - $184.52<div class="sub-text">Stop: $163.04</div></td>
+          <td class="mono target-cell">$245.67<div class="upside-text">+24.4%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="CORE BUY" onclick="focusNode('BNY')" style="cursor:pointer;">
+          <td class="mono rank-cell">#04</td>
+          <td>
+            <div class="ticker-pill">BNY</div>
+            <div class="sub-text">The Bank of New York Mellon Corporation</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$145.27<div class="sub-text">52W: $105-$165</div></td>
+          <td class="mono">23.2%<div class="sub-text">1.95x P/TBV (12.4x Fwd P/E)</div></td>
+          <td class="mono">0.2% / 0.25%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">85.1</td>
+          <td class="mono">87.3</td>
+          <td class="mono">85.9</td>
+          <td class="mono">88.6</td>
+          <td class="mono r5-cell">89.8</td>
+          <td class="mono">46.3 / 49.7<div class="sub-text">CRSI: 64.5</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +5.2%</div></td>
+          <td class="mono">$140.19 - $146.72<div class="sub-text">Stop: $128.27</div></td>
+          <td class="mono target-cell">$180.57<div class="upside-text">+24.3%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L5" data-action="CORE BUY" onclick="focusNode('AJG')" style="cursor:pointer;">
+          <td class="mono rank-cell">#05</td>
+          <td>
+            <div class="ticker-pill">AJG</div>
+            <div class="sub-text">Arthur J. Gallagher & Co.</div>
+          </td>
+          <td><span class="layer-tag layer-L5">L5</span><div class="sub-text">INSURANCE_HEALTH</div></td>
+          <td class="mono">$268.04<div class="sub-text">52W: $191-$279</div></td>
+          <td class="mono">24.5%<div class="sub-text">25.4x Fwd P/E (18.6x EV/EBITDA)</div></td>
+          <td class="mono">0.0% / 0.05%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">93.4</td>
+          <td class="mono">93.6</td>
+          <td class="mono">90.8</td>
+          <td class="mono">92.1</td>
+          <td class="mono r5-cell">89.7</td>
+          <td class="mono">69.6 / 61.9<div class="sub-text">CRSI: 69.5</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: +16.1%</div></td>
+          <td class="mono">$243.13 - $251.77<div class="sub-text">Stop: $217.06</div></td>
+          <td class="mono target-cell">$332.91<div class="upside-text">+24.2%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L2" data-action="CORE BUY" onclick="focusNode('ARES')" style="cursor:pointer;">
+          <td class="mono rank-cell">#06</td>
+          <td>
+            <div class="ticker-pill">ARES</div>
+            <div class="sub-text">Ares Management Corporation</div>
+          </td>
+          <td><span class="layer-tag layer-L2">L2</span><div class="sub-text">PRIVATE_EQUITY</div></td>
+          <td class="mono">$122.08<div class="sub-text">52W: $93-$171</div></td>
+          <td class="mono">31.0%<div class="sub-text">28.5x Fwd P/E (24.8x FRE)</div></td>
+          <td class="mono">3.2% / 0.60%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">97.1</td>
+          <td class="mono">91.0</td>
+          <td class="mono">91.3</td>
+          <td class="mono">91.2</td>
+          <td class="mono r5-cell">89.6</td>
+          <td class="mono">54.2 / 47.3<div class="sub-text">CRSI: 70.1</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: -1.3%</div></td>
+          <td class="mono">$117.81 - $123.30<div class="sub-text">Stop: $107.80</div></td>
+          <td class="mono target-cell">$151.50<div class="upside-text">+24.1%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L2" data-action="CORE BUY" onclick="focusNode('APO')" style="cursor:pointer;">
+          <td class="mono rank-cell">#07</td>
+          <td>
+            <div class="ticker-pill">APO</div>
+            <div class="sub-text">Apollo Global Management, Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L2">L2</span><div class="sub-text">PRIVATE_EQUITY</div></td>
+          <td class="mono">$112.83<div class="sub-text">52W: $99-$151</div></td>
+          <td class="mono">24.5%<div class="sub-text">19.2x Fwd P/E (17.5x FRE+SRE)</div></td>
+          <td class="mono">2.2% / 0.35%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">91.9</td>
+          <td class="mono">90.5</td>
+          <td class="mono">92.6</td>
+          <td class="mono">92.7</td>
+          <td class="mono r5-cell">89.5</td>
+          <td class="mono">39.1 / 41.1<div class="sub-text">CRSI: 45.4</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: -8.6%</div></td>
+          <td class="mono">$108.88 - $113.96<div class="sub-text">Stop: $99.63</div></td>
+          <td class="mono target-cell">$139.91<div class="upside-text">+24.0%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L4" data-action="CORE BUY" onclick="focusNode('RNR')" style="cursor:pointer;">
+          <td class="mono rank-cell">#08</td>
+          <td>
+            <div class="ticker-pill">RNR</div>
+            <div class="sub-text">RenaissanceRe Holdings Ltd.</div>
+          </td>
+          <td><span class="layer-tag layer-L4">L4</span><div class="sub-text">INSURANCE_REINS</div></td>
+          <td class="mono">$352.60<div class="sub-text">52W: $231-$363</div></td>
+          <td class="mono">24.8%<div class="sub-text">8.4x Fwd P/E (1.35x P/TBV)</div></td>
+          <td class="mono">0.4% / 0.15%<div class="sub-text">CR: 80.8%</div></td>
+          <td class="mono">83.7</td>
+          <td class="mono">86.6</td>
+          <td class="mono">84.5</td>
+          <td class="mono">86.4</td>
+          <td class="mono r5-cell">88.7</td>
+          <td class="mono">64.4 / 72.2<div class="sub-text">CRSI: 31.7</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +14.5%</div></td>
+          <td class="mono">$325.91 - $337.49<div class="sub-text">Stop: $289.57</div></td>
+          <td class="mono target-cell">$434.05<div class="upside-text">+23.1%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L2" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('BX')" style="cursor:pointer;">
+          <td class="mono rank-cell">#09</td>
+          <td>
+            <div class="ticker-pill">BX</div>
+            <div class="sub-text">Blackstone Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L2">L2</span><div class="sub-text">PRIVATE_EQUITY</div></td>
+          <td class="mono">$117.97<div class="sub-text">52W: $100-$159</div></td>
+          <td class="mono">28.0%<div class="sub-text">27.8x Fwd DE (25.5x FRE)</div></td>
+          <td class="mono">2.5% / 0.40%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">92.0</td>
+          <td class="mono">90.2</td>
+          <td class="mono">92.1</td>
+          <td class="mono">92.7</td>
+          <td class="mono r5-cell">88.6</td>
+          <td class="mono">53.5 / 45.5<div class="sub-text">CRSI: 82.2</div></td>
+          <td><span class="stage-badge stage-3">Stage 3 (Topping / Pullback)</span><div class="sub-text">vs 200d: -4.5%</div></td>
+          <td class="mono">$113.84 - $119.15<div class="sub-text">Stop: $104.16</div></td>
+          <td class="mono target-cell">$147.11<div class="upside-text">+24.7%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L4" data-action="CORE BUY" onclick="focusNode('ACGL')" style="cursor:pointer;">
+          <td class="mono rank-cell">#10</td>
+          <td>
+            <div class="ticker-pill">ACGL</div>
+            <div class="sub-text">Arch Capital Group Ltd.</div>
+          </td>
+          <td><span class="layer-tag layer-L4">L4</span><div class="sub-text">INSURANCE_REINS</div></td>
+          <td class="mono">$101.69<div class="sub-text">52W: $85-$106</div></td>
+          <td class="mono">22.4%<div class="sub-text">10.8x Fwd P/E (1.72x P/TBV)</div></td>
+          <td class="mono">0.6% / 0.25%<div class="sub-text">CR: 81.5%</div></td>
+          <td class="mono">79.3</td>
+          <td class="mono">83.2</td>
+          <td class="mono">82.8</td>
+          <td class="mono">86.2</td>
+          <td class="mono r5-cell">88.6</td>
+          <td class="mono">63.0 / 58.9<div class="sub-text">CRSI: 51.9</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +5.3%</div></td>
+          <td class="mono">$97.52 - $99.96<div class="sub-text">Stop: $89.23</div></td>
+          <td class="mono target-cell">$124.98<div class="upside-text">+22.9%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L2" data-action="CORE BUY" onclick="focusNode('OWL')" style="cursor:pointer;">
+          <td class="mono rank-cell">#11</td>
+          <td>
+            <div class="ticker-pill">OWL</div>
+            <div class="sub-text">Blue Owl Capital Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L2">L2</span><div class="sub-text">PRIVATE_EQUITY</div></td>
+          <td class="mono">$9.36<div class="sub-text">52W: $8-$16</div></td>
+          <td class="mono">26.0%<div class="sub-text">22.8x Fwd P/E (20.5x FRE)</div></td>
+          <td class="mono">3.5% / 0.55%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">99.7</td>
+          <td class="mono">88.9</td>
+          <td class="mono">90.2</td>
+          <td class="mono">89.2</td>
+          <td class="mono r5-cell">88.1</td>
+          <td class="mono">47.9 / 44.1<div class="sub-text">CRSI: 45.9</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: -7.9%</div></td>
+          <td class="mono">$9.03 - $9.45<div class="sub-text">Stop: $8.26</div></td>
+          <td class="mono target-cell">$11.46<div class="upside-text">+22.4%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="CORE BUY" onclick="focusNode('JPM')" style="cursor:pointer;">
+          <td class="mono rank-cell">#12</td>
+          <td>
+            <div class="ticker-pill">JPM</div>
+            <div class="sub-text">JPMorgan Chase & Co.</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$331.58<div class="sub-text">52W: $279-$363</div></td>
+          <td class="mono">21.0%<div class="sub-text">2.45x P/TBV (13.2x Fwd P/E)</div></td>
+          <td class="mono">0.5% / 0.55%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">73.9</td>
+          <td class="mono">77.7</td>
+          <td class="mono">79.7</td>
+          <td class="mono">84.6</td>
+          <td class="mono r5-cell">86.7</td>
+          <td class="mono">42.0 / 49.5<div class="sub-text">CRSI: 16.5</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +3.7%</div></td>
+          <td class="mono">$319.97 - $334.90<div class="sub-text">Stop: $292.77</div></td>
+          <td class="mono target-cell">$400.55<div class="upside-text">+20.8%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L4" data-action="CORE BUY" onclick="focusNode('CB')" style="cursor:pointer;">
+          <td class="mono rank-cell">#13</td>
+          <td>
+            <div class="ticker-pill">CB</div>
+            <div class="sub-text">Chubb Limited</div>
+          </td>
+          <td><span class="layer-tag layer-L4">L4</span><div class="sub-text">INSURANCE_PC</div></td>
+          <td class="mono">$355.11<div class="sub-text">52W: $273-$364</div></td>
+          <td class="mono">21.2%<div class="sub-text">12.2x Fwd P/E (1.78x P/BV)</div></td>
+          <td class="mono">0.8% / 0.20%<div class="sub-text">CR: 86.6%</div></td>
+          <td class="mono">73.9</td>
+          <td class="mono">80.1</td>
+          <td class="mono">81.3</td>
+          <td class="mono">83.6</td>
+          <td class="mono r5-cell">86.5</td>
+          <td class="mono">58.9 / 60.1<div class="sub-text">CRSI: 33.8</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +7.2%</div></td>
+          <td class="mono">$336.19 - $348.13<div class="sub-text">Stop: $307.61</div></td>
+          <td class="mono target-cell">$427.91<div class="upside-text">+20.5%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L2" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('KKR')" style="cursor:pointer;">
+          <td class="mono rank-cell">#14</td>
+          <td>
+            <div class="ticker-pill">KKR</div>
+            <div class="sub-text">KKR & Co. Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L2">L2</span><div class="sub-text">PRIVATE_EQUITY</div></td>
+          <td class="mono">$91.34<div class="sub-text">52W: $84-$142</div></td>
+          <td class="mono">21.8%<div class="sub-text">24.5x Fwd P/E (23.0x FRE)</div></td>
+          <td class="mono">2.4% / 0.45%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">92.6</td>
+          <td class="mono">90.1</td>
+          <td class="mono">92.0</td>
+          <td class="mono">92.0</td>
+          <td class="mono r5-cell">84.5</td>
+          <td class="mono">47.4 / 42.1<div class="sub-text">CRSI: 53.9</div></td>
+          <td><span class="stage-badge stage-4">Stage 4 (Declining)</span><div class="sub-text">vs 200d: -8.3%</div></td>
+          <td class="mono">$88.14 - $92.25<div class="sub-text">Stop: $80.65</div></td>
+          <td class="mono target-cell">$109.70<div class="upside-text">+20.1%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="CORE BUY" onclick="focusNode('MS')" style="cursor:pointer;">
+          <td class="mono rank-cell">#15</td>
+          <td>
+            <div class="ticker-pill">MS</div>
+            <div class="sub-text">Morgan Stanley</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$179.49<div class="sub-text">52W: $153-$227</div></td>
+          <td class="mono">18.8%<div class="sub-text">2.35x P/TBV (14.8x Fwd P/E)</div></td>
+          <td class="mono">1.0% / 0.45%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">81.3</td>
+          <td class="mono">82.3</td>
+          <td class="mono">83.2</td>
+          <td class="mono">86.1</td>
+          <td class="mono r5-cell">84.3</td>
+          <td class="mono">34.1 / 35.4<div class="sub-text">CRSI: 23.4</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: -7.0%</div></td>
+          <td class="mono">$173.21 - $181.28<div class="sub-text">Stop: $158.49</div></td>
+          <td class="mono target-cell">$211.80<div class="upside-text">+18.0%</div></td>
+          <td><span class="action-badge badge-core">CORE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L4" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('ALL')" style="cursor:pointer;">
+          <td class="mono rank-cell">#16</td>
+          <td>
+            <div class="ticker-pill">ALL</div>
+            <div class="sub-text">The Allstate Corporation</div>
+          </td>
+          <td><span class="layer-tag layer-L4">L4</span><div class="sub-text">INSURANCE_PC</div></td>
+          <td class="mono">$253.19<div class="sub-text">52W: $186-$274</div></td>
+          <td class="mono">23.5%<div class="sub-text">10.9x Fwd P/E (2.55x P/BV)</div></td>
+          <td class="mono">0.5% / 0.25%<div class="sub-text">CR: 91.8%</div></td>
+          <td class="mono">79.1</td>
+          <td class="mono">83.0</td>
+          <td class="mono">80.8</td>
+          <td class="mono">79.5</td>
+          <td class="mono r5-cell">83.4</td>
+          <td class="mono">62.8 / 58.6<div class="sub-text">CRSI: 45.7</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +12.2%</div></td>
+          <td class="mono">$241.90 - $250.49<div class="sub-text">Stop: $212.10</div></td>
+          <td class="mono target-cell">$301.04<div class="upside-text">+18.9%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L5" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('AFL')" style="cursor:pointer;">
+          <td class="mono rank-cell">#17</td>
+          <td>
+            <div class="ticker-pill">AFL</div>
+            <div class="sub-text">Aflac Incorporated</div>
+          </td>
+          <td><span class="layer-tag layer-L5">L5</span><div class="sub-text">INSURANCE_LIFE</div></td>
+          <td class="mono">$120.51<div class="sub-text">52W: $104-$129</div></td>
+          <td class="mono">16.8%<div class="sub-text">14.6x Fwd P/E (2.25x P/BV ex-AOCI)</div></td>
+          <td class="mono">1.2% / 0.45%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">65.4</td>
+          <td class="mono">72.7</td>
+          <td class="mono">73.8</td>
+          <td class="mono">79.3</td>
+          <td class="mono r5-cell">83.2</td>
+          <td class="mono">60.0 / 56.7<div class="sub-text">CRSI: 39.0</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +5.0%</div></td>
+          <td class="mono">$115.91 - $118.81<div class="sub-text">Stop: $106.06</div></td>
+          <td class="mono target-cell">$143.05<div class="upside-text">+18.7%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L5" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('MET')" style="cursor:pointer;">
+          <td class="mono rank-cell">#18</td>
+          <td>
+            <div class="ticker-pill">MET</div>
+            <div class="sub-text">MetLife, Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L5">L5</span><div class="sub-text">INSURANCE_LIFE</div></td>
+          <td class="mono">$98.82<div class="sub-text">52W: $67-$104</div></td>
+          <td class="mono">16.2%<div class="sub-text">8.9x Fwd P/E (1.52x P/BV ex-AOCI)</div></td>
+          <td class="mono">1.6% / 0.55%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">66.7</td>
+          <td class="mono">72.1</td>
+          <td class="mono">74.9</td>
+          <td class="mono">79.1</td>
+          <td class="mono r5-cell">83.0</td>
+          <td class="mono">50.4 / 63.8<div class="sub-text">CRSI: 19.6</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +16.9%</div></td>
+          <td class="mono">$95.36 - $99.21<div class="sub-text">Stop: $79.44</div></td>
+          <td class="mono target-cell">$117.10<div class="upside-text">+18.5%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('GS')" style="cursor:pointer;">
+          <td class="mono rank-cell">#19</td>
+          <td>
+            <div class="ticker-pill">GS</div>
+            <div class="sub-text">The Goldman Sachs Group, Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$875.68<div class="sub-text">52W: $736-$1,146</div></td>
+          <td class="mono">15.8%<div class="sub-text">1.85x P/TBV (13.4x Fwd P/E)</div></td>
+          <td class="mono">1.8% / 0.70%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">78.5</td>
+          <td class="mono">77.7</td>
+          <td class="mono">80.4</td>
+          <td class="mono">83.6</td>
+          <td class="mono r5-cell">82.4</td>
+          <td class="mono">37.5 / 35.0<div class="sub-text">CRSI: 21.5</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: -8.0%</div></td>
+          <td class="mono">$845.03 - $884.44<div class="sub-text">Stop: $773.20</div></td>
+          <td class="mono target-cell">$1,031.55<div class="upside-text">+17.8%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('SCHW')" style="cursor:pointer;">
+          <td class="mono rank-cell">#20</td>
+          <td>
+            <div class="ticker-pill">SCHW</div>
+            <div class="sub-text">The Charles Schwab Corporation</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$90.58<div class="sub-text">52W: $85-$114</div></td>
+          <td class="mono">26.5%<div class="sub-text">18.2x Fwd P/E (3.4x P/BV)</div></td>
+          <td class="mono">0.1% / 0.15%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">86.0</td>
+          <td class="mono">87.6</td>
+          <td class="mono">83.6</td>
+          <td class="mono">83.1</td>
+          <td class="mono r5-cell">82.0</td>
+          <td class="mono">30.5 / 37.0<div class="sub-text">CRSI: 22.7</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: -7.1%</div></td>
+          <td class="mono">$87.41 - $91.49<div class="sub-text">Stop: $79.98</div></td>
+          <td class="mono target-cell">$106.34<div class="upside-text">+17.4%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L5" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('PRU')" style="cursor:pointer;">
+          <td class="mono rank-cell">#21</td>
+          <td>
+            <div class="ticker-pill">PRU</div>
+            <div class="sub-text">Prudential Financial, Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L5">L5</span><div class="sub-text">INSURANCE_LIFE</div></td>
+          <td class="mono">$114.99<div class="sub-text">52W: $90-$124</div></td>
+          <td class="mono">13.8%<div class="sub-text">8.6x Fwd P/E (1.42x P/BV ex-AOCI)</div></td>
+          <td class="mono">1.8% / 0.60%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">61.7</td>
+          <td class="mono">68.5</td>
+          <td class="mono">71.5</td>
+          <td class="mono">75.8</td>
+          <td class="mono r5-cell">80.5</td>
+          <td class="mono">48.3 / 53.6<div class="sub-text">CRSI: 35.8</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +7.6%</div></td>
+          <td class="mono">$110.97 - $116.14<div class="sub-text">Stop: $100.47</div></td>
+          <td class="mono target-cell">$133.16<div class="upside-text">+15.8%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L4" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('TRV')" style="cursor:pointer;">
+          <td class="mono rank-cell">#22</td>
+          <td>
+            <div class="ticker-pill">TRV</div>
+            <div class="sub-text">The Travelers Companies, Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L4">L4</span><div class="sub-text">INSURANCE_PC</div></td>
+          <td class="mono">$398.28<div class="sub-text">52W: $264-$405</div></td>
+          <td class="mono">18.6%<div class="sub-text">12.1x Fwd P/E (2.05x P/BV)</div></td>
+          <td class="mono">0.5% / 0.20%<div class="sub-text">CR: 91.2%</div></td>
+          <td class="mono">68.7</td>
+          <td class="mono">76.9</td>
+          <td class="mono">77.3</td>
+          <td class="mono">77.4</td>
+          <td class="mono r5-cell">80.4</td>
+          <td class="mono">68.0 / 70.4<div class="sub-text">CRSI: 43.3</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +22.5%</div></td>
+          <td class="mono">$365.44 - $378.42<div class="sub-text">Stop: $305.60</div></td>
+          <td class="mono target-cell">$460.41<div class="upside-text">+15.6%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('WFC')" style="cursor:pointer;">
+          <td class="mono rank-cell">#23</td>
+          <td>
+            <div class="ticker-pill">WFC</div>
+            <div class="sub-text">Wells Fargo & Company</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$82.39<div class="sub-text">52W: $73-$95</div></td>
+          <td class="mono">14.8%<div class="sub-text">1.68x P/TBV (12.1x Fwd P/E)</div></td>
+          <td class="mono">0.6% / 0.85%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">65.5</td>
+          <td class="mono">70.6</td>
+          <td class="mono">72.3</td>
+          <td class="mono">77.0</td>
+          <td class="mono r5-cell">78.5</td>
+          <td class="mono">47.7 / 47.3<div class="sub-text">CRSI: 38.1</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: -1.0%</div></td>
+          <td class="mono">$79.51 - $83.21<div class="sub-text">Stop: $72.75</div></td>
+          <td class="mono target-cell">$93.60<div class="upside-text">+13.6%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L3" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('ARCC')" style="cursor:pointer;">
+          <td class="mono rank-cell">#24</td>
+          <td>
+            <div class="ticker-pill">ARCC</div>
+            <div class="sub-text">Ares Capital Corporation</div>
+          </td>
+          <td><span class="layer-tag layer-L3">L3</span><div class="sub-text">PRIVATE_CREDIT</div></td>
+          <td class="mono">$18.64<div class="sub-text">52W: $17-$20</div></td>
+          <td class="mono">11.8%<div class="sub-text">1.11x P/NAV (9.0% Div Yield)</div></td>
+          <td class="mono">6.4% / 0.70%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">53.4</td>
+          <td class="mono">60.1</td>
+          <td class="mono">67.1</td>
+          <td class="mono">74.0</td>
+          <td class="mono r5-cell">78.4</td>
+          <td class="mono">45.9 / 49.4<div class="sub-text">CRSI: 51.1</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +1.8%</div></td>
+          <td class="mono">$17.99 - $18.83<div class="sub-text">Stop: $16.46</div></td>
+          <td class="mono target-cell">$21.14<div class="upside-text">+13.4%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="ACCUMULATE ON PULLBACK" onclick="focusNode('USB')" style="cursor:pointer;">
+          <td class="mono rank-cell">#25</td>
+          <td>
+            <div class="ticker-pill">USB</div>
+            <div class="sub-text">U.S. Bancorp</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$59.58<div class="sub-text">52W: $44-$65</div></td>
+          <td class="mono">17.4%<div class="sub-text">1.85x P/TBV (11.2x Fwd P/E)</div></td>
+          <td class="mono">0.6% / 0.85%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">65.8</td>
+          <td class="mono">70.6</td>
+          <td class="mono">69.8</td>
+          <td class="mono">72.9</td>
+          <td class="mono r5-cell">78.2</td>
+          <td class="mono">55.5 / 53.1<div class="sub-text">CRSI: 57.8</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +4.5%</div></td>
+          <td class="mono">$57.49 - $60.18<div class="sub-text">Stop: $52.60</div></td>
+          <td class="mono target-cell">$67.44<div class="upside-text">+13.2%</div></td>
+          <td><span class="action-badge badge-acc">ACCUMULATE ON PULLBACK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L3" data-action="TACTICAL HOLD / SELECTIVE BUY" onclick="focusNode('MAIN')" style="cursor:pointer;">
+          <td class="mono rank-cell">#26</td>
+          <td>
+            <div class="ticker-pill">MAIN</div>
+            <div class="sub-text">Main Street Capital Corporation</div>
+          </td>
+          <td><span class="layer-tag layer-L3">L3</span><div class="sub-text">PRIVATE_CREDIT</div></td>
+          <td class="mono">$53.51<div class="sub-text">52W: $48-$61</div></td>
+          <td class="mono">16.5%<div class="sub-text">1.72x P/NAV (7.6% Total Yield)</div></td>
+          <td class="mono">3.1% / 1.40%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">63.8</td>
+          <td class="mono">64.0</td>
+          <td class="mono">68.5</td>
+          <td class="mono">74.3</td>
+          <td class="mono r5-cell">76.4</td>
+          <td class="mono">42.7 / 47.4<div class="sub-text">CRSI: 39.8</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: -0.8%</div></td>
+          <td class="mono">$51.64 - $54.05<div class="sub-text">Stop: $47.25</div></td>
+          <td class="mono target-cell">$60.73<div class="upside-text">+13.5%</div></td>
+          <td><span class="action-badge badge-tac">TACTICAL HOLD / SELECTIVE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="TACTICAL HOLD / SELECTIVE BUY" onclick="focusNode('BAC')" style="cursor:pointer;">
+          <td class="mono rank-cell">#27</td>
+          <td>
+            <div class="ticker-pill">BAC</div>
+            <div class="sub-text">Bank of America Corporation</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$50.56<div class="sub-text">52W: $46-$64</div></td>
+          <td class="mono">13.5%<div class="sub-text">1.62x P/TBV (12.0x Fwd P/E)</div></td>
+          <td class="mono">0.5% / 0.65%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">62.2</td>
+          <td class="mono">69.9</td>
+          <td class="mono">71.2</td>
+          <td class="mono">75.3</td>
+          <td class="mono r5-cell">75.9</td>
+          <td class="mono">26.4 / 36.0<div class="sub-text">CRSI: 26.7</div></td>
+          <td><span class="stage-badge stage-1">Stage 1 (Basing)</span><div class="sub-text">vs 200d: -7.5%</div></td>
+          <td class="mono">$48.79 - $51.07<div class="sub-text">Stop: $44.64</div></td>
+          <td class="mono target-cell">$57.13<div class="upside-text">+13.0%</div></td>
+          <td><span class="action-badge badge-tac">TACTICAL HOLD / SELECTIVE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="TACTICAL HOLD / SELECTIVE BUY" onclick="focusNode('PNC')" style="cursor:pointer;">
+          <td class="mono rank-cell">#28</td>
+          <td>
+            <div class="ticker-pill">PNC</div>
+            <div class="sub-text">The PNC Financial Services Group, Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$224.46<div class="sub-text">52W: $173-$255</div></td>
+          <td class="mono">15.2%<div class="sub-text">1.92x P/TBV (12.6x Fwd P/E)</div></td>
+          <td class="mono">0.6% / 0.80%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">64.8</td>
+          <td class="mono">70.6</td>
+          <td class="mono">71.0</td>
+          <td class="mono">74.9</td>
+          <td class="mono r5-cell">74.7</td>
+          <td class="mono">52.8 / 47.0<div class="sub-text">CRSI: 67.7</div></td>
+          <td><span class="stage-badge stage-3">Stage 3 (Topping / Pullback)</span><div class="sub-text">vs 200d: -0.2%</div></td>
+          <td class="mono">$216.60 - $226.70<div class="sub-text">Stop: $198.19</div></td>
+          <td class="mono target-cell">$251.17<div class="upside-text">+11.9%</div></td>
+          <td><span class="action-badge badge-tac">TACTICAL HOLD / SELECTIVE BUY</span></td>
+        </tr>
+        
+
+        <tr data-layer="L2" data-action="HOLD / UNDERWEIGHT RESERVE & PIK RISK" onclick="focusNode('CG')" style="cursor:pointer;">
+          <td class="mono rank-cell">#29</td>
+          <td>
+            <div class="ticker-pill">CG</div>
+            <div class="sub-text">The Carlyle Group Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L2">L2</span><div class="sub-text">PRIVATE_EQUITY</div></td>
+          <td class="mono">$38.59<div class="sub-text">52W: $36-$65</div></td>
+          <td class="mono">18.5%<div class="sub-text">12.8x Fwd DE (11.5x FRE)</div></td>
+          <td class="mono">3.8% / 0.90%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">76.5</td>
+          <td class="mono">72.6</td>
+          <td class="mono">73.0</td>
+          <td class="mono">74.5</td>
+          <td class="mono r5-cell">70.9</td>
+          <td class="mono">46.6 / 36.8<div class="sub-text">CRSI: 62.6</div></td>
+          <td><span class="stage-badge stage-4">Stage 4 (Declining)</span><div class="sub-text">vs 200d: -18.5%</div></td>
+          <td class="mono">$37.24 - $38.98<div class="sub-text">Stop: $34.07</div></td>
+          <td class="mono target-cell">$42.06<div class="upside-text">+9.0%</div></td>
+          <td><span class="action-badge badge-hold">HOLD / UNDERWEIGHT RESERVE & PIK RISK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L4" data-action="HOLD / UNDERWEIGHT RESERVE & PIK RISK" onclick="focusNode('EG')" style="cursor:pointer;">
+          <td class="mono rank-cell">#30</td>
+          <td>
+            <div class="ticker-pill">EG</div>
+            <div class="sub-text">Everest Group, Ltd.</div>
+          </td>
+          <td><span class="layer-tag layer-L4">L4</span><div class="sub-text">INSURANCE_REINS</div></td>
+          <td class="mono">$398.60<div class="sub-text">52W: $300-$408</div></td>
+          <td class="mono">13.8%<div class="sub-text">6.4x Fwd P/E (0.98x P/BV)</div></td>
+          <td class="mono">0.6% / 0.30%<div class="sub-text">CR: 96.4%</div></td>
+          <td class="mono">58.6</td>
+          <td class="mono">70.0</td>
+          <td class="mono">70.0</td>
+          <td class="mono">64.4</td>
+          <td class="mono r5-cell">70.3</td>
+          <td class="mono">66.1 / 68.7<div class="sub-text">CRSI: 45.8</div></td>
+          <td><span class="stage-badge stage-2">Stage 2 (Advancing)</span><div class="sub-text">vs 200d: +14.3%</div></td>
+          <td class="mono">$369.18 - $382.29<div class="sub-text">Stop: $327.74</div></td>
+          <td class="mono target-cell">$433.28<div class="upside-text">+8.7%</div></td>
+          <td><span class="action-badge badge-hold">HOLD / UNDERWEIGHT RESERVE & PIK RISK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L1" data-action="HOLD / UNDERWEIGHT RESERVE & PIK RISK" onclick="focusNode('C')" style="cursor:pointer;">
+          <td class="mono rank-cell">#31</td>
+          <td>
+            <div class="ticker-pill">C</div>
+            <div class="sub-text">Citigroup Inc.</div>
+          </td>
+          <td><span class="layer-tag layer-L1">L1</span><div class="sub-text">BANKS</div></td>
+          <td class="mono">$120.62<div class="sub-text">52W: $95-$145</div></td>
+          <td class="mono">8.2%<div class="sub-text">0.82x P/TBV (9.8x Fwd P/E)</div></td>
+          <td class="mono">0.7% / 0.90%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">53.6</td>
+          <td class="mono">62.5</td>
+          <td class="mono">65.5</td>
+          <td class="mono">69.5</td>
+          <td class="mono r5-cell">69.2</td>
+          <td class="mono">34.9 / 42.1<div class="sub-text">CRSI: 15.1</div></td>
+          <td><span class="stage-badge stage-3">Stage 3 (Topping / Pullback)</span><div class="sub-text">vs 200d: -4.1%</div></td>
+          <td class="mono">$116.40 - $121.83<div class="sub-text">Stop: $106.51</div></td>
+          <td class="mono target-cell">$130.27<div class="upside-text">+8.0%</div></td>
+          <td><span class="action-badge badge-hold">HOLD / UNDERWEIGHT RESERVE & PIK RISK</span></td>
+        </tr>
+        
+
+        <tr data-layer="L3" data-action="HOLD / UNDERWEIGHT RESERVE & PIK RISK" onclick="focusNode('OBDC')" style="cursor:pointer;">
+          <td class="mono rank-cell">#32</td>
+          <td>
+            <div class="ticker-pill">OBDC</div>
+            <div class="sub-text">Blue Owl Capital Corporation</div>
+          </td>
+          <td><span class="layer-tag layer-L3">L3</span><div class="sub-text">PRIVATE_CREDIT</div></td>
+          <td class="mono">$10.05<div class="sub-text">52W: $10-$12</div></td>
+          <td class="mono">11.9%<div class="sub-text">0.99x P/NAV (10.4% Total Yield)</div></td>
+          <td class="mono">9.2% / 1.60%<div class="sub-text">CR: N/A</div></td>
+          <td class="mono">52.0</td>
+          <td class="mono">47.9</td>
+          <td class="mono">56.9</td>
+          <td class="mono">64.7</td>
+          <td class="mono r5-cell">63.2</td>
+          <td class="mono">42.2 / 39.7<div class="sub-text">CRSI: 50.2</div></td>
+          <td><span class="stage-badge stage-4">Stage 4 (Declining)</span><div class="sub-text">vs 200d: -5.3%</div></td>
+          <td class="mono">$9.70 - $10.15<div class="sub-text">Stop: $8.88</div></td>
+          <td class="mono target-cell">$10.60<div class="upside-text">+5.5%</div></td>
+          <td><span class="action-badge badge-hold">HOLD / UNDERWEIGHT RESERVE & PIK RISK</span></td>
+        </tr>
+        
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const rawNodes = [{"id": "PGR", "label": "PGR\n(#01 | R5:90.8)", "title": "The Progressive Corporation (PGR) \u2014 Rank #01\nLayer: L4: P&C, Specialty & Catastrophe Reinsurance Underwriters\nPrice: $228.07 | Target: $286.23 (+25.5%)\nR1->R5: 86.1 -> 90.8 (CORE BUY)\nROTCE/ROE: 33.5% | Val: 18.4x Fwd P/E (5.4x P/BV)\nDaily RSI-14: 63.8 | Weekly RSI-14: 60.0 | Stage 2 (Advancing)\nBuy Zone: $212.71 - $220.27 | Stop: $194.63", "group": "L4", "category": "PUBLIC_EQUITY", "layerName": "L4: P&C, Specialty & Catastrophe Reinsurance Underwriters", "rank": 1, "r5": 90.8, "price": 228.07, "target": 286.23, "upside": 25.5, "action": "CORE BUY", "stage": "Stage 2 (Advancing)", "rsi14": 63.8, "wRsi14": 60.0, "buyZone": "$212.71 - $220.27", "stopLoss": 194.63, "valMetric": "18.4x Fwd P/E (5.4x P/BV)", "rotce": 33.5, "moat": "Unmatched 25-year Snapshot telematics dataset, real-time monthly actuarial rate segmentation, industry-leading 88.2% combined ratio (vs 96% target), and #1 US commercial auto market share.", "risk": "Personal auto competitors (GEICO, Allstate, State Farm) ramping advertising spend as industry profitability recovers.", "catalyst": "Surging Policies-in-Force (PIF) growth (+15%+ YoY), $65B+ short-duration fixed-income float compounding at ~4.8%, and variable annual shareholder dividend.", "shape": "dot", "size": 44.8, "color": {"background": "#10b981", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#10b981"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "BLK", "label": "BLK\n(#02 | R5:90.1)", "title": "BlackRock, Inc. (BLK) \u2014 Rank #02\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $1118.25 | Target: $1394.46 (+24.7%)\nR1->R5: 81.7 -> 90.1 (CORE BUY)\nROTCE/ROE: 17.5% | Val: 21.2x Fwd P/E (15.4x EV/EBITDA)\nDaily RSI-14: 55.3 | Weekly RSI-14: 55.4 | Stage 2 (Advancing)\nBuy Zone: $1079.11 - $1124.54 | Stop: $987.39", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 2, "r5": 90.1, "price": 1118.25, "target": 1394.46, "upside": 24.7, "action": "CORE BUY", "stage": "Stage 2 (Advancing)", "rsi14": 55.3, "wRsi14": 55.4, "buyZone": "$1079.11 - $1124.54", "stopLoss": 987.39, "valMetric": "21.2x Fwd P/E (15.4x EV/EBITDA)", "rotce": 17.5, "moat": "$11.6T+ AUM scale, Aladdin + Preqin enterprise risk/private-markets tech OS, and transformative GIP ($100B+ infra) + HPS ($148B private credit) acquisitions.", "risk": "Integration execution across GIP, HPS, and Preqin (~$28B combined M&A) and passive ETF fee compression.", "catalyst": " $30B+ Microsoft/MGX AI Infrastructure Partnership (GAIIP) deployment and HPS insurance/private-credit cross-selling.", "shape": "dot", "size": 44.2, "color": {"background": "#3b82f6", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "MMC", "label": "MMC\n(#03 | R5:89.9)", "title": "Marsh & McLennan Companies, Inc. (MRSH / MMC) (MMC) \u2014 Rank #03\nLayer: L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers\nPrice: $197.48 | Target: $245.67 (+24.4%)\nR1->R5: 89.2 -> 89.9 (CORE BUY)\nROTCE/ROE: 32.0% | Val: 23.2x Fwd P/E (17.2x EV/EBITDA)\nDaily RSI-14: 75.6 | Weekly RSI-14: 63.7 | Stage 2 (Advancing)\nBuy Zone: $178.19 - $184.52 | Stop: $163.04", "group": "L5", "category": "PUBLIC_EQUITY", "layerName": "L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers", "rank": 3, "r5": 89.9, "price": 197.48, "target": 245.67, "upside": 24.4, "action": "CORE BUY", "stage": "Stage 2 (Advancing)", "rsi14": 75.6, "wRsi14": 63.7, "buyZone": "$178.19 - $184.52", "stopLoss": 163.04, "valMetric": "23.2x Fwd P/E (17.2x EV/EBITDA)", "rotce": 32.0, "moat": "World's #1 risk & insurance services firm (Marsh, Guy Carpenter) and health/wealth advisor (Mercer, Oliver Wyman) with 17 consecutive years of adjusted operating margin expansion.", "risk": "Oliver Wyman management consulting cyclicality during corporate discretionary budget pauses.", "catalyst": "$7.75B McGriff Insurance Services acquisition scaling Marsh McLennan Agency (MMA) past $5B+ US middle-market revenue, plus Mercer GLP-1/stop-loss health benefits consulting.", "shape": "dot", "size": 43.5, "color": {"background": "#f59e0b", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#f59e0b"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "BNY", "label": "BNY\n(#04 | R5:89.8)", "title": "The Bank of New York Mellon Corporation (BNY) \u2014 Rank #04\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $145.27 | Target: $180.57 (+24.3%)\nR1->R5: 85.1 -> 89.8 (CORE BUY)\nROTCE/ROE: 23.2% | Val: 1.95x P/TBV (12.4x Fwd P/E)\nDaily RSI-14: 46.3 | Weekly RSI-14: 49.7 | Stage 2 (Advancing)\nBuy Zone: $140.19 - $146.72 | Stop: $128.27", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 4, "r5": 89.8, "price": 145.27, "target": 180.57, "upside": 24.3, "action": "CORE BUY", "stage": "Stage 2 (Advancing)", "rsi14": 46.3, "wRsi14": 49.7, "buyZone": "$140.19 - $146.72", "stopLoss": 128.27, "valMetric": "1.95x P/TBV (12.4x Fwd P/E)", "rotce": 23.2, "moat": "$52T+ Assets Under Custody/Administration (AUC/A), Pershing clearing dominance, US Treasury clearing monopoly, and Eliza enterprise AI platform.", "risk": "Lower beta to pure credit risk-on rallies compared to investment banks.", "catalyst": " SEC mandatory US Treasury clearing rule (2025-2026), platform operating model de-siloing (+350 bps pre-tax margin expansion), and 100%+ total payout ratio.", "shape": "dot", "size": 42.9, "color": {"background": "#3b82f6", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "AJG", "label": "AJG\n(#05 | R5:89.7)", "title": "Arthur J. Gallagher & Co. (AJG) \u2014 Rank #05\nLayer: L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers\nPrice: $268.04 | Target: $332.91 (+24.2%)\nR1->R5: 93.4 -> 89.7 (CORE BUY)\nROTCE/ROE: 24.5% | Val: 25.4x Fwd P/E (18.6x EV/EBITDA)\nDaily RSI-14: 69.6 | Weekly RSI-14: 61.9 | Stage 1 (Basing)\nBuy Zone: $243.13 - $251.77 | Stop: $217.06", "group": "L5", "category": "PUBLIC_EQUITY", "layerName": "L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers", "rank": 5, "r5": 89.7, "price": 268.04, "target": 332.91, "upside": 24.2, "action": "CORE BUY", "stage": "Stage 1 (Basing)", "rsi14": 69.6, "wRsi14": 61.9, "buyZone": "$243.13 - $251.77", "stopLoss": 217.06, "valMetric": "25.4x Fwd P/E (18.6x EV/EBITDA)", "rotce": 24.5, "moat": "Capital-light commercial P&C, Gallagher Re, and Gallagher Bassett TPA + employee health benefits brokerage with 7-9% organic growth and a decades-long M&A roll-up engine (~34% EBITDAC margin).", "risk": "DOJ antitrust review timeline on the $13.45B AssuredPartners acquisition and moderating P&C property rate increases.", "catalyst": "Transformative $13.45B acquisition of AssuredPartners (+11% net EPS accretion, adding $2.9B middle-market US revenue) and employer medical stop-loss advisory demand.", "shape": "dot", "size": 42.2, "color": {"background": "#f59e0b", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#f59e0b"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "ARES", "label": "ARES\n(#06 | R5:89.6)", "title": "Ares Management Corporation (ARES) \u2014 Rank #06\nLayer: L2: Alternative Asset Managers & Private Infrastructure/Credit Giants\nPrice: $122.08 | Target: $151.50 (+24.1%)\nR1->R5: 97.1 -> 89.6 (CORE BUY)\nROTCE/ROE: 31.0% | Val: 28.5x Fwd P/E (24.8x FRE)\nDaily RSI-14: 54.2 | Weekly RSI-14: 47.3 | Stage 1 (Basing)\nBuy Zone: $117.81 - $123.30 | Stop: $107.80", "group": "L2", "category": "PUBLIC_EQUITY", "layerName": "L2: Alternative Asset Managers & Private Infrastructure/Credit Giants", "rank": 6, "r5": 89.6, "price": 122.08, "target": 151.5, "upside": 24.1, "action": "CORE BUY", "stage": "Stage 1 (Basing)", "rsi14": 54.2, "wRsi14": 47.3, "buyZone": "$117.81 - $123.30", "stopLoss": 107.8, "valMetric": "28.5x Fwd P/E (24.8x FRE)", "rotce": 31.0, "moat": "$460B+ AUM with >85% Fee-Related Earnings (FRE) contribution, #1 global direct-lending origination footprint in US and Europe, and $80B+ dry powder generating deployment-driven fees.", "risk": "High FRE multiple (~25x) and sensitivity to middle-market credit spread compression.", "catalyst": "GCP International acquisition ($5.2B) doubling real-estate/digital-infra AUM to ~$96B and scaling hyperscale data-center development in Japan, Europe, and US.", "shape": "dot", "size": 41.5, "color": {"background": "#8b5cf6", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#8b5cf6"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "APO", "label": "APO\n(#07 | R5:89.5)", "title": "Apollo Global Management, Inc. (APO) \u2014 Rank #07\nLayer: L2: Alternative Asset Managers & Private Infrastructure/Credit Giants\nPrice: $112.83 | Target: $139.91 (+24.0%)\nR1->R5: 91.9 -> 89.5 (CORE BUY)\nROTCE/ROE: 24.5% | Val: 19.2x Fwd P/E (17.5x FRE+SRE)\nDaily RSI-14: 39.1 | Weekly RSI-14: 41.1 | Stage 1 (Basing)\nBuy Zone: $108.88 - $113.96 | Stop: $99.63", "group": "L2", "category": "PUBLIC_EQUITY", "layerName": "L2: Alternative Asset Managers & Private Infrastructure/Credit Giants", "rank": 7, "r5": 89.5, "price": 112.83, "target": 139.91, "upside": 24.0, "action": "CORE BUY", "stage": "Stage 1 (Basing)", "rsi14": 39.1, "wRsi14": 41.1, "buyZone": "$108.88 - $113.96", "stopLoss": 99.63, "valMetric": "19.2x Fwd P/E (17.5x FRE+SRE)", "rotce": 24.5, "moat": "Full integration of Athene (#1 US fixed annuity issuer, $350B+ assets) with 16 proprietary investment-grade Asset-Backed Finance (ABF) origination platforms ($220B+ annual origination).", "risk": "NAIC scrutiny of affiliated private letter ratings and SRE sensitivity to violent short-end rate cuts (mitigated by interest-rate hedges).", "catalyst": "S&P 500 inclusion momentum, $275B+ annual origination scaling toward $1.5T AUM target by 2029, and Intel/hyperscaler high-grade AI fab/data-center JV financings.", "shape": "dot", "size": 40.9, "color": {"background": "#8b5cf6", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#8b5cf6"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "RNR", "label": "RNR\n(#08 | R5:88.7)", "title": "RenaissanceRe Holdings Ltd. (RNR) \u2014 Rank #08\nLayer: L4: P&C, Specialty & Catastrophe Reinsurance Underwriters\nPrice: $352.60 | Target: $434.05 (+23.1%)\nR1->R5: 83.7 -> 88.7 (CORE BUY)\nROTCE/ROE: 24.8% | Val: 8.4x Fwd P/E (1.35x P/TBV)\nDaily RSI-14: 64.4 | Weekly RSI-14: 72.2 | Stage 2 (Advancing)\nBuy Zone: $325.91 - $337.49 | Stop: $289.57", "group": "L4", "category": "PUBLIC_EQUITY", "layerName": "L4: P&C, Specialty & Catastrophe Reinsurance Underwriters", "rank": 8, "r5": 88.7, "price": 352.6, "target": 434.05, "upside": 23.1, "action": "CORE BUY", "stage": "Stage 2 (Advancing)", "rsi14": 64.4, "wRsi14": 72.2, "buyZone": "$325.91 - $337.49", "stopLoss": 289.57, "valMetric": "8.4x Fwd P/E (1.35x P/TBV)", "rotce": 24.8, "moat": "'Three Drivers of Profit' engine: Underwriting (Validus Re scale + high attachment points), Fee Income ($13B+ Capital Partners DaVinci/Medici ILS funds), and Net Investment Income on $32B+ float.", "risk": "Tail exposure to a Category 5 Miami/Tampa or Tokyo megacatastrophe exceeding treaty attachment points.", "catalyst": "Validus Re synergy realization, $300M+ annual third-party ILS management & performance fees, and aggressive share buybacks at 8.4x P/E.", "shape": "dot", "size": 40.2, "color": {"background": "#10b981", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#10b981"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "BX", "label": "BX\n(#09 | R5:88.6)", "title": "Blackstone Inc. (BX) \u2014 Rank #09\nLayer: L2: Alternative Asset Managers & Private Infrastructure/Credit Giants\nPrice: $117.97 | Target: $147.11 (+24.7%)\nR1->R5: 92.0 -> 88.6 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 28.0% | Val: 27.8x Fwd DE (25.5x FRE)\nDaily RSI-14: 53.5 | Weekly RSI-14: 45.5 | Stage 3 (Topping / Pullback)\nBuy Zone: $113.84 - $119.15 | Stop: $104.16", "group": "L2", "category": "PUBLIC_EQUITY", "layerName": "L2: Alternative Asset Managers & Private Infrastructure/Credit Giants", "rank": 9, "r5": 88.6, "price": 117.97, "target": 147.11, "upside": 24.7, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 3 (Topping / Pullback)", "rsi14": 53.5, "wRsi14": 45.5, "buyZone": "$113.84 - $119.15", "stopLoss": 104.16, "valMetric": "27.8x Fwd DE (25.5x FRE)", "rotce": 28.0, "moat": "$1.13T+ AUM industry standard-bearer, #1 private wealth franchise ($250B+ across BREIT, BCRED, BXPE), and #1 global AI data-center owner via QTS ($70B+ leased pipeline) and AirTrunk.", "risk": "Premium 27.8x DE multiple and legacy commercial office/real-estate realization timing.", "catalyst": "BCRED & BXPE private wealth inflows, $450B+ Credit & Insurance segment surge, and commercial real-estate cap-rate inflection.", "shape": "dot", "size": 39.6, "color": {"background": "#8b5cf6", "border": "#c4b5fd", "highlight": {"background": "#ffffff", "border": "#8b5cf6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "ACGL", "label": "ACGL\n(#10 | R5:88.6)", "title": "Arch Capital Group Ltd. (ACGL) \u2014 Rank #10\nLayer: L4: P&C, Specialty & Catastrophe Reinsurance Underwriters\nPrice: $101.69 | Target: $124.98 (+22.9%)\nR1->R5: 79.3 -> 88.6 (CORE BUY)\nROTCE/ROE: 22.4% | Val: 10.8x Fwd P/E (1.72x P/TBV)\nDaily RSI-14: 63.0 | Weekly RSI-14: 58.9 | Stage 2 (Advancing)\nBuy Zone: $97.52 - $99.96 | Stop: $89.23", "group": "L4", "category": "PUBLIC_EQUITY", "layerName": "L4: P&C, Specialty & Catastrophe Reinsurance Underwriters", "rank": 10, "r5": 88.6, "price": 101.69, "target": 124.98, "upside": 22.9, "action": "CORE BUY", "stage": "Stage 2 (Advancing)", "rsi14": 63.0, "wRsi14": 58.9, "buyZone": "$97.52 - $99.96", "stopLoss": 89.23, "valMetric": "10.8x Fwd P/E (1.72x P/TBV)", "rotce": 22.4, "moat": "Elite counter-cyclical capital allocation across three uncorrelated engines: E&S Specialty Insurance, Property-Cat Reinsurance, and high-margin US Mortgage Insurance (81.5% consolidated combined ratio).", "risk": "Property-catastrophe rate softening at 1/1 renewals after two years of 30%+ ROEs.", "catalyst": "Allianz US MidCorp & Entertainment acquisition ($1.7B GWP expansion), special dividend capital return, and ~17% annual book-value-per-share compounding.", "shape": "dot", "size": 39.0, "color": {"background": "#10b981", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#10b981"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "OWL", "label": "OWL\n(#11 | R5:88.1)", "title": "Blue Owl Capital Inc. (OWL) \u2014 Rank #11\nLayer: L2: Alternative Asset Managers & Private Infrastructure/Credit Giants\nPrice: $9.36 | Target: $11.46 (+22.4%)\nR1->R5: 99.7 -> 88.1 (CORE BUY)\nROTCE/ROE: 26.0% | Val: 22.8x Fwd P/E (20.5x FRE)\nDaily RSI-14: 47.9 | Weekly RSI-14: 44.1 | Stage 1 (Basing)\nBuy Zone: $9.03 - $9.45 | Stop: $8.26", "group": "L2", "category": "PUBLIC_EQUITY", "layerName": "L2: Alternative Asset Managers & Private Infrastructure/Credit Giants", "rank": 11, "r5": 88.1, "price": 9.36, "target": 11.46, "upside": 22.4, "action": "CORE BUY", "stage": "Stage 1 (Basing)", "rsi14": 47.9, "wRsi14": 44.1, "buyZone": "$9.03 - $9.45", "stopLoss": 8.26, "valMetric": "22.8x Fwd P/E (20.5x FRE)", "rotce": 26.0, "moat": "100% Fee-Related Earnings (FRE) business model with >77% permanent capital across Direct Lending, GP Strategic Capital (Dyal), and triple-net-lease / AI Digital Infrastructure (IPI Partners).", "risk": "Elevated acquisition-related share count growth and tech-lending concentration if software multiples compress.", "catalyst": "IPI Partners ($10.5B digital data-center infra), Atalaya Capital (ABF), and Kuvare insurance asset management integration driving 20%+ dividend & FRE growth.", "shape": "dot", "size": 38.3, "color": {"background": "#8b5cf6", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#8b5cf6"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "JPM", "label": "JPM\n(#12 | R5:86.7)", "title": "JPMorgan Chase & Co. (JPM) \u2014 Rank #12\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $331.58 | Target: $400.55 (+20.8%)\nR1->R5: 73.9 -> 86.7 (CORE BUY)\nROTCE/ROE: 21.0% | Val: 2.45x P/TBV (13.2x Fwd P/E)\nDaily RSI-14: 42.0 | Weekly RSI-14: 49.5 | Stage 2 (Advancing)\nBuy Zone: $319.97 - $334.90 | Stop: $292.77", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 12, "r5": 86.7, "price": 331.58, "target": 400.55, "upside": 20.8, "action": "CORE BUY", "stage": "Stage 2 (Advancing)", "rsi14": 42.0, "wRsi14": 49.5, "buyZone": "$319.97 - $334.90", "stopLoss": 292.77, "valMetric": "2.45x P/TBV (13.2x Fwd P/E)", "rotce": 21.0, "moat": "Fortress 15.3% CET1 capital, #1 global IB fee share, $2.4T core deposit base, and $17B+ AI/tech budget generating $2B+ annual value.", "risk": "Premium 2.45x P/TBV multiple limits multiple expansion if Fed cuts aggressively compress asset-sensitive NII.", "catalyst": "Basel III Endgame GSIB RWA relief unlocking $30B+ annual buyback capacity and sponsor M&A/IPO advisory recovery.", "shape": "dot", "size": 37.6, "color": {"background": "#3b82f6", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "CB", "label": "CB\n(#13 | R5:86.5)", "title": "Chubb Limited (CB) \u2014 Rank #13\nLayer: L4: P&C, Specialty & Catastrophe Reinsurance Underwriters\nPrice: $355.11 | Target: $427.91 (+20.5%)\nR1->R5: 73.9 -> 86.5 (CORE BUY)\nROTCE/ROE: 21.2% | Val: 12.2x Fwd P/E (1.78x P/BV)\nDaily RSI-14: 58.9 | Weekly RSI-14: 60.1 | Stage 2 (Advancing)\nBuy Zone: $336.19 - $348.13 | Stop: $307.61", "group": "L4", "category": "PUBLIC_EQUITY", "layerName": "L4: P&C, Specialty & Catastrophe Reinsurance Underwriters", "rank": 13, "r5": 86.5, "price": 355.11, "target": 427.91, "upside": 20.5, "action": "CORE BUY", "stage": "Stage 2 (Advancing)", "rsi14": 58.9, "wRsi14": 60.1, "buyZone": "$336.19 - $348.13", "stopLoss": 307.61, "valMetric": "12.2x Fwd P/E (1.78x P/BV)", "rotce": 21.2, "moat": "World's premier global commercial P&C, E&S specialty, and Masterpiece ultra-high-net-worth insurer operating in 54 countries with an 86.6% P&C combined ratio and Warren Buffett / Berkshire Hathaway endorsement.", "risk": "Large-cap US casualty social inflation and California wildfire / Atlantic hurricane catastrophe severity.", "catalyst": "Record $6.4B+ annual pre-tax Net Investment Income (reinvesting $150B+ portfolio at ~5.3% vs ~4.3% book yield) and high-margin Asia/Cigna life & A&H integration.", "shape": "dot", "size": 37.0, "color": {"background": "#10b981", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#10b981"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "KKR", "label": "KKR\n(#14 | R5:84.5)", "title": "KKR & Co. Inc. (KKR) \u2014 Rank #14\nLayer: L2: Alternative Asset Managers & Private Infrastructure/Credit Giants\nPrice: $91.34 | Target: $109.70 (+20.1%)\nR1->R5: 92.6 -> 84.5 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 21.8% | Val: 24.5x Fwd P/E (23.0x FRE)\nDaily RSI-14: 47.4 | Weekly RSI-14: 42.1 | Stage 4 (Declining)\nBuy Zone: $88.14 - $92.25 | Stop: $80.65", "group": "L2", "category": "PUBLIC_EQUITY", "layerName": "L2: Alternative Asset Managers & Private Infrastructure/Credit Giants", "rank": 14, "r5": 84.5, "price": 91.34, "target": 109.7, "upside": 20.1, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 4 (Declining)", "rsi14": 47.4, "wRsi14": 42.1, "buyZone": "$88.14 - $92.25", "stopLoss": 80.65, "valMetric": "24.5x Fwd P/E (23.0x FRE)", "rotce": 21.8, "moat": "Three-engine compounding flywheel: Asset Management ($620B+ AUM, K-Series wealth), 100%-owned Global Atlantic annuity/reinsurance ($185B+ AUM), and Strategic Holdings long-duration core PE dividends.", "risk": "Higher valuation multiple vs traditional banks requires sustained 20%+ FRE growth execution.", "catalyst": " $50B+ KKR-Energy Capital Partners (ECP) AI data-center & power generation partnership, Global Atlantic Ivy co-investment block deals, and Asian buyout realizations.", "shape": "dot", "size": 36.4, "color": {"background": "#8b5cf6", "border": "#c4b5fd", "highlight": {"background": "#ffffff", "border": "#8b5cf6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "MS", "label": "MS\n(#15 | R5:84.3)", "title": "Morgan Stanley (MS) \u2014 Rank #15\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $179.49 | Target: $211.80 (+18.0%)\nR1->R5: 81.3 -> 84.3 (CORE BUY)\nROTCE/ROE: 18.8% | Val: 2.35x P/TBV (14.8x Fwd P/E)\nDaily RSI-14: 34.1 | Weekly RSI-14: 35.4 | Stage 1 (Basing)\nBuy Zone: $173.21 - $181.28 | Stop: $158.49", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 15, "r5": 84.3, "price": 179.49, "target": 211.8, "upside": 18.0, "action": "CORE BUY", "stage": "Stage 1 (Basing)", "rsi14": 34.1, "wRsi14": 35.4, "buyZone": "$173.21 - $181.28", "stopLoss": 158.49, "valMetric": "2.35x P/TBV (14.8x Fwd P/E)", "rotce": 18.8, "moat": "$6.2T+ Wealth & Investment Management client assets (approaching 30% pre-tax margin) paired with top-2 global equity underwriting & M&A.", "risk": "Wealth Management sweep deposit NII sensitivity and regulatory scrutiny of advisory cash sweep yields.", "catalyst": " Workplace-to-wealth funnel conversion, AI @ Morgan Stanley advisor copilot productivity, and tech IPO underwriting rebound.", "shape": "dot", "size": 35.7, "color": {"background": "#3b82f6", "border": "#34d399", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 3.5, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "ALL", "label": "ALL\n(#16 | R5:83.4)", "title": "The Allstate Corporation (ALL) \u2014 Rank #16\nLayer: L4: P&C, Specialty & Catastrophe Reinsurance Underwriters\nPrice: $253.19 | Target: $301.04 (+18.9%)\nR1->R5: 79.1 -> 83.4 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 23.5% | Val: 10.9x Fwd P/E (2.55x P/BV)\nDaily RSI-14: 62.8 | Weekly RSI-14: 58.6 | Stage 2 (Advancing)\nBuy Zone: $241.90 - $250.49 | Stop: $212.10", "group": "L4", "category": "PUBLIC_EQUITY", "layerName": "L4: P&C, Specialty & Catastrophe Reinsurance Underwriters", "rank": 16, "r5": 83.4, "price": 253.19, "target": 301.04, "upside": 18.9, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 2 (Advancing)", "rsi14": 62.8, "wRsi14": 58.6, "buyZone": "$241.90 - $250.49", "stopLoss": 212.1, "valMetric": "10.9x Fwd P/E (2.55x P/BV)", "rotce": 23.5, "moat": "Top-3 US personal auto & homeowners brand completing a cumulative +35% rate-increase cycle across CA, NY, and NJ alongside Transformative Growth expense cuts.", "risk": "Homeowners severe weather volatility and policy-in-force (PIF) churn in states where big rate hikes took effect.", "catalyst": "$3.25B divestiture of Employer Voluntary & Health Benefits segments freeing up regulatory capital to restart share buybacks and re-accelerate auto PIF growth.", "shape": "dot", "size": 35.0, "color": {"background": "#10b981", "border": "#6ee7b7", "highlight": {"background": "#ffffff", "border": "#10b981"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "AFL", "label": "AFL\n(#17 | R5:83.2)", "title": "Aflac Incorporated (AFL) \u2014 Rank #17\nLayer: L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers\nPrice: $120.51 | Target: $143.05 (+18.7%)\nR1->R5: 65.4 -> 83.2 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 16.8% | Val: 14.6x Fwd P/E (2.25x P/BV ex-AOCI)\nDaily RSI-14: 60.0 | Weekly RSI-14: 56.7 | Stage 2 (Advancing)\nBuy Zone: $115.91 - $118.81 | Stop: $106.06", "group": "L5", "category": "PUBLIC_EQUITY", "layerName": "L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers", "rank": 17, "r5": 83.2, "price": 120.51, "target": 143.05, "upside": 18.7, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 2 (Advancing)", "rsi14": 60.0, "wRsi14": 56.7, "buyZone": "$115.91 - $118.81", "stopLoss": 106.06, "valMetric": "14.6x Fwd P/E (2.25x P/BV ex-AOCI)", "rotce": 16.8, "moat": "Dominant #1 supplemental cancer & medical insurer in Japan (>70% third-sector share) and US worksite voluntary benefits leader with fortress >600% US RBC and >900% Japan SMR solvency.", "risk": "USD/JPY currency translation volatility and transitional Middle-Market Commercial Real Estate (CRE) loan workouts (~$7B portfolio, well-reserved).", "catalyst": "42 consecutive years of dividend increases, $2.8B+ annual share repurchases, Bermuda reinsurance capital release, and new 'Mirai Plus' cancer insurance launch in Japan.", "shape": "dot", "size": 34.4, "color": {"background": "#f59e0b", "border": "#fcd34d", "highlight": {"background": "#ffffff", "border": "#f59e0b"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "MET", "label": "MET\n(#18 | R5:83.0)", "title": "MetLife, Inc. (MET) \u2014 Rank #18\nLayer: L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers\nPrice: $98.82 | Target: $117.10 (+18.5%)\nR1->R5: 66.7 -> 83.0 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 16.2% | Val: 8.9x Fwd P/E (1.52x P/BV ex-AOCI)\nDaily RSI-14: 50.4 | Weekly RSI-14: 63.8 | Stage 2 (Advancing)\nBuy Zone: $95.36 - $99.21 | Stop: $79.44", "group": "L5", "category": "PUBLIC_EQUITY", "layerName": "L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers", "rank": 18, "r5": 83.0, "price": 98.82, "target": 117.1, "upside": 18.5, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 2 (Advancing)", "rsi14": 50.4, "wRsi14": 63.8, "buyZone": "$95.36 - $99.21", "stopLoss": 79.44, "valMetric": "8.9x Fwd P/E (1.52x P/BV ex-AOCI)", "rotce": 16.2, "moat": "#1 US Group Benefits franchise (serving >90 of Fortune 100), #1 Pension Risk Transfer (PRT) institution, and $600B+ MetLife Investment Management (MIM) private credit/infra asset manager.", "risk": "Variable investment income (VII) private equity mark-to-market lag and DOL ERISA PRT litigation noise.", "catalyst": "'New Frontier' 2025-2029 strategy targeting 15-17% adjusted ROE, $25B+ cumulative free cash flow, and PineBridge Investments acquisition scaling MIM institutional third-party AUM.", "shape": "dot", "size": 33.8, "color": {"background": "#f59e0b", "border": "#fcd34d", "highlight": {"background": "#ffffff", "border": "#f59e0b"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "GS", "label": "GS\n(#19 | R5:82.4)", "title": "The Goldman Sachs Group, Inc. (GS) \u2014 Rank #19\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $875.68 | Target: $1031.55 (+17.8%)\nR1->R5: 78.5 -> 82.4 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 15.8% | Val: 1.85x P/TBV (13.4x Fwd P/E)\nDaily RSI-14: 37.5 | Weekly RSI-14: 35.0 | Stage 1 (Basing)\nBuy Zone: $845.03 - $884.44 | Stop: $773.20", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 19, "r5": 82.4, "price": 875.68, "target": 1031.55, "upside": 17.8, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 1 (Basing)", "rsi14": 37.5, "wRsi14": 35.0, "buyZone": "$845.03 - $884.44", "stopLoss": 773.2, "valMetric": "1.85x P/TBV (13.4x Fwd P/E)", "rotce": 15.8, "moat": "#1 global M&A advisory franchise, #1 FICC/equities institutional financing desk, and $3.1T+ Asset & Wealth Management (AWM) platform.", "risk": "Capital markets & sponsor IPO realization delays if geopolitical or tariff volatility freezes CEO boardrooms.", "catalyst": "Consumer banking (Apple Card / GM) exit completion, $3.2T PE backlog M&A monetization, and AWM private credit management fee scaling.", "shape": "dot", "size": 33.1, "color": {"background": "#3b82f6", "border": "#93c5fd", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "SCHW", "label": "SCHW\n(#20 | R5:82.0)", "title": "The Charles Schwab Corporation (SCHW) \u2014 Rank #20\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $90.58 | Target: $106.34 (+17.4%)\nR1->R5: 86.0 -> 82.0 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 26.5% | Val: 18.2x Fwd P/E (3.4x P/BV)\nDaily RSI-14: 30.5 | Weekly RSI-14: 37.0 | Stage 1 (Basing)\nBuy Zone: $87.41 - $91.49 | Stop: $79.98", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 20, "r5": 82.0, "price": 90.58, "target": 106.34, "upside": 17.4, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 1 (Basing)", "rsi14": 30.5, "wRsi14": 37.0, "buyZone": "$87.41 - $91.49", "stopLoss": 79.98, "valMetric": "18.2x Fwd P/E (3.4x P/BV)", "rotce": 26.5, "moat": "$10.1T+ client assets, >50% market share in independent RIA custody, and industry-low 11 bps operating expense per dollar of client assets.", "risk": "Residual AOCI duration marks and high-cost FHLB/CD supplemental funding paydown timeline.", "catalyst": "Client transactional cash sweep stabilization allowing paydown of 5%+ wholesale borrowing and expanding NIM from ~2.1% toward ~2.8-3.0%.", "shape": "dot", "size": 32.5, "color": {"background": "#3b82f6", "border": "#93c5fd", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "PRU", "label": "PRU\n(#21 | R5:80.5)", "title": "Prudential Financial, Inc. (PRU) \u2014 Rank #21\nLayer: L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers\nPrice: $114.99 | Target: $133.16 (+15.8%)\nR1->R5: 61.7 -> 80.5 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 13.8% | Val: 8.6x Fwd P/E (1.42x P/BV ex-AOCI)\nDaily RSI-14: 48.3 | Weekly RSI-14: 53.6 | Stage 2 (Advancing)\nBuy Zone: $110.97 - $116.14 | Stop: $100.47", "group": "L5", "category": "PUBLIC_EQUITY", "layerName": "L5: Life/Annuity Insurers & Global Insurance/Health Benefits Brokers", "rank": 21, "r5": 80.5, "price": 114.99, "target": 133.16, "upside": 15.8, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 2 (Advancing)", "rsi14": 48.3, "wRsi14": 53.6, "buyZone": "$110.97 - $116.14", "stopLoss": 100.47, "valMetric": "8.6x Fwd P/E (1.42x P/BV ex-AOCI)", "rotce": 13.8, "moat": "$1.38T PGIM global asset management franchise (top-10 private credit & real estate manager), dominant Prudential of Japan life distribution, and ~4.5% dividend yield.", "risk": "Legacy universal life (SGUL) actuarial assumption reviews and slower ROE expansion vs MET and APO.", "catalyst": "Prismic Life Re (Bermuda reinsurance JV backed by Warburg Pincus) coinsurance transactions releasing billions in trapped statutory capital.", "shape": "dot", "size": 31.8, "color": {"background": "#f59e0b", "border": "#fcd34d", "highlight": {"background": "#ffffff", "border": "#f59e0b"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "TRV", "label": "TRV\n(#22 | R5:80.4)", "title": "The Travelers Companies, Inc. (TRV) \u2014 Rank #22\nLayer: L4: P&C, Specialty & Catastrophe Reinsurance Underwriters\nPrice: $398.28 | Target: $460.41 (+15.6%)\nR1->R5: 68.7 -> 80.4 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 18.6% | Val: 12.1x Fwd P/E (2.05x P/BV)\nDaily RSI-14: 68.0 | Weekly RSI-14: 70.4 | Stage 2 (Advancing)\nBuy Zone: $365.44 - $378.42 | Stop: $305.60", "group": "L4", "category": "PUBLIC_EQUITY", "layerName": "L4: P&C, Specialty & Catastrophe Reinsurance Underwriters", "rank": 22, "r5": 80.4, "price": 398.28, "target": 460.41, "upside": 15.6, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 2 (Advancing)", "rsi14": 68.0, "wRsi14": 70.4, "buyZone": "$365.44 - $378.42", "stopLoss": 305.6, "valMetric": "12.1x Fwd P/E (2.05x P/BV)", "rotce": 18.6, "moat": "#1 US commercial middle-market, workers' compensation, and surety bond franchise with 90%+ account retention.", "risk": "US Midwest/South severe convective storm (SCS / hail) frequency and commercial general liability tort inflation.", "catalyst": "Personal Insurance homeowners/auto margin restoration (rate increases outpacing loss trend) and $3.7B+ after-tax NII run-rate.", "shape": "dot", "size": 31.1, "color": {"background": "#10b981", "border": "#6ee7b7", "highlight": {"background": "#ffffff", "border": "#10b981"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "WFC", "label": "WFC\n(#23 | R5:78.5)", "title": "Wells Fargo & Company (WFC) \u2014 Rank #23\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $82.39 | Target: $93.60 (+13.6%)\nR1->R5: 65.5 -> 78.5 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 14.8% | Val: 1.68x P/TBV (12.1x Fwd P/E)\nDaily RSI-14: 47.7 | Weekly RSI-14: 47.3 | Stage 1 (Basing)\nBuy Zone: $79.51 - $83.21 | Stop: $72.75", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 23, "r5": 78.5, "price": 82.39, "target": 93.6, "upside": 13.6, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 1 (Basing)", "rsi14": 47.7, "wRsi14": 47.3, "buyZone": "$79.51 - $83.21", "stopLoss": 72.75, "valMetric": "1.68x P/TBV (12.1x Fwd P/E)", "rotce": 14.8, "moat": "#3 US retail & commercial deposit franchise ($1.35T+) undergoing structural expense rationalization and corporate/IB market-share recapture.", "risk": "Residual commercial real estate (CRE) office loan workouts and timing of final consent-order terminations.", "catalyst": "Termination of the 2018 Federal Reserve $1.95T asset cap unlocking balance-sheet growth, corporate deposits, and ROTCE expansion toward 16-17%.", "shape": "dot", "size": 30.5, "color": {"background": "#3b82f6", "border": "#93c5fd", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "ARCC", "label": "ARCC\n(#24 | R5:78.4)", "title": "Ares Capital Corporation (ARCC) \u2014 Rank #24\nLayer: L3: Direct Lending & Business Development Companies (BDCs)\nPrice: $18.64 | Target: $21.14 (+13.4%)\nR1->R5: 53.4 -> 78.4 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 11.8% | Val: 1.11x P/NAV (9.0% Div Yield)\nDaily RSI-14: 45.9 | Weekly RSI-14: 49.4 | Stage 2 (Advancing)\nBuy Zone: $17.99 - $18.83 | Stop: $16.46", "group": "L3", "category": "PUBLIC_EQUITY", "layerName": "L3: Direct Lending & Business Development Companies (BDCs)", "rank": 24, "r5": 78.4, "price": 18.64, "target": 21.14, "upside": 13.4, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 2 (Advancing)", "rsi14": 45.9, "wRsi14": 49.4, "buyZone": "$17.99 - $18.83", "stopLoss": 16.46, "valMetric": "1.11x P/NAV (9.0% Div Yield)", "rotce": 11.8, "moat": "Largest public BDC ($26B+ portfolio across 535+ companies), 20-year track record of cumulative net realized gains over losses, $1.25+/sh spillover income cushion, and investment-grade unsecured debt funding.", "risk": "Floating-rate NII headwind if Fed cuts SOFR below 3.5%, and PIK income (~6.4% of TII, mostly structured at origination) requiring ongoing monitoring.", "catalyst": "120%+ core EPS dividend coverage ($2.33 core EPS vs $1.92 dividend), Ivy Hill Asset Management (IHAM) dividend stream, and incumbent sponsor refinancing moat.", "shape": "dot", "size": 29.9, "color": {"background": "#ec4899", "border": "#f9a8d4", "highlight": {"background": "#ffffff", "border": "#ec4899"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "USB", "label": "USB\n(#25 | R5:78.2)", "title": "U.S. Bancorp (USB) \u2014 Rank #25\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $59.58 | Target: $67.44 (+13.2%)\nR1->R5: 65.8 -> 78.2 (ACCUMULATE ON PULLBACK)\nROTCE/ROE: 17.4% | Val: 1.85x P/TBV (11.2x Fwd P/E)\nDaily RSI-14: 55.5 | Weekly RSI-14: 53.1 | Stage 2 (Advancing)\nBuy Zone: $57.49 - $60.18 | Stop: $52.60", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 25, "r5": 78.2, "price": 59.58, "target": 67.44, "upside": 13.2, "action": "ACCUMULATE ON PULLBACK", "stage": "Stage 2 (Advancing)", "rsi14": 55.5, "wRsi14": 53.1, "buyZone": "$57.49 - $60.18", "stopLoss": 52.6, "valMetric": "1.85x P/TBV (11.2x Fwd P/E)", "rotce": 17.4, "moat": "Integrated Elavon merchant payments, corporate trust services, and Union Bank California deposit density.", "risk": "Sluggish positive operating leverage delivery and competitive pressure on legacy merchant acquiring.", "catalyst": "Post-Union Bank cost synergy completion, CET1 build above 10.5% unlocking share buybacks, and 4.1% dividend yield.", "shape": "dot", "size": 29.2, "color": {"background": "#3b82f6", "border": "#93c5fd", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "MAIN", "label": "MAIN\n(#26 | R5:76.4)", "title": "Main Street Capital Corporation (MAIN) \u2014 Rank #26\nLayer: L3: Direct Lending & Business Development Companies (BDCs)\nPrice: $53.51 | Target: $60.73 (+13.5%)\nR1->R5: 63.8 -> 76.4 (TACTICAL HOLD / SELECTIVE BUY)\nROTCE/ROE: 16.5% | Val: 1.72x P/NAV (7.6% Total Yield)\nDaily RSI-14: 42.7 | Weekly RSI-14: 47.4 | Stage 1 (Basing)\nBuy Zone: $51.64 - $54.05 | Stop: $47.25", "group": "L3", "category": "PUBLIC_EQUITY", "layerName": "L3: Direct Lending & Business Development Companies (BDCs)", "rank": 26, "r5": 76.4, "price": 53.51, "target": 60.73, "upside": 13.5, "action": "TACTICAL HOLD / SELECTIVE BUY", "stage": "Stage 1 (Basing)", "rsi14": 42.7, "wRsi14": 47.4, "buyZone": "$51.64 - $54.05", "stopLoss": 47.25, "valMetric": "1.72x P/NAV (7.6% Total Yield)", "rotce": 16.5, "moat": "Internally managed cost structure (~1.3% operating expense vs 2.8%+ externally managed peers) plus unique equity co-investment stakes in Lower Middle Market (LMM) companies driving consistent NAV per share growth.", "risk": "Rich 1.72x P/NAV valuation premium and cyclical vulnerability of smaller LMM borrowers ($10M-$150M revenue).", "catalyst": "Monthly dividend increases plus quarterly supplemental dividends funded by LMM equity realizations and external asset manager fee income.", "shape": "dot", "size": 28.6, "color": {"background": "#ec4899", "border": "#f9a8d4", "highlight": {"background": "#ffffff", "border": "#ec4899"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "BAC", "label": "BAC\n(#27 | R5:75.9)", "title": "Bank of America Corporation (BAC) \u2014 Rank #27\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $50.56 | Target: $57.13 (+13.0%)\nR1->R5: 62.2 -> 75.9 (TACTICAL HOLD / SELECTIVE BUY)\nROTCE/ROE: 13.5% | Val: 1.62x P/TBV (12.0x Fwd P/E)\nDaily RSI-14: 26.4 | Weekly RSI-14: 36.0 | Stage 1 (Basing)\nBuy Zone: $48.79 - $51.07 | Stop: $44.64", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 27, "r5": 75.9, "price": 50.56, "target": 57.13, "upside": 13.0, "action": "TACTICAL HOLD / SELECTIVE BUY", "stage": "Stage 1 (Basing)", "rsi14": 26.4, "wRsi14": 36.0, "buyZone": "$48.79 - $51.07", "stopLoss": 44.64, "valMetric": "1.62x P/TBV (12.0x Fwd P/E)", "rotce": 13.5, "moat": "$1.9T+ sticky consumer/commercial deposits, Merrill Edge/Wealth scale, and Erica AI digital banking engagement.", "risk": "Large legacy low-yielding Held-to-Maturity (HTM) mortgage-backed securities book (~$560B) dragging ROTCE vs JPM.", "catalyst": "Quarterly runoff and repricing of 2.0-2.5% legacy securities into 4.8-5.2% yields driving multi-year NII inflection.", "shape": "dot", "size": 27.9, "color": {"background": "#3b82f6", "border": "#93c5fd", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "PNC", "label": "PNC\n(#28 | R5:74.7)", "title": "The PNC Financial Services Group, Inc. (PNC) \u2014 Rank #28\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $224.46 | Target: $251.17 (+11.9%)\nR1->R5: 64.8 -> 74.7 (TACTICAL HOLD / SELECTIVE BUY)\nROTCE/ROE: 15.2% | Val: 1.92x P/TBV (12.6x Fwd P/E)\nDaily RSI-14: 52.8 | Weekly RSI-14: 47.0 | Stage 3 (Topping / Pullback)\nBuy Zone: $216.60 - $226.70 | Stop: $198.19", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 28, "r5": 74.7, "price": 224.46, "target": 251.17, "upside": 11.9, "action": "TACTICAL HOLD / SELECTIVE BUY", "stage": "Stage 3 (Topping / Pullback)", "rsi14": 52.8, "wRsi14": 47.0, "buyZone": "$216.60 - $226.70", "stopLoss": 198.19, "valMetric": "1.92x P/TBV (12.6x Fwd P/E)", "rotce": 15.2, "moat": "Coast-to-coast corporate & institutional banking middle-market franchise, Harris Williams M&A boutique, and disciplined CRE underwriting.", "risk": "Long-Term Debt (TLAC) issuance requirements for Category III regional banks.", "catalyst": "Record NII trajectory from fixed-rate asset repricing and commercial middle-market loan growth recovery.", "shape": "dot", "size": 27.2, "color": {"background": "#3b82f6", "border": "#93c5fd", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "CG", "label": "CG\n(#29 | R5:70.9)", "title": "The Carlyle Group Inc. (CG) \u2014 Rank #29\nLayer: L2: Alternative Asset Managers & Private Infrastructure/Credit Giants\nPrice: $38.59 | Target: $42.06 (+9.0%)\nR1->R5: 76.5 -> 70.9 (HOLD / UNDERWEIGHT RESERVE & PIK RISK)\nROTCE/ROE: 18.5% | Val: 12.8x Fwd DE (11.5x FRE)\nDaily RSI-14: 46.6 | Weekly RSI-14: 36.8 | Stage 4 (Declining)\nBuy Zone: $37.24 - $38.98 | Stop: $34.07", "group": "L2", "category": "PUBLIC_EQUITY", "layerName": "L2: Alternative Asset Managers & Private Infrastructure/Credit Giants", "rank": 29, "r5": 70.9, "price": 38.59, "target": 42.06, "upside": 9.0, "action": "HOLD / UNDERWEIGHT RESERVE & PIK RISK", "stage": "Stage 4 (Declining)", "rsi14": 46.6, "wRsi14": 36.8, "buyZone": "$37.24 - $38.98", "stopLoss": 34.07, "valMetric": "12.8x Fwd DE (11.5x FRE)", "rotce": 18.5, "moat": "$440B+ AUM anchored by AlpInvest ($85B+ private equity secondaries/co-investments powerhouse), Fortitude Re insurance partnership, and defense/aerospace buyout heritage.", "risk": "Lagging flagship US buyout fundraising vs BX/KKR and lower perpetual wealth penetration.", "catalyst": "CEO Harvey Schwartz compensation realignment (boosting FRE margin from 37% to 46%+), AlpInvest secondary boom, and discounted 12.8x DE valuation.", "shape": "dot", "size": 26.6, "color": {"background": "#8b5cf6", "border": "#c4b5fd", "highlight": {"background": "#ffffff", "border": "#8b5cf6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "EG", "label": "EG\n(#30 | R5:70.3)", "title": "Everest Group, Ltd. (EG) \u2014 Rank #30\nLayer: L4: P&C, Specialty & Catastrophe Reinsurance Underwriters\nPrice: $398.60 | Target: $433.28 (+8.7%)\nR1->R5: 58.6 -> 70.3 (HOLD / UNDERWEIGHT RESERVE & PIK RISK)\nROTCE/ROE: 13.8% | Val: 6.4x Fwd P/E (0.98x P/BV)\nDaily RSI-14: 66.1 | Weekly RSI-14: 68.7 | Stage 2 (Advancing)\nBuy Zone: $369.18 - $382.29 | Stop: $327.74", "group": "L4", "category": "PUBLIC_EQUITY", "layerName": "L4: P&C, Specialty & Catastrophe Reinsurance Underwriters", "rank": 30, "r5": 70.3, "price": 398.6, "target": 433.28, "upside": 8.7, "action": "HOLD / UNDERWEIGHT RESERVE & PIK RISK", "stage": "Stage 2 (Advancing)", "rsi14": 66.1, "wRsi14": 68.7, "buyZone": "$369.18 - $382.29", "stopLoss": 327.74, "valMetric": "6.4x Fwd P/E (0.98x P/BV)", "rotce": 13.8, "moat": "Top-4 global property-catastrophe reinsurer trading below book value (0.98x P/BV, 6.4x Fwd P/E) with $2B+ annual net investment income.", "risk": "$1.5B+ Q4 2024 US casualty insurance prior-year reserve strengthening (2016-2023 soft-market general liability/umbrella accident years) creates credibility overhang.", "catalyst": "Aggressive casualty book remediation (non-renewing underpriced US primary casualty) allowing clean property-cat reinsurance earnings to re-rate toward 1.25x+ P/BV.", "shape": "dot", "size": 25.9, "color": {"background": "#10b981", "border": "#6ee7b7", "highlight": {"background": "#ffffff", "border": "#10b981"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "C", "label": "C\n(#31 | R5:69.2)", "title": "Citigroup Inc. (C) \u2014 Rank #31\nLayer: L1: Money-Center Banks, Global IB, Custodians & Super-Regionals\nPrice: $120.62 | Target: $130.27 (+8.0%)\nR1->R5: 53.6 -> 69.2 (HOLD / UNDERWEIGHT RESERVE & PIK RISK)\nROTCE/ROE: 8.2% | Val: 0.82x P/TBV (9.8x Fwd P/E)\nDaily RSI-14: 34.9 | Weekly RSI-14: 42.1 | Stage 3 (Topping / Pullback)\nBuy Zone: $116.40 - $121.83 | Stop: $106.51", "group": "L1", "category": "PUBLIC_EQUITY", "layerName": "L1: Money-Center Banks, Global IB, Custodians & Super-Regionals", "rank": 31, "r5": 69.2, "price": 120.62, "target": 130.27, "upside": 8.0, "action": "HOLD / UNDERWEIGHT RESERVE & PIK RISK", "stage": "Stage 3 (Topping / Pullback)", "rsi14": 34.9, "wRsi14": 42.1, "buyZone": "$116.40 - $121.83", "stopLoss": 106.51, "valMetric": "0.82x P/TBV (9.8x Fwd P/E)", "rotce": 8.2, "moat": "Crown-jewel Treasury & Trade Solutions (TTS) cross-border cash management network across 95+ countries trading below tangible book value (0.82x P/TBV).", "risk": "Sub-cost-of-capital 8.2% ROTCE, OCC/Fed data-governance consent order remediation costs, and branded card NCO normalization.", "catalyst": "Banamex IPO spin-off, headcount/layer simplification toward 10-11% medium-term ROTCE target, and discounted share repurchases below TBV.", "shape": "dot", "size": 25.3, "color": {"background": "#3b82f6", "border": "#93c5fd", "highlight": {"background": "#ffffff", "border": "#3b82f6"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "OBDC", "label": "OBDC\n(#32 | R5:63.2)", "title": "Blue Owl Capital Corporation (OBDC) \u2014 Rank #32\nLayer: L3: Direct Lending & Business Development Companies (BDCs)\nPrice: $10.05 | Target: $10.60 (+5.5%)\nR1->R5: 52.0 -> 63.2 (HOLD / UNDERWEIGHT RESERVE & PIK RISK)\nROTCE/ROE: 11.9% | Val: 0.99x P/NAV (10.4% Total Yield)\nDaily RSI-14: 42.2 | Weekly RSI-14: 39.7 | Stage 4 (Declining)\nBuy Zone: $9.70 - $10.15 | Stop: $8.88", "group": "L3", "category": "PUBLIC_EQUITY", "layerName": "L3: Direct Lending & Business Development Companies (BDCs)", "rank": 32, "r5": 63.2, "price": 10.05, "target": 10.6, "upside": 5.5, "action": "HOLD / UNDERWEIGHT RESERVE & PIK RISK", "stage": "Stage 4 (Declining)", "rsi14": 42.2, "wRsi14": 39.7, "buyZone": "$9.70 - $10.15", "stopLoss": 8.88, "valMetric": "0.99x P/NAV (10.4% Total Yield)", "rotce": 11.9, "moat": "Scale upper-middle-market sponsor lending ($17.5B+ post-OBDE merger across >220 companies, $210M+ average borrower EBITDA) trading right at 0.99x NAV with >10% base + supplemental yield.", "risk": "Higher PIK income share (~9.2% of TII) and tighter BSL refinancing competition on upper-middle-market unitranche loans.", "catalyst": "Accretive merger with OBDE creating the #2 public BDC, expanding index weight, liquidity, and unsecured bond spread compression.", "shape": "dot", "size": 24.6, "color": {"background": "#ec4899", "border": "#f9a8d4", "highlight": {"background": "#ffffff", "border": "#ec4899"}}, "borderWidth": 2.0, "font": {"color": "#f8fafc", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "CITADEL", "label": "Citadel &\nCitadel Securities", "title": "Citadel & Citadel Securities \u2014 $65B+ HF AUM & ~35% US retail equity volume. Premier FICC/equities market maker & multi-strat pod giant; major prime/clearing client of BNY & JPM.", "group": "PRIVATE", "category": "PRIVATE_NODE", "layerName": "Private Challengers & Captive Insurance Sidecars", "moat": "$65B+ HF AUM & ~35% US retail equity volume. Premier FICC/equities market maker & multi-strat pod giant; major prime/clearing client of BNY & JPM.", "risk": "Private valuation marks, basis-trade margin requirements, or captive reinsurance regulatory scrutiny.", "catalyst": "Continued non-bank financial intermediation (NBFI) share gains and bank SRT partnerships.", "shape": "diamond", "size": 24, "color": {"background": "#6366f1", "border": "#a5b4fc"}, "font": {"color": "#e2e8f0", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "MILLENNIUM", "label": "Millennium\nManagement", "title": "Millennium Management \u2014 $70B+ multi-manager pod hedge fund across 330+ pods; drives record institutional prime-brokerage financing revenues for GS, MS, and JPM.", "group": "PRIVATE", "category": "PRIVATE_NODE", "layerName": "Private Challengers & Captive Insurance Sidecars", "moat": "$70B+ multi-manager pod hedge fund across 330+ pods; drives record institutional prime-brokerage financing revenues for GS, MS, and JPM.", "risk": "Private valuation marks, basis-trade margin requirements, or captive reinsurance regulatory scrutiny.", "catalyst": "Continued non-bank financial intermediation (NBFI) share gains and bank SRT partnerships.", "shape": "diamond", "size": 24, "color": {"background": "#6366f1", "border": "#a5b4fc"}, "font": {"color": "#e2e8f0", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "OAKTREE", "label": "Oaktree Capital\n(Distressed Credit)", "title": "Oaktree Capital (Distressed Credit) \u2014 $205B+ distressed debt, rescue lending & Liability Management Exercise (LME) powerhouse; counter-cyclical winner when levered LBOs restructure.", "group": "PRIVATE", "category": "PRIVATE_NODE", "layerName": "Private Challengers & Captive Insurance Sidecars", "moat": "$205B+ distressed debt, rescue lending & Liability Management Exercise (LME) powerhouse; counter-cyclical winner when levered LBOs restructure.", "risk": "Private valuation marks, basis-trade margin requirements, or captive reinsurance regulatory scrutiny.", "catalyst": "Continued non-bank financial intermediation (NBFI) share gains and bank SRT partnerships.", "shape": "diamond", "size": 24, "color": {"background": "#6366f1", "border": "#a5b4fc"}, "font": {"color": "#e2e8f0", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "HPS_GIP", "label": "HPS & GIP\n(BlackRock Alts)", "title": "HPS & GIP (BlackRock Alts) \u2014 $148B+ Private Credit (HPS) + $100B+ Global Infrastructure Partners (GIP) integrated into BlackRock (BLK) alongside GAIIP AI partnership.", "group": "PRIVATE", "category": "PRIVATE_NODE", "layerName": "Private Challengers & Captive Insurance Sidecars", "moat": "$148B+ Private Credit (HPS) + $100B+ Global Infrastructure Partners (GIP) integrated into BlackRock (BLK) alongside GAIIP AI partnership.", "risk": "Private valuation marks, basis-trade margin requirements, or captive reinsurance regulatory scrutiny.", "catalyst": "Continued non-bank financial intermediation (NBFI) share gains and bank SRT partnerships.", "shape": "diamond", "size": 24, "color": {"background": "#6366f1", "border": "#a5b4fc"}, "font": {"color": "#e2e8f0", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "SIXTH_STREET", "label": "Sixth Street\nPartners", "title": "Sixth Street Partners \u2014 $80B+ flexible capital, Asset-Based Finance (ABF), bank SRTs, and Talcott Resolution insurance platform.", "group": "PRIVATE", "category": "PRIVATE_NODE", "layerName": "Private Challengers & Captive Insurance Sidecars", "moat": "$80B+ flexible capital, Asset-Based Finance (ABF), bank SRTs, and Talcott Resolution insurance platform.", "risk": "Private valuation marks, basis-trade margin requirements, or captive reinsurance regulatory scrutiny.", "catalyst": "Continued non-bank financial intermediation (NBFI) share gains and bank SRT partnerships.", "shape": "diamond", "size": 24, "color": {"background": "#6366f1", "border": "#a5b4fc"}, "font": {"color": "#e2e8f0", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "GOLUB", "label": "Golub Capital\n(Sponsor Direct)", "title": "Golub Capital (Sponsor Direct) \u2014 $70B+ middle-market sponsor unitranche lender; key private benchmark alongside ARCC and OWL.", "group": "PRIVATE", "category": "PRIVATE_NODE", "layerName": "Private Challengers & Captive Insurance Sidecars", "moat": "$70B+ middle-market sponsor unitranche lender; key private benchmark alongside ARCC and OWL.", "risk": "Private valuation marks, basis-trade margin requirements, or captive reinsurance regulatory scrutiny.", "catalyst": "Continued non-bank financial intermediation (NBFI) share gains and bank SRT partnerships.", "shape": "diamond", "size": 24, "color": {"background": "#6366f1", "border": "#a5b4fc"}, "font": {"color": "#e2e8f0", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "ATHENE", "label": "Athene Holding\n(100% Apollo)", "title": "Athene Holding (100% Apollo) \u2014 $330B+ net invested assets; #1 US fixed annuity issuer (435% RBC) fueling Apollo's (APO) IG private credit & ABF origination flywheel.", "group": "PRIVATE", "category": "PRIVATE_NODE", "layerName": "Private Challengers & Captive Insurance Sidecars", "moat": "$330B+ net invested assets; #1 US fixed annuity issuer (435% RBC) fueling Apollo's (APO) IG private credit & ABF origination flywheel.", "risk": "Private valuation marks, basis-trade margin requirements, or captive reinsurance regulatory scrutiny.", "catalyst": "Continued non-bank financial intermediation (NBFI) share gains and bank SRT partnerships.", "shape": "diamond", "size": 24, "color": {"background": "#6366f1", "border": "#a5b4fc"}, "font": {"color": "#e2e8f0", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "GLOBAL_ATLANTIC", "label": "Global Atlantic\n(100% KKR)", "title": "Global Atlantic (100% KKR) \u2014 $185B+ annuity & life block reinsurance general account fueling KKR's real estate, ABF, and infrastructure credit deployment.", "group": "PRIVATE", "category": "PRIVATE_NODE", "layerName": "Private Challengers & Captive Insurance Sidecars", "moat": "$185B+ annuity & life block reinsurance general account fueling KKR's real estate, ABF, and infrastructure credit deployment.", "risk": "Private valuation marks, basis-trade margin requirements, or captive reinsurance regulatory scrutiny.", "catalyst": "Continued non-bank financial intermediation (NBFI) share gains and bank SRT partnerships.", "shape": "diamond", "size": 24, "color": {"background": "#6366f1", "border": "#a5b4fc"}, "font": {"color": "#e2e8f0", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "FED_FOMC_BASEL", "label": "Fed / FOMC &\nBasel III Endgame", "title": "Fed / FOMC & Basel III Endgame \u2014 Governs SOFR, CCAR/DFAST Stress Capital Buffers (SCB), softened Basel III Endgame RWA rules, and lifted WFC's $1.95T asset cap.", "group": "GOV", "category": "GOV_AGENCY", "layerName": "Government Prudential & Regulatory Agencies", "moat": "Governs SOFR, CCAR/DFAST Stress Capital Buffers (SCB), softened Basel III Endgame RWA rules, and lifted WFC's $1.95T asset cap.", "risk": "Regulatory capital surcharges or statutory accounting adjustments on unrated private debt.", "catalyst": "Basel III Endgame RWA relief unlocking $30B+ in G-SIB buybacks and NAIC IG private ABF clarity.", "shape": "hexagon", "size": 25, "color": {"background": "#ef4444", "border": "#fca5a5"}, "font": {"color": "#fecaca", "size": 11, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "FDIC_OCC_CFPB", "label": "FDIC / OCC &\nCFPB Supervision", "title": "FDIC / OCC & CFPB Supervision \u2014 Governs deposit insurance, regional bank M&A approvals, Citigroup data-governance consent orders, and consumer credit fee rules.", "group": "GOV", "category": "GOV_AGENCY", "layerName": "Government Prudential & Regulatory Agencies", "moat": "Governs deposit insurance, regional bank M&A approvals, Citigroup data-governance consent orders, and consumer credit fee rules.", "risk": "Regulatory capital surcharges or statutory accounting adjustments on unrated private debt.", "catalyst": "Basel III Endgame RWA relief unlocking $30B+ in G-SIB buybacks and NAIC IG private ABF clarity.", "shape": "hexagon", "size": 25, "color": {"background": "#ef4444", "border": "#fca5a5"}, "font": {"color": "#fecaca", "size": 11, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "SEC_FINRA", "label": "SEC & FINRA\n(1940 Act BDCs)", "title": "SEC & FINRA (1940 Act BDCs) \u2014 Regulates BDC 2:1 statutory asset coverage limits, semi-liquid wealth interval funds (BREIT/BCRED/K-Series), and RIA cash sweeps.", "group": "GOV", "category": "GOV_AGENCY", "layerName": "Government Prudential & Regulatory Agencies", "moat": "Regulates BDC 2:1 statutory asset coverage limits, semi-liquid wealth interval funds (BREIT/BCRED/K-Series), and RIA cash sweeps.", "risk": "Regulatory capital surcharges or statutory accounting adjustments on unrated private debt.", "catalyst": "Basel III Endgame RWA relief unlocking $30B+ in G-SIB buybacks and NAIC IG private ABF clarity.", "shape": "hexagon", "size": 25, "color": {"background": "#ef4444", "border": "#fca5a5"}, "font": {"color": "#fecaca", "size": 11, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "NAIC_BERMUDA_BMA", "label": "NAIC & Bermuda\nBMA Solvency", "title": "NAIC & Bermuda BMA Solvency \u2014 Sets Risk-Based Capital (RBC) charges on insurer private credit/ABF holdings and Bermuda BSCR coinsurance sidecar equivalence.", "group": "GOV", "category": "GOV_AGENCY", "layerName": "Government Prudential & Regulatory Agencies", "moat": "Sets Risk-Based Capital (RBC) charges on insurer private credit/ABF holdings and Bermuda BSCR coinsurance sidecar equivalence.", "risk": "Regulatory capital surcharges or statutory accounting adjustments on unrated private debt.", "catalyst": "Basel III Endgame RWA relief unlocking $30B+ in G-SIB buybacks and NAIC IG private ABF clarity.", "shape": "hexagon", "size": 25, "color": {"background": "#ef4444", "border": "#fca5a5"}, "font": {"color": "#fecaca", "size": 11, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "DOJ_FTC_DOL", "label": "DOJ / FTC &\nDOL ERISA Rule", "title": "DOJ / FTC & DOL ERISA Rule \u2014 Reviews insurance broker M&A (AJG/AssuredPartners, MMC/McGriff) and governs ERISA fiduciary standards on Pension Risk Transfers (PRT).", "group": "GOV", "category": "GOV_AGENCY", "layerName": "Government Prudential & Regulatory Agencies", "moat": "Reviews insurance broker M&A (AJG/AssuredPartners, MMC/McGriff) and governs ERISA fiduciary standards on Pension Risk Transfers (PRT).", "risk": "Regulatory capital surcharges or statutory accounting adjustments on unrated private debt.", "catalyst": "Basel III Endgame RWA relief unlocking $30B+ in G-SIB buybacks and NAIC IG private ABF clarity.", "shape": "hexagon", "size": 25, "color": {"background": "#ef4444", "border": "#fca5a5"}, "font": {"color": "#fecaca", "size": 11, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "TREASURY_FSOC", "label": "US Treasury &\nFSOC (NBFI)", "title": "US Treasury & FSOC (NBFI) \u2014 Oversees Treasury market clearing (BNY), sovereign debt issuance, and FSOC Non-Bank Financial Intermediation systemic risk reviews.", "group": "GOV", "category": "GOV_AGENCY", "layerName": "Government Prudential & Regulatory Agencies", "moat": "Oversees Treasury market clearing (BNY), sovereign debt issuance, and FSOC Non-Bank Financial Intermediation systemic risk reviews.", "risk": "Regulatory capital surcharges or statutory accounting adjustments on unrated private debt.", "catalyst": "Basel III Endgame RWA relief unlocking $30B+ in G-SIB buybacks and NAIC IG private ABF clarity.", "shape": "hexagon", "size": 25, "color": {"background": "#ef4444", "border": "#fca5a5"}, "font": {"color": "#fecaca", "size": 11, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "CMS_MA_V28_MLR", "label": "CMS Medicare Adv.\nV28 & MLR Shock", "title": "CMS Medicare Adv. V28 & MLR Shock \u2014 100% phase-in of CMS V28 risk-adjustment model + Part D redesign drives managed care MLR volatility; boosts MMC (Mercer) & AJG consulting.", "group": "HC", "category": "HC_POLICY", "layerName": "Healthcare Policy, Stop-Loss & Actuarial Intersections", "moat": "100% phase-in of CMS V28 risk-adjustment model + Part D redesign drives managed care MLR volatility; boosts MMC (Mercer) & AJG consulting.", "risk": "Medical trend acceleration or casualty social inflation reserve strengthening.", "catalyst": "Favorable shift toward capital-light benefits brokers (MMC, AJG) and fixed-indemnity leaders (AFL).", "shape": "box", "size": 22, "color": {"background": "#14b8a6", "border": "#5eead4"}, "font": {"color": "#f0fdfa", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "ACA_STOP_LOSS", "label": "Employer Stop-Loss\n& Hospital Inflation", "title": "Employer Stop-Loss & Hospital Inflation \u2014 9-11% hospital unit-cost inflation drives 15%+ employer stop-loss rate hikes; ALL exited stop-loss for $3.25B while MMC/AJG capture brokerage fees.", "group": "HC", "category": "HC_POLICY", "layerName": "Healthcare Policy, Stop-Loss & Actuarial Intersections", "moat": "9-11% hospital unit-cost inflation drives 15%+ employer stop-loss rate hikes; ALL exited stop-loss for $3.25B while MMC/AJG capture brokerage fees.", "risk": "Medical trend acceleration or casualty social inflation reserve strengthening.", "catalyst": "Favorable shift toward capital-light benefits brokers (MMC, AJG) and fixed-indemnity leaders (AFL).", "shape": "box", "size": 22, "color": {"background": "#14b8a6", "border": "#5eead4"}, "font": {"color": "#f0fdfa", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "GLP1_GENE_RX", "label": "GLP-1 & Cell/Gene\nCatastrophic Rx", "title": "GLP-1 & Cell/Gene Catastrophic Rx \u2014 Specialty drug inflation ($10k/yr GLP-1s, $2M+ gene therapies) forces self-insured employers to buy captive Rx carve-outs structured by MMC & AJG.", "group": "HC", "category": "HC_POLICY", "layerName": "Healthcare Policy, Stop-Loss & Actuarial Intersections", "moat": "Specialty drug inflation ($10k/yr GLP-1s, $2M+ gene therapies) forces self-insured employers to buy captive Rx carve-outs structured by MMC & AJG.", "risk": "Medical trend acceleration or casualty social inflation reserve strengthening.", "catalyst": "Favorable shift toward capital-light benefits brokers (MMC, AJG) and fixed-indemnity leaders (AFL).", "shape": "box", "size": 22, "color": {"background": "#14b8a6", "border": "#5eead4"}, "font": {"color": "#f0fdfa", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "MEDMAL_TORT", "label": "Social Inflation &\nNuclear Verdicts", "title": "Social Inflation & Nuclear Verdicts \u2014 Third-party litigation funding inflates US commercial auto, medical malpractice & umbrella severity (EG $1.5B reserve charge vs PGR short-tail insulation).", "group": "HC", "category": "HC_POLICY", "layerName": "Healthcare Policy, Stop-Loss & Actuarial Intersections", "moat": "Third-party litigation funding inflates US commercial auto, medical malpractice & umbrella severity (EG $1.5B reserve charge vs PGR short-tail insulation).", "risk": "Medical trend acceleration or casualty social inflation reserve strengthening.", "catalyst": "Favorable shift toward capital-light benefits brokers (MMC, AJG) and fixed-indemnity leaders (AFL).", "shape": "box", "size": 22, "color": {"background": "#14b8a6", "border": "#5eead4"}, "font": {"color": "#f0fdfa", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "HC_LBO_STRESS", "label": "Healthcare Roll-Up\nLBO Credit Stress", "title": "Healthcare Roll-Up LBO Credit Stress \u2014 No Surprises Act (NSA) out-of-network caps + RN wage inflation squeeze 2020-2022 PE physician/dental roll-ups in BDC portfolios (OBDC PIK risk).", "group": "HC", "category": "HC_POLICY", "layerName": "Healthcare Policy, Stop-Loss & Actuarial Intersections", "moat": "No Surprises Act (NSA) out-of-network caps + RN wage inflation squeeze 2020-2022 PE physician/dental roll-ups in BDC portfolios (OBDC PIK risk).", "risk": "Medical trend acceleration or casualty social inflation reserve strengthening.", "catalyst": "Favorable shift toward capital-light benefits brokers (MMC, AJG) and fixed-indemnity leaders (AFL).", "shape": "box", "size": 22, "color": {"background": "#14b8a6", "border": "#5eead4"}, "font": {"color": "#f0fdfa", "size": 11, "face": "Inter, system-ui, sans-serif"}}, {"id": "YIELD_CURVE", "label": "YIELD_CURVE\n(2s10s Steepening)", "title": "YIELD_CURVE (2s10s Steepening) \u2014 Positively sloped Treasury curve (+0.80 E1 weight to BANKS) expands bank NIM and annuity spread margins.", "group": "MACRO", "category": "MACRO_DRIVER", "layerName": "Macro & AI Infrastructure Drivers", "moat": "Positively sloped Treasury curve (+0.80 E1 weight to BANKS) expands bank NIM and annuity spread margins.", "risk": "Sudden recessionary credit spread widening or stagflationary tail shock.", "catalyst": "FIN_R1 (Steep Curve + Basel Relief) and FIN_R2 (Insurance-Credit-AI Infra Supercycle).", "shape": "star", "size": 28, "color": {"background": "#eab308", "border": "#fde047"}, "font": {"color": "#fef08a", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "LONG_RATE", "label": "LONG_RATE\n(10Y 4.2%-4.8%)", "title": "LONG_RATE (10Y 4.2%-4.8%) \u2014 Sustained 4.2%-4.8% 10Y yields boost P&C and Life insurer fixed-income portfolio reinvestment yields (+0.72 E1 weight).", "group": "MACRO", "category": "MACRO_DRIVER", "layerName": "Macro & AI Infrastructure Drivers", "moat": "Sustained 4.2%-4.8% 10Y yields boost P&C and Life insurer fixed-income portfolio reinvestment yields (+0.72 E1 weight).", "risk": "Sudden recessionary credit spread widening or stagflationary tail shock.", "catalyst": "FIN_R1 (Steep Curve + Basel Relief) and FIN_R2 (Insurance-Credit-AI Infra Supercycle).", "shape": "star", "size": 28, "color": {"background": "#eab308", "border": "#fde047"}, "font": {"color": "#fef08a", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "AI_DEMAND", "label": "AI_DEMAND\n($2T+ Data Center ABF)", "title": "AI_DEMAND ($2T+ Data Center ABF) \u2014 Hyperscaler AI data center, GPU cluster & power grid capex creates a $2T+ private ABF/infra debt supercycle for BX, APO, KKR, OWL, ARES, BLK.", "group": "MACRO", "category": "MACRO_DRIVER", "layerName": "Macro & AI Infrastructure Drivers", "moat": "Hyperscaler AI data center, GPU cluster & power grid capex creates a $2T+ private ABF/infra debt supercycle for BX, APO, KKR, OWL, ARES, BLK.", "risk": "Sudden recessionary credit spread widening or stagflationary tail shock.", "catalyst": "FIN_R1 (Steep Curve + Basel Relief) and FIN_R2 (Insurance-Credit-AI Infra Supercycle).", "shape": "star", "size": 28, "color": {"background": "#eab308", "border": "#fde047"}, "font": {"color": "#fef08a", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}, {"id": "INFLATION", "label": "INFLATION\n(CPI & Claim Severity)", "title": "INFLATION (CPI & Claim Severity) \u2014 Auto/home repair and casualty litigation inflation pressures long-tail P&C, while lifting broker commission exposure bases.", "group": "MACRO", "category": "MACRO_DRIVER", "layerName": "Macro & AI Infrastructure Drivers", "moat": "Auto/home repair and casualty litigation inflation pressures long-tail P&C, while lifting broker commission exposure bases.", "risk": "Sudden recessionary credit spread widening or stagflationary tail shock.", "catalyst": "FIN_R1 (Steep Curve + Basel Relief) and FIN_R2 (Insurance-Credit-AI Infra Supercycle).", "shape": "star", "size": 28, "color": {"background": "#eab308", "border": "#fde047"}, "font": {"color": "#fef08a", "size": 12, "face": "Inter, system-ui, sans-serif", "bold": true}}];
+    const rawEdges = [{"id": "e1", "from": "YIELD_CURVE", "to": "JPM", "label": "+0.80 NIM & Deposit Franchise", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e2", "from": "YIELD_CURVE", "to": "WFC", "label": "+0.78 NIM & Asset Cap Lift", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e3", "from": "YIELD_CURVE", "to": "BAC", "label": "+0.72 HTM Repricing Inflection", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e4", "from": "YIELD_CURVE", "to": "SCHW", "label": "+0.82 Cash Sweep Stabilization", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e5", "from": "YIELD_CURVE", "to": "PNC", "label": "+0.74 Commercial NIM Expansion", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e6", "from": "LONG_RATE", "to": "CB", "label": "+0.75 $6.4B+ Portfolio NII", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e7", "from": "LONG_RATE", "to": "PGR", "label": "+0.70 Short-Duration Float Yield", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e8", "from": "LONG_RATE", "to": "MET", "label": "+0.74 General Account & PRT Yield", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e9", "from": "LONG_RATE", "to": "PRU", "label": "+0.72 PGIM & Annuity Spread", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e10", "from": "LONG_RATE", "to": "AFL", "label": "+0.68 US/Japan Portfolio Yield", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e11", "from": "AI_DEMAND", "to": "BX", "label": "+0.92 QTS/AirTrunk & GPU Debt", "edgeType": "AI_ABF", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#a855f7", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e12", "from": "AI_DEMAND", "to": "APO", "label": "+0.90 Hyperscaler & Fab ABF", "edgeType": "AI_ABF", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#a855f7", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e13", "from": "AI_DEMAND", "to": "KKR", "label": "+0.88 $50B ECP Power & DC JV", "edgeType": "AI_ABF", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#a855f7", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e14", "from": "AI_DEMAND", "to": "OWL", "label": "+0.89 IPI Digital Infra Campuses", "edgeType": "AI_ABF", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#a855f7", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e15", "from": "AI_DEMAND", "to": "ARES", "label": "+0.86 GCP Digital Logistics & Credit", "edgeType": "AI_ABF", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#a855f7", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e16", "from": "AI_DEMAND", "to": "BLK", "label": "+0.88 GAIIP $100B AI Infra + GIP", "edgeType": "AI_ABF", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#a855f7", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e17", "from": "INFLATION", "to": "PGR", "label": "Short-Tail Rate Earn-Through (+)", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e18", "from": "INFLATION", "to": "MMC", "label": "+0.70 Exposure Base & Commission Uplift", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e19", "from": "INFLATION", "to": "AJG", "label": "+0.72 E&S Rate & Premium Uplift", "edgeType": "MACRO", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#eab308", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e20", "from": "C", "to": "APO", "label": "$25B Forward-Flow Private Credit JV", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e21", "from": "JPM", "to": "ARES", "label": "Senior Warehouse & Co-Origination", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e22", "from": "JPM", "to": "ARCC", "label": "Revolving Credit & Syndication Rail", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e23", "from": "GS", "to": "BX", "label": "Sponsor M&A Advisory & LBO Exit Rail", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e24", "from": "MS", "to": "KKR", "label": "IPO Underwriting & Wealth Distribution", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e25", "from": "WFC", "to": "OWL", "label": "ABF Warehouse & Middle-Market Flow", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e26", "from": "BNY", "to": "BLK", "label": "Aladdin Custody & ETF Servicing", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e27", "from": "BNY", "to": "CITADEL", "label": "UST Clearing & Tri-Party Repo Backbone", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e28", "from": "GS", "to": "MILLENNIUM", "label": "Prime Brokerage & FICC Financing", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e29", "from": "APO", "to": "ATHENE", "label": "100% Ownership ($330B+ Annuity Float)", "edgeType": "INS_CONVERGENCE", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#f59e0b", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e30", "from": "ATHENE", "to": "APO", "label": "$150B+ Annual IG ABF Allocation", "edgeType": "INS_CONVERGENCE", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#f59e0b", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e31", "from": "KKR", "to": "GLOBAL_ATLANTIC", "label": "100% Ownership ($185B+ GA Float)", "edgeType": "INS_CONVERGENCE", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#f59e0b", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e32", "from": "GLOBAL_ATLANTIC", "to": "KKR", "label": "Real Estate & ABF Credit Deployment", "edgeType": "INS_CONVERGENCE", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#f59e0b", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e33", "from": "HPS_GIP", "to": "BLK", "label": "Private Credit ($148B) + Infra ($100B) Engine", "edgeType": "INS_CONVERGENCE", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#f59e0b", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e34", "from": "ARES", "to": "ARCC", "label": "External GP Management & Deal Funnel", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e35", "from": "OWL", "to": "OBDC", "label": "External GP Management (Prefer OWL over OBDC)", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e36", "from": "BX", "to": "MAIN", "label": "Upper vs Lower Middle Market Benchmark", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e37", "from": "GOLUB", "to": "ARCC", "label": "Sponsor Unitranche Co-Lending Peer", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e38", "from": "OAKTREE", "to": "OBDC", "label": "LME Restructuring & Rescue Credit", "edgeType": "CREDIT_FLOW", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#3b82f6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e39", "from": "SIXTH_STREET", "to": "APO", "label": "Bank SRT & ABF Co-Origination", "edgeType": "INS_CONVERGENCE", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#f59e0b", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e40", "from": "CB", "to": "RNR", "label": "Property-Cat Quota Share & XoL Cession", "edgeType": "REINSURANCE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#10b981", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e41", "from": "TRV", "to": "RNR", "label": "Catastrophe Treaty Reinsurance", "edgeType": "REINSURANCE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#10b981", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e42", "from": "ALL", "to": "ACGL", "label": "Personal Auto/Home Cat Reinsurance", "edgeType": "REINSURANCE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#10b981", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e43", "from": "PGR", "to": "RNR", "label": "Florida/Catastrophe Risk Transfer", "edgeType": "REINSURANCE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#10b981", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e44", "from": "MMC", "to": "CB", "label": "Global Commercial Placement (#1 Broker)", "edgeType": "REINSURANCE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#10b981", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e45", "from": "MMC", "to": "RNR", "label": "Guy Carpenter Reinsurance Placement", "edgeType": "REINSURANCE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#10b981", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e46", "from": "AJG", "to": "ACGL", "label": "RPS Wholesale E&S Submission Flow", "edgeType": "REINSURANCE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#10b981", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e47", "from": "MET", "to": "PRU", "label": "Institutional PRT Oligopoly Peer", "edgeType": "INS_CONVERGENCE", "arrows": "to", "dashes": false, "width": 2.2, "color": {"color": "#f59e0b", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e48", "from": "FED_FOMC_BASEL", "to": "JPM", "label": "Basel III Endgame Relief (+Buybacks)", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e49", "from": "FED_FOMC_BASEL", "to": "WFC", "label": "2018 $1.95T Asset Cap Terminated (+)", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e50", "from": "FED_FOMC_BASEL", "to": "GS", "label": "G-SIB Fee Op-Risk Relief (+)", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e51", "from": "FED_FOMC_BASEL", "to": "MS", "label": "15.9% CET1 Excess Capital Release", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e52", "from": "FDIC_OCC_CFPB", "to": "C", "label": "Data-Governance Consent Order Drag (-)", "edgeType": "REGULATORY", "arrows": "to", "dashes": true, "width": 1.6, "color": {"color": "#f87171", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e53", "from": "FDIC_OCC_CFPB", "to": "USB", "label": "Regional Scale Compliance Moat", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e54", "from": "SEC_FINRA", "to": "ARCC", "label": "1940 Act 2:1 Leverage Discipline", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e55", "from": "SEC_FINRA", "to": "SCHW", "label": "Cash Sweep Stabilization Clarity", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e56", "from": "NAIC_BERMUDA_BMA", "to": "ATHENE", "label": "NAIC-1 IG Private ABF Capital Efficiency", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e57", "from": "NAIC_BERMUDA_BMA", "to": "RNR", "label": "Bermuda BSCR 490% Solvency Moat", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e58", "from": "NAIC_BERMUDA_BMA", "to": "ACGL", "label": "Bermuda & MI Capital Release", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e59", "from": "DOJ_FTC_DOL", "to": "AJG", "label": "$13.45B AssuredPartners M&A Clearance", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e60", "from": "DOJ_FTC_DOL", "to": "MMC", "label": "$7.75B McGriff Mid-Market Integration", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e61", "from": "TREASURY_FSOC", "to": "BNY", "label": "Mandatory UST Central Clearing Beneficiary", "edgeType": "REGULATORY", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#ef4444", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e62", "from": "CMS_MA_V28_MLR", "to": "MMC", "label": "Mercer Employer MA/Health Plan Redesign (+)", "edgeType": "HC_EDGE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#14b8a6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e63", "from": "ACA_STOP_LOSS", "to": "AJG", "label": "Self-Funded Employer Stop-Loss Placement (+)", "edgeType": "HC_EDGE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#14b8a6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e64", "from": "ACA_STOP_LOSS", "to": "ALL", "label": "$3.25B Exit of Employer Stop-Loss (+Capital)", "edgeType": "HC_EDGE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#14b8a6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e65", "from": "ACA_STOP_LOSS", "to": "AFL", "label": "Fixed-Indemnity Benefit Insulation (+)", "edgeType": "HC_EDGE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#14b8a6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e66", "from": "GLP1_GENE_RX", "to": "MMC", "label": "Rx Captive & PBM Carve-Out Consulting (+)", "edgeType": "HC_EDGE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#14b8a6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e67", "from": "MEDMAL_TORT", "to": "EG", "label": "-$1.5B US Casualty Reserve Strengthening (-)", "edgeType": "HC_EDGE", "arrows": "to", "dashes": true, "width": 1.6, "color": {"color": "#f87171", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e68", "from": "MEDMAL_TORT", "to": "PGR", "label": "Short-Tail (<18m) Auto Claim Insulation (+)", "edgeType": "HC_EDGE", "arrows": "to", "dashes": false, "width": 1.6, "color": {"color": "#14b8a6", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e69", "from": "HC_LBO_STRESS", "to": "OBDC", "label": "9.2% PIK & 2021 Healthcare LBO Pressure (-)", "edgeType": "HC_EDGE", "arrows": "to", "dashes": true, "width": 1.6, "color": {"color": "#f87171", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}, {"id": "e70", "from": "HC_LBO_STRESS", "to": "CG", "label": "Legacy Buyout Monetization Lag (-)", "edgeType": "HC_EDGE", "arrows": "to", "dashes": true, "width": 1.6, "color": {"color": "#f87171", "opacity": 0.82}, "font": {"color": "#cbd5e1", "size": 9, "strokeWidth": 2, "strokeColor": "#0f172a"}}];
+
+    const nodesDataset = new vis.DataSet(rawNodes);
+    const edgesDataset = new vis.DataSet(rawEdges);
+
+    const container = document.getElementById('network-canvas');
+    const data = { nodes: nodesDataset, edges: edgesDataset };
+    const options = {
+      physics: {
+        solver: 'forceAtlas2Based',
+        forceAtlas2Based: {
+          gravitationalConstant: -78,
+          centralGravity: 0.012,
+          springLength: 135,
+          springConstant: 0.06,
+          damping: 0.55,
+          avoidOverlap: 0.85
+        },
+        stabilization: { iterations: 220 }
+      },
+      interaction: {
+        hover: true,
+        tooltipDelay: 120,
+        navigationButtons: true,
+        keyboard: true
+      },
+      edges: {
+        smooth: { type: 'continuous', roundness: 0.25 }
+      }
+    };
+
+    const network = new vis.Network(container, data, options);
+
+    function renderInspector(node) {
+      const titleEl = document.getElementById('insp-title');
+      const bodyEl = document.getElementById('insp-body');
+      titleEl.innerText = node.label.replace(/\n/g, ' ');
+
+      if (node.category === 'PUBLIC_EQUITY') {
+        bodyEl.innerHTML = `
+          <div class="meta-row"><span class="meta-key">Layer</span><span class="meta-val">${node.layerName}</span></div>
+          <div class="meta-row"><span class="meta-key">5-Round RSI Rank &amp; Score</span><span class="meta-val" style="color:#34d399;">#${String(node.rank).padStart(2,'0')} | R5: ${node.r5}</span></div>
+          <div class="meta-row"><span class="meta-key">Recommended Action</span><span class="meta-val">${node.action}</span></div>
+          <div class="meta-row"><span class="meta-key">Live Price / 12M Target</span><span class="meta-val">$${node.price.toFixed(2)} &rarr; $${node.target.toFixed(2)} (+${node.upside.toFixed(1)}%)</span></div>
+          <div class="meta-row"><span class="meta-key">ROTCE / ROE &amp; Valuation</span><span class="meta-val">${node.rotce}% | ${node.valMetric}</span></div>
+          <div class="meta-row"><span class="meta-key">Weinstein Stage</span><span class="meta-val">${node.stage}</span></div>
+          <div class="meta-row"><span class="meta-key">Daily RSI-14 / Weekly RSI-14</span><span class="meta-val">${node.rsi14} / ${node.wRsi14}</span></div>
+          <div class="meta-row"><span class="meta-key">Institutional Buy Zone</span><span class="meta-val">${node.buyZone}</span></div>
+          <div class="meta-row"><span class="meta-key">Hard ATR Stop Loss</span><span class="meta-val" style="color:#fca5a5;">$${node.stopLoss.toFixed(2)}</span></div>
+          <div class="detail-box"><strong>Primary Moat:</strong> ${node.moat}</div>
+          <div class="detail-box cat"><strong>2026 Catalyst:</strong> ${node.catalyst}</div>
+          <div class="detail-box risk"><strong>Key Risk Watchpoint:</strong> ${node.risk}</div>
+        `;
+      } else {
+        bodyEl.innerHTML = `
+          <div class="meta-row"><span class="meta-key">Node Type</span><span class="meta-val">${node.layerName}</span></div>
+          <div class="detail-box"><strong>Institutional Role &amp; Moat:</strong> ${node.moat}</div>
+          <div class="detail-box cat"><strong>Ecosystem Catalyst:</strong> ${node.catalyst}</div>
+          <div class="detail-box risk"><strong>Key Watchpoint:</strong> ${node.risk}</div>
+        `;
+      }
+    }
+
+    network.on('click', function(params) {
+      if (params.nodes.length > 0) {
+        const nodeId = params.nodes[0];
+        const node = nodesDataset.get(nodeId);
+        if (node) renderInspector(node);
+      }
+    });
+
+    function focusNode(nodeId) {
+      const node = nodesDataset.get(nodeId);
+      if (!node) return;
+      network.selectNodes([nodeId]);
+      network.focus(nodeId, { scale: 1.25, animation: { duration: 500, easingFunction: 'easeInOutQuad' } });
+      renderInspector(node);
+    }
+
+    function filterGraph(groupKey, btnEl) {
+      document.querySelectorAll('.toolbar .btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+
+      rawNodes.forEach(n => {
+        let visible = true;
+        if (groupKey === 'ALL') {
+          visible = true;
+        } else if (groupKey === 'CORE_BUY') {
+          visible = (n.action === 'CORE BUY' || n.group === 'MACRO');
+        } else {
+          visible = (n.group === groupKey || n.group === 'MACRO');
+        }
+        nodesDataset.update({ id: n.id, hidden: !visible });
+      });
+    }
+
+    function filterTable(mode) {
+      const rows = document.querySelectorAll('#rsi-table tbody tr');
+      rows.forEach(r => {
+        const act = r.getAttribute('data-action') || '';
+        if (mode === 'ALL') {
+          r.style.display = '';
+        } else if (mode === 'CORE BUY') {
+          r.style.display = (act === 'CORE BUY') ? '' : 'none';
+        } else if (mode === 'ACCUMULATE') {
+          r.style.display = act.includes('ACCUMULATE') ? '' : 'none';
+        } else {
+          r.style.display = (act.includes('HOLD') || act.includes('TACTICAL')) ? '' : 'none';
+        }
+      });
+    }
+  </script>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

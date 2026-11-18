@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parkinson's Disease & Longevity Biotech Macro Network Graph</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --surface: #111827;
+    --card: #1f2937;
+    --card-hover: #374151;
+    --border: #374151;
+    --text: #f9fafb;
+    --text-muted: #9ca3af;
+    --pos: #10b981;
+    --neg: #ef4444;
+    --accent: #6366f1;
+    --cyan: #06b6d4;
+    --amber: #f59e0b;
+    --purple: #8b5cf6;
+    --rose: #f43f5e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  header h1 { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 9999px;
+    background: var(--accent); color: #fff; text-transform: uppercase;
+  }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+  button {
+    background: var(--card); color: var(--text); border: 1px solid var(--border);
+    padding: 7px 13px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;
+    transition: all 0.15s;
+  }
+  button:hover, button.active { background: var(--accent); border-color: var(--accent); }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 390px;
+    min-height: calc(100vh - 68px);
+  }
+  @media (max-width: 1024px) { .layout { grid-template-columns: 1fr; } }
+  #canvas-wrap {
+    position: relative;
+    background: radial-gradient(circle at 50% 45%, #161f33 0%, #0b0f19 75%);
+    border-right: 1px solid var(--border);
+    min-height: 680px;
+  }
+  svg { width: 100%; height: 100%; min-height: 680px; display: block; }
+  .sidebar {
+    background: var(--surface);
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 68px);
+  }
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .panel h2 { font-size: 15px; margin-bottom: 6px; color: #fff; }
+  .panel h3 { font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin: 10px 0 6px; letter-spacing: 0.04em; }
+  .ticker-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .ticker {
+    background: rgba(99, 102, 241, 0.16);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    color: #c7d2fe;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-weight: 600;
+  }
+  .ticker.smid {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: rgba(16, 185, 129, 0.45);
+    color: #a7f3d0;
+  }
+  .edge-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .w-pos { color: var(--pos); font-weight: 700; font-family: monospace; }
+  .w-neg { color: var(--neg); font-weight: 700; font-family: monospace; }
+  .legend {
+    position: absolute; bottom: 16px; left: 16px;
+    background: rgba(17, 24, 39, 0.9); border: 1px solid var(--border);
+    padding: 10px 14px; border-radius: 8px; font-size: 11px;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  /* Hardened 5-Round RSI Matrix Modal & Table Styles */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(6, 10, 19, 0.86);
+    backdrop-filter: blur(8px); z-index: 200; display: none;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-box {
+    background: #111827; border: 1px solid #374151; border-radius: 12px;
+    max-width: 1280px; width: 100%; max-height: 90vh; display: flex;
+    flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+    overflow: hidden;
+  }
+  .modal-header {
+    padding: 16px 22px; background: #1f2937; border-bottom: 1px solid #374151;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+  }
+  .modal-header h2 { font-size: 17px; font-weight: 700; color: #f9fafb; display: flex; align-items: center; gap: 10px; }
+  .modal-tabs { display: flex; gap: 8px; padding: 10px 22px; background: #0f172a; border-bottom: 1px solid #374151; flex-wrap: wrap; }
+  .modal-tab {
+    background: #1f2937; color: #cbd5e1; border: 1px solid #374151;
+    padding: 6px 13px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .modal-tab.active { background: #10b981; border-color: #059669; color: #06281e; font-weight: 700; }
+  .modal-body { padding: 20px 22px; overflow-y: auto; font-size: 12.5px; line-height: 1.55; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  .rsi-table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 11.5px; }
+  .rsi-table th, .rsi-table td {
+    border: 1px solid #374151; padding: 8px 10px; text-align: left; vertical-align: top;
+  }
+  .rsi-table th { background: #1f2937; color: #a7f3d0; font-weight: 700; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.04em; }
+  .rsi-table tr:nth-child(even) { background: rgba(31, 41, 55, 0.45); }
+  .rsi-table tr:hover { background: rgba(99, 102, 241, 0.14); }
+  .tier-badge {
+    display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  }
+  .tier-1 { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.45); }
+  .tier-2 { background: rgba(99, 102, 241, 0.2); color: #c7d2fe; border: 1px solid rgba(99, 102, 241, 0.45); }
+  .tier-3 { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.45); }
+  .hat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-top: 10px; }
+  .hat-card { background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 12px 14px; }
+  .hat-card h4 { font-size: 13px; color: #6ee7b7; margin-bottom: 6px; }
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .kpi-box { background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 10px 12px; }
+  .kpi-box .lbl { font-size: 10px; text-transform: uppercase; color: #9ca3af; letter-spacing: 0.04em; }
+  .kpi-box .val { font-size: 18px; font-weight: 800; color: #10b981; font-family: monospace; margin-top: 2px; }
+  .kpi-box .sub { font-size: 10.5px; color: #cbd5e1; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>
+      Parkinson's Disease &amp; Longevity Biotech Macro Influence Graph
+      <span class="badge">Agentic-Bridgewater</span>
+    </h1>
+  </div>
+  <div class="controls">
+    <button class="active" onclick="runScenario('baseline', this)">Baseline Graph</button>
+    <button onclick="runScenario('saa_breakout', this)">+1σ SAA Biomarker &amp; BBB Breakout</button>
+    <button onclick="runScenario('rate_squeeze', this)">+1σ Fed Rate Hike (Duration Filter)</button>
+    <button onclick="runScenario('precision_override', this)">State Rule NEURO_PD_R2 Override</button>
+    <button onclick="toggleMatrixModal(true)" style="background:linear-gradient(135deg, #059669 0%, #10b981 100%); border-color:#059669; color:#fff; font-weight:700;">🎯 Hardened Matrix (5-Round RSI)</button>
+    📊 Weekly 5-Round RSI Report ↗
+    📘 PD Deep Report ↗
+  </div>
+</header>
+
+<div class="layout">
+  <div id="canvas-wrap">
+    <svg id="graph-svg" viewBox="0 0 1050 680"></svg>
+    <div class="legend">
+      <div class="legend-item"><span class="dot" style="background:#f59e0b"></span> Macro Driver</div>
+      <div class="legend-item"><span class="dot" style="background:#06b6d4"></span> Enabling Platform (BBB / Diagnostics / BCI)</div>
+      <div class="legend-item"><span class="dot" style="background:#10b981"></span> Parkinson's &amp; Neuro Therapeutics</div>
+      <div class="legend-item"><span class="dot" style="background:#8b5cf6"></span> Longevity &amp; Cell Rejuvenation</div>
+      <div class="legend-item"><span class="dot" style="background:#3b82f6"></span> Big Pharma Consolidator</div>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="panel" id="hardened-matrix-panel" style="border: 1px solid rgba(16, 185, 129, 0.45); background: rgba(16, 185, 129, 0.06);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h2 style="color:#6ee7b7; font-size:14px; margin:0;">🎯 Final Hardened 5-Round RSI Matrix</h2>
+        <span style="font-size:10px; background:#065f46; color:#a7f3d0; padding:2px 6px; border-radius:4px; font-weight:700;">SORTINO 6.09</span>
+      </div>
+      <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">
+        Week of Oct 26–30, 2026: Converged after 5 Recursive Self-Improvement rounds (`Skill v1.0 &rarr; v5.0`), 6-Model Technical RSI, OpenTargets <code>MONDO_0005180</code> genetics, and 10,000-path Monte Carlo (<strong>+7.52% 4W E[Ret]</strong>, <strong>89.6% Win Prob</strong>, <strong>-2.46% VaR95</strong>). Click any pick to inspect its graph node.
+      </p>
+      
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <!-- SUPN -->
+        <div onclick="selectStockPick('SUPN', 'NEURO_PARKINSONS_MOVEMENT')" style="background:rgba(31,41,55,0.85); border:1px solid #10b981; border-radius:6px; padding:8px 10px; cursor:pointer; transition:0.2s;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:#10b981; font-size:13px;">#1 SUPN</strong>
+              <span style="font-size:10.5px; color:#9ca3af; margin-left:4px;">Supernus (24% Wt)</span>
+            </div>
+            <span style="background:rgba(16,185,129,0.2); color:#10b981; font-weight:800; font-size:11px; padding:1px 6px; border-radius:4px;">91.8 / 100</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px; color:#d1d5db;">
+            <span>Buy: $39.60–$40.90 ($40.70)</span>
+            <span style="color:#34d399; font-weight:700;">1-4W: $45.99 | 12M: $60.50</span>
+          </div>
+          <div style="font-size:10px; color:#9ca3af; margin-top:2px;">Connors RSI: 27.8 | Wilder-14: 44.5 (+17.4 5d) | ONAPGO + Gocovri | Stop: $36.33</div>
+        </div>
+
+        <!-- ACAD -->
+        <div onclick="selectStockPick('ACAD', 'NEURO_PARKINSONS_MOVEMENT')" style="background:rgba(31,41,55,0.85); border:1px solid #10b981; border-radius:6px; padding:8px 10px; cursor:pointer; transition:0.2s;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:#10b981; font-size:13px;">#2 ACAD</strong>
+              <span style="font-size:10.5px; color:#9ca3af; margin-left:4px;">Acadia Pharm (18% Wt)</span>
+            </div>
+            <span style="background:rgba(16,185,129,0.2); color:#10b981; font-weight:800; font-size:11px; padding:1px 6px; border-radius:4px;">91.3 / 100</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px; color:#d1d5db;">
+            <span>Buy: $19.20–$19.85 ($19.73)</span>
+            <span style="color:#34d399; font-weight:700;">1-4W: $22.29 | 12M: $30.53</span>
+          </div>
+          <div style="font-size:10px; color:#9ca3af; margin-top:2px;">Connors RSI: 26.5 | VW-RSI14: 26.3 | Nuplazid + Daybue ($956M Cash) | Stop: $17.65</div>
+        </div>
+
+        <!-- PRTA -->
+        <div onclick="selectStockPick('PRTA', 'NEURO_PARKINSONS_MOVEMENT')" style="background:rgba(31,41,55,0.85); border:1px solid #6366f1; border-radius:6px; padding:8px 10px; cursor:pointer; transition:0.2s;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:#818cf8; font-size:13px;">#3 PRTA</strong>
+              <span style="font-size:10.5px; color:#9ca3af; margin-left:4px;">Prothena Corp (13% Wt)</span>
+            </div>
+            <span style="background:rgba(99,102,241,0.2); color:#c7d2fe; font-weight:800; font-size:11px; padding:1px 6px; border-radius:4px;">88.7 / 100</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px; color:#d1d5db;">
+            <span>Buy: $7.95–$8.25 ($8.20)</span>
+            <span style="color:#a5b4fc; font-weight:700;">1-4W: $9.27 | 12M: $21.40 (+161%)</span>
+          </div>
+          <div style="font-size:10px; color:#9ca3af; margin-top:2px;">SNCA (0.871) Ph3 PARAISO w/ Roche | 66.8% Net Cash/Cap | 18.8% SI | Stop: $7.49</div>
+        </div>
+
+        <!-- DNLI -->
+        <div onclick="selectStockPick('DNLI', 'NEURO_BBB_DELIVERY_TECH')" style="background:rgba(31,41,55,0.85); border:1px solid #06b6d4; border-radius:6px; padding:8px 10px; cursor:pointer; transition:0.2s;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:#22d3ee; font-size:13px;">#4 DNLI</strong>
+              <span style="font-size:10.5px; color:#9ca3af; margin-left:4px;">Denali Ther. (18% Wt)</span>
+            </div>
+            <span style="background:rgba(6,182,212,0.2); color:#22d3ee; font-weight:800; font-size:11px; padding:1px 6px; border-radius:4px;">86.1 / 100</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px; color:#d1d5db;">
+            <span>Buy: $17.90–$18.55 ($18.41)</span>
+            <span style="color:#22d3ee; font-weight:700;">1-4W: $21.11 | 12M: $35.75 (+94%)</span>
+          </div>
+          <div style="font-size:10px; color:#9ca3af; margin-top:2px;">LRRK2 (#1 Gene 0.879) + TfR1 BBB TV | Connors RSI: 27.5 | $710M Cash | Stop: $16.65</div>
+        </div>
+
+        <!-- PRAX + COYA + QURE + ACIU -->
+        <div onclick="selectStockPick('PRAX', 'NEURO_PARKINSONS_MOVEMENT')" style="background:rgba(31,41,55,0.85); border:1px solid #f59e0b; border-radius:6px; padding:8px 10px; cursor:pointer; transition:0.2s;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:#fbbf24; font-size:13px;">#5 PRAX (8%) &bull; #6 QURE (5%) &bull; #7 COYA (10%) &bull; #10 ACIU (4%)</strong>
+            </div>
+            <span style="background:rgba(245,158,11,0.2); color:#fde68a; font-weight:800; font-size:10.5px; padding:1px 6px; border-radius:4px;">75.9–84.5</span>
+          </div>
+          <div style="font-size:10.5px; color:#d1d5db; margin-top:4px;">
+            <strong>PRAX</strong> ($252.96 &rarr; $294.24 / $650 Ph3 Essential3) &bull; <strong>COYA</strong> ($3.94 &rarr; $4.73 / $15.21 Treg RSI-5=13.3) &bull; <strong>QURE</strong> ($22.43, VW-RSI=4.6, 85m cash) &bull; <strong>ACIU</strong> ($2.42, VacSYn Ph2)
+          </div>
+        </div>
+
+        <!-- Exclusions / Traps Flagged by Round 1-5 Critic -->
+        <div style="background:rgba(127,29,29,0.25); border:1px solid rgba(239,68,68,0.5); border-radius:6px; padding:7px 10px;">
+          <div style="font-size:11px; font-weight:700; color:#fca5a5;">🚫 5-Round RSI Critic Vetoes This Week</div>
+          <div style="font-size:10px; color:#e5e7eb; margin-top:2px;">
+            &bull; <strong>ANVS ($1.00):</strong> Hard Avoid (2.6m cash runway).<br>
+            &bull; <strong>GANX ($1.26):</strong> 8.4m cash dilution overhang (wait for raise/partner).<br>
+            &bull; <strong>VYGR ($1.74):</strong> Falling knife (30.6% win rate); only buy stop-limit &ge;$1.85.<br>
+            &bull; <strong>RHHBY (RSI-5=95.7) &amp; BIIB (RSI-14=70.6):</strong> Overbought; rotate into PRTA &amp; DNLI.
+          </div>
+        </div>
+      </div>
+
+      <button onclick="toggleMatrixModal(true)" style="width:100%; margin-top:10px; background:linear-gradient(135deg, #065f46 0%, #047857 100%); color:#ecfdf5; border:1px solid #10b981; font-weight:700; padding:8px 10px; border-radius:6px; cursor:pointer;">
+        🔍 Open Full 5-Round Hardened RSI Matrix &amp; Multi-Hat Reasonings ↗
+      </button>
+    </div>
+
+    <div class="panel" id="scenario-banner">
+      <h2 id="scen-title">Interactive Node &amp; State-Rule Inspector</h2>
+      <p id="scen-desc" style="font-size:12px;color:var(--text-muted)">
+        Click any node in the graph to inspect its Big Pharma anchors, SMID pure-play tickers, biological chokepoints, and incoming/outgoing macro influence edges.
+      </p>
+    </div>
+
+    <div class="panel" id="node-detail">
+      <h2 id="nd-title">NEURO_PARKINSONS_MOVEMENT</h2>
+      <div id="nd-sub" style="font-size:12px;color:var(--cyan);margin-bottom:8px;">L2/L3 Disease-Modifying (α-Synuclein/LRRK2/GBA1) &amp; Dopaminergic PD</div>
+      <h3>Large-Cap Anchors</h3>
+      <div class="ticker-grid" id="nd-large"></div>
+      <h3>SMID-Cap Listed Pure Plays</h3>
+      <div class="ticker-grid" id="nd-smid"></div>
+      <h3>Critical Chokepoints</h3>
+      <ul id="nd-choke" style="font-size:12px;color:var(--text-muted);padding-left:16px;margin-top:4px;"></ul>
+      <h3>Connected Graph Edges (σ/σ)</h3>
+      <div id="nd-edges"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Pre-Registered Agent State Rules</h2>
+      <div class="edge-row">
+        <span><strong>NEURO_PD_R2</strong> (SAA ≥ 70% vs FED_RATE)</span>
+        <span class="w-pos">Flips -0.60σ → +0.30σ</span>
+      </div>
+      <div class="edge-row">
+        <span><strong>NEURO_PD_R1</strong> (Unstratified ≥ 75%)</span>
+        <span class="w-neg">Overrides +0.70σ → -0.49σ</span>
+      </div>
+      <div class="edge-row">
+        <span><strong>LONGEVITY_R1</strong> (Refi Stress ≥ 80%)</span>
+        <span class="w-neg">Overrides +0.50σ → -0.38σ</span>
+      </div>
+      <div class="edge-row">
+        <span><strong>LONGEVITY_R3</strong> (GLP-1 Muscle ≥ 70%)</span>
+        <span class="w-pos">Flips -0.45σ → +0.27σ</span>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+const NODES = [
+  { id: "FED_RATE", label: "FED_RATE", title: "Federal Reserve Policy Rate", x: 130, y: 120, color: "#f59e0b",
+    layer: "Macro Policy Driver", large: ["TLT", "SHY"], smid: ["XBI"],
+    chokepoints: ["10Y real yields >2.0% compress 8-15yr clinical biotech DCFs and close secondary equity windows."] },
+  { id: "HEALTHCARE_POLICY", label: "HEALTHCARE_POLICY", title: "CMS Part D Cap, FDA & National PD Plan", x: 130, y: 280, color: "#f59e0b",
+    layer: "Macro Regulatory & Reimbursement Driver", large: ["UNH", "CVS", "LLY"], smid: ["XLV"],
+    chokepoints: ["Medicare Part D $2,000 out-of-pocket cap unlocks specialty PD infusion & oral brand adherence.", "FDA Accelerated Approval surrogate biomarker acceptance (SAA, p-tau217)."] },
+  { id: "AI_DEMAND", label: "AI_DEMAND", title: "Generative AI Protein & Capsid Compute", x: 130, y: 440, color: "#f59e0b",
+    layer: "Compute & In-Silico Design Driver", large: ["NVDA", "GOOGL", "MSFT"], smid: ["RXRX", "SDGR"],
+    chokepoints: ["AlphaFold3 / RFdiffusion de novo design of TfR1 shuttles and neurotropic AAV capsids."] },
+  { id: "DEFENSE_SPENDING", label: "DEFENSE_SPENDING", title: "DARPA Neurotech & VA PD Coverage", x: 130, y: 580, color: "#f59e0b",
+    layer: "Federal Defense & VA Healthcare Driver", large: ["LMT", "RTX"], smid: ["MDT", "BSX"],
+    chokepoints: ["VA presumptive service-connected coverage for Parkinson's (Agent Orange / TCE) and DARPA BCI funding."] },
+
+  { id: "NEURO_BIOMARKERS_DIAGNOSTICS", label: "NEURO_BIOMARKERS", title: "α-Synuclein SAA, p-Tau217 & DaTscan", x: 430, y: 160, color: "#06b6d4",
+    layer: "L1 Fluid/Cutaneous Biomarkers & Imaging", large: ["RHHBY", "ABT", "DGX", "LH", "GEHC"], smid: ["QTRX", "Amprion (SAA)", "CND (Syn-One)"],
+    chokepoints: ["CSF α-synuclein SAA (>93% sensitivity) eliminates the 20% early-PD phenocopy misdiagnosis rate.", "Transition from lumbar puncture to 3mm punch skin biopsy (Syn-One) and blood exosomes."] },
+  { id: "NEURO_BBB_DELIVERY_TECH", label: "NEURO_BBB_DELIVERY", title: "TfR1/CD98 Shuttles & TRACER Capsids", x: 430, y: 340, color: "#06b6d4",
+    layer: "L5 Blood-Brain Barrier Delivery Platforms", large: ["RHHBY", "BIIB", "NOVN", "ABBV"], smid: ["DNLI", "DYN", "QURE", "VOYG", "PRTA", "SGMO", "CLPT"],
+    chokepoints: ["Standard mAbs achieve <0.2% brain uptake; Denali TV and Voyager TRACER boost striatal uptake 10-30x.", "Monovalent Fc engineering required to avoid TfR1 reticulocyte anemia."] },
+  { id: "BIOTECH_CELL_THERAPY", label: "BIOTECH_CELL_THERAPY", title: "hESC/iPSC Dopaminergic Progenitors", x: 430, y: 490, color: "#8b5cf6",
+    layer: "L4 Pluripotent Stem-Cell Replacement", large: ["BAYRY (BlueRock)", "NVO", "GILD"], smid: ["Aspen (ANPD001)", "COYA", "LCTX", "LGVN", "SANA"],
+    chokepoints: ["50-70% of substantia nigra A9 neurons are already lost at PD diagnosis; stem cells rebuild the striatal circuit.", "Stereotactic neurosurgery slot bottlenecks and MRI cannula precision (CLPT)."] },
+  { id: "NEURO_BCI_NEUROTECH", label: "NEURO_BCI_NEUROTECH", title: "Closed-Loop Adaptive DBS & BCI", x: 430, y: 610, color: "#06b6d4",
+    layer: "L6 Bioelectronics, aDBS & Focused Ultrasound", large: ["MDT", "BSX", "ABT", "SYK"], smid: ["NVRO", "Insightec", "Neuralink"],
+    chokepoints: ["Medtronic Percept BrainSense aDBS senses STN beta-band (13-30 Hz) LFPs to auto-titrate stimulation.", "~15,000 US functional neurosurgery procedures/yr capacity ceiling."] },
+
+  { id: "NEURO_PARKINSONS_MOVEMENT", label: "NEURO_PARKINSONS", title: "Parkinson's Disease & Movement Disorders", x: 760, y: 360, color: "#10b981",
+    layer: "L2/L3 Core PD Therapeutics (Infusion, Synuclein, GBA1, LRRK2)", large: ["ABBV", "RHHBY", "BIIB", "BAYRY", "LLY"],
+    smid: ["SUPN", "ACAD", "PRTA", "DNLI", "PRAX", "QURE", "COYA", "QTRX", "DYN", "ACIU", "NBIX", "GANX", "MGTX", "VTYX", "BIOA", "ATHE", "BIVI", "ANVS"],
+    chokepoints: ["24-hour subcutaneous pumps (ABBV Vyalev, SUPN Onapgo), PD Psychosis (ACAD Nuplazid), & D1/D5 agonist (Tavapadon) dominate commercial cash flow.", "Disease modification hinges on Prasinezumab (PRTA/RHHBY Phase 3 PARAISO), BIIB122 (DNLI/BIIB Phase 2b LUMA), Ulixacaltamide (PRAX Phase 3 Essential3), and GT-02287 (GBA1 GCase)."] },
+  { id: "BIOTECH_LONGEVITY_GEROSCIENCE", label: "LONGEVITY_GEROSCIENCE", title: "Longevity Biotech & CNS Inflammaging", x: 760, y: 150, color: "#8b5cf6",
+    layer: "L3 Geroscience, CNS NLRP3, Epigenetics & Senolytics", large: ["LLY", "NVO", "REGN", "ABBV"],
+    smid: ["NAGE", "LCTX", "BIOA", "LGVN", "VTYX"],
+    chokepoints: ["CNS-penetrant NLRP3 inhibitors (VTYX3232, BGE-102) block microglial pyroptosis in Parkinson's.", "Step-stone indication strategy required because FDA does not recognize aging as an ICD-10 disease."] },
+  { id: "BIOTECH_METABOLIC_HEALTHSPAN", label: "METABOLIC_HEALTHSPAN", title: "GLP-1 Neuroprotection & Muscle Preservation", x: 760, y: 550, color: "#8b5cf6",
+    layer: "L2 Incretin Adjuncts, Apelin & Myostatin Blockade", large: ["LLY", "NVO", "REGN", "AMGN"],
+    smid: ["SRRK", "BIOA", "VKTX", "KROS"],
+    chokepoints: ["GLP-1/GIP insulin sensitization suppresses microglial neuroinflammation while myostatin/apelin preserves lean mass in frail elderly patients."] },
+  { id: "PHARMA", label: "BIG_PHARMA_M&A", title: "Big Pharma Patent-Cliff Consolidators", x: 960, y: 360, color: "#3b82f6",
+    layer: "L7 Global Commercialization & M&A Balance Sheet", large: ["ABBV", "RHHBY", "BIIB", "BAYRY", "LLY", "SNY", "MRK"],
+    smid: ["XPH", "IBB"],
+    chokepoints: ["$200B+ Big Pharma LOE patent cliff (2025-2030) forces aggressive M&A for de-risked Phase 2 CNS & longevity assets."] }
+];
+
+const EDGES = [
+  { source: "FED_RATE", target: "NEURO_PARKINSONS_MOVEMENT", weight: -0.60, lag: 0, note: "XBI duration drag on clinical PD trials" },
+  { source: "FED_RATE", target: "BIOTECH_LONGEVITY_GEROSCIENCE", weight: -0.75, lag: 0, note: "12-15yr DCF discount rate sensitivity" },
+  { source: "FED_RATE", target: "BIOTECH_METABOLIC_HEALTHSPAN", weight: -0.45, lag: 0, note: "Lower rate beta due to near-term GLP-1 partnerships" },
+  { source: "HEALTHCARE_POLICY", target: "NEURO_BIOMARKERS_DIAGNOSTICS", weight: +0.80, lag: 1, note: "FDA IVD clearances & CMS LCD coverage for SAA/p-tau217" },
+  { source: "HEALTHCARE_POLICY", target: "BIOTECH_LONGEVITY_GEROSCIENCE", weight: +0.50, lag: 1, note: "Composite endpoint & surrogate clock flexibility" },
+  { source: "HEALTHCARE_POLICY", target: "BIOTECH_METABOLIC_HEALTHSPAN", weight: +0.65, lag: 1, note: "Medicare Part D obesity/muscle & $2k OOP cap" },
+  { source: "AI_DEMAND", target: "NEURO_BBB_DELIVERY_TECH", weight: +0.75, lag: 1, note: "Generative protein design of TfR1 shuttles & AAV capsids" },
+  { source: "DEFENSE_SPENDING", target: "NEURO_BCI_NEUROTECH", weight: +0.65, lag: 1, note: "DARPA N3/NESD & VA presumptive PD disability coverage" },
+  { source: "NEURO_BIOMARKERS_DIAGNOSTICS", target: "NEURO_PARKINSONS_MOVEMENT", weight: +0.70, lag: 1, note: "α-Synuclein SAA & GBA1/LRRK2 enrichment cuts trial failures" },
+  { source: "NEURO_BBB_DELIVERY_TECH", target: "NEURO_PARKINSONS_MOVEMENT", weight: +0.65, lag: 1, note: "10-30x basal ganglia delivery (Denali TV, Voyager TRACER)" },
+  { source: "BIOTECH_CELL_THERAPY", target: "NEURO_PARKINSONS_MOVEMENT", weight: +0.70, lag: 1, note: "Putaminal stem-cell dopaminergic engraftment (BlueRock, Aspen)" },
+  { source: "NEURO_BCI_NEUROTECH", target: "NEURO_PARKINSONS_MOVEMENT", weight: +0.50, lag: 1, note: "Medtronic Percept BrainSense closed-loop adaptive DBS" },
+  { source: "BIOTECH_METABOLIC_HEALTHSPAN", target: "BIOTECH_LONGEVITY_GEROSCIENCE", weight: +0.55, lag: 1, note: "Incretin cash flows & NLRP3/apelin co-development" },
+  { source: "BIOTECH_LONGEVITY_GEROSCIENCE", target: "NEURO_PARKINSONS_MOVEMENT", weight: +0.55, lag: 1, note: "CNS NLRP3 inflammasome & mitochondrial mitophagy rescue" },
+  { source: "NEURO_PARKINSONS_MOVEMENT", target: "PHARMA", weight: +0.55, lag: 1, note: "De-risked Phase 2/3 PD franchises refill Big Pharma LOE cliff" },
+  { source: "BIOTECH_LONGEVITY_GEROSCIENCE", target: "PHARMA", weight: +0.45, lag: 1, note: "Geroscience M&A pipeline refill" }
+];
+
+const nodeMap = Object.fromEntries(NODES.map(n => [n.id, n]));
+const svg = document.getElementById("graph-svg");
+let activeShocks = {};
+
+function renderGraph() {
+  svg.innerHTML = `
+    <defs>
+      <marker id="arrow-pos" viewBox="0 -5 10 10" refX="28" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,-5L10,0L0,5" fill="#10b981"/>
+      </marker>
+      <marker id="arrow-neg" viewBox="0 -5 10 10" refX="28" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,-5L10,0L0,5" fill="#ef4444"/>
+      </marker>
+    </defs>
+  `;
+
+  EDGES.forEach(e => {
+    const s = nodeMap[e.source];
+    const t = nodeMap[e.target];
+    const isPos = e.weight >= 0;
+    const stroke = isPos ? "#10b981" : "#ef4444";
+    const width = Math.max(1.5, Math.abs(e.weight) * 4.5);
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", s.x);
+    line.setAttribute("y1", s.y);
+    line.setAttribute("x2", t.x);
+    line.setAttribute("y2", t.y);
+    line.setAttribute("stroke", stroke);
+    line.setAttribute("stroke-opacity", "0.55");
+    line.setAttribute("stroke-width", width);
+    line.setAttribute("marker-end", isPos ? "url(#arrow-pos)" : "url(#arrow-neg)");
+    svg.appendChild(line);
+
+    const mx = (s.x + t.x) / 2;
+    const my = (s.y + t.y) / 2 - 6;
+    const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    txt.setAttribute("x", mx);
+    txt.setAttribute("y", my);
+    txt.setAttribute("fill", isPos ? "#6ee7b7" : "#fca5a5");
+    txt.setAttribute("font-size", "10");
+    txt.setAttribute("font-family", "monospace");
+    txt.setAttribute("text-anchor", "middle");
+    txt.textContent = (e.weight > 0 ? "+" : "") + e.weight.toFixed(2) + "σ";
+    svg.appendChild(txt);
+  });
+
+  NODES.forEach(n => {
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.style.cursor = "pointer";
+    g.onclick = () => selectNode(n.id);
+
+    const impact = activeShocks[n.id];
+    const r = n.id === "NEURO_PARKINSONS_MOVEMENT" ? 28 : 22;
+
+    if (impact !== undefined) {
+      const halo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      halo.setAttribute("cx", n.x);
+      halo.setAttribute("cy", n.y);
+      halo.setAttribute("r", r + 9);
+      halo.setAttribute("fill", impact >= 0 ? "rgba(16,185,129,0.25)" : "rgba(239,68,68,0.25)");
+      halo.setAttribute("stroke", impact >= 0 ? "#10b981" : "#ef4444");
+      halo.setAttribute("stroke-width", "2");
+      g.appendChild(halo);
+    }
+
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("cx", n.x);
+    c.setAttribute("cy", n.y);
+    c.setAttribute("r", r);
+    c.setAttribute("fill", "#1f2937");
+    c.setAttribute("stroke", n.color);
+    c.setAttribute("stroke-width", "3");
+    g.appendChild(c);
+
+    const lbl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    lbl.setAttribute("x", n.x);
+    lbl.setAttribute("y", n.y + r + 15);
+    lbl.setAttribute("fill", "#f9fafb");
+    lbl.setAttribute("font-size", "11");
+    lbl.setAttribute("font-weight", "700");
+    lbl.setAttribute("text-anchor", "middle");
+    lbl.textContent = n.label;
+    g.appendChild(lbl);
+
+    if (impact !== undefined) {
+      const badge = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      badge.setAttribute("x", n.x);
+      badge.setAttribute("y", n.y + 4);
+      badge.setAttribute("fill", impact >= 0 ? "#10b981" : "#ef4444");
+      badge.setAttribute("font-size", "11");
+      badge.setAttribute("font-weight", "800");
+      badge.setAttribute("font-family", "monospace");
+      badge.setAttribute("text-anchor", "middle");
+      badge.textContent = (impact >= 0 ? "+" : "") + impact.toFixed(2) + "σ";
+      g.appendChild(badge);
+    }
+
+    svg.appendChild(g);
+  });
+}
+
+function selectNode(id) {
+  const n = nodeMap[id];
+  if (!n) return;
+  document.getElementById("nd-title").textContent = n.id;
+  document.getElementById("nd-sub").textContent = n.title + " — " + n.layer;
+  document.getElementById("nd-large").innerHTML = n.large.map(t => `<span class="ticker">${t}</span>`).join("");
+  document.getElementById("nd-smid").innerHTML = n.smid.map(t => `<span class="ticker smid">${t}</span>`).join("");
+  document.getElementById("nd-choke").innerHTML = n.chokepoints.map(c => `<li>${c}</li>`).join("");
+
+  const conn = EDGES.filter(e => e.source === id || e.target === id);
+  document.getElementById("nd-edges").innerHTML = conn.map(e => {
+    const cls = e.weight >= 0 ? "w-pos" : "w-neg";
+    const sign = e.weight >= 0 ? "+" : "";
+    return `<div class="edge-row">
+      <span>${e.source} &rarr; ${e.target}</span>
+      <span class="${cls}">${sign}${e.weight.toFixed(2)}σ (lag ${e.lag})</span>
+    </div>`;
+  }).join("");
+}
+
+function runScenario(mode, btn) {
+  document.querySelectorAll(".controls button").forEach(b => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  const titleEl = document.getElementById("scen-title");
+  const descEl = document.getElementById("scen-desc");
+
+  if (mode === "baseline") {
+    activeShocks = {};
+    titleEl.textContent = "Baseline Topology (12 Nodes, 16 Directed Edges)";
+    descEl.textContent = "Showing typed prior elasticities (σ/σ) linking Macro Drivers, Enabling CNS Platforms (BBB, SAA Biomarkers, Adaptive DBS), Longevity Geroscience, and Parkinson's Disease.";
+  } else if (mode === "saa_breakout") {
+    activeShocks = {
+      "HEALTHCARE_POLICY": 1.0,
+      "AI_DEMAND": 1.0,
+      "NEURO_BIOMARKERS_DIAGNOSTICS": 0.80,
+      "NEURO_BBB_DELIVERY_TECH": 0.75,
+      "NEURO_PARKINSONS_MOVEMENT": 1.07,
+      "BIOTECH_METABOLIC_HEALTHSPAN": 0.65,
+      "BIOTECH_LONGEVITY_GEROSCIENCE": 0.77,
+      "PHARMA": 0.68
+    };
+    titleEl.textContent = "Scenario: SAA Biomarker + AI BBB Shuttle Breakout (+1.07σ PD)";
+    descEl.textContent = "Simultaneous +1σ shocks to HEALTHCARE_POLICY (Part D $2k cap & SAA LCDs) and AI_DEMAND (TfR1/TRACER capsid design) propagate +1.07σ into NEURO_PARKINSONS_MOVEMENT.";
+  } else if (mode === "rate_squeeze") {
+    activeShocks = {
+      "FED_RATE": 1.0,
+      "NEURO_PARKINSONS_MOVEMENT": -0.60,
+      "BIOTECH_LONGEVITY_GEROSCIENCE": -0.75,
+      "BIOTECH_METABOLIC_HEALTHSPAN": -0.45,
+      "PHARMA": -0.25
+    };
+    titleEl.textContent = "Scenario: +1σ Fed Rate Tightening (Standard Duration Squeeze)";
+    descEl.textContent = "Without biomarker enrichment or Big Pharma M&A overrides, a +1σ FED_RATE shock compresses long-duration clinical biotech multiples (-0.75σ Geroscience, -0.60σ Parkinson's).";
+  } else if (mode === "precision_override") {
+    activeShocks = {
+      "FED_RATE": 1.0,
+      "BIOTECH_CELL_THERAPY": 1.0,
+      "NEURO_PARKINSONS_MOVEMENT": +1.00,
+      "BIOTECH_METABOLIC_HEALTHSPAN": +0.27,
+      "BIOTECH_LONGEVITY_GEROSCIENCE": -0.40,
+      "PHARMA": +0.55
+    };
+    titleEl.textContent = "State Rule Active: NEURO_PD_R2 & LONGEVITY_R3 Override Rate Drag";
+    descEl.textContent = "When saa_biomarker_stratification_pct ≥ 70% (NEURO_PD_R2) and glp1_muscle_loss_adoption_pct ≥ 70% (LONGEVITY_R3), Big Pharma M&A competition flips the FED_RATE drag positive (+0.30σ + 0.70σ Cell Therapy = +1.00σ).";
+  }
+  renderGraph();
+}
+
+function toggleMatrixModal(show) {
+  const modal = document.getElementById("matrix-modal");
+  if (modal) modal.style.display = show ? "block" : "none";
+}
+
+function switchMatrixTab(tabId, btnEl) {
+  document.querySelectorAll("#matrix-modal .modal-tab").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll("#matrix-modal .tab-pane").forEach(p => p.classList.remove("active"));
+  if (btnEl) btnEl.classList.add("active");
+  const pane = document.getElementById(tabId);
+  if (pane) pane.classList.add("active");
+}
+
+function selectStockPick(ticker, nodeId) {
+  selectNode(nodeId);
+  const nd = document.getElementById("scenario-banner");
+  if (nd) {
+    document.getElementById("scen-title").textContent = `Stock Pick Focus: ${ticker} on ${nodeId}`;
+    document.getElementById("scen-desc").textContent = `Selected ${ticker} from Final Hardened 5-Round RSI Recommendation Matrix. Inspecting parent node ${nodeId} connectivity, macro drivers, and capital flow transmission.`;
+  }
+}
+
+renderGraph();
+selectNode("NEURO_PARKINSONS_MOVEMENT");
+</script>
+
+<div id="matrix-modal" style="display:none; position:fixed; inset:0; background:rgba(6,10,19,0.88); backdrop-filter:blur(6px); z-index:9999; overflow-y:auto; padding:20px;">
+  <div class="modal-box" style="margin:15px auto;">
+    <div class="modal-header">
+      <div>
+        <h2>
+          <span>🎯 Final Hardened 5-Round RSI Recommendation Matrix &amp; Multi-Hat Reasonings</span>
+          <span style="font-size:11px; font-weight:700; background:#065f46; color:#6ee7b7; padding:3px 9px; border-radius:12px;">WEEK OF OCT 26–30, 2026 &bull; SKILL v5.0</span>
+        </h2>
+        <p style="font-size:12px; color:#9ca3af; margin-top:4px;">
+          Grounded in live Open Targets (<code>MONDO_0005180</code>) genetic scores, ClinicalTrials.gov APIv2 registry, 6-Model Technical RSI Suite, 5 Expert Hats, and 5 Rounds of Recursive Self-Improvement (`Critique &rarr; Improve &rarr; Verify` across 10,000 Monte Carlo paths).
+        </p>
+      </div>
+      <button onclick="toggleMatrixModal(false)" style="background:#374151; color:#fff; border:1px solid #4b5563; padding:6px 14px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:700;">✕ Close</button>
+    </div>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchMatrixTab('tab-matrix', this)">1. Final Hardened Round 5 Matrix (10-Stock + Barbell)</button>
+      <button class="modal-tab" onclick="switchMatrixTab('tab-hats', this)">2. Clear Multi-Hat Reasonings (5 Expert Hats)</button>
+      <button class="modal-tab" onclick="switchMatrixTab('tab-rsi', this)">3. 5-Round RSI Evolution &amp; Monte Carlo Proof</button>
+      <button class="modal-tab" onclick="switchMatrixTab('tab-vetoes', this)">4. Critic Vetoes &amp; Longevity Bridge</button>
+      <button class="modal-tab" onclick="switchMatrixTab('tab-10round', this)" style="background:linear-gradient(135deg, #065f46, #047857); color:#a7f3d0; border-color:#34d399; font-weight:700;">5. 10-Round RSI Grand Conviction &amp; 360° Timing (Rounds 6–10)</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- TAB 1: FINAL HARDENED MATRIX -->
+      <div id="tab-matrix" class="tab-pane active">
+        <div class="kpi-strip">
+          <div class="kpi-box"><div class="lbl">4W Expected Return</div><div class="val">+7.52%</div><div class="sub">10,000-Path Monte Carlo Mean</div></div>
+          <div class="kpi-box"><div class="lbl">4W Positive Win Prob</div><div class="val">89.6%</div><div class="sub">Up from 79.1% in Round 1</div></div>
+          <div class="kpi-box"><div class="lbl">95% Value-at-Risk (VaR95)</div><div class="val">-2.46%</div><div class="sub">Tail risk cut by 64.5% vs R1</div></div>
+          <div class="kpi-box"><div class="lbl">Annualized Sortino Ratio</div><div class="val">6.09</div><div class="sub">Sharpe 1.28 (vs 0.82 in R1)</div></div>
+          <div class="kpi-box"><div class="lbl">3-Tier Barbell Split</div><div class="val">42 / 39 / 19%</div><div class="sub">Commercial / Genetic / Cash-Spring</div></div>
+        </div>
+
+        <h3 style="color:#a7f3d0; font-size:13px; text-transform:uppercase; margin-bottom:6px;">Final Converged Round 5 SMID-Cap Parkinson's &amp; Neuro Recommendation Matrix (Week of Oct 26–30, 2026)</h3>
+        <div style="overflow-x:auto;">
+          <table class="rsi-table">
+            <thead>
+              <tr>
+                <th>Rank &amp; Ticker</th>
+                <th>Barbell Tier &amp; Weight</th>
+                <th>R5 Score</th>
+                <th>Price &amp; 1W</th>
+                <th>6-Model Technical RSI Suite</th>
+                <th>Setup &amp; 2Y Win Rate</th>
+                <th>Cash Runway &amp; Net Cash/Cap</th>
+                <th>Buy Zone (Oct 26–30)</th>
+                <th>Stop-Loss</th>
+                <th>1–4W Target (R/R)</th>
+                <th>12–24M Target</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color:#34d399; font-size:13px;">#1 SUPN</strong><br><span style="color:#9ca3af; font-size:10.5px;">Supernus Pharm</span></td>
+                <td><span class="tier-badge tier-1">Tier 1 Anchor</span><br><strong>24% Wt</strong></td>
+                <td style="font-weight:800; color:#34d399; font-size:13px;">91.8</td>
+                <td><strong>$40.70</strong><br><span style="color:#34d399;">+7.4% 1W</span></td>
+                <td>Wilder-14: <strong>44.5</strong> (+17.4 5d)<br>Cutler-14: 41.7 | RSI-5: 46.1<br><strong>Connors: 27.8</strong> | VW-RSI: 46.6</td>
+                <td><strong>Type A Higher-Low</strong><br>56.0% Win (+8.1% 20d)</td>
+                <td><strong>232+ mo</strong> ($372M cash)<br>$830M Rev | 2.25x EV/S</td>
+                <td><strong>$39.60–$40.90</strong></td>
+                <td style="color:#f87171;"><strong>$36.33</strong> (-10.7%)</td>
+                <td style="color:#34d399; font-weight:700;">$45.99 (+13.0%)<br><span style="font-size:10px; color:#9ca3af;">1.21x Short R/R</span></td>
+                <td style="color:#6ee7b7; font-weight:700;">$60.50 (+48.6%)<br><span style="font-size:10px; color:#9ca3af;">4.53x Long R/R</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#34d399; font-size:13px;">#2 ACAD</strong><br><span style="color:#9ca3af; font-size:10.5px;">Acadia Pharm</span></td>
+                <td><span class="tier-badge tier-1">Tier 1 Anchor</span><br><strong>18% Wt</strong></td>
+                <td style="font-weight:800; color:#34d399; font-size:13px;">91.3</td>
+                <td><strong>$19.73</strong><br><span style="color:#34d399;">+3.2% 1W</span></td>
+                <td>Wilder-14: <strong>36.4</strong> (+9.4 5d)<br>Cutler-14: 46.7 | RSI-5: 42.1<br><strong>Connors: 26.5</strong> | <strong>VW-RSI: 26.3</strong></td>
+                <td><strong>Type A Higher-Low</strong><br>52.6% Win (+19.2% 60d)</td>
+                <td><strong>218+ mo</strong> ($956M cash)<br>26.1% Net Cash/Cap | $1.14B Rev</td>
+                <td><strong>$19.20–$19.85</strong></td>
+                <td style="color:#f87171;"><strong>$17.65</strong> (-10.5%)</td>
+                <td style="color:#34d399; font-weight:700;">$22.29 (+13.0%)<br><span style="font-size:10px; color:#9ca3af;">1.23x Short R/R</span></td>
+                <td style="color:#6ee7b7; font-weight:700;">$30.53 (+54.7%)<br><span style="font-size:10px; color:#9ca3af;">5.19x Long R/R</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#818cf8; font-size:13px;">#3 PRTA</strong><br><span style="color:#9ca3af; font-size:10.5px;">Prothena Corp</span></td>
+                <td><span class="tier-badge tier-2">Tier 2 Genetic</span><br><strong>13% Wt</strong></td>
+                <td style="font-weight:800; color:#818cf8; font-size:13px;">88.7</td>
+                <td><strong>$8.20</strong><br><span style="color:#fca5a5;">-1.8% 1W</span></td>
+                <td>Wilder-14: <strong>44.2</strong> | RSI-5: 41.4<br>Cutler-14: 48.0 | <strong>Connors: 39.5</strong><br>StochRSI: 34.1 | BB %B: 0.24</td>
+                <td><strong>Type B Cash-Floor Coil</strong><br>52.5% Win (+6.6% 60d)</td>
+                <td><strong>34.5 mo</strong> ($288M cash)<br><strong>66.8% Net Cash/Cap</strong> | 18.8% SI</td>
+                <td><strong>$7.95–$8.25</strong></td>
+                <td style="color:#f87171;"><strong>$7.49</strong> (-8.7%)</td>
+                <td style="color:#a5b4fc; font-weight:700;">$9.27 (+13.0%)<br><span style="font-size:10px; color:#9ca3af;">1.50x Short R/R</span></td>
+                <td style="color:#c7d2fe; font-weight:700;">$21.40 (+161.0%)<br><span style="font-size:10px; color:#9ca3af;">18.59x Long R/R</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#22d3ee; font-size:13px;">#4 DNLI</strong><br><span style="color:#9ca3af; font-size:10.5px;">Denali Ther.</span></td>
+                <td><span class="tier-badge tier-2">Tier 2 Genetic</span><br><strong>18% Wt</strong></td>
+                <td style="font-weight:800; color:#22d3ee; font-size:13px;">86.1</td>
+                <td><strong>$18.41</strong><br><span style="color:#34d399;">+4.5% 1W</span></td>
+                <td>Wilder-14: <strong>39.9</strong> (+9.6 5d)<br>Cutler-14: 38.7 | RSI-5: 44.5<br><strong>Connors: 27.5</strong> | VW-RSI: 39.2</td>
+                <td><strong>Type A Higher-Low</strong><br>48.1% Win (+6.9% 60d)</td>
+                <td><strong>22.0 mo</strong> ($710.5M cash)<br>22.9% Net Cash/Cap | 10.2% SI</td>
+                <td><strong>$17.90–$18.55</strong></td>
+                <td style="color:#f87171;"><strong>$16.65</strong> (-9.6%)</td>
+                <td style="color:#22d3ee; font-weight:700;">$21.11 (+14.7%)<br><span style="font-size:10px; color:#9ca3af;">1.53x Short R/R</span></td>
+                <td style="color:#67e8f9; font-weight:700;">$35.75 (+94.2%)<br><span style="font-size:10px; color:#9ca3af;">9.85x Long R/R</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#818cf8; font-size:13px;">#5 PRAX</strong><br><span style="color:#9ca3af; font-size:10.5px;">Praxis Precision</span></td>
+                <td><span class="tier-badge tier-2">Tier 2 Genetic</span><br><strong>8% Wt</strong></td>
+                <td style="font-weight:800; color:#818cf8; font-size:13px;">84.5</td>
+                <td><strong>$252.96</strong><br><span style="color:#34d399;">+4.6% 1W</span></td>
+                <td>Wilder-14: <strong>38.0</strong> (+10.6 5d)<br><strong>Cutler-14: 34.6</strong> | RSI-5: 43.3<br><strong>Connors: 33.4</strong> | VW-RSI: 38.3</td>
+                <td><strong>Type A Higher-Low</strong><br>57.0% Win (+36.4% 60d)</td>
+                <td><strong>29.3 mo</strong> ($758.6M cash)<br>10.5% Net Cash/Cap | 15.0% SI</td>
+                <td><strong>$246.00–$254.50</strong></td>
+                <td style="color:#f87171;"><strong>$227.51</strong> (-10.1%)</td>
+                <td style="color:#a5b4fc; font-weight:700;">$294.24 (+16.3%)<br><span style="font-size:10px; color:#9ca3af;">1.62x Short R/R</span></td>
+                <td style="color:#c7d2fe; font-weight:700;">$650.00 (+157.0%)<br><span style="font-size:10px; color:#9ca3af;">15.60x Long R/R</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#fbbf24; font-size:13px;">#6 QURE</strong><br><span style="color:#9ca3af; font-size:10.5px;">uniQure N.V.</span></td>
+                <td><span class="tier-badge tier-3">Tier 3 Spring</span><br><strong>5% Wt</strong></td>
+                <td style="font-weight:800; color:#fbbf24; font-size:13px;">83.9</td>
+                <td><strong>$22.43</strong><br><span style="color:#34d399;">+2.6% 1W</span></td>
+                <td><strong>Wilder-14: 28.1</strong> | Cutler-14: 26.8<br>Connors: 37.9 | <strong>VW-RSI14: 4.6</strong><br>StochRSI: 45.7 (Post-Gap Turn)</td>
+                <td><strong>Type A Post-Gap Turn</strong><br>48.1% Win (+24.4% 60d)</td>
+                <td><strong>85.1 mo</strong> ($810.3M cash)<br>35.2% Net Cash/Cap | 11.4% SI</td>
+                <td><strong>$21.80–$22.55</strong></td>
+                <td style="color:#f87171;"><strong>$20.03</strong> (-10.7%)</td>
+                <td style="color:#fde68a; font-weight:700;">$25.35 (+13.0%)<br><span style="font-size:10px; color:#9ca3af;">1.22x Short R/R</span></td>
+                <td style="color:#fef08a; font-weight:700;">$61.43 (+173.9%)<br><span style="font-size:10px; color:#9ca3af;">16.25x Long R/R</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#fbbf24; font-size:13px;">#7 COYA</strong><br><span style="color:#9ca3af; font-size:10.5px;">Coya Ther.</span></td>
+                <td><span class="tier-badge tier-3">Tier 3 Spring</span><br><strong>10% Wt</strong></td>
+                <td style="font-weight:800; color:#fbbf24; font-size:13px;">81.3</td>
+                <td><strong>$3.94</strong><br><span style="color:#fca5a5;">-3.2% 1W</span></td>
+                <td>Wilder-14: <strong>27.7</strong> | <strong>Cutler-14: 20.3</strong><br><strong>RSI-5: 13.3</strong> | <strong>Connors: 18.0</strong><br><strong>StochRSI: 4.5</strong> | VW-RSI: 27.6</td>
+                <td><strong>Type C Deep Oversold</strong><br><strong>59.0% Win</strong> (+5.5% 20d)</td>
+                <td><strong>22.9 mo</strong> ($37.9M cash)<br><strong>46.7% Net Cash/Cap</strong> | 6.5% SI</td>
+                <td><strong>$3.86–$3.96</strong> (50%)<br>+ <strong>$4.05</strong> stop-limit (50%)</td>
+                <td style="color:#f87171;"><strong>$3.77</strong> (-4.3%)</td>
+                <td style="color:#fde68a; font-weight:700;">$4.73 (+20.1%)<br><span style="font-size:10px; color:#9ca3af;">4.65x Short R/R</span></td>
+                <td style="color:#fef08a; font-weight:700;">$15.21 (+286.0%)<br><span style="font-size:10px; color:#9ca3af;">66.29x Long R/R</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#c084fc; font-size:13px;">#8 QTRX</strong><br><span style="color:#9ca3af; font-size:10.5px;">Quanterix Corp</span></td>
+                <td><span class="tier-badge tier-3">Watch / Bench</span><br><strong>Bench #8</strong></td>
+                <td style="font-weight:800; color:#c084fc; font-size:13px;">79.8</td>
+                <td><strong>$2.86</strong><br><span style="color:#34d399;">+0.4% 1W</span></td>
+                <td>Wilder-14: <strong>34.5</strong> | <strong>Cutler-14: 15.8</strong><br>Connors: 52.8 | VW-RSI14: 24.4<br>StochRSI: 24.0 | BB %B: 0.23</td>
+                <td><strong>Type B Cash-Floor Coil</strong><br>38.1% Win (+2.6% 20d)</td>
+                <td><strong>54.8 mo</strong> ($125.1M cash)<br><strong>85.7% Net Cash/Cap</strong> | $122M Rev</td>
+                <td><strong>$2.75–$2.88</strong></td>
+                <td style="color:#f87171;"><strong>$2.60</strong> (-9.1%)</td>
+                <td style="color:#e9d5ff; font-weight:700;">$3.36 (+17.5%)<br><span style="font-size:10px; color:#9ca3af;">1.92x Short R/R</span></td>
+                <td style="color:#e9d5ff; font-weight:700;">$6.33 (+121.3%)<br><span style="font-size:10px; color:#9ca3af;">13.35x Long R/R</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#c084fc; font-size:13px;">#9 DYN</strong><br><span style="color:#9ca3af; font-size:10.5px;">Dyne Ther.</span></td>
+                <td><span class="tier-badge tier-3">Watch / Bench</span><br><strong>Bench #9</strong></td>
+                <td style="font-weight:800; color:#c084fc; font-size:13px;">79.5</td>
+                <td><strong>$15.62</strong><br><span style="color:#34d399;">+2.7% 1W</span></td>
+                <td>Wilder-14: <strong>39.8</strong> | Cutler-14: 44.3<br>Connors: 57.5 | VW-RSI14: 49.4<br>MACD Hist: Rising (+0.04)</td>
+                <td><strong>Type A Higher-Low</strong><br>56.9% Win (+22.3% 60d)</td>
+                <td><strong>20.7 mo</strong> ($692.8M cash)<br>24.8% Net Cash/Cap | 14.5% SI</td>
+                <td><strong>$15.10–$15.70</strong></td>
+                <td style="color:#f87171;"><strong>$13.90</strong> (-11.0%)</td>
+                <td style="color:#e9d5ff; font-weight:700;">$17.65 (+13.0%)<br><span style="font-size:10px; color:#9ca3af;">1.18x Short R/R</span></td>
+                <td style="color:#e9d5ff; font-weight:700;">$39.29 (+151.5%)<br><span style="font-size:10px; color:#9ca3af;">13.76x Long R/R</span></td>
+              </tr>
+              <tr>
+                <td><strong style="color:#fbbf24; font-size:13px;">#10 ACIU</strong><br><span style="color:#9ca3af; font-size:10.5px;">AC Immune SA</span></td>
+                <td><span class="tier-badge tier-3">Tier 3 Spring</span><br><strong>4% Wt</strong></td>
+                <td style="font-weight:800; color:#fbbf24; font-size:13px;">75.9</td>
+                <td><strong>$2.42</strong><br><span style="color:#fca5a5;">-3.6% 1W</span></td>
+                <td>Wilder-14: <strong>34.2</strong> | <strong>Cutler-14: 30.7</strong><br>RSI-5: 32.0 | <strong>Connors: 26.2</strong><br>StochRSI: 28.9 | BB %B: 0.16</td>
+                <td><strong>Type B Cash-Floor Coil</strong><br><strong>57.7% Win</strong> (+12.6% 60d)</td>
+                <td><strong>21.9 mo</strong> ($115.6M cash)<br><strong>42.8% Net Cash/Cap</strong> | VacSYn Ph2</td>
+                <td><strong>$2.34–$2.44</strong></td>
+                <td style="color:#f87171;"><strong>$2.26</strong> (-6.6%)</td>
+                <td style="color:#fde68a; font-weight:700;">$2.73 (+12.8%)<br><span style="font-size:10px; color:#9ca3af;">1.94x Short R/R</span></td>
+                <td style="color:#fef08a; font-weight:700;">$8.64 (+257.0%)<br><span style="font-size:10px; color:#9ca3af;">38.88x Long R/R</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:11.5px; color:#9ca3af;">
+          <strong>Mid-Cap Profitable Complement (Outside Strict SMID Cap Filter):</strong> <strong><code>NBIX</code> ($142.70 | 11.9x Fwd P/E | Wilder RSI-14 = 49.7, +15.1 in 5d | Buy $140.50–$143.50 | Stop $136.50 | Target $185.55–$206.20)</strong> and <strong><code>SRRK</code> ($41.49 | Wilder RSI-14 = 38.6, +10.1 in 5d | Buy $40.50–$41.80 | Stop $38.69 | Target $61.76–$70.40)</strong>.
+        </p>
+      </div>
+
+      <!-- TAB 2: CLEAR MULTI-HAT REASONINGS -->
+      <div id="tab-hats" class="tab-pane">
+        <h3 style="color:#a7f3d0; font-size:13px; text-transform:uppercase; margin-bottom:8px;">Five Expert Hats Synthesis &amp; Stock-by-Stock Clear Reasonings</h3>
+        <div class="hat-grid">
+          <div class="hat-card">
+            <h4>🎩 Hat 1: Translational Neurologist &amp; Geneticist</h4>
+            <p>Queries Open Targets (<code>MONDO_0005180</code>) &amp; ClinicalTrials.gov APIv2. Prioritizes human genetic validation: <strong>LRRK2 (#1 score 0.8790 &rarr; DNLI BIIB122 Ph2b LUMA)</strong>, <strong>SNCA (#3 score 0.8706 &rarr; PRTA/RHHBY Prasinezumab Ph3 PARAISO NCT07174310 &amp; ACIU VacSYn)</strong>, continuous dopaminergic delivery (<strong>SUPN ONAPGO + Gocovri</strong>), PD psychosis (<strong>ACAD Nuplazid</strong>), and regulatory T-cell neuroinflammation suppression (<strong>COYA 302</strong>).</p>
+          </div>
+          <div class="hat-card">
+            <h4>🎩 Hat 2: Forensic Biotech CFO (Survivability)</h4>
+            <p>Enforces hard cash-runway and dilution guardrails under sticky Fed rates (<code>FED_RATE &rarr; NEURO_PARKINSONS_MOVEMENT = -0.60&sigma;</code>). Vetoes <strong>ANVS (2.6m cash)</strong> and flags <strong>GANX (8.4m cash)</strong>. Overweights self-funding cash cows (<strong>SUPN $830M rev / 9.5x P/E; ACAD $1.14B rev / $956M cash</strong>) and deep net-cash floors (<strong>PRTA 66.8% net cash/cap; QTRX 85.7%; COYA 46.7%; ACIU 42.8%; QURE 85.1m runway</strong>).</p>
+          </div>
+          <div class="hat-card">
+            <h4>🎩 Hat 3: Quantitative 6-Model RSI Trader</h4>
+            <p>Replaces naive single-period Wilder RSI(14) with a 6-model suite (Wilder-14, Cutler-14, Fast RSI-5, Connors RSI, StochRSI, and Volume-Weighted RSI-14) plus a 2Y Empirical Setup Classifier. Identifies <strong>Friday Higher-Low Bull-Flag Pullbacks (Type A)</strong> on <strong>SUPN (Connors 27.8)</strong>, <strong>ACAD (Connors 26.5)</strong>, <strong>DNLI (Connors 27.5)</strong>, and <strong>PRAX (Connors 33.4)</strong>.</p>
+          </div>
+          <div class="hat-card">
+            <h4>🎩 Hat 4: Event-Driven Catalyst &amp; Squeeze PM</h4>
+            <p>Detects institutional dark-pool accumulation where <code>VW-RSI(14) &lt; Wilder RSI(14)</code> alongside elevated short interest: <strong>QURE (VW-RSI 4.6 vs Wilder 28.1, 11.4% SI)</strong>, <strong>ACAD (VW-RSI 26.3 vs Wilder 36.4)</strong>, <strong>PRTA (18.8% SI + Roche Ph3 PARAISO)</strong>, and <strong>PRAX (15.0% SI + Ph3 Essential3)</strong>. Exploits pair-disconnect arbitrage (buy oversold <strong>DNLI</strong> &amp; <strong>PRTA</strong> vs overbought partners <strong>BIIB</strong> &amp; <strong>RHHBY</strong>).</p>
+          </div>
+          <div class="hat-card">
+            <h4>🎩 Hat 5: Short-Seller &amp; Risk Critic</h4>
+            <p>Caps post-gap 1–4W targets at <code>min(SMA20, Price + 1.8&times;ATR14)</code> so 50-DMA gaps (like QURE's -41.5% 1M drop) never distort short-term reward/risk. Solves SMID biotech beta correlation (<code>1.10x</code>) via the <strong>42% Commercial / 39% Partnered Genetic / 19% Cash-Floor Spring Barbell</strong>, lifting Sortino to <strong>6.09</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: 5-ROUND RSI EVOLUTION & MONTE CARLO PROOF -->
+      <div id="tab-rsi" class="tab-pane">
+        <h3 style="color:#a7f3d0; font-size:13px; text-transform:uppercase; margin-bottom:8px;">5-Round Recursive Self-Improvement (RSI) Loop &amp; 10,000-Path Monte Carlo Verification</h3>
+        <div style="overflow-x:auto;">
+          <table class="rsi-table">
+            <thead>
+              <tr>
+                <th>RSI Round &amp; Skill Version</th>
+                <th>Top Picks Selected</th>
+                <th>Critic Flaw Discovered</th>
+                <th>Skill Upgrade Implemented</th>
+                <th>4W E[Ret]</th>
+                <th>4W Win Prob</th>
+                <th>VaR 95%</th>
+                <th>Sharpe</th>
+                <th>Sortino</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Round 1</strong><br><span style="color:#9ca3af;">Skill v1.0 (Naive Screen)</span></td>
+                <td>VYGR, COYA, INMB, GANX, SANA</td>
+                <td>Dilution blindness (ANVS 2.6m, GANX 8.4m cash) &amp; single Wilder RSI(14) misses SUPN/ACAD Friday pullback</td>
+                <td>Baseline Wilder RSI(14) + raw Wall St consensus target upside</td>
+                <td>+7.00%</td>
+                <td>79.1%</td>
+                <td style="color:#f87171;">-6.93%</td>
+                <td>0.82</td>
+                <td>2.72</td>
+              </tr>
+              <tr>
+                <td><strong>Round 2</strong><br><span style="color:#9ca3af;">Skill v2.0 (Forensic + 6-RSI)</span></td>
+                <td>QURE, COYA, SUPN, ACAD, QTRX</td>
+                <td>Unconfirmed falling knives (VYGR 30.6% 2Y win rate) scored equal to higher-low pullbacks; no human genetics</td>
+                <td>Added Forensic CFO Runway Gate (&lt;12m penalty) + 6-Model RSI Suite (Connors, Cutler, StochRSI)</td>
+                <td>+7.58%</td>
+                <td>88.3%</td>
+                <td>-3.25%</td>
+                <td>1.21</td>
+                <td>5.48</td>
+              </tr>
+              <tr>
+                <td><strong>Round 3</strong><br><span style="color:#9ca3af;">Skill v3.0 (Genetics + Setup)</span></td>
+                <td>SUPN, ACAD, PRTA, DNLI, QURE</td>
+                <td>Post-gap 50-DMA distortion on QURE (-41.5% 1M) &amp; missing volume-weighted order-flow / short-squeeze torque</td>
+                <td>Integrated OpenTargets <code>MONDO_0005180</code> genetics (LRRK2/SNCA/GBA1) + 2Y Setup Classifier (Type A/B/C/D)</td>
+                <td>+6.70%</td>
+                <td>85.8%</td>
+                <td>-4.03%</td>
+                <td>1.07</td>
+                <td>4.06</td>
+              </tr>
+              <tr>
+                <td><strong>Round 4</strong><br><span style="color:#9ca3af;">Skill v4.0 (VW-RSI + Horizon)</span></td>
+                <td>SUPN, DNLI, ACAD, PRTA, PRAX</td>
+                <td>Equal-weight concentration in pre-revenue beta (1.10x) exposes portfolio to XBI macro drawdowns</td>
+                <td>Added Volume-Weighted RSI(14) divergence, Short-Squeeze Torque, Post-Gap ATR target cap, Short vs Long split</td>
+                <td>+7.22%</td>
+                <td>86.9%</td>
+                <td>-3.50%</td>
+                <td>1.13</td>
+                <td>4.63</td>
+              </tr>
+              <tr style="background:rgba(16,185,129,0.12);">
+                <td><strong style="color:#34d399;">Round 5 (Final)</strong><br><span style="color:#6ee7b7;">Skill v5.0 (Master Barbell)</span></td>
+                <td><strong>SUPN (24%), ACAD (18%), DNLI (18%), PRTA (13%), COYA (10%), PRAX (8%), QURE (5%), ACIU (4%)</strong></td>
+                <td><strong>Converged:</strong> Zero stocks with &lt;21.9m runway; 89.6% win probability; Sortino 6.09</td>
+                <td><strong>3-Tier Risk-Parity Barbell</strong> + Two-Tranche Entry Rule for Type C setups (COYA)</td>
+                <td style="color:#34d399; font-weight:800;">+7.52%</td>
+                <td style="color:#34d399; font-weight:800;">89.6%</td>
+                <td style="color:#34d399; font-weight:800;">-2.46%</td>
+                <td style="color:#34d399; font-weight:800;">1.28</td>
+                <td style="color:#34d399; font-weight:800;">6.09</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 4: CRITIC VETOES & LONGEVITY BRIDGE -->
+      <div id="tab-vetoes" class="tab-pane">
+        <div class="hat-grid">
+          <div class="hat-card" style="border-color:rgba(239,68,68,0.5);">
+            <h4 style="color:#fca5a5;">🚫 Explicit 5-Round RSI Critic Exclusions &amp; Conditional Rules</h4>
+            <p>
+              &bull; <strong>ANVS ($1.00 — Ranked #7 in R1 &rarr; #19 in R5):</strong> <strong>HARD AVOID.</strong> Only <code>2.6 months</code> of cash runway ($3.5M cash vs -$16.3M FCF); extreme toxic dilution risk.<br>
+              &bull; <strong>GANX ($1.26 — Ranked #4 in R1 &rarr; #18 in R5):</strong> <strong>DILUTION WATCH.</strong> Strong Phase 1b <code>GT-02287</code> GCase data, but <code>8.4 months</code> cash runway ($11.8M cash) creates financing overhang. Wait for post-raise or partnership clearing event.<br>
+              &bull; <strong>VYGR ($1.74 — Ranked #1 in R1 &rarr; #15 in R5):</strong> <strong>FALLING KNIFE TRAP.</strong> Down -8.4% 1W with <code>RSI-5 = 23.8</code>, falling MACD, and <code>30.6%</code> 2Y win rate. <em>Conditional Rule:</em> Only enter via stop-limit at <strong>$1.85</strong> when <code>RSI(5) &gt; 30</code>.<br>
+              &bull; <strong>RHHBY ($61.17, RSI-5 = 95.7, BB %B = 102.3%) &amp; BIIB ($250.69, RSI-14 = 70.6, BB %B = 100.6%):</strong> Overbought chases vetoed at market open; rotate into their undervalued SMID partners <strong>PRTA ($8.20)</strong> and <strong>DNLI ($18.41)</strong>.
+            </p>
+          </div>
+          <div class="hat-card">
+            <h4>🧬 Longevity &amp; Metabolic Healthspan Cross-Bridge (Nodes L2/L3/L4)</h4>
+            <p>
+              &bull; <strong>SRRK ($41.49 | 90.3 Longevity Score):</strong> #1 GLP-1 muscle preservation &amp; SMA pick (Wilder RSI-14 jumped +10.1 pts in 5d to 38.6; $492M cash; Buy $40.50–$41.80, Stop $36.80, PT $68–$70.40).<br>
+              &bull; <strong>VKTX ($24.40 | 85.8 Score):</strong> Phase 3 VANQUISH oral/SubQ GLP-1/GIP neuro-metabolic catalyst (Stop $21.20, PT $44.00).<br>
+              &bull; <strong>LCTX ($1.00) &amp; NAGE ($2.43):</strong> Roche-partnered OpRegen RPE stem-cell therapy &amp; profitable NAD+ precursor compounder.<br>
+              &bull; <strong>BIOA ($5.10):</strong> Trades at -$86M negative enterprise value ($319M cash vs $230M cap) with oral CNS NLRP3 inhibitor <code>BGE-102</code>; conditional buy only on daily close above 8d EMA ($5.45).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: 10-ROUND GRAND CONVICTION & 360° TIMING (ROUNDS 6-10) -->
+      <div id="tab-10round" class="tab-pane">
+        <div class="kpi-strip">
+          <div class="kpi-box"><div class="lbl">Macro Stress Test</div><div class="val">^TNX 4.99%</div><div class="sub">Cost-of-Capital &amp; IRA Shield</div></div>
+          <div class="kpi-box"><div class="lbl">Portfolio 95% Daily CVaR</div><div class="val">-4.80%</div><div class="sub">20-Day CVaR: -16.42%</div></div>
+          <div class="kpi-box"><div class="lbl">Avg Pairwise Correlation</div><div class="val">0.26</div><div class="sub">High Sleeve Diversification</div></div>
+          <div class="kpi-box"><div class="lbl">Annualized Sleeve Vol</div><div class="val">40.4%</div><div class="sub">Down from 55.9% Standalone</div></div>
+          <div class="kpi-box"><div class="lbl">#1 Grand Conviction</div><div class="val">SRRK (92.4)</div><div class="sub">6.5% Target Allocation</div></div>
+        </div>
+
+        <h3 style="color:#34d399; font-size:13px; text-transform:uppercase; margin-bottom:8px;">Grand 10-Round RSI Master Matrix &amp; 360° Diligence (Fundamental, Technical, Sentiment)</h3>
+        <div style="overflow-x:auto;">
+          <table class="rsi-table">
+            <thead>
+              <tr>
+                <th>Rank &amp; Ticker</th>
+                <th>10-Round Score</th>
+                <th>Price &amp; MCap</th>
+                <th>Fundamental Health</th>
+                <th>Technical Setup &amp; POC</th>
+                <th>Sentiment &amp; Short DTC</th>
+                <th>Tactical Action Verdict</th>
+                <th>Target Wt</th>
+                <th>Buy Zone</th>
+                <th>Stop-Loss</th>
+                <th>PT1 / PT2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:rgba(16,185,129,0.08);">
+                <td><strong style="color:#34d399; font-size:13.5px;">#1 SRRK</strong><br><span style="color:#9ca3af; font-size:11px;">Scholar Rock</span></td>
+                <td><strong style="color:#34d399; font-size:14px;">92.4</strong><br><span style="color:#6ee7b7; font-size:10px;">GCS-10</span></td>
+                <td><strong>$41.49</strong><br><span style="color:#9ca3af; font-size:11px;">$5.05B Cap</span></td>
+                <td><strong>FDA Approved</strong> in SMA (ISEMBYLD); Ph2 EMBRAZE proved lean muscle preservation w/ tirzepatide; $492M cash; 13y IRA biologic shield.</td>
+                <td><strong>5d &Delta;RSI = +10.1</strong> (RSI-14: 38.6); Wyckoff Phase D markup consolidation; empty volume pocket up to <strong>POC $55.00</strong>.</td>
+                <td><strong>23.29% Short Float</strong>; <strong>10.7 Days-to-Cover</strong>; Baker Bros &amp; RA Capital sponsorship; no binary earnings cliff.</td>
+                <td><span style="background:#065f46; color:#6ee7b7; padding:3px 8px; border-radius:10px; font-weight:700; font-size:11px;">STRONG BUY NOW</span><br><span style="color:#d1fae5; font-size:10.5px;">Immediate entry</span></td>
+                <td><strong>6.5%</strong></td>
+                <td><strong>$40.50–$42.00</strong></td>
+                <td><strong>$36.80</strong><br><span style="color:#f87171; font-size:10px;">-11.3% ATR</span></td>
+                <td><strong>$54.00</strong> (+30%)<br><strong>$68.00</strong> (+64%)</td>
+              </tr>
+              <tr>
+                <td><strong style="color:#6ee7b7; font-size:13.5px;">#2 VKTX</strong><br><span style="color:#9ca3af; font-size:11px;">Viking Ther.</span></td>
+                <td><strong style="color:#6ee7b7; font-size:14px;">87.1</strong><br><span style="color:#9ca3af; font-size:10px;">GCS-10</span></td>
+                <td><strong>$24.40</strong><br><span style="color:#9ca3af; font-size:11px;">$3.10B Cap</span></td>
+                <td>VANQUISH-1 (4.5k) &amp; 2 (1k) Ph3 obesity enrolled; Q4 oral Ph3 initiation; <strong>$501.7M net cash</strong> ($4.41/sh cash floor) w/ zero debt.</td>
+                <td><strong>RSI-5 = 29.0</strong> (deep oversold); retesting 52w low ($24.36); Bollinger %B = 0.13; Wyckoff Phase C Spring; POC $40.84.</td>
+                <td><strong>21.44% Short Float</strong>; 3.7 DTC; <strong>Trap Alert:</strong> Front ATM IV is 78.7%–96.5% ahead of Oct 28 earnings; avoid naked calls!</td>
+                <td><span style="background:#047857; color:#a7f3d0; padding:3px 8px; border-radius:10px; font-weight:700; font-size:11px;">TACTICAL BUY (SPOT)</span><br><span style="color:#a7f3d0; font-size:10.5px;">50% now, 50% post-ER</span></td>
+                <td><strong>4.5%</strong></td>
+                <td><strong>$23.80–$24.80</strong></td>
+                <td><strong>$21.20</strong><br><span style="color:#f87171; font-size:10px;">-13.1%</span></td>
+                <td><strong>$32.50</strong> (+33%)<br><strong>$44.00</strong> (+80%)</td>
+              </tr>
+              <tr>
+                <td><strong style="color:#60a5fa; font-size:13.5px;">#3 LCTX</strong><br><span style="color:#9ca3af; font-size:11px;">Lineage Cell</span></td>
+                <td><strong style="color:#60a5fa; font-size:14px;">81.5</strong><br><span style="color:#9ca3af; font-size:10px;">GCS-10</span></td>
+                <td><strong>$1.00</strong><br><span style="color:#9ca3af; font-size:11px;">$252.9M Cap</span></td>
+                <td>OpRegen partnered w/ Roche ($670M deal); 36m follow-up confirms BCVA gains &amp; RPE restoration; $50.8M cash (>2y runway).</td>
+                <td><strong>Record Bollinger Band Squeeze</strong> (bandwidth 13.6%); locked on $1.00 institutional bid wall; RSI-14 = 52.2 neutral-bullish.</td>
+                <td><strong>19.08% Short Float</strong>; <strong>20.0 Days-to-Cover (DTC)</strong>; Roche equity alignment; explosive squeeze convexity on Ph2b news.</td>
+                <td><span style="background:#1e3a8a; color:#93c5fd; padding:3px 8px; border-radius:10px; font-weight:700; font-size:11px;">ACCUMULATE AT FLOOR</span><br><span style="color:#bfdbfe; font-size:10.5px;">Asymmetric option</span></td>
+                <td><strong>2.0%</strong></td>
+                <td><strong>$0.96–$1.04</strong></td>
+                <td><strong>$0.82</strong><br><span style="color:#f87171; font-size:10px;">-18.0%</span></td>
+                <td><strong>$1.85</strong> (+85%)<br><strong>$3.20</strong> (+220%)</td>
+              </tr>
+              <tr>
+                <td><strong style="color:#f59e0b; font-size:13.5px;">#4 NAGE</strong><br><span style="color:#9ca3af; font-size:11px;">Niagen Bioscience</span></td>
+                <td><strong style="color:#f59e0b; font-size:14px;">78.9</strong><br><span style="color:#9ca3af; font-size:10px;">GCS-10</span></td>
+                <td><strong>$2.43</strong><br><span style="color:#9ca3af; font-size:11px;">$193.5M Cap</span></td>
+                <td><strong>64.8% Gross Margin</strong>; positive Q2 net income ($1M), Adj. EBITDA $3.8M, <strong>+$5.9M OCF</strong>; $66.7M cash w/ ZERO debt; EV/Sales &lt; 1.0x!</td>
+                <td><strong>RSI-5 = 27.6</strong>; RSI-14 = 30.2; sitting at 52w low ($2.42); deep value consolidation on decreasing volume.</td>
+                <td>7.54% Short Float; 10.1 DTC; zero clinical trial binary cliff risk; structural hedge against 5% Treasury yields.</td>
+                <td><span style="background:#78350f; color:#fde68a; padding:3px 8px; border-radius:10px; font-weight:700; font-size:11px;">CORE VALUE BUY NOW</span><br><span style="color:#fef3c7; font-size:10.5px;">Profitable anchor</span></td>
+                <td><strong>3.5%</strong></td>
+                <td><strong>$2.38–$2.48</strong></td>
+                <td><strong>$2.10</strong><br><span style="color:#f87171; font-size:10px;">-13.5%</span></td>
+                <td><strong>$3.40</strong> (+40%)<br><strong>$4.50</strong> (+85%)</td>
+              </tr>
+              <tr style="background:rgba(239,68,68,0.06);">
+                <td><strong style="color:#f87171; font-size:13.5px;">#5 BIOA</strong><br><span style="color:#9ca3af; font-size:11px;">BioAge Labs</span></td>
+                <td><strong style="color:#f87171; font-size:14px;">31.2</strong><br><span style="color:#9ca3af; font-size:10px;">GCS-10</span></td>
+                <td><strong>$5.10</strong><br><span style="color:#9ca3af; font-size:11px;">$234.1M Cap</span></td>
+                <td>Ph2 STRIDES azelaprag trial halted on liver transaminitis; annual cash burn of -$87.6M erodes $318.7M cash; broken asset.</td>
+                <td>Wyckoff Phase E markdown; broken 50/200 DMAs; POC far overhead at $8.82; dead-cat bounce only.</td>
+                <td>8.03% Short Float; 4.7 DTC; heavy institutional liquidation; classic negative enterprise value cash-burn trap.</td>
+                <td><span style="background:#7f1d1d; color:#fca5a5; padding:3px 8px; border-radius:10px; font-weight:700; font-size:11px;">AVOID / SHORT HEDGE</span><br><span style="color:#fecaca; font-size:10.5px;">Short pair vs SRRK</span></td>
+                <td><strong>0.0%</strong></td>
+                <td><strong>N/A (Hedge)</strong></td>
+                <td><strong>$6.20</strong><br><span style="color:#fca5a5; font-size:10px;">(cover stop)</span></td>
+                <td><strong>$3.50</strong> (-31%)<br><strong>$2.20</strong> (-57%)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="background:rgba(15,23,42,0.8); border:1px solid #334155; border-radius:8px; padding:12px 16px; margin-top:14px;">
+          <h4 style="color:#38bdf8; font-size:12px; text-transform:uppercase; margin-bottom:6px;">⏱️ Tactical Timing Playbook Summary: Is THIS the Right Time to Buy?</h4>
+          <p style="font-size:12px; color:#cbd5e1; line-height:1.6; margin:0;">
+            <strong>&bull; SRRK &amp; NAGE (BUY IMMEDIATELY):</strong> Both offer pristine, asymmetric entry points this week. SRRK is bouncing off the $38–$40 shelf with a +10.1 RSI thrust and clear $55 POC magnet. NAGE is an unhedged debt-free cash cow trading at 1.0x sales with zero binary cliff risk.<br>
+            <strong>&bull; VKTX (BUY SPOT SHARES ONLY, 50% TRANCHE):</strong> Because earnings occur on Oct 28 and ATM IV is 85%+, options buyers face catastrophic IV crush. Buying spot common shares at the $24.40 52-week low support base provides asymmetric risk/reward. Take 50% sizing today, 50% post-earnings.<br>
+            <strong>&bull; LCTX (ACCUMULATE AT $1.00 BID WALL):</strong> Squeezed into an extreme 13.6% Bollinger bandwidth with 20.0 Days-to-Cover short interest. Use limit orders at $0.98–$1.02.<br>
+            <strong>&bull; BIOA (DO NOT BUY):</strong> Pair short against SRRK long to immunize against unexpected broad biotech macro pullbacks.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

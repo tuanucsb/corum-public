@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CORUM: Institutional Platform Overview &amp; Empirical State of the Economy · CORUM Research</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --ground: #faf8f3;
+      --paper: #fdfcf9;
+      --line: #e4ded3;
+      --line-soft: #efe9df;
+      --sand: #f1ece2;
+      --ink: #16191d;
+      --muted: #5f656c;
+      --teal: #1d4e5f;
+      --gold: #8a6d1f;
+      --gold-ink: #735a14;
+      --green: #14614a;
+      --red: #9c2f22;
+      --green-bg: #e1efe8;
+      --red-bg: #f6e3df;
+      --amber-bg: #fbf3e0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--ground);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 18px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--teal);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .15s ease;
+    }
+    .back-btn:hover {
+      border-color: var(--teal);
+      background: var(--sand);
+    }
+    .badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--teal);
+      color: #fff;
+    }
+    .stats {
+      margin-left: auto;
+      font-size: 12.5px;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .action-btn {
+      font: inherit;
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .action-btn:hover { border-color: var(--teal); }
+    .content-wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+    .article-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 12px 0 16px;
+      color: var(--ink);
+    }
+    h2 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 24px;
+      font-weight: 500;
+      margin: 36px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--ink);
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 24px 0 10px;
+      color: var(--ink);
+    }
+    h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 18px 0 8px;
+    }
+    p, ul, ol {
+      margin: 0 0 16px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    a {
+      color: var(--teal);
+      text-underline-offset: 3px;
+    }
+    a.ticker-chip {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 1px 6px;
+      margin: 0 2px;
+      background: #eef4f6;
+      border: 1px solid #c8d9df;
+      border-radius: 4px;
+      color: var(--teal);
+      text-decoration: none;
+    }
+    a.ticker-chip:hover {
+      background: var(--teal);
+      color: #fff;
+    }
+    .tablewrap {
+      overflow-x: auto;
+      margin: 20px 0 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      background: var(--sand);
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: top;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: #fbf9f5;
+    }
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      background: var(--sand);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #f4eee2;
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+    }
+    blockquote {
+      margin: 18px 0;
+      padding: 12px 18px;
+      background: var(--amber-bg);
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      font-size: 13.5px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 32px 0;
+    }
+    .article-body img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 6px;
+    }
+    @media (max-width: 768px) {
+      .content-wrap { padding: 20px 16px 60px; }
+      h1 { font-size: 26px; }
+      h2 { font-size: 20px; }
+      .topbar { padding: 8px 14px; }
+      .stats { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="../index.html" target="_top" class="back-btn">← Back to CORUM Reports</a>
+    <span class="badge">Platform Overview &amp; Macro State</span>
+    <span class="stats">25 min read · 5,458 words · October 20, 2026</span>
+    
+    <button onclick="window.print()" class="action-btn">Print / PDF</button>
+  </div>
+  <main class="content-wrap">
+    <article class="article-body">
+      <h1>CORUM: Institutional Platform Overview &amp; Empirical State of the Economy</h1>
+<p><strong>Publication Date:</strong> October 20, 2026<br />
+<strong>Prepared by:</strong> CORUM Research &amp; Macro-Sector Intelligence Desk<br />
+<strong>Audience:</strong> External Institutional Partners, Research Subscribers &amp; Strategic Counterparties<br />
+<strong>Platform Release:</strong> <code>CORUM v4.5</code> · Sector Command (<code>MS-2.1</code>) · US NAICS Cascade (<code>AIES 2024</code>) · WorldModel (<code>v0.8</code>) · AI Venture Graph (<code>625 Nodes</code>)</p>
+<hr />
+<blockquote>
+<p><strong>IMPORTANT:</strong> <strong>Advisory &amp; Epistemic Mandate:</strong> CORUM (<em>Cognitive Quorum</em>) is an <strong>advisory and paper-only</strong> multi-strategy research, macro-intelligence, and decision-support platform. It never executes trades autonomously. Every quantitative metric, regime read, and sector classification in this report is generated from live point-in-time market feeds, Federal Reserve (<code>FRED</code>/<code>ALFRED</code>) vintage series, US Census Bureau (<code>AIES</code>) bulk filings, SEC <code>XBRL</code> panels, and pre-registered prediction ledgers as of <strong>October 20, 2026</strong>.</p>
+</blockquote>
+<hr />
+<h1>Part I: What CORUM Is — An External Guide to the &quot;Cognitive Quorum&quot; Platform</h1>
+<h2>1. Executive Summary &amp; Architectural Vision</h2>
+<p>Most financial research platforms fail in one of two ways: either they rely on <strong>discretionary human narratives</strong> that drift with market sentiment and never track their own denominator of failed calls, or they rely on <strong>opaque black-box machine learning models</strong> overfitted to non-stationary historical price noise.</p>
+<p><strong>CORUM</strong> (<em>Cognitive Quorum</em>, rooted in <code>Corum/</code>) was engineered to solve both failure modes. It is an integrated, AI-operated multi-strategy investment and macroeconomic intelligence platform modeled on two institutional pillars:</p>
+<ol>
+<li><strong>Bridgewater-Style Believability-Weighted Macro &amp; Causal Graphs</strong>: Macro shocks, central bank reaction functions, debt-cycle gauges, and supply-chain bottlenecks propagate across an explicit, evidence-graded causal network (<code>agentic-bridgewater/</code> and <code>corum/foundry/</code>).</li>
+<li><strong>Millennium-Style Independent Strategy Pods (&quot;A Firm of Agents&quot;)</strong>: Every investment strategy—across sector momentum, swing-length percentile reversal, options income (covered calls, cash-secured put wheels, weekly collars), 6-month asymmetric doublers, and 3-to-5-year 10x/20x multibaggers—operates as a standardized, self-contained agent built from a single contract (<code>corum/contracts.py</code>). Each agent executes four deterministic moves: <strong><code>Perceive → Reason → Decide → Conclude</code></strong>.</li>
+</ol>
+<h3>1.2 End-to-End Information Flow &amp; Data-Bus Pipeline</h3>
+<p>To illustrate how raw market, macroeconomic, and regulatory telemetry transforms into audited capital allocation decisions, the two architecture diagrams below trace <strong>(A) the 5-stage system-wide information flow</strong> and <strong>(B) the deterministic Foundry data-bus, contract schema, and epistemic audit loop</strong>:</p>
+<p><img src="screenshots/corum-information-flow.png" alt="CORUM End-to-End 5-Stage Information Flow Architecture" /></p>
+<p><img src="screenshots/corum-data-bus-pipeline.png" alt="CORUM Foundry Data-Bus, Contract Schema &amp; Epistemic Audit Pipeline" /></p>
+<hr />
+<h2>2. The Seven Epistemic &amp; Engineering Standing Rules</h2>
+<p>To prevent hallucination, look-ahead bias, and narrative drift, every module in CORUM is governed by seven non-negotiable engineering invariants (enforced by automated test suites in <code>Corum/tests/</code> and <code>Corum/CLAUDE.md</code>):</p>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:center">#</th>
+<th style="text-align:left">Standing Rule</th>
+<th style="text-align:left">Technical Implementation in CORUM</th>
+<th style="text-align:left">Why It Matters for External Users</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>1</strong></td>
+<td style="text-align:left"><strong>Real Data Only (Fail-Loud Feeds)</strong></td>
+<td style="text-align:left">Zero synthetic or interpolated price fallbacks anywhere in <code>prices.py</code> or <code>dalio.py</code>. If FRED or market feeds fail after retries, the build halts or flags <code>FAILED</code>—never inventing a number.</td>
+<td style="text-align:left">Eliminates silent data corruption and &quot;phantom backtest alpha.&quot;</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>2</strong></td>
+<td style="text-align:left"><strong>Own-History Percentiles, Never Fixed Thresholds</strong></td>
+<td style="text-align:left">An arbitrary &quot;+22% in 6m = overheated&quot; threshold calibrated on <code>SPY</code> mis-flags high-beta Biotech or Semiconductors. Every regime, volatility, and macro gauge is scored against its own historical distribution (<code>MIN_PCTILE_N = 40</code>).</td>
+<td style="text-align:left">Normalizes cross-asset comparisons across 181 disparate subsectors.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:left"><strong>Absence Is Named, Never Silenced</strong></td>
+<td style="text-align:left">Every field carries an explicit state (<code>DESIGN.md</code>): <code>FRESH</code>, <code>DUE</code>, <code>STALE</code>, <code>MISSING</code>, <code>FAILED</code>, <code>PARKED</code>, <code>PARTIAL n/m</code>, or <code>UNCOVERED</code>. A blank news feed reads <code>UNCOVERED</code>, never &quot;quiet.&quot;</td>
+<td style="text-align:left">Prevents the fatal analytical error of mistaking missing data for benign fundamentals.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>4</strong></td>
+<td style="text-align:left"><strong>Forced Denominators (<code>n</code> on Every Claim)</strong></td>
+<td style="text-align:left">Every subsector call (<code>4,276</code> logged entries in <code>call_ledger.py</code>), situation fire (<code>56</code> instances in <code>situation_ledger.py</code>), and probability forecast is automatically graded at fixed forward windows (<code>+5d</code>, <code>+21d</code>, <code>+30d</code>, <code>+63d</code>, <code>+90d</code>). Even rejected setups are graded.</td>
+<td style="text-align:left">Transforms subjective &quot;conviction&quot; into empirically audited hit rates with explicit sample sizes.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>5</strong></td>
+<td style="text-align:left"><strong>Falsifiability as a Hard Gate</strong></td>
+<td style="text-align:left">A signal or model that cannot say <code>NO</code> is deleted. When internal evaluation (<code>Gate G1</code>) showed gradient-boosted ML return fitting did not beat simple baselines out-of-time, ML fitting was cancelled system-wide in favor of research-calibrated, cited factor scoring (<code>SCORING_SYSTEM_DESIGN.md</code>).</td>
+<td style="text-align:left">Protects users from overfitted quantitative mirages.</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:left"><strong>Measured vs. Hand-Scored Separation</strong></td>
+<td style="text-align:left">Hard econometric measurements (e.g., FRED debt-to-GDP, interest outlays, credit spreads) are strictly segregated from qualitative assessments (e.g., reserve-currency status, internal conflict), which are tagged <code>measured: False</code> and never blended into a composite index.</td>
+<td style="text-align:left">Prevents &quot;turning a qualitative vibe into a number with decimal places.&quot;</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>7</strong></td>
+<td style="text-align:left"><strong>LLM Proposes, Deterministic Code Disposes</strong></td>
+<td style="text-align:left">LLMs synthesize news, draft dossiers, and challenge theses, but every citation is span-checked, and all position sizing, liquidity filtering (option spread ≤ 10%, open interest ≥ 200), and risk gating are 100% deterministic code.</td>
+<td style="text-align:left">Combines frontier AI reasoning breadth with institutional risk discipline.</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>3. Core Platform Capabilities &amp; Intelligence Modules</h2>
+<h3>3.1 The Sector Command Foundry (<code>181</code> Subsectors · <code>1,058</code> Equities · <code>109</code> ETFs)</h3>
+<p>Built in <code>corum/foundry/sector_command.py</code> and rendered via <code>sector_desk.py</code>, the <strong>Sector Command Board</strong> decomposes the global investable universe into <strong>181 granular subsectors</strong> across <strong>20 parent sectors and thematic clusters</strong> (including <em>Technology, Healthcare, Consumer, Industrials, Financials, Materials, Energy, Real Estate, Regions, Cell &amp; Gene Therapy, Space, Nuclear, Robotics, Defense, Neuro &amp; Neurotech, Quantum, Crypto, Longevity,</em> and <em>Utilities</em>).</p>
+<p>For every subsector row, CORUM computes:</p>
+<ul>
+<li><strong>Multi-Horizon Return &amp; Breadth Profiles</strong>: <code>1m</code>, <code>3m</code>, <code>6m</code>, <code>9m</code>, <code>12m</code>, and <code>24m</code> returns, constituent breadth above the 200-day moving average, and internal dispersion.</li>
+<li><strong>Momentum Sustainability (<code>MS-2.1</code>) &amp; Banded Calls</strong>: Rather than chasing raw price momentum, <code>MS-2.1</code> evaluates momentum alongside trend exhaustion, own-history overheat percentiles, and causal macro graph tilts (<code>graph_tilt</code>), assigning each subsector to one of four calls (with hysteresis bands to eliminate daily chatter flips):
+<ul>
+<li><strong><code>RIDE</code></strong> (Green Circle): Confirmed trend with sustainable breadth and supportive or neutral macro drivers.</li>
+<li><strong><code>FRAGILE</code></strong> (Orange Diamond): Strong prior momentum now exhibiting exhaustion, severe drawdown unrecovered state, or adverse macro/valuation vulnerability.</li>
+<li><strong><code>EARLY</code></strong> (Blue Square): Bottoming or inflecting subsector with improving breadth/catalysts prior to full trend confirmation.</li>
+<li><strong><code>AVOID</code></strong> (Hollow Grey): Broken technicals, negative momentum, or structural macro headwinds.</li>
+</ul>
+</li>
+<li><strong>Portfolio Action Buckets &amp; Option Strategy Matrix</strong>: Maps every subsector into <code>BUY</code>, <code>HOLD</code>, <code>OVERHEATED</code>, or <code>REDUCE</code>, paired with implied-volatility percentile ranks (<code>iv_proxy_pctile</code> from the daily option-chain recorder <code>chain_recorder.py</code>) to recommend optimal defined-risk option structures.</li>
+</ul>
+<h3>3.2 The US Economy NAICS Cascade (<code>naics_tree.py</code> &amp; <code>db/naics.db</code>)</h3>
+<p>Standard stock market indices (<code>S&amp;P 500</code>, <code>Nasdaq 100</code>) are heavily skewed toward mega-cap technology and misrepresent the physical and service economy. CORUM ingests the US Census Bureau's <strong>Annual Integrated Economic Survey (<code>AIES00BASIC</code>)</strong> directly from Census bulk files, organizing <strong>1,836 NAICS industry nodes</strong> from 2-digit sectors down to 6-digit national industries and 7-digit hospital splits:</p>
+<ul>
+<li>Tracks <strong><code>$53.60 trillion</code></strong> in US employer firm revenue, <strong><code>138.12 million</code></strong> employees, and <strong><code>$9.42 trillion</code></strong> in annual payroll.</li>
+<li>Computes year-over-year industry revenue growth alongside <strong>rigorous standard errors (<code>growth_se</code>) and 90% statistical significance flags (<code>Z = 1.645</code>)</strong> based on Census coefficients of variation (<code>CV</code>).</li>
+<li>Maps <strong>697 public equities</strong> and <strong>55 sector ETFs</strong> directly onto their exact 6-digit NAICS nodes, calculating <strong>holdings-verified ETF purity scores</strong> (for example, proving that <code>ITB</code> has a <code>69.8%</code> pure residential construction weight in NAICS <code>236</code>, whereas <code>XHB</code> has only <code>40.3%</code> purity due to retail and building-products dilution; or that <code>IHE</code> carries <code>89.5%</code> pharmaceutical purity in NAICS <code>325412</code> vs. <code>21.4%</code> for equal-weight <code>XPH</code>).</li>
+</ul>
+<h3>3.3 Causal Macro Graph, Dalio Debt Gauges &amp; Pre-Registered <code>WorldModel</code></h3>
+<p>CORUM links top-down macroeconomics to bottom-up subsectors through three connected engines:</p>
+<ol>
+<li><strong>Live FRED Big Debt Cycle Monitor (<code>dalio.py</code>)</strong>: Tracks 9 live FRED series with historical percentile distributions (N = 86 to 12,593 observations) to answer Ray Dalio's central debt-cycle question: <em>Is the real cost of money below nominal GDP growth (self-liquidating financial repression) or above it (compounding debt crisis)?</em></li>
+<li><strong>Actor-to-Node Causal Lever Registry (<code>actors.py</code> &amp; <code>machine.py</code>)</strong>: Audits how exogenous actors (the Federal Reserve, OPEC+, US Executive tariffs, China stimulus, Hyperscaler AI capex) pull specific macro graph nodes and propagate linear shocks across all 181 subsectors.</li>
+<li><strong>Evidence-Linked Geopolitical &amp; Policy <code>WorldModel</code> (<code>worldmodel/</code>)</strong>: Models decision-making bodies via dated evidence records (<code>155</code> cited items in <code>iran-conflict-v0.7/v0.8</code>), binding authorization edges, and conditional reaction rules across active scenarios: <strong>Strait of Hormuz (<code>iran-v0.8</code>)</strong>, <strong>FOMC Rate Path (<code>fomc-v0.1b</code>)</strong>, <strong>US Midterm Elections (<code>us-midterms-v0.1</code>)</strong>, <strong>Global Central Banks (<code>central-banks-v0.1</code>)</strong>, <strong>US-China Trade/Summit (<code>us-china-v0.1</code>)</strong>, <strong>Russia-Ukraine (<code>russia-ukraine-v0.2</code>)</strong>, and <strong>Hyperscaler AI Capex (<code>ai-capex-v0.1</code>)</strong>. Every forecast is pre-registered in a cryptographic hash-sealed ledger and scored via <strong>Brier score and log-loss</strong> against live prediction markets (<code>Kalshi</code>, <code>Polymarket</code>) and a naive persistence baseline.</li>
+</ol>
+<h3>3.4 Asymmetric Equity Engines (<code>corum-multiplier/</code>) &amp; The Independent <code>CORUM Brain</code> (<code>corum-brain/</code>)</h3>
+<ul>
+<li><strong><code>Double-in-Six</code> (<code>corum-multiplier/engines/double-in-six/</code>)</strong>: Screens and scores <strong>159 high-velocity candidates</strong> capable of +100% appreciation within 6 months, pairing catalyst verification with a coherent 6-month path downside model (<code>CM-PROB-003</code>) that explicitly estimates P(-30%) and P(-50%) drawdown risk.</li>
+<li><strong><code>Multibagger 10x/20x</code> (<code>corum-multiplier/engines/multibagger/</code>)</strong>: Trained on a point-in-time SEC <code>XBRL</code> panel across <code>~4,000</code> US listings (achieving a <strong>0.84 out-of-time AUC</strong> and <strong>4.7x top-decile lift</strong>), adjusted by a <strong>listing-survival model</strong> trained on both surviving and delisted SEC filers to bound P(-80% or delisting) alongside &quot;the 10x equation&quot; (required revenue CAGR vs. historical base rates for same-size firms).</li>
+<li><strong><code>CORUM Brain</code> (<code>corum-brain/</code>)</strong>: An independent decision engine (running on <code>:8790</code>) that ingests all candidates from the Sector Command board, runs a deterministic scorer and span-checked Claude deliberator, applies hard portfolio gates (liquidity, cycle stage, earnings window, concentration), sizes surviving positions via <strong>quarter-Kelly on shrunk inputs</strong>, and publishes the top 5 ranked actions for the next market open—complete with the strongest counter-argument and explicit invalidation level.</li>
+</ul>
+<h3>3.5 The 625-Node Private AI Startup &amp; Venture Graph (<code>v4.5 Institutional Edition</code>)</h3>
+<p>Complementing public market coverage, CORUM maintains a proprietary <strong>Multi-Relational AI Startup &amp; Venture Graph Database</strong> (<code>CORUM_AI_Startup_Executive_Teaser_Oct2026.md</code>) tracking <strong>536 private and newly public AI companies</strong> across <strong>29 sub-segments</strong> (<code>Circle 1 Core AI</code>, <code>Circle 2 Enterprise Vertical AI</code>, and <code>Circle 3 Consumer AI</code>), <strong>45 Tier-1 VC syndicates</strong>, <strong>15 feeder incubators</strong> (<code>Y Combinator</code>, <code>a16z Speedrun</code>, <code>HF0</code>, <code>SPC</code>, <code>Conviction</code>, <code>AI Grant</code>), and <strong>1,780+ directed capital, compute, and model-dependency edges</strong> representing <strong><code>$332.02 billion</code> in capital raised</strong> and <strong><code>$3.60 trillion</code> in combined valuation</strong>.</p>
+<hr />
+<h1>Part II: Trends in the Economy — October 2026 Empirical Read</h1>
+<p>CORUM synthesizes macroeconomic data across five interlocking layers: <strong>(1) Monetary Policy &amp; the Big Debt Cycle</strong>, <strong>(2) The $53.60T Real US Economy (NAICS Census Cascade)</strong>, <strong>(3) Geopolitical Supply Shocks &amp; Energy</strong>, <strong>(4) Public Equity Sector Rotation across 181 Subsectors</strong>, and <strong>(5) The $3.60T AI Supercycle &amp; Venture Frontier</strong>.</p>
+<hr />
+<h2>4. Macroeconomic Regime &amp; Big Debt Cycle: &quot;Late-Cycle Financial Repression Tested by an Active Fed Hike&quot;</h2>
+<h3>4.1 The Growth × Inflation Four-Box &amp; The September 2026 Fed Reversal</h3>
+<p>As of <strong>October 20, 2026</strong>, CORUM's <code>MacroObserverAgent</code> reads the US macro regime in an <strong>inflationary expansion (<code>Growth UP +0.142</code> · <code>Inflation UP +1.154</code>)</strong>, with environmental probabilities heavily skewed toward <strong><code>INFLATION_RISING</code> (<code>57.6%</code>)</strong> and <strong><code>GROWTH_RISING</code> (<code>20.9%</code>)</strong> versus <code>GROWTH_FALLING</code> (<code>15.8%</code>) and <code>INFLATION_FALLING</code> (<code>5.7%</code>).</p>
+<p>Crucially, the dominant macro narrative of 2025 (&quot;immaculate disinflation and continuous rate cuts&quot;) broke in Q3 2026:</p>
+<ul>
+<li>Following three rate cuts in late 2025, persistent services expansion and Middle East energy supply shocks forced the Federal Reserve to <strong>reverse course and deliver a 25 bps rate hike on September 17, 2026</strong>, raising the federal funds target range to <strong><code>3.75%–4.00%</code></strong>.</li>
+<li>At the September FOMC meeting, <strong>16 of 18 participants</strong> projected at least one additional hike before year-end—making the upcoming <strong>October 27–28, 2026</strong> and <strong>December 8–9, 2026</strong> FOMC meetings (<code>worldmodel/scenarios/fomc-v0.1b.json</code>: model <code>15%</code> Oct hike, <code>73%</code> Dec hike) the pivotal macro catalysts of Q4 2026.</li>
+</ul>
+<h3>4.2 Dalio's Big Debt Cycle Gauges (Measured via Live <code>FRED</code> Series)</h3>
+<p>Despite the Fed's September hike, CORUM's live Big Debt Cycle gauges (<code>dalio.py</code>) reveal a striking structural truth: <strong>the US economy remains in deep Financial Repression (<code>-5.44 pp</code> repression gap)</strong> where nominal GDP growth (<code>&gt;6%</code>) outpaces the real cost of money (<code>+0.87%</code>), eroding the massive federal debt stock in real terms.</p>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Measured Big Debt Cycle Gauge</th>
+<th style="text-align:center">Live Reading (<code>Oct 20, 2026</code>)</th>
+<th style="text-align:center">FRED Series ID</th>
+<th style="text-align:center">Own-History Percentile</th>
+<th style="text-align:center">Historical Range (<code>Min</code> / <code>Median</code> / <code>Max</code>)</th>
+<th style="text-align:left">Cycle Interpretation &amp; Economic Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Federal Debt / GDP</strong></td>
+<td style="text-align:center"><strong><code>122.59%</code></strong></td>
+<td style="text-align:center"><code>GFDEGDQ188S</code></td>
+<td style="text-align:center"><strong><code>97.9th</code></strong> (n=241)</td>
+<td style="text-align:center"><code>30.60%</code> / <code>59.19%</code> / <code>132.66%</code></td>
+<td style="text-align:left"><strong>Late-Cycle Stock</strong>: Near post-WWII peak; leaves minimal fiscal buffer if real rates rise above growth.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Federal Interest Outlays / GDP</strong></td>
+<td style="text-align:center"><strong><code>3.93%</code></strong></td>
+<td style="text-align:center"><code>A091RC1Q027SBEA / GDP</code></td>
+<td style="text-align:center"><strong><code>76.7th</code></strong> (n=318)</td>
+<td style="text-align:center"><code>1.83%</code> / <code>2.73%</code> / <code>4.99%</code></td>
+<td style="text-align:left"><strong>Elevated Flow Burden</strong>: Nearly 4% of US output goes solely to servicing federal debt.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Real Policy Rate</strong></td>
+<td style="text-align:center"><strong><code>+0.87%</code></strong></td>
+<td style="text-align:center"><code>DFEDTAR</code> mid − <code>PCEPILFE</code> YoY</td>
+<td style="text-align:center"><strong><code>42.0th</code></strong> (n=800)</td>
+<td style="text-align:center"><code>-5.49%</code> / <code>+1.57%</code> / <code>+10.24%</code></td>
+<td style="text-align:left"><strong>Barely Positive</strong>: Even after the Sept 17 hike to <code>3.75%–4.00%</code>, real short rates sit below their historical median (<code>+1.57%</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>The Repression Gap</strong> <em>(Dalio's Central Test)</em></td>
+<td style="text-align:center"><strong><code>-5.44 pp</code></strong></td>
+<td style="text-align:center">Real Policy Rate − Nominal GDP YoY</td>
+<td style="text-align:center"><strong><code>33.8th</code></strong> (n=800)</td>
+<td style="text-align:center"><code>-21.23</code> / <code>-4.45</code> / <code>+5.84 pp</code></td>
+<td style="text-align:left"><strong>Deeply Repressive</strong>: Nominal GDP growth outruns real interest rates by <code>5.44 pp</code>, inflating away debt in real terms—bullish for nominal scarce/equity assets, punitive for cash/bonds.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Household Debt Service Ratio</strong></td>
+<td style="text-align:center"><strong><code>11.11%</code></strong></td>
+<td style="text-align:center"><code>TDSP</code></td>
+<td style="text-align:center"><strong><code>20.9th</code></strong> (n=86)</td>
+<td style="text-align:center"><code>9.05%</code> / <code>11.76%</code> / <code>15.85%</code></td>
+<td style="text-align:left"><strong>Contained Aggregate Private Burden</strong>: Prime households locked in fixed-rate mortgages, insulating aggregate debt service despite lower-income credit card stress.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Treasury Curve (<code>10Y - 2Y</code>)</strong></td>
+<td style="text-align:center"><strong><code>+0.33%</code></strong></td>
+<td style="text-align:center"><code>T10Y2Y</code></td>
+<td style="text-align:center"><strong><code>31.3rd</code></strong> (n=12,593)</td>
+<td style="text-align:center"><code>-2.41%</code> / <code>+0.77%</code> / <code>+2.91%</code></td>
+<td style="text-align:left"><strong>Positively Sloped</strong>: Re-steepened with the 10Y Treasury yield (<code>^TNX</code>) at <strong><code>5.12%</code></strong>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Corporate Credit Spread (<code>Baa - 10Y</code>)</strong></td>
+<td style="text-align:center"><strong><code>1.46%</code></strong></td>
+<td style="text-align:center"><code>BAA10Y</code></td>
+<td style="text-align:center"><strong><code>2.6th</code></strong> (n=10,199)</td>
+<td style="text-align:center"><code>1.16%</code> / <code>2.13%</code> / <code>6.16%</code></td>
+<td style="text-align:left"><strong>Historically Tight</strong>: Credit markets are pricing zero systemic default stress (<code>2.6th</code> percentile over 40 years).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Unemployment Rate</strong></td>
+<td style="text-align:center"><strong><code>4.20%</code></strong></td>
+<td style="text-align:center"><code>UNRATE</code></td>
+<td style="text-align:center"><strong><code>20.3rd</code></strong> (n=800)</td>
+<td style="text-align:center">—</td>
+<td style="text-align:left"><strong>Tight Labor Market</strong>: Supports nominal wage and service-sector demand.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Fed Balance Sheet (6m Change)</strong></td>
+<td style="text-align:center"><strong><code>+0.72%</code></strong></td>
+<td style="text-align:center"><code>WALCL</code></td>
+<td style="text-align:center"><strong><code>43.0th</code></strong></td>
+<td style="text-align:center">—</td>
+<td style="text-align:left"><strong>Expanding</strong>: Quantitative tightening (<code>QT</code>) has ended; liquidity is mildly net-positive.</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>NOTE:</strong> <strong>Three Competing Macro Scenarios on the CORUM Board:</strong></p>
+<ul>
+<li><strong><code>BASE</code> (&quot;Repression Persists&quot;)</strong>: Inflation hovers near <code>~3%</code>, nominal GDP holds <code>&gt;6%</code>, credit spreads stay <code>&lt;2.0%</code>, and the repression gap remains deeply negative (<code>&lt;-3.0 pp</code>). Nominal cash-flow compounders and real assets continue to outperform.</li>
+<li><strong><code>BEAR</code> (&quot;Supply Shock Forces the Fed's Hand&quot;)</strong>: Hormuz energy disruption (<code>Brent $110.45/bbl</code>) pushes Core PCE above <code>3.6%</code>, forcing consecutive hikes in Oct/Dec 2026 that drive the real policy rate <code>&gt;1.0%</code>, widen Baa spreads <code>&gt;2.0%</code>, and close the repression gap (<code>&gt;-2.0 pp</code>), turning the <code>122.6%</code> federal debt load into an acute fiscal-monetary squeeze.</li>
+<li><strong><code>BULL</code> (&quot;One-and-Done Supply Unwind&quot;)</strong>: Energy risk premium fades, Core PCE rolls below <code>2.8%</code>, the Sept 2026 hike proves &quot;one-and-done,&quot; and China stimulus lifts global cyclicals while the repression gap stays wide.</li>
+</ul>
+</blockquote>
+<hr />
+<h2>5. Real Economy Trends: The $53.60 Trillion US NAICS Cascade</h2>
+<p>While financial media fixates on mega-cap tech multiples, CORUM's <strong>US Census <code>AIES</code> NAICS Cascade</strong> (<code>db/naics.db</code>) reveals a profound <strong>two-speed structural bifurcation</strong> across the <code>$53.60 trillion</code> real US economy (<code>138.12M</code> employees, <code>$9.42T</code> payroll): <strong>Healthcare, Financial Services, Digital Infrastructure, and Air/Express Logistics are booming at <code>+6%</code> to <code>+11%</code> annual rates, while physical Goods Manufacturing, Primary Metals, Trucking, and Discretionary Retail are stagnating or contracting.</strong></p>
+<h3>5.1 Complete 2-Digit NAICS Sector Breakdown (<code>US Employer Firms</code>)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:center">NAICS Code</th>
+<th style="text-align:left">US Economic Sector</th>
+<th style="text-align:center">Revenue (<code>$B</code>)</th>
+<th style="text-align:center">Prior Year Revenue (<code>$B</code>)</th>
+<th style="text-align:center">YoY Growth (<code>%</code>)</th>
+<th style="text-align:center">Std. Error (<code>±%</code>)</th>
+<th style="text-align:center">Stat. Sig. (<code>90%</code>)</th>
+<th style="text-align:center">Employees (<code>Millions</code>)</th>
+<th style="text-align:center">Annual Payroll (<code>$B</code>)</th>
+<th style="text-align:left">Structural Trend Read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong><code>42</code></strong></td>
+<td style="text-align:left"><strong>Wholesale Trade</strong></td>
+<td style="text-align:center"><code>$11,915.3B</code></td>
+<td style="text-align:center"><code>$11,745.3B</code></td>
+<td style="text-align:center"><code>+1.5%</code></td>
+<td style="text-align:center"><code>0.8%</code></td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><code>6.32M</code></td>
+<td style="text-align:center"><code>$570.2B</code></td>
+<td style="text-align:left">Sluggish volume growth below inflation</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>44-45</code></strong></td>
+<td style="text-align:left"><strong>Retail Trade</strong></td>
+<td style="text-align:center"><code>$7,106.7B</code></td>
+<td style="text-align:center"><code>$7,019.3B</code></td>
+<td style="text-align:center"><code>+1.2%</code></td>
+<td style="text-align:center"><code>0.4%</code></td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><code>17.71M</code></td>
+<td style="text-align:center"><code>$650.6B</code></td>
+<td style="text-align:left">Real contraction after inflation; consumer exhaustion</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>52</code></strong></td>
+<td style="text-align:left"><strong>Finance &amp; Insurance</strong></td>
+<td style="text-align:center"><code>$7,068.3B</code></td>
+<td style="text-align:center"><code>$6,493.5B</code></td>
+<td style="text-align:center"><strong><code>+8.8%</code></strong></td>
+<td style="text-align:center"><code>0.1%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><code>7.18M</code></td>
+<td style="text-align:center"><code>$917.1B</code></td>
+<td style="text-align:left">Surge in insurance pricing, capital markets &amp; higher yield income</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>31-33</code></strong></td>
+<td style="text-align:left"><strong>Manufacturing</strong></td>
+<td style="text-align:center"><code>$6,980.5B</code></td>
+<td style="text-align:center"><code>$7,038.3B</code></td>
+<td style="text-align:center"><strong><code>-0.8%</code></strong></td>
+<td style="text-align:center"><code>0.1%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><code>12.01M</code></td>
+<td style="text-align:center"><code>$890.8B</code></td>
+<td style="text-align:left">Industrial goods contraction outside AI/defense pockets</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>62</code></strong></td>
+<td style="text-align:left"><strong>Health Care &amp; Social Assistance</strong></td>
+<td style="text-align:center"><code>$3,878.5B</code></td>
+<td style="text-align:center"><code>$3,525.1B</code></td>
+<td style="text-align:center"><strong><code>+10.8%</code></strong></td>
+<td style="text-align:center"><code>0.6%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><strong><code>23.09M</code></strong></td>
+<td style="text-align:center"><strong><code>$1,474.8B</code></strong></td>
+<td style="text-align:left"><strong>#1 Growth &amp; Employment Engine</strong> in the US economy</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>23</code></strong></td>
+<td style="text-align:left"><strong>Construction</strong></td>
+<td style="text-align:center"><code>$3,239.5B</code></td>
+<td style="text-align:center"><code>$3,102.6B</code></td>
+<td style="text-align:center"><strong><code>+4.4%</code></strong></td>
+<td style="text-align:center"><code>1.9%</code></td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><code>7.72M</code></td>
+<td style="text-align:center"><code>$594.2B</code></td>
+<td style="text-align:left">Led by Heavy &amp; Civil Engineering (<code>+11.0%</code>) &amp; data centers</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>54</code></strong></td>
+<td style="text-align:left"><strong>Professional, Scientific &amp; Technical</strong></td>
+<td style="text-align:center"><code>$2,999.1B</code></td>
+<td style="text-align:center"><code>$2,793.6B</code></td>
+<td style="text-align:center"><strong><code>+4.9%</code></strong></td>
+<td style="text-align:center"><code>0.3%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><code>11.09M</code></td>
+<td style="text-align:center"><code>$1,108.1B</code></td>
+<td style="text-align:left">High-wage R&amp;D, IT consulting, legal &amp; engineering services</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>51</code></strong></td>
+<td style="text-align:left"><strong>Information</strong></td>
+<td style="text-align:center"><code>$2,409.9B</code></td>
+<td style="text-align:center"><code>$2,263.3B</code></td>
+<td style="text-align:center"><code>+3.1%</code></td>
+<td style="text-align:center"><code>0.4%</code></td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><code>4.05M</code></td>
+<td style="text-align:center"><code>$563.1B</code></td>
+<td style="text-align:left">Led by Data Processing/Hosting (<code>+10.2%</code>) &amp; Software (<code>+10.2%</code>)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>56</code></strong></td>
+<td style="text-align:left"><strong>Admin, Support &amp; Waste Mgmt</strong></td>
+<td style="text-align:center"><code>$1,457.0B</code></td>
+<td style="text-align:center"><code>$1,424.0B</code></td>
+<td style="text-align:center"><code>+4.1%</code></td>
+<td style="text-align:center"><code>0.4%</code></td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><code>12.45M</code></td>
+<td style="text-align:center"><code>$674.7B</code></td>
+<td style="text-align:left">Resilient waste remediation; softer temporary staffing</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>48-49</code></strong></td>
+<td style="text-align:left"><strong>Transportation &amp; Warehousing</strong></td>
+<td style="text-align:center"><code>$1,455.8B</code></td>
+<td style="text-align:center"><code>$1,369.0B</code></td>
+<td style="text-align:center"><strong><code>+6.3%</code></strong></td>
+<td style="text-align:center"><code>0.7%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><code>6.21M</code></td>
+<td style="text-align:center"><code>$389.8B</code></td>
+<td style="text-align:left">Sharp split: Couriers (<code>+29.5%</code>) &amp; Air (<code>+15.6%</code>) vs. Trucking (<code>-4.3%</code>)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>72</code></strong></td>
+<td style="text-align:left"><strong>Accommodation &amp; Food Services</strong></td>
+<td style="text-align:center"><code>$1,295.5B</code></td>
+<td style="text-align:center"><code>$1,252.0B</code></td>
+<td style="text-align:center"><code>+2.6%</code></td>
+<td style="text-align:center"><code>0.6%</code></td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><code>14.57M</code></td>
+<td style="text-align:center"><code>$394.1B</code></td>
+<td style="text-align:left">Decelerating restaurant traffic as middle-tier consumers trade down</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>53</code></strong></td>
+<td style="text-align:left"><strong>Real Estate &amp; Rental/Leasing</strong></td>
+<td style="text-align:center"><code>$986.0B</code></td>
+<td style="text-align:center"><code>$957.2B</code></td>
+<td style="text-align:center"><strong><code>+7.6%</code></strong></td>
+<td style="text-align:center"><code>0.8%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><code>2.42M</code></td>
+<td style="text-align:center"><code>$164.7B</code></td>
+<td style="text-align:left">Driven by industrial/datacenter leasing &amp; residential rents</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>81</code></strong></td>
+<td style="text-align:left"><strong>Other Services (excl. Public Admin)</strong></td>
+<td style="text-align:center"><code>$816.5B</code></td>
+<td style="text-align:center"><code>$743.5B</code></td>
+<td style="text-align:center"><strong><code>+8.9%</code></strong></td>
+<td style="text-align:center"><code>0.6%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><code>4.11M</code></td>
+<td style="text-align:center"><code>$196.1B</code></td>
+<td style="text-align:left">Repair, maintenance &amp; civic/grantmaking organizations (<code>+12.7%</code>)</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>22</code></strong></td>
+<td style="text-align:left"><strong>Utilities</strong></td>
+<td style="text-align:center"><code>$790.5B</code></td>
+<td style="text-align:center"><code>$765.9B</code></td>
+<td style="text-align:center"><code>+2.3%</code></td>
+<td style="text-align:center"><code>0.4%</code></td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><code>0.72M</code></td>
+<td style="text-align:center"><code>$89.9B</code></td>
+<td style="text-align:left">Regulated electric power (<code>$612.8B</code>) entering AI load inflection</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>21</code></strong></td>
+<td style="text-align:left"><strong>Mining, Quarrying &amp; Oil/Gas</strong></td>
+<td style="text-align:center"><code>$572.1B</code></td>
+<td style="text-align:center"><code>$581.6B</code></td>
+<td style="text-align:center"><strong><code>-1.6%</code></strong></td>
+<td style="text-align:center"><code>0.9%</code></td>
+<td style="text-align:center">Yes</td>
+<td style="text-align:center"><code>0.53M</code></td>
+<td style="text-align:center"><code>$59.7B</code></td>
+<td style="text-align:left">Capital discipline &amp; lower prior-period gas prices; oil now rebounding</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>71</code></strong></td>
+<td style="text-align:left"><strong>Arts, Entertainment &amp; Recreation</strong></td>
+<td style="text-align:center"><code>$401.2B</code></td>
+<td style="text-align:center"><code>$371.9B</code></td>
+<td style="text-align:center"><strong><code>+7.7%</code></strong></td>
+<td style="text-align:center"><code>1.0%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><code>2.68M</code></td>
+<td style="text-align:center"><code>$122.9B</code></td>
+<td style="text-align:left">Experiential spending &amp; live entertainment resilience</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>55</code></strong></td>
+<td style="text-align:left"><strong>Management of Companies</strong></td>
+<td style="text-align:center"><code>$125.3B</code></td>
+<td style="text-align:center"><code>$104.1B</code></td>
+<td style="text-align:center"><strong><code>+20.4%</code></strong></td>
+<td style="text-align:center"><code>2.5%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><code>4.39M</code></td>
+<td style="text-align:center"><code>$523.4B</code></td>
+<td style="text-align:left">Corporate holding &amp; enterprise treasury income expansion</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong><code>61</code></strong></td>
+<td style="text-align:left"><strong>Educational Services (Private)</strong></td>
+<td style="text-align:center"><code>$101.0B</code></td>
+<td style="text-align:center"><code>$94.1B</code></td>
+<td style="text-align:center"><strong><code>+9.5%</code></strong></td>
+<td style="text-align:center"><code>2.1%</code></td>
+<td style="text-align:center"><strong>Yes</strong></td>
+<td style="text-align:center"><code>0.89M</code></td>
+<td style="text-align:center"><code>$33.8B</code></td>
+<td style="text-align:left">Technical training &amp; private educational services</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>Total</strong></td>
+<td style="text-align:left"><strong>Measured US Employer Universe</strong></td>
+<td style="text-align:center"><strong><code>$53,598.7B</code></strong></td>
+<td style="text-align:center"><strong><code>$51,644.4B</code></strong></td>
+<td style="text-align:center"><strong><code>+3.78%</code></strong></td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center"><strong><code>138.12M</code></strong></td>
+<td style="text-align:center"><strong><code>$9,418.2B</code></strong></td>
+<td style="text-align:left"><strong>Services/Healthcare/Finance Boom vs. Goods Stagnation</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>5.2 Subsector Divergence Inside the Real Economy (3-Digit NAICS Leaders vs. Laggards)</h3>
+<p>Drilling one level deeper into the 3-digit NAICS subsectors exposes the exact engines of economic expansion and contraction:</p>
+<ul>
+<li><strong>Fastest-Growing US Subsectors (Statistically Significant at 90%)</strong>:
+<ol>
+<li><strong>Couriers &amp; Messengers (<code>NAICS 492</code>)</strong>: <strong><code>+29.5%</code> YoY</strong> (<code>±0.9%</code>, <code>$160.6B</code> revenue, <code>1.02M</code> employees) — e-commerce last-mile fulfillment and express parcel networks.</li>
+<li><strong>Management of Companies (<code>NAICS 551</code>)</strong>: <strong><code>+20.4%</code> YoY</strong> (<code>±2.5%</code>, <code>$125.3B</code> revenue, <code>4.39M</code> employees).</li>
+<li><strong>Air Transportation (<code>NAICS 481</code>)</strong>: <strong><code>+15.6%</code> YoY</strong> (<code>±1.0%</code>, <code>$335.1B</code> revenue) &amp; <strong>Support Activities for Transportation (<code>NAICS 488</code>)</strong>: <strong><code>+15.3%</code> YoY</strong> (<code>±2.0%</code>, <code>$280.6B</code> revenue).</li>
+<li><strong>Hospitals (<code>NAICS 622</code>)</strong>: <strong><code>+12.1%</code> YoY</strong> (<code>±0.7%</code>, <code>$1,610.5B</code> revenue, <code>6.72M</code> employees), <strong>Nursing &amp; Residential Care (<code>NAICS 623</code>)</strong>: <strong><code>+10.8%</code> YoY</strong> (<code>$327.2B</code>), and <strong>Ambulatory Health Care (<code>NAICS 621</code>)</strong>: <strong><code>+9.8%</code> YoY</strong> (<code>$1,618.0B</code>, <code>9.03M</code> employees) — driven by demographic aging and post-pandemic surgical/utilization catch-up.</li>
+<li><strong>Heavy &amp; Civil Engineering Construction (<code>NAICS 237</code>)</strong>: <strong><code>+11.0%</code> YoY</strong> (<code>±2.7%</code>, <code>$491.3B</code> revenue, <code>1.10M</code> employees) — grid infrastructure, power substations, and industrial reshoring.</li>
+<li><strong>Data Processing, Hosting &amp; Cloud (<code>NAICS 518</code>)</strong>: <strong><code>+10.2%</code> YoY</strong> (<code>±2.8%</code>, <code>$395.1B</code> revenue) &amp; <strong>Software/Publishing (<code>NAICS 511</code>)</strong>: <strong><code>+10.2%</code> YoY</strong> (<code>±0.7%</code>, <code>$642.2B</code> revenue).</li>
+<li><strong>Securities, Commodity Contracts &amp; Investments (<code>NAICS 523</code>)</strong>: <strong><code>+10.1%</code> YoY</strong> (<code>±0.7%</code>, <code>$916.8B</code> revenue).</li>
+</ol>
+</li>
+<li><strong>Contracting US Subsectors (Industrial &amp; Freight Recession Pockets)</strong>:
+<ol>
+<li><strong>Primary Metal Manufacturing (<code>NAICS 331</code>)</strong>: <strong><code>-8.3%</code> YoY</strong> (<code>±0.3%</code>, <code>$273.4B</code> revenue).</li>
+<li><strong>Truck Transportation (<code>NAICS 484</code>)</strong>: <strong><code>-4.3%</code> YoY</strong> (<code>±0.7%</code>, <code>$402.8B</code> revenue, <code>1.67M</code> employees) — domestic over-the-road freight recession contrasting with booming air/courier parcel networks.</li>
+<li><strong>Electrical Equipment &amp; Appliance Mfg (<code>NAICS 335</code>)</strong>: <strong><code>-4.2%</code> YoY</strong> (<code>±0.6%</code>, <code>$195.0B</code> revenue) &amp; <strong>Transportation Equipment Mfg (<code>NAICS 336</code>)</strong>: <strong><code>-4.2%</code> YoY</strong> (<code>±0.1%</code>, <code>$1,104.6B</code> revenue, <code>1.68M</code> employees).</li>
+<li><strong>Wood Products (<code>NAICS 321</code>, <code>-3.3%</code> YoY)</strong> and <strong>Furniture &amp; Home Furnishings Stores (<code>NAICS 442</code>, <code>-2.7%</code> YoY)</strong> — frozen housing turnover under <code>5.12%</code> 10-year Treasury yields.</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2>6. Geopolitical Supply Shocks &amp; The Energy Complex (October 2026)</h2>
+<p>CORUM's live market monitor (<code>macro_picture_market.json</code>) and <code>WorldModel</code> geopolitical engine (<code>worldmodel/</code>) highlight an active energy and maritime supply shock as of <strong>October 20, 2026</strong>:</p>
+<ul>
+<li><strong>Strait of Hormuz Conflict (<code>iran-conflict-v0.7</code>, <code>155</code> Cited Evidence Items)</strong>: Path sampling across 16 decision-making actors places <strong><code>58.3%</code> path share</strong> on <strong>Scenario C (<code>No talks, grinding exchange</code>)</strong>, ahead of <code>18.6%</code> (<code>No talks, lull</code>), <code>17.6%</code> (<code>Talks open, shooting continues</code>), and <code>5.6%</code> (<code>Talks open, shooting fades</code>).</li>
+<li><strong>Energy &amp; Refining Price Transmission</strong>:
+<ul>
+<li><strong>Brent Crude (<code>BZ=F</code>)</strong>: <strong><code>$110.45 / bbl</code></strong> (<code>+10.1%</code> over 1 month).</li>
+<li><strong>WTI Crude (<code>CL=F</code>)</strong>: <strong><code>$99.21 / bbl</code></strong> (<code>+3.6%</code> over 1 month).</li>
+<li><strong>3-2-1 Refining Crack Spread (<code>CRACK</code>)</strong>: <strong><code>$101.91</code></strong> (<strong><code>87.3rd</code> 1-year percentile</strong>, range <code>$30.36–$117.92</code>).</li>
+<li><strong>Market Impact</strong>: Refining and integrated energy equities are among the strongest 12-month performers on the CORUM board (<code>Oil Refiners / CRAK</code> <strong><code>+84.4%</code> 12m</strong>, <strong><code>+41.5%</code> 6m</strong>; <code>Marathon Petroleum / MPC</code> <strong><code>+18.1%</code> 1m</strong> at <code>$475.04</code>; <code>Phillips 66 / PSX</code> <strong><code>+11.2%</code> 1m</strong> at <code>$291.03</code>; <code>Valero / VLO</code> <strong><code>+10.2%</code> 1m</strong> at <code>$433.42</code>; <code>Integrated Energy / XLE</code> <strong><code>+62.6%</code> 12m</strong>), while fuel-sensitive <strong>Airlines (<code>JETS</code> <code>-9.7%</code> 1m)</strong> face acute margin compression.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2>7. Public Market Trends: What CORUM's 181-Subsector Board Shows Today</h2>
+<p>Across the <strong>181 subsectors</strong> tracked on the Sector Command board on <strong>October 20, 2026</strong>, CORUM's <code>MS-2.1</code> sustainability engine classifies:</p>
+<ul>
+<li><strong><code>52</code> Subsectors (<code>28.7%</code>) in <code>RIDE</code></strong> (Confirmed Sustainable Uptrend)</li>
+<li><strong><code>37</code> Subsectors (<code>20.4%</code>) in <code>FRAGILE</code></strong> (Exhausted, Unrecovered Drawdown, or High Vulnerability)</li>
+<li><strong><code>13</code> Subsectors (<code>7.2%</code>) in <code>EARLY</code></strong> (Early Inflection / Bottoming)</li>
+<li><strong><code>77</code> Subsectors (<code>42.5%</code>) in <code>AVOID</code></strong> (Broken Trend / Adverse Macro)</li>
+<li><strong>Portfolio Action Buckets</strong>: <strong><code>27</code> <code>BUY</code></strong> · <strong><code>54</code> <code>HOLD</code></strong> · <strong><code>20</code> <code>OVERHEATED</code></strong> · <strong><code>78</code> <code>REDUCE</code></strong></li>
+</ul>
+<h3>7.1 Cross-Sector Decision Distribution Across All 20 Parent Groups</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Parent Sector / Cluster</th>
+<th style="text-align:center">Total Subsectors</th>
+<th style="text-align:center"><code>RIDE</code> (Green)</th>
+<th style="text-align:center"><code>FRAGILE</code> (Orange)</th>
+<th style="text-align:center"><code>EARLY</code> (Blue)</th>
+<th style="text-align:center"><code>AVOID</code> (Grey)</th>
+<th style="text-align:left">Dominant Economic &amp; Market Trend (<code>October 2026</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Regions (Global Country ETFs)</strong></td>
+<td style="text-align:center"><strong>20</strong></td>
+<td style="text-align:center"><strong>10</strong></td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">5</td>
+<td style="text-align:left">Strong international rotation led by <strong>Taiwan (<code>+72.5%</code> 12m)</strong>, <strong>Brazil (<code>+51.0%</code>)</strong>, <strong>Colombia (<code>+50.9%</code>)</strong>, <strong>Poland (<code>+39.8%</code>)</strong>, <strong>Greece (<code>+33.2%</code>)</strong>, <strong>Canada (<code>+22.7%</code>)</strong>, and <strong>Japan (<code>+21.4%</code>)</strong> (<code>BUY</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Healthcare</strong></td>
+<td style="text-align:center"><strong>18</strong></td>
+<td style="text-align:center"><strong>11</strong></td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">3</td>
+<td style="text-align:left"><strong>Strongest Domestic Sector</strong>: Managed Care/Hospitals (<code>IHF</code> <code>+32.6%</code> 6m), Healthcare Services (<code>XHS</code> <code>+30.6%</code> 6m), Drug Distributors (<code>+35.3%</code> 12m, <code>BUY</code>), and GLP-1 (<code>HRTS</code> <code>+18.6%</code> 12m, <code>BUY</code>).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Consumer</strong></td>
+<td style="text-align:center"><strong>17</strong></td>
+<td style="text-align:center"><strong>6</strong></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">7</td>
+<td style="text-align:left">Defensive bifurcation: <strong>Big-Box/Warehouse Clubs (<code>+28.2%</code> 12m, <code>BUY</code>)</strong>, <strong>Staples (<code>XLP</code>, <code>BUY</code>)</strong>, and <strong>Off-Price Retail (<code>+25.4%</code> 12m, <code>BUY</code>)</strong> win as consumers trade down; broad discretionary &amp; restaurants stay <code>AVOID</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Technology</strong></td>
+<td style="text-align:center"><strong>15</strong></td>
+<td style="text-align:center">2</td>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">4</td>
+<td style="text-align:left"><strong>Major Cycle Digestion</strong>: <code>8 of 15</code> tech rows are <code>FRAGILE</code> (<code>HOLD</code>) inside an unrecovered semi drawdown (<code>SMH</code> <code>-15.2%</code> below high); only <strong>Megacap Platforms (<code>MAGS</code>, <code>BUY</code>)</strong> and <strong>Cloud Infra (<code>SKYY</code>, <code>OVERHEATED</code>)</strong> hold <code>RIDE</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Industrials</strong></td>
+<td style="text-align:center"><strong>14</strong></td>
+<td style="text-align:center"><strong>5</strong></td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">3</td>
+<td style="text-align:left"><strong>Marine Shipping (<code>BOAT</code> <code>+79.2%</code> 12m, <code>BUY</code>)</strong> and <strong>Industrial Distributors (<code>+36.9%</code> 12m, <code>BUY</code>)</strong> lead <code>RIDE</code>; Grid Equipment &amp; Freight Logistics sit in <code>FRAGILE</code> consolidation.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Financials</strong></td>
+<td style="text-align:center"><strong>13</strong></td>
+<td style="text-align:center"><strong>7</strong></td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:left"><strong>Broad Financial Strength</strong>: <strong>Reinsurance (<code>+36.7%</code> 12m)</strong>, <strong>Free Cash Flow Yield (<code>COWZ</code> <code>+28.0%</code>)</strong>, <strong>Life Insurers (<code>+24.7%</code>)</strong>, <strong>Insurance (<code>IAK</code> <code>+18.4%</code>)</strong>, <strong>P&amp;C (<code>KBWP</code>)</strong>, and <strong>CLOs (<code>JAAA</code>)</strong> in <code>RIDE</code>; Money-Center Banks (<code>XLF</code>) &amp; Capital Markets (<code>IAI</code>) in <code>EARLY</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Materials</strong></td>
+<td style="text-align:center"><strong>11</strong></td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">6</td>
+<td style="text-align:left"><strong>Steel (<code>SLX</code> <code>+42.0%</code> 12m, <code>BUY</code>)</strong> and <strong>Broad Materials (<code>XLB</code>, <code>BUY</code>)</strong> hold <code>RIDE</code>; battery metals and specialty chemicals remain <code>AVOID</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Real Estate</strong></td>
+<td style="text-align:center"><strong>9</strong></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">5</td>
+<td style="text-align:left">Pressured by <code>5.12%</code> 10Y Treasury yields; <code>5 of 9</code> REIT subsectors are <code>AVOID</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Cell &amp; Gene Therapy</strong></td>
+<td style="text-align:center"><strong>8</strong></td>
+<td style="text-align:center"><strong>3</strong></td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">3</td>
+<td style="text-align:left">&quot;Picks-and-shovels&quot; monopoly surge: <strong>CGT Tools &amp; Reagents (<code>+61.5%</code> 6m)</strong>, <strong>Cryogenic Cold Chain (<code>+56.3%</code> 6m)</strong>, and <strong>CGT CDMOs (<code>+36.3%</code> 6m)</strong> are top <code>RIDE</code> (<code>OVERHEATED</code>) leaders.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Energy</strong></td>
+<td style="text-align:center"><strong>7</strong></td>
+<td style="text-align:center"><strong>4</strong></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">2</td>
+<td style="text-align:left"><strong>Oil Refiners (<code>CRAK</code> <code>+84.4%</code> 12m)</strong>, <strong>Integrated Energy (<code>XLE</code> <code>+62.6%</code> 12m)</strong>, and <strong>Natural Gas (<code>FCG</code> <code>+46.3%</code> 12m, <code>BUY</code>)</strong> ride the Hormuz supply shock; Solar (<code>TAN</code>) remains <code>AVOID</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Space (<code>8</code>), Nuclear (<code>7</code>), Robotics (<code>6</code>), Defense (<code>5</code>), Crypto (<code>5</code>), Quantum (<code>3</code>)</strong></td>
+<td style="text-align:center"><strong>34</strong></td>
+<td style="text-align:center"><strong>0</strong></td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center"><strong>28</strong></td>
+<td style="text-align:left">Speculative/high-beta hardware themes (<code>Quantum Photonics</code> <code>+496.4%</code> 12m, <code>Satellites</code> <code>+59.0%</code> 12m) suffered sharp <code>-10%</code> to <code>-23%</code> 1-month pullbacks and are flagged <code>FRAGILE</code> or <code>AVOID</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<h3>7.2 Deep Dive on the Public AI &amp; Semiconductor Cycle (<code>ai_cycle.py</code> &amp; <code>ai-supercycle/</code>)</h3>
+<p>One of CORUM's most important empirical findings in October 2026 concerns the <strong>AI Hardware &amp; Semiconductor Trade</strong>:</p>
+<ol>
+<li><strong>The AI Complex Is <em>Inside</em> an Unrecovered Severe Drawdown, Not Past One</strong>:
+<ul>
+<li>Measured on <code>SMH</code> (the longest liquid semiconductor wrapper, history from June 2000), the drawdown that began on <strong>June 22, 2026</strong> hit <strong><code>-24.62%</code></strong> at its July 29, 2026 trough and remains <strong>unrecovered (<code>-15.23%</code> below its high)</strong>.</li>
+<li>Across <code>SMH</code>'s 26-year history (<code>17</code> drawdown episodes $\ge 10%$), <code>11</code> were <strong>routine</strong> (recovering inside 150 days) and <code>6</code> were <strong>severe</strong> (deeper than <code>30%</code> or taking $&gt;150$ days to recover, led by the <code>2000–2017</code> dot-com bust at <code>-85.9%</code> over <code>6,321</code> days and <code>2021–2023</code> at <code>-45.3%</code> over <code>563</code> days).</li>
+<li>Over the past 12 months, AI memory and optics posted historic parabolic runs—<strong>NAND Flash (<code>+716.5%</code> 12m)</strong>, <strong>Quantum Photonics (<code>+496.4%</code> 12m)</strong>, <strong>Memory (<code>+343.3%</code> 12m)</strong>, <strong>Hard-Disk Drives (<code>+200.6%</code> 12m)</strong>, and <strong>AI Networking &amp; Optics (<code>+106.9%</code> 12m)</strong>—followed by <code>-11%</code> to <code>-23%</code> 1-month corrections (<code>FRAGILE</code>).</li>
+</ul>
+</li>
+<li><strong>Historical Supercycle Stage Estimator Reads <code>PEAK-RISK</code> (<code>-24.4</code> Normalized Score in Oct 2026)</strong>:
+<ul>
+<li>By scoring <strong>43 current AI indicators</strong> against <strong>7 historical infrastructure buildouts</strong> (<em>Semiconductors, Dot-Com/Telecom, Mobile, Cloud, British/US Railway Mania, Electrification</em>), <code>ai-supercycle/</code> moved from <strong><code>-13</code> (<code>LATE-CYCLE</code>) in July 2026</strong> to <strong><code>-24.4</code> (<code>PEAK-RISK</code>) in October 2026</strong>.</li>
+<li>Classic pre-bust signals are now present—hyperscaler capex-to-revenue divergence (<code>$700B+</code> annual physical capex commitments), circular vendor financing, off-balance-sheet GPU debt vehicles, and BIS/central-bank warnings—coexisting with genuine physical bottlenecks in gigawatt power substations and HBM memory, while corporate credit spreads (<code>Baa–10Y</code> at <code>1.46%</code>) are <strong>not yet</strong> pricing credit stress.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>8. Private Venture &amp; Technological Frontier Trends (<code>CORUM AI Graph v4.5</code>)</h2>
+<p>While public semiconductor multiples digest their 2024–2026 run-up, CORUM's <strong>625-Node AI Startup &amp; Venture Graph Database</strong> (<code>AI_Startup_Landscape_Three_Circles_Oct2026_Report.md</code>) documents where <strong><code>$332.02 billion</code> in private capital</strong> (<code>$3.60 trillion</code> combined valuation across <code>536</code> companies) is migrating next:</p>
+<h3>8.1 Capital Concentration vs. Application Velocity Across the Three Circles</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Architectural Layer</th>
+<th style="text-align:center">Segments</th>
+<th style="text-align:center">Companies (<code>%</code>)</th>
+<th style="text-align:center">Early/Mid Startup Stage (<code>Pre-Seed–C</code>)</th>
+<th style="text-align:center">NY Office Footprint</th>
+<th style="text-align:center">Total Capital Raised (<code>$B</code>)</th>
+<th style="text-align:center">Share of Capital</th>
+<th style="text-align:center">Combined Valuation (<code>$B</code>)</th>
+<th style="text-align:center">Valuation / Raised Multiple</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Circle 1 — Core AI &amp; Infrastructure</strong></td>
+<td style="text-align:center"><code>1A–1I</code> (9)</td>
+<td style="text-align:center"><code>160</code> (<code>29.9%</code>)</td>
+<td style="text-align:center"><code>114</code></td>
+<td style="text-align:center"><code>24</code> (<code>11.9%</code>)</td>
+<td style="text-align:center"><strong><code>$264.83B</code></strong></td>
+<td style="text-align:center"><strong><code>79.8%</code></strong></td>
+<td style="text-align:center"><strong><code>$3,074.38B</code></strong></td>
+<td style="text-align:center"><strong><code>11.61x</code></strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Circle 2 — Enterprise &amp; Vertical AI</strong></td>
+<td style="text-align:center"><code>2A–2N</code> (14)</td>
+<td style="text-align:center"><code>309</code> (<code>57.6%</code>)</td>
+<td style="text-align:center"><code>266</code></td>
+<td style="text-align:center"><code>163</code> (<code>80.7%</code>)</td>
+<td style="text-align:center"><code>$54.11B</code></td>
+<td style="text-align:center"><code>16.3%</code></td>
+<td style="text-align:center"><code>$433.08B</code></td>
+<td style="text-align:center"><code>8.00x</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Circle 3 — Consumer &amp; Prosumer AI</strong></td>
+<td style="text-align:center"><code>3A–3F</code> (6)</td>
+<td style="text-align:center"><code>67</code> (<code>12.5%</code>)</td>
+<td style="text-align:center"><code>34</code></td>
+<td style="text-align:center"><code>15</code> (<code>7.4%</code>)</td>
+<td style="text-align:center"><code>$13.08B</code></td>
+<td style="text-align:center"><code>3.9%</code></td>
+<td style="text-align:center"><code>$91.19B</code></td>
+<td style="text-align:center"><code>6.97x</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Unified Application Layer (<code>C2 + C3</code>)</strong></td>
+<td style="text-align:center"><code>2A–3F</code> (20)</td>
+<td style="text-align:center"><strong><code>376</code> (<code>70.1%</code>)</strong></td>
+<td style="text-align:center"><strong><code>300</code> (<code>72.5%</code>)</strong></td>
+<td style="text-align:center"><strong><code>178</code> (<code>88.1%</code>)</strong></td>
+<td style="text-align:center"><strong><code>$67.19B</code></strong></td>
+<td style="text-align:center"><strong><code>20.2%</code></strong></td>
+<td style="text-align:center"><strong><code>$524.27B</code></strong></td>
+<td style="text-align:center"><strong><code>7.80x</code></strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Total Tracked AI Universe</strong></td>
+<td style="text-align:center"><strong><code>1A–3F</code> (29)</strong></td>
+<td style="text-align:center"><strong><code>536</code> (<code>100%</code>)</strong></td>
+<td style="text-align:center"><strong><code>414</code> (<code>100%</code>)</strong></td>
+<td style="text-align:center"><strong><code>202</code> (<code>100%</code>)</strong></td>
+<td style="text-align:center"><strong><code>$332.02B</code></strong></td>
+<td style="text-align:center"><strong><code>100.0%</code></strong></td>
+<td style="text-align:center"><strong><code>$3,598.66B</code></strong></td>
+<td style="text-align:center"><strong><code>10.84x</code></strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3>8.2 Five Structural Frontier Trends Reshaping the Real Economy (2026–2028)</h3>
+<ol>
+<li><strong>From Text LLMs (<code>1A</code>) to 3D World Models &amp; Physical AI (<code>Segment 1C</code> — <code>$103.23B</code> Valuation)</strong>:
+<ul>
+<li>Autoregressive text tokens cannot plan in 3D physical space. Venture capital has flooded into <strong>19 World Model &amp; Physical AI foundation labs (<code>$14.31B</code> raised)</strong> led by Yann LeCun's <strong><code>AMI Labs</code></strong> (<code>$1.03B</code> Seed at <code>$4.53B</code> valuation building non-generative <code>V-JEPA</code> world models), Fei-Fei Li's <strong><code>World Labs</code></strong> (<code>$1.23B</code> raised at <code>$5.0B</code> valuation shipping persistent 3D engine <code>Marble</code>), <strong><code>General Intuition</code></strong> (<code>$6.2B</code>), <strong><code>Decart</code></strong> (<code>$3.1B</code>), and generalist robotics brains <strong><code>Figure AI</code> (<code>$39.0B</code>)</strong>, <strong><code>Skild AI</code> (<code>$14.0B</code>)</strong>, <strong><code>Wayve</code> (<code>$8.6B</code>)</strong>, and <strong><code>Physical Intelligence</code> (<code>$5.6B</code>)</strong>.</li>
+</ul>
+</li>
+<li><strong>Agent Infrastructure (<code>1H</code>) &amp; Serverless Inference Clouds (<code>1F</code>) Dominate Developer GTM</strong>:
+<ul>
+<li>CORUM's scrape of <code>1,700</code> SF Tech Week 2026 events (<code>69</code> hackathons, <code>136</code> sponsors) and <code>1,401</code> Y Combinator startups (<code>W25–F26</code>, <code>86.8%</code> AI-native) shows that <strong>over 62% of ecosystem developer sponsorship</strong> comes from Agent/Browser/Memory infrastructure (<code>Supabase</code>, <code>LangChain</code>, <code>Browserbase</code>, <code>Mem0</code>, <code>KERNEL</code>, <code>Mastra</code>) and Serverless Inference Clouds (<code>Fireworks AI</code> <code>$17.5B</code>, <code>Baseten</code> <code>$13.0B</code>, <code>Together AI</code> <code>$3.3B</code>, <code>Modal</code> <code>$2.5B</code>), while RL/evals leader <strong><code>AfterQuery</code> (<code>YC W25</code>)</strong> reached a <strong><code>$3.20B</code> valuation in 9 months</strong> (the fastest unicorn in YC history).</li>
+</ul>
+</li>
+<li><strong>Autonomous Epistemic Science &amp; Drug Discovery (<code>Segment 1B</code> — <code>$18.42B</code> Valuation)</strong>:
+<ul>
+<li>Autonomous AI scientist platforms such as <strong><code>FutureHouse</code> / <code>Edison Scientific</code> (<code>Kosmos</code>)</strong> now read <code>1,500+</code> papers and execute <code>42,000+</code> lines of code per run (<code>~6 months</code> of PhD research), while <strong><code>Unreasonable Labs</code></strong> pairs ontological knowledge graphs with adversarial multi-agent panels (<em>Proposer vs. Falsifier vs. Adjudicator</em>) alongside <strong><code>Isomorphic Labs</code> (<code>$6.0B</code>)</strong>, <strong><code>Chai Discovery</code> (<code>$3.8B</code>)</strong>, and <strong><code>Xaira</code> (<code>$2.7B</code>)</strong>.</li>
+</ul>
+</li>
+<li><strong>AI for Silicon, Physics &amp; Industrial Engineering (<code>Segments 2K &amp; 1E</code> — <code>$9.85B</code> Valuation)</strong>:
+<ul>
+<li>DeepMind <code>AlphaChip</code> spinout <strong><code>Ricursive Intelligence</code> (<code>$4.0B</code> valuation in 4 months)</strong> compresses chip floorplanning from 2 years to 1 week; <strong><code>PhysicsX</code> (<code>$2.4B</code>)</strong> runs multiphysics CFD/FEA simulations in milliseconds; and <strong><code>Nominal</code> (<code>$1.0B</code>)</strong> automates mission-critical hardware telemetry for defense and aerospace.</li>
+</ul>
+</li>
+<li><strong>Personalized AI Operating Systems (<code>Meta Muse</code>, <code>Instinct</code>, <code>Mem0</code>) &amp; Disintermediation of <code>15%–25%</code> Aggregators</strong>:
+<ul>
+<li>The Oct 2026 bankruptcy of <code>Character.AI</code> and wind-down of <code>Dot</code> proved that <strong>stateless or purely conversational consumer AI hits a <code>2.2%</code> subscription ceiling</strong>. The winning architecture combines <strong>Continuous Personal Context Graphs (<code>Active Memory</code>)</strong> with <strong>transactional execution (<code>Segment 3E</code>)</strong>—led by <strong><code>Meta Muse</code></strong> and Mira Murati's <strong><code>Instinct</code> (<code>$10.0B</code> valuation)</strong>.</li>
+<li>By connecting directly to supplier property/inventory systems (<code>Oracle Opera</code>, <code>Mews</code>, <code>Sabre</code>) via <strong>Anthropic <code>MCP</code></strong> and <strong>Google <code>Universal Cart (UCP)</code></strong> over <code>1.5%</code> agentic payment rails (<code>Stripe</code> / <code>Skyfire</code>), personal AI agents bypass <code>15%–25%</code> toll-booth aggregators like <strong><code>Booking.com</code> (<code>NASDAQ: BKNG</code>, <code>~$160B</code> market cap)</strong>—delivering a <code>10%</code> instant discount to consumers while raising net supplier revenue by <code>+10.6%</code>.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>9. Summary Synthesis: Positioning Across the Economic Landscape</h2>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Economic &amp; Market Dimension</th>
+<th style="text-align:left">Current Empirical State (<code>October 20, 2026</code>)</th>
+<th style="text-align:left">High-Conviction Beneficiaries (<code>RIDE</code> / <code>BUY</code> / Structural Tailwinds)</th>
+<th style="text-align:left">Key Vulnerabilities (<code>FRAGILE</code> / <code>AVOID</code> / Structural Headwinds)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Macro &amp; Debt Cycle</strong></td>
+<td style="text-align:left"><strong>Late-Cycle Financial Repression</strong> (<code>-5.44 pp</code> gap; Debt/GDP <code>122.6%</code>; Fed hiked to <code>3.75%–4.00%</code> on Sept 17; <code>10Y</code> at <code>5.12%</code>; Baa spread tight at <code>1.46%</code>)</td>
+<td style="text-align:left"><strong>Free Cash Flow Yield (<code>COWZ</code>)</strong>, <strong>Insurance &amp; Reinsurance (<code>IAK</code>, <code>KBWP</code>, Life)</strong>, <strong>Structured Credit (<code>JAAA</code>)</strong>, <strong>Megacap Platforms (<code>MAGS</code>)</strong></td>
+<td style="text-align:left">Long-duration unprofitable growth, unhedged <strong>Commercial &amp; Residential REITs</strong>, regional banks if credit spreads widen <code>&gt;2.0%</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>US Real Economy (<code>$53.60T</code> NAICS)</strong></td>
+<td style="text-align:left"><strong>Services/Healthcare Boom vs. Goods Contraction</strong> (Healthcare <code>+10.8%</code>, Finance <code>+8.8%</code>, Couriers <code>+29.5%</code>, Air <code>+15.6%</code> vs. Mfg <code>-0.8%</code>, Trucking <code>-4.3%</code>)</td>
+<td style="text-align:left"><strong>Healthcare Providers/Hospitals (<code>IHF</code>, <code>XHS</code>)</strong>, <strong>Drug &amp; Industrial Distributors</strong>, <strong>CGT Cold Chain &amp; Tools (<code>CYRX</code>, <code>MXCT</code>)</strong>, <strong>Big-Box &amp; Off-Price Retail</strong></td>
+<td style="text-align:left">Domestic <strong>Trucking (<code>-4.3%</code>)</strong>, <strong>Primary Metals (<code>-8.3%</code>)</strong>, <strong>Discretionary Apparel/Restaurants</strong>, <strong>Furniture Retail (<code>-2.7%</code>)</strong></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Geopolitics &amp; Energy</strong></td>
+<td style="text-align:left"><strong>Grinding Hormuz Disruption</strong> (<code>58.3%</code> path share; Brent <code>$110.45/bbl</code>; Crack spread <code>87.3rd</code> pctile at <code>$101.91</code>)</td>
+<td style="text-align:left"><strong>Oil Refiners (<code>CRAK</code>, <code>MPC</code>, <code>VLO</code>, <code>PSX</code>)</strong>, <strong>Integrated Energy (<code>XLE</code>)</strong>, <strong>Natural Gas (<code>FCG</code>)</strong>, <strong>Marine Shipping (<code>BOAT</code>)</strong>, <strong>LatAm/EM Exporters (<code>EWZ</code>, <code>COLO</code>)</strong></td>
+<td style="text-align:left"><strong>Airlines (<code>JETS</code> <code>-9.7%</code> 1m)</strong>, energy-importing European/Asian chemical &amp; auto assemblers</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>AI Supercycle (<code>Public vs. Private</code>)</strong></td>
+<td style="text-align:left"><strong>Public Hardware <code>PEAK-RISK</code> Digestion</strong> (<code>SMH</code> <code>-15.2%</code> below high; <code>8/15</code> Tech rows <code>FRAGILE</code>) vs. <strong>Private Physical/Vertical AI Boom</strong> (<code>$3.60T</code> val)</td>
+<td style="text-align:left"><strong>Cloud Infrastructure (<code>SKYY</code>)</strong>, <strong>Taiwan Foundry (<code>EWT</code>)</strong>, <strong>3D World Models &amp; Physical AI (<code>1C</code>)</strong>, <strong>AI for Science/Engineering (<code>1B/2K</code>)</strong>, <strong>Agent Infra (<code>1H</code>)</strong></td>
+<td style="text-align:left">Parabolic hardware wrappers in unrecovered drawdowns (<strong>NAND Flash</strong>, <strong>Quantum Photonics</strong>, <strong>HDDs</strong>); legacy <strong>OTA/Search Aggregators (<code>BKNG</code>)</strong></td>
+</tr>
+</tbody>
+</table></div>
+
+    </article>
+  </main>
+  
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

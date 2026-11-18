@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Energy, Midstream, Grid &amp; Utilities Ecosystem — Interactive Macro Network Graph &amp; 5-Round RSI Matrix</title>
+<style>
+  :root {
+    --bg: #0b0f17;
+    --panel: #111827;
+    --panel-alt: #172033;
+    --border: #24324b;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --teal: #14b8a6;
+    --cyan: #38bdf8;
+    --amber: #f59e0b;
+    --emerald: #10b981;
+    --rose: #f43f5e;
+    --violet: #a855f7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    padding-bottom: 60px;
+  }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11, 15, 23, 0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .topbar-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .badge-pill {
+    background: rgba(20, 184, 166, 0.16);
+    border: 1px solid rgba(20, 184, 166, 0.45);
+    color: #2dd4bf;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .nav-btn:hover, .nav-btn.primary {
+    background: rgba(20, 184, 166, 0.18);
+    border-color: var(--teal);
+    color: #5eead4;
+  }
+  .container {
+    max-width: 1580px;
+    margin: 0 auto;
+    padding: 24px 28px;
+  }
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .kpi-val {
+    font-size: 21px;
+    font-weight: 800;
+    color: #f8fafc;
+  }
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--teal);
+    margin-top: 4px;
+  }
+  .grid-main {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 1150px) {
+    .grid-main { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: rgba(23, 32, 51, 0.55);
+  }
+  .card-header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f3f4f6;
+  }
+  .scenario-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #0e1523;
+  }
+  .scen-btn {
+    background: #172236;
+    border: 1px solid #2b3b59;
+    color: #cbd5e1;
+    padding: 6px 11px;
+    border-radius: 7px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .scen-btn.active, .scen-btn:hover {
+    background: rgba(20, 184, 166, 0.22);
+    border-color: var(--teal);
+    color: #5eead4;
+  }
+  #networkCanvas {
+    width: 100%;
+    height: 640px;
+    display: block;
+    background: radial-gradient(circle at 50% 45%, #131d31 0%, #0b0f17 75%);
+    cursor: grab;
+  }
+  .legend-bar {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 10px 18px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .inspector-body {
+    padding: 18px;
+    max-height: 700px;
+    overflow-y: auto;
+  }
+  .node-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .prop-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .prop-row {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 28px 0 14px;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rounds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .round-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--teal);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .round-card h3 {
+    font-size: 13.5px;
+    color: #5eead4;
+    margin-bottom: 6px;
+  }
+  .round-card p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .formula-box {
+    font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    font-size: 11px;
+    background: #0b0f17;
+    border: 1px solid var(--border);
+    padding: 7px 9px;
+    border-radius: 6px;
+    color: #93c5fd;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #0e1523;
+    align-items: center;
+  }
+  .filter-input {
+    background: #172236;
+    border: 1px solid #2b3b59;
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    min-width: 260px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th, td {
+    padding: 10px 11px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  th {
+    background: #141d2f;
+    color: #94a3b8;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+  tr:hover td {
+    background: rgba(20, 184, 166, 0.06);
+  }
+  .act-badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 10.5px;
+    display: inline-block;
+  }
+  .act-strong { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+  .act-buy { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+  .act-hold { background: rgba(148, 163, 184, 0.16); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.35); }
+  .act-avoid { background: rgba(244, 63, 94, 0.16); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">
+    <span class="badge-pill">⚡ CORUM Institutional MacroGraph · Energy, Grid &amp; Utilities</span>
+    <h1 style="font-size:17px;font-weight:800;">Energy, LNG, Midstream, Grid Equipment, Clean Power &amp; Water Utilities (`EnergyUtilitiesSystemAgent`)</h1>
+  </div>
+  <div class="nav-links">
+    <a class="nav-btn primary" href="#hardened-energy-utilities-recommendation-matrix">🎯 5-Round RSI Matrix (32 Equities)</a>
+    <a class="nav-btn" href="#gov-healthcare-policy-intersections">🏛️ Gov Agencies &amp; Healthcare Policy</a>
+    <a class="nav-btn" href="#private-challengers-section">🚀 8 Private Unicorns</a>
+    📄 Full Deep Research Report
+  </div>
+</div>
+
+<div class="container">
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-label">Universe &amp; Causal Graph</div>
+      <div class="kpi-val">32 Public · 8 Private</div>
+      <div class="kpi-sub">8 Ecosystem Nodes · 25 E1 Edges · 5 State Rules</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">L4 Grid Oversold Coils (Strong Buy)</div>
+      <div class="kpi-val">GEV (#1) · PWR (#2) · ETN (#5)</div>
+      <div class="kpi-sub">RSI-14: 28.3–30.8 Above Rising 200D SMA · $205B+ Backlog</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">L2 Gas &amp; LNG Tollbooths (Strong Buy)</div>
+      <div class="kpi-val">WMB (#3) · LNG (#4) · KMI · TRGP</div>
+      <div class="kpi-sub">+ EQT (#7) · 85-95% Fee-Based Take-or-Pay Moats</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">EPA PFAS, FDA WFI &amp; LNG Turbine</div>
+      <div class="kpi-val">BKR (#6) · XYL (#10) · EOG (#11)</div>
+      <div class="kpi-sub">EPA 4.0 ppt PFAS, USP WFI &amp; $35.4B LNG Turbomachinery</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Round 5 Structural Traps Avoided</div>
+      <div class="kpi-val">OXY (#30) · HAL (#31) · ENPH (#32)</div>
+      <div class="kpi-sub">2.9x Debt/EBITDA, N.A. Frac Cyclicality &amp; CPUC NEM 3.0</div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE MACRO NETWORK GRAPH & SHOCK SIMULATOR -->
+  <div class="grid-main">
+    <div class="card">
+      <div class="card-header">
+        <h2>☊ Interactive Energy, Midstream, Grid, Utilities &amp; Healthcare Policy Causal Network Graph</h2>
+        <span style="font-size:12px;color:var(--muted);">Click any node to inspect E1 edges, tickers, gov agencies &amp; 200-path Monte Carlo propagation</span>
+      </div>
+      <div class="scenario-bar">
+        <button class="scen-btn active" onclick="runScenario('baseline', this)">Baseline Equilibrium</button>
+        <button class="scen-btn" onclick="runScenario('ENU_R1', this)">⚡ ENU_R1: AI Power Supercycle &amp; Transformer Shortage</button>
+        <button class="scen-btn" onclick="runScenario('ENU_R2', this)">🛢️ ENU_R2: Strait of Hormuz Shock &amp; US LNG Windfall</button>
+        <button class="scen-btn" onclick="runScenario('ENU_R3', this)">📉 ENU_R3: 10Y Yield (&gt;4.75%) &amp; CPUC NEM 3.0 Freeze</button>
+        <button class="scen-btn" onclick="runScenario('ENU_R4', this)">💧 ENU_R4: EPA 4.0 ppt PFAS + FDA WFI &amp; Fab UPW Boom</button>
+        <button class="scen-btn" onclick="runScenario('ENU_R5', this)">🔧 ENU_R5: Permian Gas Bottleneck &amp; Waha Basis Blowout</button>
+      </div>
+      <canvas id="networkCanvas" width="1040" height="640"></canvas>
+      <div class="legend-bar">
+        <div class="legend-item"><span class="dot" style="background:#14b8a6;"></span> 8 Energy, Grid, Clean Power &amp; Water Nodes</div>
+        <div class="legend-item"><span class="dot" style="background:#f59e0b;"></span> Federal &amp; State Regulatory Agencies (FERC, DOE, EPA, PUCs)</div>
+        <div class="legend-item"><span class="dot" style="background:#f43f5e;"></span> Healthcare &amp; Biopharma Hooks (CMS 482.41, FDA WFI, PFAS)</div>
+        <div class="legend-item"><span class="dot" style="background:#38bdf8;"></span> Macro &amp; AI Drivers (AI Demand, Oil Supply, Rates)</div>
+        <div class="legend-item"><span class="dot" style="background:#a855f7;"></span> 8 Private Challengers (Fervo, Commonwealth LNG, Grid United, Gradiant)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>🔬 Node, Equity &amp; Causal Shock Inspector</h2>
+        <span id="activeScenarioBadge" class="badge-pill">Baseline</span>
+      </div>
+      <div class="inspector-body" id="inspectorPanel"></div>
+    </div>
+  </div>
+
+  <!-- GOVERNMENT AGENCIES & HEALTHCARE POLICY INTERSECTIONS -->
+  <div id="gov-healthcare-policy-intersections" class="section-title">
+    🏛️ Government Agencies, Regulatory Moats &amp; Healthcare Policy Intersections
+  </div>
+  <div class="rounds-grid">
+    <div class="round-card" style="border-top-color:#14b8a6;">
+      <h3>⚡ FERC Orders 1920 / 2023 / 881 &amp; NGA Section 7</h3>
+      <p>Order 1920 mandates 20-year regional transmission buildouts (`PWR`, `GEV`, `ETN`). NGA Section 7 certificates + judicial blocks on greenfield rivals make existing interstate gas pipelines (`WMB` Transco, `KMI` TGP/SNG, `EQT` MVP) priceless monopolies.</p>
+      <div class="formula-box">Top Beneficiaries: GEV (#1), PWR (#2), WMB (#3), ETN (#5), EQT (#7), KMI (#8)</div>
+    </div>
+    <div class="round-card" style="border-top-color:#f59e0b;">
+      <h3>🚢 DOE Non-FTA LNG Permits &amp; IRA Sec 45X / 45Q / 45U</h3>
+      <p>Resumed DOE non-FTA LNG export authorizations unlock next-wave Gulf Coast liquefaction trains (`LNG`, `BKR`, `Commonwealth LNG`). IRA Section 45X + 271% AD/CVD tariffs shield domestic non-Chinese solar (`FSLR`, `NXT`).</p>
+      <div class="formula-box">Top Beneficiaries: LNG (#4), BKR (#6), FSLR (#17), NXT (#22), XOM (#14 CCUS)</div>
+    </div>
+    <div class="round-card" style="border-top-color:#f43f5e;">
+      <h3>💧 EPA 4.0 ppt PFAS Mandate, FDA 21 CFR § 211.68 WFI &amp; AAMI ST108</h3>
+      <p>EPA's legally binding 4.0 ppt PFOA/PFOS drinking water rule (89 FR 32532) prevents oncologic/renal/endocrine toxicity while FDA cGMP Water for Injection (WFI) and ANSI/AAMI ST108 hospital sterile water standards drive recurring orders.</p>
+      <div class="formula-box">Top Beneficiaries: XYL (#10 Evoqua WFI/PFAS), AWK (#24 DSIC Rate Base), Gradiant</div>
+    </div>
+    <div class="round-card" style="border-top-color:#38bdf8;">
+      <h3>🏥 CMS 42 CFR § 482.41 Hospital Emergency Power &amp; Medical Polymers</h3>
+      <p>CMS Conditions of Participation &amp; NFPA 99/110 mandate Type 1 10-second hospital backup power (`ETN` ATS/UPS) and diesel-free hospital microgrids (`BE` at Kaiser/Sutter), while `EPD`/`TRGP`/`XOM` supply USP medical polypropylene &amp; PVC.</p>
+      <div class="formula-box">Top Beneficiaries: ETN (#5), BE (#12), SO (#13), TRGP (#9), EPD (#15), XOM (#14)</div>
+    </div>
+  </div>
+
+  <!-- 5-ROUND RECURSIVE SELF-IMPROVEMENT ENGINE CARDS -->
+  <div class="section-title">
+    🔄 5-Round Recursive Self-Improvement (RSI) Loop: Critic → Sector Sub-Skills → Re-Scoring
+  </div>
+  <div class="rounds-grid" id="subSkillsContainer"></div>
+
+  <!-- HARDENED 32-STOCK RECOMMENDATION MATRIX -->
+  <div id="hardened-energy-utilities-recommendation-matrix" class="section-title">
+    🎯 Final Hardened Energy, Grid &amp; Utilities Recommendation Matrix (32 Public Equities · Live 5-Round RSI Telemetry)
+  </div>
+  <div class="card">
+    <div class="filter-bar">
+      <input type="text" id="searchInput" class="filter-input" placeholder="Search ticker, company, node, moat, agency (e.g. GEV, WMB, LNG, PFAS, FERC)..." oninput="renderTable()" />
+      <button class="scen-btn active" onclick="setLayerFilter('ALL', this)">All 32 Equities</button>
+      <button class="scen-btn" onclick="setLayerFilter('STRONG_BUY', this)">⭐ Top 11 STRONG BUY</button>
+      <button class="scen-btn" onclick="setLayerFilter('PORTFOLIO', this)">💼 All 22 Portfolio Picks (Kelly &gt; 0%)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L1', this)">L1: Majors, Upstream &amp; OFS (8)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L2', this)">L2: Gas E&amp;P, Midstream &amp; LNG (9)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L3', this)">L3: Refiners (3)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L4', this)">L4: Grid &amp; Turbines (3)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L5', this)">L5: Clean Power &amp; Fuel Cells (4)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L6', this)">L6: Regulated &amp; Water Utilities (5)</button>
+      <button class="scen-btn" onclick="setLayerFilter('AVOID', this)">🚨 Avoid / Structural Traps (3)</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Ticker</th>
+            <th>Company &amp; Ecosystem Role</th>
+            <th>Layer / Node</th>
+            <th>R0 Base</th>
+            <th>R1 (Cost/Debt)</th>
+            <th>R2 (FERC/Backlog)</th>
+            <th>R3 (AI Power)</th>
+            <th>R4 (Gov/Health)</th>
+            <th>R5 (Tech Gate)</th>
+            <th>R5 Final</th>
+            <th>Live Price</th>
+            <th>20D / 60D</th>
+            <th>RSI-14 / W-RSI</th>
+            <th>Weinstein Stage</th>
+            <th>Buy Zone</th>
+            <th>Stop-Loss</th>
+            <th>12M Target</th>
+            <th>R:R</th>
+            <th>Kelly Wt</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 8 PRIVATE CHALLENGERS -->
+  <div id="private-challengers-section" class="section-title">
+    🚀 8 Emerging Private Challengers &amp; Infrastructure Unicorns
+  </div>
+  <div class="rounds-grid" id="privatesContainer"></div>
+</div>
+
+<script>
+const EQUITIES = [{"ticker": "GEV", "name": "GE Vernova Inc.", "layer": "L4", "layer_name": "High-Voltage Grid Equipment, Gas Turbines & EPC Contractors", "subsector_node": "GRID_EQUIPMENT", "role": "Global Power & Grid Electrification Pure-Play \u2014 Oligopoly in Heavy-Duty HA-Class Gas Turbines (~55,000 MW Fleet), High-Voltage Transformers/HVDC & BWRX-300 SMR Nuclear", "fallback_price": 348.5, "market_cap_b": 95.8, "rev_growth_pct": 11.8, "gross_margin_pct": 20.5, "fcf_margin_pct": 7.8, "div_yield_pct": 0.3, "pe_fwd": 42.5, "ev_ebitda": 24.8, "net_debt_ebitda": -1.4, "roic_pct": 16.5, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 72.0, "backlog_b": 119.0, "r0_score": 81.0, "r0_action": "BUY", "r1_delta": 3.5, "r1_note": "Spun off from GE with a fortress ~$8B gross cash / zero-debt balance sheet (-1.4x Net Debt/EBITDA), inflecting from legacy losses to $2.0B-$2.5B+ annual FCF and initiating a $6B share buyback + dividend.", "r2_delta": 8.0, "r2_note": "$119B+ total backlog (~75% high-margin multi-decade gas turbine Contractual Service Agreements + rapidly expanding Electrification grid equipment backlog whose EBITDA margins are surging from 4% in 2023 to >13-16% in 2026+). Operates in a global 3-player oligopoly (GEV, Siemens Energy, Mitsubishi) for heavy-duty H-class gas turbines where GEV is expanding capacity to 20 GW/yr and booking slot reservation fees into 2028-2029 at significantly higher pricing.", "r3_delta": 7.5, "r3_note": "Ground-zero beneficiary of both `ENU_R1` (2,600+ GW grid queue & LPT transformer shortage) and `ENU_R2` (AI data-center dispatchable gas power crunch), anchored by its 4GW AI data-center power JV with Chevron & Engine No. 1 using seven 7HA gas turbines.", "r4_delta": 1.0, "r4_note": "Offshore wind legacy backlog (~$2B remaining) is being wound down with zero new unprofitable orders taken, while BWRX-300 SMR nuclear reactor (Ontario Power Generation Darlington + TVA) provides free long-term nuclear call optionality.", "r5_note": "#1 institutional franchise in the global Gas Power + High-Voltage Grid Equipment supercycle; accumulate on any market pullbacks.", "primary_moat": "Global 3-Player Heavy-Duty Gas Turbine Oligopoly (7HA/9HA) + $119B Backlog + High-Voltage Transformer/HVDC Grid Solutions + $8B Net Cash", "key_agencies": ["FERC (Order 1920)", "NRC (BWRX-300 SMR)", "DOE", "EPA (111d Gas Rules)"], "healthcare_hooks": ["Hospital Campus Cogeneration Aeroderivative Turbines & High-Voltage Grid Substations"], "bull_case": "Gas Power + Electrification segment EBITDA margins hit 16-18% by 2027/2028 on high-priced 2026-2029 turbine and transformer backlog conversion, driving $4.5B+ annual FCF.", "bear_case": "42x forward P/E multiple experiences temporary compression if hyperscaler AI capex growth moderates or offshore wind blade warranty charges recur.", "price": 815.0, "sma50": 949.53, "sma200": 938.35, "atr14": 50.66, "rsi14": 29.9, "rsi7": 21.3, "connors_rsi2": 27.0, "weekly_rsi14": 38.5, "ret_20d_pct": -14.89, "ret_60d_pct": -17.0, "weinstein_stage": "Stage 3 (Consolidation)", "data_source": "yfinance_live", "r1_score": 84.5, "r2_score": 92.5, "r3_score": 100.0, "r4_score": 101.0, "r5_delta": -3.2, "r5_score": 97.8, "r5_tech_gate": "Weinstein Stage 3 consolidation/distribution (-0.5); Washout oversold RSI-14 (29.9) on high-conviction fundamental compounder (+1.5)", "total_rsi_upgrade": 16.8, "final_action": "STRONG BUY", "buy_zone": "$786.48 - $823.15", "buy_low": 786.48, "buy_high": 823.15, "stop_loss": 695.29, "target_12m": 1043.2, "upside_12m_pct": 28.0, "reward_risk": 1.91, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 1, "kelly_weight_pct": 9.1}, {"ticker": "PWR", "name": "Quanta Services, Inc.", "layer": "L4", "layer_name": "High-Voltage Grid Equipment, Gas Turbines & EPC Contractors", "subsector_node": "GRID_EQUIPMENT", "role": "#1 North American Specialized High-Voltage Electric Transmission, Substation, Renewable & Data-Center Electrical EPC Contractor (~68,000+ Skilled Craft Workforce)", "fallback_price": 312.5, "market_cap_b": 46.2, "rev_growth_pct": 14.6, "gross_margin_pct": 15.1, "fcf_margin_pct": 6.8, "div_yield_pct": 0.15, "pe_fwd": 29.5, "ev_ebitda": 18.2, "net_debt_ebitda": 1.45, "roic_pct": 15.4, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 85.0, "backlog_b": 34.5, "r0_score": 79.0, "r0_action": "BUY", "r1_delta": 3.5, "r1_note": "Asset-light working capital model generating $1.5B-$1.9B+ annual FCF with >80% of revenue derived from recurring Master Service Agreements (MSAs) and collaborative cost-plus/unit-price utility contracts (avoiding fixed-price lump-sum EPC blowups).", "r2_delta": 6.5, "r2_note": "Ultimate physical human-capital moat: no matter how many transformers or turbines utilities and hyperscalers order, nothing gets energized without high-voltage journeyman linemen. Quanta controls ~68,000+ skilled craft workers and its own accredited Northwest Lineman College + Lazy Q Ranch training campuses, alongside a record $34.5B backlog.", "r3_delta": 6.0, "r3_note": "Acquisition of Cupertino Electric ($1.5B) + Blattner + Pennsylvania Transformer Technology (PTT) makes Quanta the only turnkey contractor in North America that can manufacture the power transformer, build the 500kV transmission line (like the $11B SunZia HVDC project), construct the utility substation, AND wire the inside of the hyperscale AI data center.", "r4_delta": 2.5, "r4_note": "Direct structural winner of `ENU_R1` (FERC Order 1920 20-year regional transmission buildout & Order 2023 interconnection queue clearing) plus West Coast wildfire undergrounding mandates.", "r5_note": "Premier pick-and-shovel EPC monopoly on North American grid modernization and AI data-center energization.", "primary_moat": "68,000+ Skilled High-Voltage Lineman Workforce + Accredited Lineman Colleges + $34.5B Backlog + Cupertino Electric Turnkey Integration", "key_agencies": ["FERC (Order 1920/2023)", "NERC", "State PUCs", "OSHA"], "healthcare_hooks": ["Cupertino Electric Mission-Critical Hospital Electrical & Microgrid Engineering"], "bull_case": "FERC Order 1920 765kV regional transmission awards + Cupertino hyperscale data-center backlog drive 15%+ annual EPS compounding through 2030.", "bear_case": "Permitting or transformer delivery delays push utility transmission project starts out by 2-3 quarters.", "price": 546.43, "sma50": 641.55, "sma200": 621.77, "atr14": 32.27, "rsi14": 28.3, "rsi7": 15.7, "connors_rsi2": 30.2, "weekly_rsi14": 38.7, "ret_20d_pct": -15.81, "ret_60d_pct": -16.94, "weinstein_stage": "Stage 3 (Consolidation)", "data_source": "yfinance_live", "r1_score": 82.5, "r2_score": 89.0, "r3_score": 95.0, "r4_score": 97.5, "r5_delta": -2.0, "r5_score": 95.5, "r5_tech_gate": "Weinstein Stage 3 consolidation/distribution (-0.5); Washout oversold RSI-14 (28.3) on high-conviction fundamental compounder (+1.5)", "total_rsi_upgrade": 16.5, "final_action": "STRONG BUY", "buy_zone": "$527.30 - $551.89", "buy_low": 527.3, "buy_high": 551.89, "stop_loss": 469.21, "target_12m": 699.43, "upside_12m_pct": 28.0, "reward_risk": 1.98, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 2, "kelly_weight_pct": 7.83}, {"ticker": "WMB", "name": "The Williams Companies, Inc.", "layer": "L2", "layer_name": "Natural Gas Upstream, LNG Liquefaction & Midstream Pipeline Tollbooths", "subsector_node": "MIDSTREAM", "role": "Owner of the Crown-Jewel Transco Pipeline (10,000-Mile Gulf-to-NYC Superhighway Moving ~33% of US Natural Gas) + Northwest Pipeline & Storage", "fallback_price": 58.6, "market_cap_b": 71.5, "rev_growth_pct": 10.5, "gross_margin_pct": 63.4, "fcf_margin_pct": 23.0, "div_yield_pct": 3.4, "pe_fwd": 24.5, "ev_ebitda": 12.8, "net_debt_ebitda": 3.65, "roic_pct": 12.4, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 30.0, "fee_or_ratebase_pct": 93.0, "backlog_b": 10.5, "r0_score": 76.0, "r0_action": "BUY", "r1_delta": 3.5, "r1_note": "Delivered 12+ consecutive quarters of meeting or beating consensus EBITDA with 2.1x dividend coverage, 3.65x leverage, and zero equity issuance needed.", "r2_delta": 7.5, "r2_note": "Transcontinental Gas Pipe Line (Transco) is arguably the single most irreplaceable physical infrastructure asset in North America \u2014 running from South Texas through Louisiana, Georgia, Carolinas, Virginia ('Data Center Alley'), PA, NJ, and NYC. Because greenfield pipelines cannot be permitted on the East Coast, brownfield Transco compressor expansions (Regional Energy Access, Southeast Supply Enhancement) earn ~18-22% ROIC (~5x EBITDA build multiples) backed by 15-20 year utility take-or-pay contracts.", "r3_delta": 6.5, "r3_note": "Direct beneficiary of `ENU_R2` (PJM $269.92-$329.17/MW-day capacity squeeze) and Southeast utility IRP expansions; announced $1.6B 'Socrates' behind-the-meter natural gas power generation & pipeline project in Ohio backed by a 10-year fixed-price agreement with an investment-grade hyperscaler.", "r4_delta": 1.5, "r4_note": "Supreme Court Chevron deference overturn (Loper Bright) and NEPA reforms strengthen FERC Section 7 certificate durability for brownfield Transco expansions.", "r5_note": "Weinstein Stage 2 secular leader; the #1 pure-play C-Corp tollbooth on East Coast AI data-center power and LNG feedgas.", "primary_moat": "Irreplaceable Transco Pipeline Right-of-Way (Texas to Virginia/NYC) + 5x EBITDA Brownfield Expansion Economics + 115+ Bcf Gulf Coast Storage", "key_agencies": ["FERC (NGA Sec 7 Certificates)", "PHMSA", "State DEPs"], "healthcare_hooks": ["Primary Firm Natural Gas Spine for East Coast & Mid-Atlantic Academic Medical Centers"], "bull_case": "Southeast Supply Enhancement (1.6 Bcf/d) + Socrates and follow-on hyperscaler BTM gas power deals drive 9-11% annual EBITDA CAGR through 2030.", "bear_case": "D.C. Circuit judicial challenges delay FERC certificates on Northeast Transco compressor expansions.", "price": 71.7, "sma50": 71.97, "sma200": 71.26, "atr14": 2.28, "rsi14": 50.6, "rsi7": 51.5, "connors_rsi2": 68.9, "weekly_rsi14": 51.5, "ret_20d_pct": 3.52, "ret_60d_pct": 1.85, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 79.5, "r2_score": 87.0, "r3_score": 93.5, "r4_score": 95.0, "r5_delta": 0.2, "r5_score": 95.2, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (50.6) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 19.2, "final_action": "STRONG BUY", "buy_zone": "$69.19 - $72.42", "buy_low": 69.19, "buy_high": 72.42, "stop_loss": 63.81, "target_12m": 91.78, "upside_12m_pct": 28.0, "reward_risk": 2.54, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 3, "kelly_weight_pct": 7.67}, {"ticker": "LNG", "name": "Cheniere Energy, Inc.", "layer": "L2", "layer_name": "Natural Gas Upstream, LNG Liquefaction & Midstream Pipeline Tollbooths", "subsector_node": "MIDSTREAM", "role": "#1 US & #2 Global LNG Liquefaction Exporter (~45 MTPA Operating + 10+ MTPA Corpus Christi Stage 3 Ramp at Sabine Pass & Corpus Christi)", "fallback_price": 224.5, "market_cap_b": 50.2, "rev_growth_pct": 12.4, "gross_margin_pct": 42.5, "fcf_margin_pct": 21.0, "div_yield_pct": 0.9, "pe_fwd": 18.2, "ev_ebitda": 10.6, "net_debt_ebitda": 3.4, "roic_pct": 16.8, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 25.0, "fee_or_ratebase_pct": 92.0, "backlog_b": 115.0, "r0_score": 77.0, "r0_action": "BUY", "r1_delta": 4.5, "r1_note": "Generates ~$3.2B-$4.0B+ annual distributable cash flow executing its '20/20 Vision' capital allocation plan, having already retired >15% of diluted shares since 2021 while self-funding Corpus Christi Stage 3.", "r2_delta": 8.5, "r2_note": ">90% of liquefaction capacity is contracted under 20-year take-or-pay Sales and Purchase Agreements (SPAs) with investment-grade sovereign/utility utilities (115% Henry Hub + ~$2.25-$3.50/MMBtu fixed liquefaction fee with CPI inflation escalators), regardless of whether the buyer lifts the cargo.", "r3_delta": 3.0, "r3_note": "European industrial/power grids and Asian data-center hubs rely on Cheniere's flexible destination-free US LNG cargoes to replace Russian pipeline gas and coal.", "r4_delta": 2.5, "r4_note": "Corpus Christi Stage 3 (7 midscale trains, 10+ MTPA) is already fully permitted and commissioning ahead of schedule; new administration lifted the DOE non-FTA LNG pause, accelerating Midscale Trains 8 & 9 and Sabine Pass Stage 5.", "r5_note": "World-class infrastructure tollbooth with 18+ year weighted-average remaining SPA life and relentless share count cannibalization.", "primary_moat": "45->55+ MTPA Operating Gulf Coast LNG Liquefaction Infrastructure + 20-Year Take-or-Pay Investment-Grade SPAs ($115B+ Contracted Fixed Fees)", "key_agencies": ["FERC (NGA Sec 3)", "DOE (FTA/Non-FTA Export Permits)", "PHMSA", "US Coast Guard"], "healthcare_hooks": ["Reliable Baseload LNG for European & Asian Hospital/Pharmaceutical Power Grids"], "bull_case": "Corpus Christi Stage 3 + Trains 8 & 9 lift run-rate EBITDA above $7.5B while share count is reduced below 200M shares.", "bear_case": "Global LNG supply wave (Qatar + US competitors in 2027-2029) compresses Cheniere Marketing International (CMI) spot cargo margins on the ~8% uncontracted volume.", "price": 298.67, "sma50": 278.49, "sma200": 252.95, "atr14": 7.56, "rsi14": 67.3, "rsi7": 75.7, "connors_rsi2": 94.0, "weekly_rsi14": 64.2, "ret_20d_pct": 11.22, "ret_60d_pct": 15.99, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 81.5, "r2_score": 90.0, "r3_score": 93.0, "r4_score": 95.5, "r5_delta": -0.6, "r5_score": 94.9, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0)", "total_rsi_upgrade": 17.9, "final_action": "STRONG BUY", "buy_zone": "$274.78 - $301.66", "buy_low": 274.78, "buy_high": 301.66, "stop_loss": 261.17, "target_12m": 382.3, "upside_12m_pct": 28.0, "reward_risk": 2.23, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 4, "kelly_weight_pct": 7.51}, {"ticker": "ETN", "name": "Eaton Corporation plc", "layer": "L4", "layer_name": "High-Voltage Grid Equipment, Gas Turbines & EPC Contractors", "subsector_node": "GRID_EQUIPMENT", "role": "Premier Electrical Power Management Compounder \u2014 Medium/High-Voltage Switchgear, Distribution Transformers, Data-Center UPS/PDUs & Aerospace", "fallback_price": 318.4, "market_cap_b": 125.6, "rev_growth_pct": 9.8, "gross_margin_pct": 38.2, "fcf_margin_pct": 14.8, "div_yield_pct": 1.25, "pe_fwd": 26.8, "ev_ebitda": 19.4, "net_debt_ebitda": 1.2, "roic_pct": 19.2, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 68.0, "backlog_b": 15.6, "r0_score": 78.0, "r0_action": "BUY", "r1_delta": 4.0, "r1_note": "Industry-high 38.2% gross margin, ~28-30% Electrical Americas segment operating margin, and 19.2% ROIC with consistent 14.8% FCF margin.", "r2_delta": 5.5, "r2_note": "$15.6B electrical & aerospace backlog (~3x historical pre-2020 norms) with >1.1x rolling 12-month book-to-bill; investing $1.5B in North American transformer, voltage regulator, and switchgear capacity that is already pre-sold under multi-year utility framework agreements.", "r3_delta": 6.0, "r3_note": "Captures ~$1.2M-$2.2M of electrical equipment content per megawatt of AI data center buildout (from utility substation step-down transformers and medium-voltage switchgear down to uninterruptible power supplies [UPS], busway, and rack power distribution).", "r4_delta": 2.0, "r4_note": "Beneficiary of FERC Order 1920 grid expansion, IIJA grid resilience grants, and over $800B of tracked North American mega-projects (data centers, LNG plants, semiconductor fabs, EV/battery plants, and hospital complexes).", "r5_note": "Highest-margin electrical equipment compounder bridging the utility substation directly to the AI server rack.", "primary_moat": "29%+ Electrical Americas Operating Margin + End-to-End 'Grid-to-Chip' Electrical Architecture + $15.6B Backlog", "key_agencies": ["FERC", "DOE", "UL / NEC Electrical Codes", "FAA (Aerospace)"], "healthcare_hooks": ["CMS 42 CFR \u00a7 482.41 / NFPA 99 Hospital Life-Safety Switchgear, Automatic Transfer Switches (ATS) & Medical Imaging UPS"], "bull_case": "AI data center orders accelerate >35% YoY as Blackwell/Rubin liquid-cooled racks require higher-density medium-voltage power architectures.", "bear_case": "Commercial non-residential construction slows or Section 232 grain-oriented electrical steel (GOES) costs squeeze near-term incremental margins.", "price": 366.11, "sma50": 416.44, "sma200": 394.22, "atr14": 16.71, "rsi14": 30.8, "rsi7": 22.2, "connors_rsi2": 25.2, "weekly_rsi14": 41.3, "ret_20d_pct": -16.79, "ret_60d_pct": -5.14, "weinstein_stage": "Stage 3 (Consolidation)", "data_source": "yfinance_live", "r1_score": 82.0, "r2_score": 87.5, "r3_score": 93.5, "r4_score": 95.5, "r5_delta": -1.3, "r5_score": 94.2, "r5_tech_gate": "Weinstein Stage 3 consolidation/distribution (-0.5); Washout oversold RSI-14 (30.8) on high-conviction fundamental compounder (+1.5)", "total_rsi_upgrade": 16.2, "final_action": "STRONG BUY", "buy_zone": "$353.30 - $369.77", "buy_low": 353.3, "buy_high": 369.77, "stop_loss": 323.22, "target_12m": 468.62, "upside_12m_pct": 28.0, "reward_risk": 2.39, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 5, "kelly_weight_pct": 7.14}, {"ticker": "BKR", "name": "Baker Hughes Company", "layer": "L1", "layer_name": "Integrated Oil Majors, Shale E&P & Oilfield Services", "subsector_node": "ENERGY", "role": "Industrial & Energy Technology (IET) Global Monopoly in LNG Liquefaction Turbines/Compressors, Gas Pipeline Compression & BTM Data-Center Power", "fallback_price": 44.9, "market_cap_b": 44.5, "rev_growth_pct": 9.4, "gross_margin_pct": 21.8, "fcf_margin_pct": 8.9, "div_yield_pct": 1.95, "pe_fwd": 16.5, "ev_ebitda": 9.8, "net_debt_ebitda": 0.65, "roic_pct": 14.5, "wti_breakeven_usd": 42.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 65.0, "backlog_b": 33.4, "r0_score": 76.0, "r0_action": "BUY", "r1_delta": 4.0, "r1_note": "Misclassified by naive screens as a cyclical oilfield driller; in reality, Industrial & Energy Technology (IET) drives ~$33.4B record backlog with 20%+ EBITDA margin trajectory.", "r2_delta": 6.5, "r2_note": "Near-monopoly (~85%+ market share) in global LNG liquefaction turbomachinery (LM9000/NovaLT aeroderivative turbines & centrifugal compressors) with 20-year high-margin aftermarket service CSA annuities.", "r3_delta": 5.5, "r3_note": "NovaLT16 gas turbines and natural gas pipeline booster compressors are seeing surging orders for interstate gas pipeline expansions (WMB/KMI) and behind-the-meter AI data-center microgrids.", "r4_delta": 2.0, "r4_note": "Unfreezing of US DOE non-FTA LNG export permits and Middle East (Qatar/ADNOC) LNG mega-trains extend IET order visibility through 2030.", "r5_note": "Weinstein Stage 2 secular breakout with $33.4B backlog; top pick bridging LNG liquefaction, midstream gas compression, and AI distributed power.", "primary_moat": "85%+ Global LNG Liquefaction Turbomachinery Market Share + $33.4B Backlog + 20-Yr Aftermarket Service Annuities", "key_agencies": ["DOE (LNG Export Approvals)", "FERC (Pipeline Compressor Certificates)"], "healthcare_hooks": ["Industrial Cogeneration & Critical Facility Backup Turbines"], "bull_case": "IET EBITDA margins expand above 21% as high-margin LNG service annuities and AI data-center NovaLT turbine orders compound.", "bear_case": "Global LNG oversupply post-2028 slows next-wave greenfield liquefaction FIDs.", "price": 55.86, "sma50": 58.97, "sma200": 59.82, "atr14": 1.67, "rsi14": 46.9, "rsi7": 51.3, "connors_rsi2": 76.1, "weekly_rsi14": 45.0, "ret_20d_pct": -3.41, "ret_60d_pct": -6.4, "weinstein_stage": "Stage 3 (Consolidation)", "data_source": "yfinance_live", "r1_score": 80.0, "r2_score": 86.5, "r3_score": 92.0, "r4_score": 94.0, "r5_delta": -1.1, "r5_score": 92.9, "r5_tech_gate": "Weinstein Stage 3 consolidation/distribution (-0.5); Ideal accumulation RSI-14 (46.9) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 16.9, "final_action": "STRONG BUY", "buy_zone": "$53.90 - $56.42", "buy_low": 53.9, "buy_high": 56.42, "stop_loss": 49.72, "target_12m": 71.5, "upside_12m_pct": 28.0, "reward_risk": 2.55, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 6, "kelly_weight_pct": 6.46}, {"ticker": "EQT", "name": "EQT Corporation", "layer": "L2", "layer_name": "Natural Gas Upstream, LNG Liquefaction & Midstream Pipeline Tollbooths", "subsector_node": "OIL_UPSTREAM", "role": "Largest US Natural Gas Producer (~6.3 Bcf/d) \u2014 Vertically Integrated Appalachian Upstream + Equitrans Midstream & Mountain Valley Pipeline (MVP) Owner", "fallback_price": 51.4, "market_cap_b": 30.8, "rev_growth_pct": 24.5, "gross_margin_pct": 62.0, "fcf_margin_pct": 22.5, "div_yield_pct": 1.25, "pe_fwd": 14.2, "ev_ebitda": 7.4, "net_debt_ebitda": 1.65, "roic_pct": 12.8, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 22.0, "fee_or_ratebase_pct": 40.0, "backlog_b": 0.0, "r0_score": 74.0, "r0_action": "BUY", "r1_delta": 6.0, "r1_note": "Reintegration of Equitrans Midstream lowers EQT's unhedged corporate free cash flow breakeven to ~$2.00/MMBtu Henry Hub \u2014 the lowest of any major North American gas producer, with 22+ years of core Marcellus inventory.", "r2_delta": 4.5, "r2_note": "Ownership of the 2.0 Bcf/d Mountain Valley Pipeline (MVP) and 1.2 Bcf/d of Southeast utility firm transportation contracts routes Appalachian gas directly into the highest-priced Virginia/Carolinas markets.", "r3_delta": 5.5, "r3_note": "MVP terminates directly into the Virginia 'Data Center Alley' / Duke Carolinas / Transco Zone 5 corridor where AI load growth and PJM $269.92-$329.17/MW-day capacity tightness are most extreme.", "r4_delta": 1.5, "r4_note": "Judicial completion of MVP under the Fiscal Responsibility Act makes MVP an unrepeatable physical asset in the Appalachian Mountains.", "r5_note": "Premier vertically integrated natural gas + pipeline play for the AI power and LNG export supercycle.", "primary_moat": "$2.00/MMBtu Vertically Integrated Breakeven + Mountain Valley Pipeline (MVP) Ownership into Virginia/Carolinas Data Center Alley", "key_agencies": ["FERC", "PA DEP", "WV DEP", "DOE"], "healthcare_hooks": ["Eastern US Hospital & University Campus District Heating/CHP Gas Supply"], "bull_case": "Henry Hub averages $3.75-$4.50/MMBtu as LNG + AI power load ramps, generating $3.5B-$4.5B annual FCF and rapid deleveraging.", "bear_case": "Warm consecutive North American/European winters push Henry Hub back toward $2.25/MMBtu.", "price": 55.63, "sma50": 53.01, "sma200": 55.26, "atr14": 1.33, "rsi14": 63.5, "rsi7": 70.5, "connors_rsi2": 80.6, "weekly_rsi14": 54.3, "ret_20d_pct": 9.49, "ret_60d_pct": 5.87, "weinstein_stage": "Stage 3 (Distribution)", "data_source": "yfinance_live", "r1_score": 80.0, "r2_score": 84.5, "r3_score": 90.0, "r4_score": 91.5, "r5_delta": -0.2, "r5_score": 91.3, "r5_tech_gate": "Weinstein Stage 3 consolidation/distribution (-0.5); Ideal accumulation RSI-14 (63.5) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 17.3, "final_action": "STRONG BUY", "buy_zone": "$51.68 - $56.19", "buy_low": 51.68, "buy_high": 56.19, "stop_loss": 49.29, "target_12m": 71.21, "upside_12m_pct": 28.0, "reward_risk": 2.46, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 7, "kelly_weight_pct": 5.64}, {"ticker": "KMI", "name": "Kinder Morgan, Inc.", "layer": "L2", "layer_name": "Natural Gas Upstream, LNG Liquefaction & Midstream Pipeline Tollbooths", "subsector_node": "MIDSTREAM", "role": "C-Corp Interstate Natural Gas Transmission Giant Moving ~40% of All US Natural Gas (79,000 Miles) + ~50% Share of US LNG Feedgas Delivery", "fallback_price": 27.9, "market_cap_b": 62.0, "rev_growth_pct": 8.4, "gross_margin_pct": 51.2, "fcf_margin_pct": 19.5, "div_yield_pct": 4.15, "pe_fwd": 20.8, "ev_ebitda": 11.8, "net_debt_ebitda": 3.95, "roic_pct": 10.6, "wti_breakeven_usd": 45.0, "reserve_life_yrs": 25.0, "fee_or_ratebase_pct": 91.0, "backlog_b": 8.1, "r0_score": 73.0, "r0_action": "BUY", "r1_delta": 2.5, "r1_note": "95% fee-based/hedged cash flows (64% strict take-or-pay) with C-Corp 1099 structure and self-funded capex + 4.15% dividend.", "r2_delta": 5.5, "r2_note": "Committed project backlog surged from $3.0B to $8.1B (~89% natural gas) at an exceptional <6.0x EBITDA build multiple across South System Expansion 4 ($3.0B), Mississippi Crossing ($1.4B), Trident Intrastate ($1.7B), and Gulf Coast Express expansion.", "r3_delta": 5.5, "r3_note": "Moves ~40% of US consumed natural gas and ~50% of all US LNG export feedgas (contracted to grow from ~8 Bcf/d to >12 Bcf/d by 2028) while serving Southern Company and Duke Energy's massive Southeast AI data-center CCGT expansions.", "r4_delta": 1.5, "r4_note": "Brownfield looping and compression along existing Tennessee Gas Pipeline (TGP), Southern Natural Gas (SNG), and NGPL rights-of-way face far lower FERC permitting friction than greenfield routes.", "r5_note": "High-conviction C-Corp natural gas transmission tollbooth riding the twin secular waves of Gulf Coast LNG and Southeast utility AI power.", "primary_moat": "79,000-Mile Natural Gas Grid Moving 40% of US Gas & 50% of US LNG Feedgas + $8.1B High-Return Backlog", "key_agencies": ["FERC (NGA Sec 7)", "PHMSA", "RRC Texas"], "healthcare_hooks": ["Firm Natural Gas Supply to Major Southern, Midwest & Northeast Hospital Systems"], "bull_case": "Backlog expands past $10B as Southeast utilities (SO/DUK) and Gulf Coast LNG terminals contract another 4+ Bcf/d on SNG/TGP.", "bear_case": "Legacy CO2 enhanced oil recovery segment (~8% of EBITDA) declines while 21x P/E multiple leaves less margin for interest-rate spikes.", "price": 34.43, "sma50": 31.9, "sma200": 31.57, "atr14": 0.88, "rsi14": 65.9, "rsi7": 69.6, "connors_rsi2": 78.8, "weekly_rsi14": 65.3, "ret_20d_pct": 11.97, "ret_60d_pct": 9.77, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 75.5, "r2_score": 81.0, "r3_score": 86.5, "r4_score": 88.0, "r5_delta": 2.7, "r5_score": 90.7, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (65.9) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 17.7, "final_action": "STRONG BUY", "buy_zone": "$31.68 - $34.77", "buy_low": 31.68, "buy_high": 34.77, "stop_loss": 30.1, "target_12m": 44.07, "upside_12m_pct": 28.0, "reward_risk": 2.23, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 8, "kelly_weight_pct": 5.35}, {"ticker": "TRGP", "name": "Targa Resources Corp.", "layer": "L2", "layer_name": "Natural Gas Upstream, LNG Liquefaction & Midstream Pipeline Tollbooths", "subsector_node": "MIDSTREAM", "role": "#1 Permian Basin Natural Gas Gatherer/Processor + Grand Prix/Daytona NGL Pipelines + Mont Belvieu Fractionation & Galena Park LPG Export Well-head-to-Water Integrated System", "fallback_price": 196.4, "market_cap_b": 42.8, "rev_growth_pct": 14.2, "gross_margin_pct": 31.5, "fcf_margin_pct": 10.8, "div_yield_pct": 2.05, "pe_fwd": 22.4, "ev_ebitda": 12.6, "net_debt_ebitda": 3.45, "roic_pct": 15.8, "wti_breakeven_usd": 42.0, "reserve_life_yrs": 18.0, "fee_or_ratebase_pct": 90.0, "backlog_b": 4.2, "r0_score": 77.0, "r0_action": "BUY", "r1_delta": 3.5, "r1_note": "Permian oil wells exhibit structurally rising Gas-to-Oil Ratios (GOR) as the basin matures \u2014 meaning even if Permian crude oil growth moderates to 3-4%, rich associated gas and NGL volumes processed by Targa grow 8-12%/yr; raised dividend by 33% while buying back stock.", "r2_delta": 4.5, "r2_note": "Closed-loop 'wellhead-to-water' vertical integration: once Targa gathers gas at the Permian wellhead (6+ million dedicated acres across Midland & Delaware), it captures the processing fee, the Grand Prix/Daytona NGL pipeline tariff, the Mont Belvieu fractionation fee, AND the Galena Park LPG export dock fee.", "r3_delta": 2.0, "r3_note": "Co-owner of Matterhorn Express & Blackcomb Permian residue gas takeaway pipelines feeding Gulf Coast LNG and Texas AI power plants.", "r4_delta": 0.5, "r4_note": "Texas intrastate and Mont Belvieu footprint enjoys pro-infrastructure RRC Texas regulatory regime.", "r5_note": "High-ROIC Permian NGL compounder; watch for RSI pullbacks toward 50-day SMA after massive multi-year run.", "primary_moat": "6M+ Dedicated Permian Acres + Closed-Loop 'Wellhead-to-Water' NGL Pipeline/Fractionation/Export Integration", "key_agencies": ["RRC Texas", "NM OCD", "FERC", "PHMSA"], "healthcare_hooks": ["LPG/Ethane Feedstocks for Global Pharmaceutical & Medical Plastics"], "bull_case": "Six new 275 MMcf/d Permian processing plants + Train 11/12 fractionators drive $4.8B+ EBITDA and $4.00/sh dividend by 2026/2027.", "bear_case": "WTI crude crash below $50/bbl slows Permian rig activity and compresses unhedged NGL equity volumes (~10% of margin).", "price": 302.37, "sma50": 288.53, "sma200": 255.06, "atr14": 8.3, "rsi14": 61.5, "rsi7": 66.7, "connors_rsi2": 82.5, "weekly_rsi14": 65.6, "ret_20d_pct": 8.83, "ret_60d_pct": 13.21, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 80.5, "r2_score": 85.0, "r3_score": 87.0, "r4_score": 87.5, "r5_delta": 2.8, "r5_score": 90.3, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (61.5) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 13.3, "final_action": "STRONG BUY", "buy_zone": "$281.32 - $305.39", "buy_low": 281.32, "buy_high": 305.39, "stop_loss": 266.38, "target_12m": 387.03, "upside_12m_pct": 28.0, "reward_risk": 2.35, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 9, "kelly_weight_pct": 5.15}, {"ticker": "XYL", "name": "Xylem Inc.", "layer": "L6", "layer_name": "Regulated Electric Utilities & Water Treatment Infrastructure", "subsector_node": "WATER_INFRA", "role": "Global Pure-Play Water Technology Leader \u2014 Municipal Smart Metering (Sensus AMI), Water Transport Pumps (Flygt) & Evoqua Industrial Ultrapure/PFAS Remediation", "fallback_price": 128.4, "market_cap_b": 31.2, "rev_growth_pct": 7.8, "gross_margin_pct": 38.6, "fcf_margin_pct": 11.8, "div_yield_pct": 1.25, "pe_fwd": 26.8, "ev_ebitda": 18.6, "net_debt_ebitda": 0.45, "roic_pct": 13.8, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 62.0, "backlog_b": 5.2, "r0_score": 74.0, "r0_action": "BUY", "r1_delta": 3.5, "r1_note": "Fortress balance sheet (0.45x Net Debt/EBITDA post-all-stock Evoqua acquisition), 115%+ free cash flow conversion to net income, and 80/20 portfolio simplification driving EBITDA margins past 21-22%.", "r2_delta": 4.5, "r2_note": "Evoqua Water Technologies integration adds the largest North American industrial water service technician network (>60% recurring aftermarket services/consumables in Applied Water & ISS) alongside Sensus digital AMI smart water meters.", "r3_delta": 3.5, "r3_note": "Critical pick-and-shovel supplier for the 'Water-for-AI & Chips' bottleneck: semiconductor fabs (TSMC/Intel/Micron CHIPS Act plants) require Evoqua Ultrapure Water (UPW) systems filtered to parts-per-trillion purity, while hyperscale AI data centers require closed-loop evaporative cooling and wastewater recycling to obtain municipal zoning permits.", "r4_delta": 5.5, "r4_note": "Primary beneficiary of `ENU_R5`: the EPA's April 2024 legally enforceable National Primary Drinking Water Regulation setting a 4.0 parts-per-trillion (ppt) Maximum Contaminant Level (MCL) for PFOA/PFOS 'forever chemicals' forces >6,000 US water systems to install granular activated carbon (GAC), ion-exchange resins, and membrane filtration where Xylem/Evoqua holds the #1 installed base.", "r5_note": "Premier water technology & EPA PFAS/healthcare water compounder with low leverage and recurring aftermarket moat.", "primary_moat": "Evoqua #1 Industrial Ultrapure/PFAS Service Network + Sensus AMI Smart Meter Installed Base + Flygt Municipal Pump Monopoly", "key_agencies": ["EPA (SDWA PFAS 4 ppt MCL & Lead/Copper Rule)", "FDA (21 CFR \u00a7 211.68 WFI)", "AAMI (ST108 Hospital Sterile Water)"], "healthcare_hooks": ["EPA 4 ppt PFAS Forever-Chemical Removal Preventing Renal/Oncologic/Endocrine Disease", "FDA cGMP USP Water for Injection (WFI) Systems for Biopharma & GLP-1 Manufacturing", "ANSI/AAMI ST108 Hospital Central Sterile Surgical Instrument Water Purification"], "bull_case": "EPA PFAS municipal compliance wave + CHIPS Act fab and AI data-center ultrapure water orders accelerate organic growth to 8-9% with 23% EBITDA margins.", "bear_case": "26.8x forward P/E multiple leaves moderate valuation sensitivity if municipal IIJA grant disbursements slow.", "price": 108.74, "sma50": 107.12, "sma200": 117.77, "atr14": 2.4, "rsi14": 62.6, "rsi7": 77.2, "connors_rsi2": 42.8, "weekly_rsi14": 45.1, "ret_20d_pct": 5.95, "ret_60d_pct": -6.56, "weinstein_stage": "Stage 4 (Declining)", "data_source": "yfinance_live", "r1_score": 77.5, "r2_score": 82.0, "r3_score": 85.5, "r4_score": 91.0, "r5_delta": -1.5, "r5_score": 89.5, "r5_tech_gate": "Weinstein Stage 4 downtrend below declining 200d SMA (-2.5); Ideal accumulation RSI-14 (62.6) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 15.5, "final_action": "STRONG BUY", "buy_zone": "$104.44 - $109.83", "buy_low": 104.44, "buy_high": 109.83, "stop_loss": 96.78, "target_12m": 139.19, "upside_12m_pct": 28.0, "reward_risk": 2.55, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 10, "kelly_weight_pct": 4.77}, {"ticker": "EOG", "name": "EOG Resources, Inc.", "layer": "L1", "layer_name": "Integrated Oil Majors, Shale E&P & Oilfield Services", "subsector_node": "OIL_UPSTREAM", "role": "Premier Organic Unconventional E&P \u2014 Delaware Basin, Utica Oil Combo, Dorado Dry Gas & Net-Cash Fortress Balance Sheet", "fallback_price": 126.4, "market_cap_b": 71.5, "rev_growth_pct": 5.1, "gross_margin_pct": 54.2, "fcf_margin_pct": 21.8, "div_yield_pct": 3.1, "pe_fwd": 11.4, "ev_ebitda": 5.2, "net_debt_ebitda": -0.15, "roic_pct": 21.4, "wti_breakeven_usd": 34.0, "reserve_life_yrs": 16.0, "fee_or_ratebase_pct": 15.0, "backlog_b": 0.0, "r0_score": 73.0, "r0_action": "BUY", "r1_delta": 9.0, "r1_note": "Net-cash balance sheet (-0.15x Net Debt/EBITDA), 21.8% FCF margin, and double-premium hurdle rate (>30% after-tax direct return at $40 WTI / $2.50 Henry Hub) with commitment to return >=70% of annual FCF.", "r2_delta": 2.5, "r2_note": "Self-owned Verde pipeline and in-house drilling/completions tech avoid expensive dilutive M&A while expanding Ohio Utica & South Texas Dorado gas.", "r3_delta": 2.5, "r3_note": "Dorado South Texas dry gas play ($1.40/Mcf breakeven) sits directly adjacent to Gulf Coast LNG corridors and Texas ERCOT AI data centers.", "r4_delta": 1.5, "r4_note": "Low federal land exposure relative to peers and industry-lowest methane intensity (<0.05%) insulates EOG from EPA methane fee penalties.", "r5_note": "Top pure-play shale compounder with net cash, $34/bbl breakeven, and unhedged upside to both oil and Gulf Coast LNG/AI gas demand.", "primary_moat": "Net-Cash Balance Sheet + Double-Premium Inventory ($34/bbl WTI / $1.40/Mcf Dorado Breakeven)", "key_agencies": ["RRC Texas", "NM OCD", "EPA"], "healthcare_hooks": ["Low-Methane Domestic Hydrocarbon Supply Chain"], "bull_case": "Utica oil play proves up 10+ years of Tier-1 inventory while Dorado gas ramps into Cheniere Corpus Christi LNG Stage 3.", "bear_case": "Delaware Basin water-handling ratios rise or OPEC+ floods crude market below $55/bbl.", "price": 163.03, "sma50": 146.71, "sma200": 133.82, "atr14": 3.97, "rsi14": 76.4, "rsi7": 88.2, "connors_rsi2": 89.7, "weekly_rsi14": 67.3, "ret_20d_pct": 16.94, "ret_60d_pct": 12.79, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 82.0, "r2_score": 84.5, "r3_score": 87.0, "r4_score": 88.5, "r5_delta": 0.5, "r5_score": 89.0, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Near-term overbought RSI-14 (76.4); wait for pullback toward 21d/50d EMA (-1.5)", "total_rsi_upgrade": 16.0, "final_action": "STRONG BUY", "buy_zone": "$149.99 - $164.66", "buy_low": 149.99, "buy_high": 164.66, "stop_loss": 142.84, "target_12m": 208.68, "upside_12m_pct": 28.0, "reward_risk": 2.26, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 11, "kelly_weight_pct": 4.53}, {"ticker": "BE", "name": "Bloom Energy Corporation", "layer": "L5", "layer_name": "Behind-the-Meter Fuel Cells & Utility-Scale Solar", "subsector_node": "CLEAN_ENERGY", "role": "Solid-Oxide Fuel Cell (SOFC) Energy Server Leader Providing 90-Day-to-12-Month Behind-the-Meter Baseload Natural Gas Power for AI Data Centers & Hospitals", "fallback_price": 23.8, "market_cap_b": 5.4, "rev_growth_pct": 22.4, "gross_margin_pct": 28.6, "fcf_margin_pct": 4.2, "div_yield_pct": 0.0, "pe_fwd": 36.5, "ev_ebitda": 21.0, "net_debt_ebitda": 2.65, "roic_pct": 9.4, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 55.0, "backlog_b": 12.0, "r0_score": 73.0, "r0_action": "BUY", "r1_delta": 1.5, "r1_note": "Reached positive full-year non-GAAP operating profitability and positive FCF in 2H 2024/2025 as Fremont/Newark factory utilization scaled, though leverage (2.65x) requires disciplined working-capital management.", "r2_delta": 3.5, "r2_note": "Modular solid-oxide fuel cell (SOFC) Energy Servers convert natural gas (or biogas/hydrogen) directly into 24/7 high-density DC/AC electricity via electrochemical reaction without combustion (zero NOx/SOx/particulate air permitting bottlenecks), backed by a $12B+ system and 15-20 year service backlog.", "r3_delta": 7.5, "r3_note": "Explosive beneficiary of `ENU_R1` (4-7 year utility interconnection queue bottleneck): while a new utility substation takes 48-72 months, Bloom can manufacture and deploy 50MW-100MW+ of behind-the-meter natural gas SOFC power islands in 90 days to 12 months. Validated by landmark up-to-1,000 MW (1 GW) supply agreement with American Electric Power (AEP) for AWS/Corning data centers, plus CoreWeave, Equinix, Quanta, and Intel deployments.", "r4_delta": 1.5, "r4_note": "Because Bloom's SOFCs run on existing natural gas pipelines without combustion emissions, they bypass strict EPA/AQMD urban air-quality turbine permits and qualify for air-permit exemptions in California, Virginia, Ohio, and Silicon Valley.", "r5_note": "Highest-beta behind-the-meter 'Time-to-Power' tactical weapon for AI data centers; size with discipline given 36x P/E and historical volatility.", "primary_moat": "90-Day-to-12-Month Behind-the-Meter Time-to-Power Advantage + 1GW AEP Hyperscaler Framework + Non-Combustion Air-Permit Exemption + 4GW Factory Capacity Ready", "key_agencies": ["FERC (BTM Co-location)", "State PUCs (Ohio PUCO AEP Tariff)", "EPA / Local AQMDs", "IRS (Sec 48E Fuel Cell ITC)"], "healthcare_hooks": ["24/7 Always-On Microgrids Powering 35+ Kaiser Permanente, Sutter Health & Acute-Care Hospitals Without Diesel Particulate Pollution"], "bull_case": "AEP converts the full 1,000 MW framework into firm orders alongside two more regulated utility/hyperscaler GW-scale partnerships.", "bear_case": "Quarterly revenue lumpiness on project acceptances or delays in Ohio PUCO data-center tariff rulings trigger high-beta pullbacks.", "price": 193.3, "sma50": 248.3, "sma200": 219.29, "atr14": 19.65, "rsi14": 33.1, "rsi7": 23.7, "connors_rsi2": 13.1, "weekly_rsi14": 44.6, "ret_20d_pct": -33.04, "ret_60d_pct": -6.67, "weinstein_stage": "Stage 3 (Consolidation)", "data_source": "yfinance_live", "r1_score": 74.5, "r2_score": 78.0, "r3_score": 85.5, "r4_score": 87.0, "r5_delta": 1.0, "r5_score": 88.0, "r5_tech_gate": "Weinstein Stage 3 consolidation/distribution (-0.5); Washout oversold RSI-14 (33.1) on high-conviction fundamental compounder (+1.5)", "total_rsi_upgrade": 15.0, "final_action": "BUY", "buy_zone": "$186.53 - $195.23", "buy_low": 186.53, "buy_high": 195.23, "stop_loss": 151.16, "target_12m": 231.96, "upside_12m_pct": 20.0, "reward_risk": 0.92, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 12, "kelly_weight_pct": 4.07}, {"ticker": "SO", "name": "The Southern Company", "layer": "L6", "layer_name": "Regulated Electric Utilities & Water Treatment Infrastructure", "subsector_node": "UTILITIES", "role": "Premier Southeast Vertically Integrated Regulated Utility (Georgia Power, Alabama Power, Southern Company Gas) \u2014 Vogtle Nuclear Units 3 & 4 Complete + 36+ GW Data-Center Pipeline", "fallback_price": 88.9, "market_cap_b": 97.4, "rev_growth_pct": 7.6, "gross_margin_pct": 52.8, "fcf_margin_pct": -6.2, "div_yield_pct": 3.25, "pe_fwd": 20.4, "ev_ebitda": 13.4, "net_debt_ebitda": 4.95, "roic_pct": 8.6, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 96.0, "backlog_b": 63.0, "r0_score": 73.0, "r0_action": "BUY", "r1_delta": 2.5, "r1_note": "Commercial completion of Vogtle Nuclear Units 3 & 4 removes a decade-long construction capex overhang and boosts FFO-to-Debt by ~200-300 bps while supporting 23+ consecutive years of stable/growing dividends.", "r2_delta": 5.5, "r2_note": "Georgia PSC and Alabama PSC consistently rank as the top tier of constructive US utility commissions (~10.50%-11.90% retail ROE bands), approving $63B+ 5-year regulated capital plan driving ~7-8% annual rate-base growth.", "r3_delta": 5.0, "r3_note": "Atlanta / Georgia has emerged as the #2 hyperscale AI data-center market in North America behind Northern Virginia: Georgia Power's large-load pipeline surged above 36 GW (with >8 GW committed), prompting Georgia PSC approval for 10+ GW of incremental gas turbines, battery storage, and transmission lines alongside new minimum-bill Large-Load Data Center Tariffs that protect residential ratepayers.", "r4_delta": 1.5, "r4_note": "Only US utility to have successfully built and commissioned new AP1000 nuclear reactors (Vogtle 3 & 4) in the 21st century, giving SO unmatched NRC nuclear operating credibility.", "r5_note": "Highest-quality pure-play regulated electric utility for defensive AI data-center rate-base compounding.", "primary_moat": "Top-Tier Constructive Georgia/Alabama PSC Regulation (~10.5%+ ROE) + Operating Vogtle AP1000 Nuclear Fleet + 36+ GW Atlanta AI Data-Center Load Pipeline", "key_agencies": ["Georgia PSC", "Alabama PSC", "NRC (Vogtle/Hatch/Farley)", "FERC"], "healthcare_hooks": ["Reliable Baseload Power for CDC Headquarters & Emory/Piedmont Southeast Healthcare Hubs"], "bull_case": "Georgia PSC approves additional 6-9 GW of generation/transmission in the 2025 IRP, accelerating EPS growth from 5-7% toward 8%+.", "bear_case": "Higher interest rates pressure utility P/E multiples or data-center load materializes 12 months slower than projected.", "price": 92.89, "sma50": 87.72, "sma200": 91.29, "atr14": 1.67, "rsi14": 67.6, "rsi7": 71.4, "connors_rsi2": 36.8, "weekly_rsi14": 54.6, "ret_20d_pct": 12.08, "ret_60d_pct": -0.72, "weinstein_stage": "Stage 1->2 (Breakout Transition)", "data_source": "yfinance_live", "r1_score": 75.5, "r2_score": 81.0, "r3_score": 86.0, "r4_score": 87.5, "r5_delta": 0.5, "r5_score": 88.0, "r5_tech_gate": "Weinstein Stage 1 basing / breakout transition (+0.5)", "total_rsi_upgrade": 15.0, "final_action": "BUY", "buy_zone": "$85.53 - $93.82", "buy_low": 85.53, "buy_high": 93.82, "stop_loss": 82.52, "target_12m": 111.47, "upside_12m_pct": 20.0, "reward_risk": 1.79, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 13, "kelly_weight_pct": 4.07}, {"ticker": "XOM", "name": "Exxon Mobil Corporation", "layer": "L1", "layer_name": "Integrated Oil Majors, Shale E&P & Oilfield Services", "subsector_node": "ENERGY", "role": "Global Integrated Supermajor \u2014 Guyana Stabroek (1.3M+ boe/d ramp), Pioneer Permian Basin Leader, Gulf Coast Refining & Denbury CCUS", "fallback_price": 116.8, "market_cap_b": 512.0, "rev_growth_pct": 4.2, "gross_margin_pct": 33.8, "fcf_margin_pct": 11.4, "div_yield_pct": 3.35, "pe_fwd": 13.8, "ev_ebitda": 6.9, "net_debt_ebitda": 0.35, "roic_pct": 14.8, "wti_breakeven_usd": 35.0, "reserve_life_yrs": 14.8, "fee_or_ratebase_pct": 25.0, "backlog_b": 0.0, "r0_score": 71.0, "r0_action": "HOLD", "r1_delta": 8.5, "r1_note": "Upgraded on industry-low ~$35/bbl WTI corporate breakeven driven by Guyana Stabroek FPSOs (Yellowtail/Uaru) and $3B+ annual Pioneer Permian double-bench cube synergies; $17.5B/yr structural share buyback + dividend covered down to $42/bbl.", "r2_delta": 3.0, "r2_note": "Integrated PADD 3 refining, chemical scale, and 1,300-mile Gulf Coast CO2 pipeline network (Denbury) provide counter-cyclical downstream protection.", "r3_delta": 2.5, "r3_note": "Designing dedicated 1.5GW+ low-carbon natural gas power plants with >90% carbon capture (CCUS) specifically for hyperscale AI data centers.", "r4_delta": 1.5, "r4_note": "Protected by IRS Section 45Q ($85/ton geologic CO2 storage) and bipartisan energy security support; insulated from European windfall taxes.", "r5_note": "Fortress balance sheet (0.35x Net Debt/EBITDA) and lowest-cost barrel growth in global majors; core institutional energy compounder.", "primary_moat": "Sub-$35/bbl Guyana Stabroek + Contiguous Pioneer Permian Acreage + Gulf Coast Integrated Refining/CCUS", "key_agencies": ["DOE", "BOEM", "EPA", "IRS (Sec 45Q)"], "healthcare_hooks": ["USP Medical Polypropylene/Syringe Resins", "API Petrochemical Solvents"], "bull_case": "Guyana reaches 1.7M boe/d by 2028 while Pioneer synergies push Permian output above 2.0M boe/d, generating $165B cumulative surplus cash through 2030.", "bear_case": "OPEC+ price war or global recession drives Brent below $55/bbl while chemical polyethylene oversupply persists in Asia.", "price": 183.21, "sma50": 165.76, "sma200": 151.88, "atr14": 3.93, "rsi14": 76.2, "rsi7": 84.5, "connors_rsi2": 93.6, "weekly_rsi14": 69.9, "ret_20d_pct": 14.09, "ret_60d_pct": 17.47, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 79.5, "r2_score": 82.5, "r3_score": 85.0, "r4_score": 86.5, "r5_delta": 0.5, "r5_score": 87.0, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Near-term overbought RSI-14 (76.2); wait for pullback toward 21d/50d EMA (-1.5)", "total_rsi_upgrade": 16.0, "final_action": "BUY", "buy_zone": "$168.55 - $185.04", "buy_low": 168.55, "buy_high": 185.04, "stop_loss": 161.48, "target_12m": 219.85, "upside_12m_pct": 20.0, "reward_risk": 1.69, "horizon_tag": "Long-Term Compounder + Tactical Swing", "rank": 14, "kelly_weight_pct": 3.62}, {"ticker": "EPD", "name": "Enterprise Products Partners L.P.", "layer": "L2", "layer_name": "Natural Gas Upstream, LNG Liquefaction & Midstream Pipeline Tollbooths", "subsector_node": "MIDSTREAM", "role": "Gold-Standard A-Rated NGL, Petrochemical & Crude Midstream MLP \u2014 Mont Belvieu Fractionation Hub & Houston Ship Channel Export Monopoly", "fallback_price": 33.4, "market_cap_b": 72.4, "rev_growth_pct": 6.2, "gross_margin_pct": 24.5, "fcf_margin_pct": 11.5, "div_yield_pct": 6.4, "pe_fwd": 11.8, "ev_ebitda": 9.4, "net_debt_ebitda": 3.05, "roic_pct": 13.1, "wti_breakeven_usd": 42.0, "reserve_life_yrs": 22.0, "fee_or_ratebase_pct": 85.0, "backlog_b": 7.6, "r0_score": 72.0, "r0_action": "HOLD", "r1_delta": 5.0, "r1_note": "Highest credit rating in midstream (A-/A3), 32%+ insider ownership (Duncan family alignment), 3.0x leverage, 26 consecutive years of distribution growth, and 1.7x coverage on a 6.40% yield.", "r2_delta": 4.5, "r2_note": "Irreplaceable Mont Belvieu NGL storage caverns, 16+ NGL fractionators, and Houston Ship Channel LPG/ethane/propylene export docks with $7.6B of major growth projects (Bahia NGL Pipeline, Neches River terminal) reaching completion in 2025-2026.", "r3_delta": 2.0, "r3_note": "Texas intrastate natural gas pipeline system in San Antonio/Dallas/Houston directly serves ERCOT power plants and hyperscale data centers.", "r4_delta": 0.0, "r4_note": "K-1 MLP structure caps S&P 500 multiple expansion, though deep-water SPOT crude port received MARAD licensing.", "r5_note": "Ultimate sleep-well-at-night income compounder as $7.6B capex wave rolls off in 2026 and free cash flow after distributions inflects.", "primary_moat": "Mont Belvieu Salt Dome NGL Storage Caverns + Houston Ship Channel Export Docks + A- Credit Rating", "key_agencies": ["FERC", "RRC Texas", "MARAD", "PHMSA"], "healthcare_hooks": ["PDH Polymer-Grade Propylene for Sterile Syringes, Polypropylene Masks, Vials & Non-Woven Surgical Gowns"], "bull_case": "Capex drops from $3.75B in 2025 to ~$2.2B in 2026+, unlocking $2B+/yr in excess FCF for unit buybacks and distribution hikes.", "bear_case": "Global petrochemical propylene/ethylene margins stay depressed, compressing EPD's ~15% commodity-sensitive petrochemical spread segment.", "price": 37.08, "sma50": 37.71, "sma200": 36.55, "atr14": 0.63, "rsi14": 52.1, "rsi7": 60.8, "connors_rsi2": 82.3, "weekly_rsi14": 52.0, "ret_20d_pct": 0.9, "ret_60d_pct": -1.28, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 77.0, "r2_score": 81.5, "r3_score": 83.5, "r4_score": 83.5, "r5_delta": 3.0, "r5_score": 86.5, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (52.1) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 14.5, "final_action": "BUY", "buy_zone": "$35.78 - $37.45", "buy_low": 35.78, "buy_high": 37.45, "stop_loss": 33.0, "target_12m": 44.5, "upside_12m_pct": 20.0, "reward_risk": 1.82, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 15, "kelly_weight_pct": 3.4}, {"ticker": "ET", "name": "Energy Transfer LP", "layer": "L2", "layer_name": "Natural Gas Upstream, LNG Liquefaction & Midstream Pipeline Tollbooths", "subsector_node": "MIDSTREAM", "role": "Largest US Midstream MLP by Asset Footprint (130,000+ Miles of Pipelines) \u2014 Intrastate Texas/Permian Gas, NGL Exports (Nederland/Marcus Hook) & Crude", "fallback_price": 19.8, "market_cap_b": 67.8, "rev_growth_pct": 7.5, "gross_margin_pct": 28.4, "fcf_margin_pct": 10.2, "div_yield_pct": 6.6, "pe_fwd": 12.1, "ev_ebitda": 8.2, "net_debt_ebitda": 3.9, "roic_pct": 11.4, "wti_breakeven_usd": 45.0, "reserve_life_yrs": 20.0, "fee_or_ratebase_pct": 88.0, "backlog_b": 5.0, "r0_score": 73.0, "r0_action": "BUY", "r1_delta": 3.5, "r1_note": "Trades at a deep ~8.2x EV/EBITDA discount vs C-Corp peers (WMB/OKE at 11-13x) while generating ~$8.5B+ distributable cash flow covering its 6.60% distribution by ~1.9x.", "r2_delta": 3.0, "r2_note": "90% fee-based EBITDA across Texas intrastate gas pipelines (exempt from FERC rate regulation under Texas RRC jurisdiction, allowing massive optimization spread capture during winter freezes and summer heatwaves) plus 20%+ of global NGL exports via Nederland & Marcus Hook.", "r3_delta": 4.0, "r3_note": "Received customer requests for >40 data centers and >45 natural gas power plants across Texas/Midwest; sanctioned the 1.5 Bcf/d Hugh Brinson (Warrior) Pipeline and signed direct BTM gas supply agreement with CloudBurst AI Data Center.", "r4_delta": -1.5, "r4_note": "MLP K-1 partnership structure excludes ET from S&P 500 passive index flows, and Lake Charles LNG project faces EPC inflation and equity partner syndication hurdles.", "r5_note": "Compelling 6.6% tax-deferred yield + Texas ERCOT AI gas pipeline torque at an undemanding 8.2x EV/EBITDA valuation.", "primary_moat": "130,000+ Mile Pipeline Network + Unregulated Texas RRC Intrastate Gas Grid + Nederland/Marcus Hook NGL Export Duopoly", "key_agencies": ["FERC", "RRC Texas", "PHMSA", "DOE (Lake Charles LNG)"], "healthcare_hooks": ["20% Global Market Share in Ethane/LPG Exports for Medical Plastics & Hospital Heating"], "bull_case": "Texas ERCOT AI data-center gas contracts + Hugh Brinson Pipeline drive re-rating toward 9.5x EV/EBITDA.", "bear_case": "Management pursues another large dilutive M&A transaction or proceeds with Lake Charles LNG without sufficient third-party equity partners.", "price": 20.45, "sma50": 20.81, "sma200": 19.2, "atr14": 0.46, "rsi14": 51.1, "rsi7": 56.6, "connors_rsi2": 81.3, "weekly_rsi14": 58.1, "ret_20d_pct": 1.29, "ret_60d_pct": 2.73, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 76.5, "r2_score": 79.5, "r3_score": 83.5, "r4_score": 82.0, "r5_delta": 3.0, "r5_score": 85.0, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (51.1) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 12.0, "final_action": "BUY", "buy_zone": "$19.73 - $20.65", "buy_low": 19.73, "buy_high": 20.65, "stop_loss": 18.2, "target_12m": 24.54, "upside_12m_pct": 20.0, "reward_risk": 1.82, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 16, "kelly_weight_pct": 2.76}, {"ticker": "FSLR", "name": "First Solar, Inc.", "layer": "L5", "layer_name": "Behind-the-Meter Fuel Cells & Utility-Scale Solar", "subsector_node": "CLEAN_ENERGY", "role": "#1 US Domestic Utility-Scale Solar Module Manufacturer \u2014 Proprietary Cadmium-Telluride (CdTe) Thin-Film Technology (Zero Chinese Crystalline-Silicon Supply Chain)", "fallback_price": 178.4, "market_cap_b": 19.1, "rev_growth_pct": 24.8, "gross_margin_pct": 46.5, "fcf_margin_pct": 12.0, "div_yield_pct": 0.0, "pe_fwd": 10.4, "ev_ebitda": 7.6, "net_debt_ebitda": -0.65, "roic_pct": 21.5, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 80.0, "backlog_b": 20.5, "r0_score": 71.0, "r0_action": "HOLD", "r1_delta": 6.5, "r1_note": "Trades at an extraordinary ~10.4x forward P/E and ~7.6x EV/EBITDA with a net-cash balance sheet (~$1.3B net cash) as Ohio, Alabama, and Louisiana domestic factories ramp past 14 GW of US capacity (25 GW global).", "r2_delta": 4.5, "r2_note": "Proprietary Series 7 Cadmium-Telluride (CdTe) thin-film semiconductor technology bypasses the entire Chinese polysilicon/ingot/wafer supply chain, backed by a ~68.5 GW contracted backlog (~$20.5B at ~30.0 cents/watt ASP) with legally binding take-or-pay termination fees.", "r3_delta": 3.5, "r3_note": "Preferred module supplier for Microsoft (Brookfield 10.5 GW PPA), Meta, and Google utility-scale clean energy data-center PPAs that require 10% IRA Domestic Content Bonus qualification.", "r4_delta": 2.0, "r4_note": "Protected by up to 271% US Commerce AD/CVD tariffs on Southeast Asian c-Si solar cells and UFLPA customs detentions; while IRA Section 45X manufacturing tax credits (~$0.17/watt) face congressional reconciliation headlines, FSLR's mega-factories sit directly in Republican-held districts in Ohio, Alabama, and Louisiana.", "r5_note": "Deeply undervalued at ~10.4x P/E due to headline IRA fears that ignore red-state 45X factory support and massive anti-China AD/CVD tariff walls.", "primary_moat": "100% Non-Chinese CdTe Thin-Film IP + 14+ GW Red-State US Manufacturing (OH/AL/LA) + 68.5 GW Take-or-Pay Backlog + AD/CVD Tariff Shield", "key_agencies": ["IRS (Sec 45X & 48E Domestic Content)", "DOC / ITC (AD/CVD Tariffs)", "CBP (UFLPA)"], "healthcare_hooks": ["Closed-Loop Semiconductor Recycling & Clean Hospital PPA Power"], "bull_case": "Congress preserves Section 45X domestic manufacturing credits and Commerce finalizes strict AD/CVD duties, re-rating FSLR from 10x to 16x P/E ($275+/sh).", "bear_case": "Retroactive early phase-out of Section 45X credits in budget reconciliation or Series 7 CuRe field warranty adjustments.", "price": 171.99, "sma50": 193.28, "sma200": 217.57, "atr14": 6.61, "rsi14": 39.1, "rsi7": 37.7, "connors_rsi2": 53.7, "weekly_rsi14": 40.1, "ret_20d_pct": -3.22, "ret_60d_pct": -16.51, "weinstein_stage": "Stage 4 (Declining)", "data_source": "yfinance_live", "r1_score": 77.5, "r2_score": 82.0, "r3_score": 85.5, "r4_score": 87.5, "r5_delta": -2.5, "r5_score": 85.0, "r5_tech_gate": "Weinstein Stage 4 downtrend below declining 200d SMA (-2.5)", "total_rsi_upgrade": 14.0, "final_action": "BUY", "buy_zone": "$165.97 - $173.71", "buy_low": 165.97, "buy_high": 173.71, "stop_loss": 153.07, "target_12m": 206.39, "upside_12m_pct": 20.0, "reward_risk": 1.82, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 17, "kelly_weight_pct": 2.76}, {"ticker": "AR", "name": "Antero Resources Corporation", "layer": "L2", "layer_name": "Natural Gas Upstream, LNG Liquefaction & Midstream Pipeline Tollbooths", "subsector_node": "OIL_UPSTREAM", "role": "Appalachian Liquids-Rich Natural Gas & NGL Producer with 2.3 Bcf/d Firm Transport to US Gulf Coast LNG Corridor & Marcus Hook NGL Export Dock", "fallback_price": 38.2, "market_cap_b": 11.9, "rev_growth_pct": 18.6, "gross_margin_pct": 58.5, "fcf_margin_pct": 16.8, "div_yield_pct": 0.0, "pe_fwd": 12.8, "ev_ebitda": 6.8, "net_debt_ebitda": 1.1, "roic_pct": 13.5, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 18.5, "fee_or_ratebase_pct": 25.0, "backlog_b": 0.0, "r0_score": 71.0, "r0_action": "HOLD", "r1_delta": 4.5, "r1_note": "Zero near-term hedging policy + high C3+ NGL liquids yield (propane/butane/condensate) lowers dry gas breakeven to ~$2.15/MMBtu while retaining 100% upside to gas and LPG prices.", "r2_delta": 2.5, "r2_note": "Holds 2.3 Bcf/d of firm interstate pipeline capacity from Appalachia directly to the US Gulf Coast LNG fairway (selling ~75% of gas at NYMEX/TGP 500L premiums rather than discounted local Tetco M2 basis), plus 29% stake in Antero Midstream (AM).", "r3_delta": 3.0, "r3_note": "Direct physical supplier to Plaquemines LNG, Sabine Pass, and Freeport LNG trains along the Gulf Coast.", "r4_delta": 0.5, "r4_note": "Exposed to international LPG/propane shipping rates and Chinese petrochemical PDH demand.", "r5_note": "Highest torque unhedged play on Gulf Coast LNG feedgas and international NGL pricing.", "primary_moat": "2.3 Bcf/d Firm Pipeline Transport from Appalachia to Gulf Coast LNG Corridor + High-Margin C3+ NGL Liquids Uplift", "key_agencies": ["FERC", "WV DEP", "OH DNR"], "healthcare_hooks": ["Ethane/Propane Feedstocks for Global Medical Plastics"], "bull_case": "Plaquemines LNG and Corpus Stage 3 pull Gulf Coast gas premiums above $4.00/MMBtu while C3+ NGL prices stay >$40/bbl.", "bear_case": "Unhedged structure suffers rapid cash flow compression if mild winter weather depresses Henry Hub below $2.50/MMBtu.", "price": 40.16, "sma50": 37.09, "sma200": 36.57, "atr14": 1.22, "rsi14": 68.6, "rsi7": 79.5, "connors_rsi2": 88.4, "weekly_rsi14": 57.9, "ret_20d_pct": 14.74, "ret_60d_pct": 13.77, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 75.5, "r2_score": 78.0, "r3_score": 81.0, "r4_score": 81.5, "r5_delta": 2.0, "r5_score": 83.5, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0)", "total_rsi_upgrade": 12.5, "final_action": "BUY", "buy_zone": "$36.95 - $40.56", "buy_low": 36.95, "buy_high": 40.56, "stop_loss": 34.75, "target_12m": 48.19, "upside_12m_pct": 20.0, "reward_risk": 1.48, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 18, "kelly_weight_pct": 2.16}, {"ticker": "COP", "name": "ConocoPhillips", "layer": "L1", "layer_name": "Integrated Oil Majors, Shale E&P & Oilfield Services", "subsector_node": "OIL_UPSTREAM", "role": "Global Pure-Play Upstream E&P Leader \u2014 Permian, Eagle Ford, Bakken (Marathon Oil Integration), Alaska Willow & Global LNG (Qatar/Port Arthur)", "fallback_price": 103.5, "market_cap_b": 133.0, "rev_growth_pct": 6.8, "gross_margin_pct": 46.5, "fcf_margin_pct": 15.2, "div_yield_pct": 3.05, "pe_fwd": 12.2, "ev_ebitda": 5.6, "net_debt_ebitda": 0.55, "roic_pct": 15.6, "wti_breakeven_usd": 36.0, "reserve_life_yrs": 15.5, "fee_or_ratebase_pct": 15.0, "backlog_b": 0.0, "r0_score": 70.0, "r0_action": "HOLD", "r1_delta": 7.5, "r1_note": "Marathon Oil acquisition adds >2 billion barrels of resource at <$30/bbl WTI cost-of-supply with >$1B/yr run-rate synergies (double initial guidance).", "r2_delta": 2.0, "r2_note": "Global LNG portfolio (Qatar North Field East/South + Sempra Port Arthur LNG equity + European regas) diversifies US shale basis risk.", "r3_delta": 1.5, "r3_note": "Major Permian/Eagle Ford natural gas marketer supplying Gulf Coast LNG and Texas ERCOT gas power plants.", "r4_delta": 1.0, "r4_note": "Alaska Willow project federally permitted and under construction, locking in long-cycle conventional Arctic oil plateau.", "r5_note": "Best-in-class global pure-play E&P trading at <6x EV/EBITDA with 8%+ total shareholder yield (dividend + buybacks).", "primary_moat": "2B+ Barrel Sub-$35/bbl Cost-of-Supply Inventory + Global LNG Offtake Portfolio", "key_agencies": ["BLM (Alaska Willow)", "DOE (Port Arthur LNG)", "RRC Texas"], "healthcare_hooks": ["NGL Feedstocks for Medical Packaging"], "bull_case": "Marathon Oil integration + Port Arthur/Qatar LNG ramp lifts structural FCF to $13B+/yr at $70 WTI.", "bear_case": "Elevated Alaska Willow + Port Arthur LNG capex through 2027 coincides with a $55/bbl WTI macro downturn.", "price": 150.8, "sma50": 134.05, "sma200": 118.95, "atr14": 3.63, "rsi14": 76.8, "rsi7": 86.7, "connors_rsi2": 89.1, "weekly_rsi14": 69.6, "ret_20d_pct": 18.46, "ret_60d_pct": 27.54, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 77.5, "r2_score": 79.5, "r3_score": 81.0, "r4_score": 82.0, "r5_delta": 0.5, "r5_score": 82.5, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Near-term overbought RSI-14 (76.8); wait for pullback toward 21d/50d EMA (-1.5)", "total_rsi_upgrade": 12.5, "final_action": "BUY", "buy_zone": "$138.74 - $152.31", "buy_low": 138.74, "buy_high": 152.31, "stop_loss": 132.21, "target_12m": 180.96, "upside_12m_pct": 20.0, "reward_risk": 1.62, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 19, "kelly_weight_pct": 1.78}, {"ticker": "OKE", "name": "ONEOK, Inc.", "layer": "L2", "layer_name": "Natural Gas Upstream, LNG Liquefaction & Midstream Pipeline Tollbooths", "subsector_node": "MIDSTREAM", "role": "Diversified C-Corp Midstream Giant \u2014 Bakken NGL Monopoly, Mid-Continent/Permian NGLs, Refined Products Pipelines (Magellan), EnLink & Medallion Crude", "fallback_price": 98.4, "market_cap_b": 61.2, "rev_growth_pct": 16.5, "gross_margin_pct": 38.2, "fcf_margin_pct": 12.4, "div_yield_pct": 4.18, "pe_fwd": 16.8, "ev_ebitda": 10.8, "net_debt_ebitda": 3.6, "roic_pct": 14.2, "wti_breakeven_usd": 45.0, "reserve_life_yrs": 20.0, "fee_or_ratebase_pct": 90.0, "backlog_b": 3.5, "r0_score": 71.0, "r0_action": "HOLD", "r1_delta": 3.5, "r1_note": "Over 90% fee-based earnings with 4.18% dividend yield and $8B+ EBITDA scale following Magellan, EnLink, and Medallion acquisitions.", "r2_delta": 2.5, "r2_note": "Near-monopoly on Williston/Bakken NGL takeaway (Elk Creek Pipeline) combined with Magellan's FERC PPI-indexed Mid-Continent refined products pipeline network and new Permian/Louisiana footprint via EnLink.", "r3_delta": 1.5, "r3_note": "EnLink Louisiana natural gas pipelines directly feed the Mississippi River LNG and industrial corridor.", "r4_delta": 0.5, "r4_note": "FERC PPI-FG + 0.78% tariff indexation on Magellan refined products lines provides automatic inflation protection.", "r5_note": "Solid 4.2% yield and batching/blending synergies from Magellan + EnLink, though digesting three rapid back-to-back M&A deals.", "primary_moat": "Bakken NGL Takeaway Monopoly + Magellan FERC-Indexed Refined Products Network + Permian/Louisiana Integration", "key_agencies": ["FERC", "NDIC (North Dakota)", "RRC Texas", "PHMSA"], "healthcare_hooks": ["NGL & Petrochemical Feedstocks"], "bull_case": "Commercial batching/blending synergies across Magellan, EnLink, and Medallion exceed $600M/yr, driving rapid deleveraging below 3.5x.", "bear_case": "Bakken oil/gas production plateaus while serial M&A integration slows per-share FCF accretion.", "price": 95.83, "sma50": 92.79, "sma200": 86.98, "atr14": 2.32, "rsi14": 62.5, "rsi7": 72.9, "connors_rsi2": 91.1, "weekly_rsi14": 59.7, "ret_20d_pct": 8.12, "ret_60d_pct": 8.87, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 74.5, "r2_score": 77.0, "r3_score": 78.5, "r4_score": 79.0, "r5_delta": 3.0, "r5_score": 82.0, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (62.5) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 11.0, "final_action": "BUY", "buy_zone": "$90.47 - $96.79", "buy_low": 90.47, "buy_high": 96.79, "stop_loss": 85.29, "target_12m": 115.0, "upside_12m_pct": 20.0, "reward_risk": 1.82, "horizon_tag": "Watchlist / Relative Underweight", "rank": 20, "kelly_weight_pct": 1.6}, {"ticker": "NEE", "name": "NextEra Energy, Inc.", "layer": "L6", "layer_name": "Regulated Electric Utilities & Water Treatment Infrastructure", "subsector_node": "UTILITIES", "role": "Largest US Regulated Electric Utility (Florida Power & Light FPL) + World's #1 Competitive Renewables & Storage Developer (NextEra Energy Resources NEER, ~42 GW Backlog)", "fallback_price": 72.8, "market_cap_b": 149.8, "rev_growth_pct": 8.2, "gross_margin_pct": 61.5, "fcf_margin_pct": -14.5, "div_yield_pct": 3.1, "pe_fwd": 19.6, "ev_ebitda": 13.8, "net_debt_ebitda": 4.85, "roic_pct": 8.4, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 95.0, "backlog_b": 28.0, "r0_score": 72.0, "r0_action": "HOLD", "r1_delta": -1.5, "r1_note": "Negative free cash flow after $20B+/yr capital expenditures requires constant tax-equity, project debt, and equity unit issuance, making NEE sensitive to `ENU_R4` (10Y Treasury yields >4.5%).", "r2_delta": 4.5, "r2_note": "Florida Power & Light (FPL, ~70% of earnings) operates under one of America's most constructive regulatory frameworks (10.60%-10.80% authorized ROE with solar base-rate adjustments), while NEER holds 300+ GW of land/interconnection queue positions that smaller developers cannot replicate.", "r3_delta": 4.5, "r3_note": "NEER adds ~3.0+ GW/quarter to its ~28 GW contracted renewables/storage backlog (including a 4.5 GW framework with Entergy and multi-GW hyperscaler deals), opened a framework with GE Vernova to co-develop multi-GW natural gas + renewable AI power hubs, and is evaluating recommissioning the 601 MW Duane Arnold nuclear plant in Iowa.", "r4_delta": 0.5, "r4_note": "Scale advantage in pre-buying safe-harbored transformers and domestic solar/storage equipment insulates NEER even if IRA 48E/45Y rules tighten for smaller developers.", "r5_note": "Blue-chip utility + clean-power compounder delivering 6-8%+ annual EPS growth and 10% dividend growth.", "primary_moat": "FPL Constructive Florida Regulatory Monopoly (10.6%+ ROE) + 300 GW Interconnection Queue Bank + GE Vernova Gas-Renewable AI Power Alliance", "key_agencies": ["Florida PSC", "FERC", "NRC (Point Beach / Seabrook / Duane Arnold Restart)", "IRS (Sec 45Y/48E Transferability)"], "healthcare_hooks": ["Priority Grid Hardening & Undergrounding for Florida Acute-Care Hospital Corridors"], "bull_case": "Duane Arnold nuclear restart PPA with a hyperscaler + FPL 2025-2029 rate case settlement re-rates NEE above 22x P/E.", "bear_case": "10Y Treasury yields spike above 4.8% or Florida PSC trims FPL's authorized ROE band in the upcoming rate case.", "price": 82.1, "sma50": 80.47, "sma200": 86.31, "atr14": 1.6, "rsi14": 62.9, "rsi7": 73.5, "connors_rsi2": 75.2, "weekly_rsi14": 45.1, "ret_20d_pct": 7.91, "ret_60d_pct": -5.93, "weinstein_stage": "Stage 1 (Basing / Early Recovery)", "data_source": "yfinance_live", "r1_score": 70.5, "r2_score": 75.0, "r3_score": 79.5, "r4_score": 80.0, "r5_delta": 1.5, "r5_score": 81.5, "r5_tech_gate": "Weinstein Stage 1 basing / breakout transition (+0.5); Ideal accumulation RSI-14 (62.9) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 9.5, "final_action": "BUY", "buy_zone": "$78.46 - $82.92", "buy_low": 78.46, "buy_high": 82.92, "stop_loss": 73.07, "target_12m": 98.52, "upside_12m_pct": 20.0, "reward_risk": 1.82, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 21, "kelly_weight_pct": 1.42}, {"ticker": "NXT", "name": "Nextracker Inc.", "layer": "L5", "layer_name": "Behind-the-Meter Fuel Cells & Utility-Scale Solar", "subsector_node": "CLEAN_ENERGY", "role": "#1 Global Market Leader (~30%+ Share) in Intelligent Utility-Scale Solar Single-Axis Trackers (NX Horizon / XTR Terrain-Following) & TrueCapture AI Yield Software", "fallback_price": 46.8, "market_cap_b": 6.7, "rev_growth_pct": 16.2, "gross_margin_pct": 33.4, "fcf_margin_pct": 17.5, "div_yield_pct": 0.0, "pe_fwd": 13.2, "ev_ebitda": 9.1, "net_debt_ebitda": -0.75, "roic_pct": 28.4, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 70.0, "backlog_b": 4.5, "r0_score": 70.0, "r0_action": "HOLD", "r1_delta": 5.5, "r1_note": "Asset-light contract-manufacturing model delivers 28.4% ROIC, 17.5% FCF margin, and a net-cash balance sheet (-0.75x Net Debt/EBITDA) while trading at just 13.2x forward P/E.", "r2_delta": 3.5, "r2_note": "Independent row architecture (NX Horizon-XTR) eliminates expensive land grading on sloped terrain, while TrueCapture and NX Navigator software generate high-margin recurring yield-optimization revenue across a $4.5B+ backlog.", "r3_delta": 2.5, "r3_note": "Trackers represent only ~8-10% of total utility-scale solar project capex but increase energy output by 15-25%, making NXT indispensable for hyperscaler solar PPAs.", "r4_delta": 1.0, "r4_note": "25+ US partner steel manufacturing lines allow NXT to deliver 100% US domestic tracker content for the IRA 10% Domestic Content Bonus.", "r5_note": "Highest-ROIC, asset-light cash generator in utility-scale solar hardware at a bargain 13.2x P/E.", "primary_moat": "#1 Global Solar Tracker Share + Asset-Light 28% ROIC Model + NX Horizon-XTR Terrain-Following IP + TrueCapture Software", "key_agencies": ["IRS (Sec 45X Torque Tube/Fastener Credits & 48E Domestic Content)", "DOC (Section 232 Steel)"], "healthcare_hooks": ["None direct"], "bull_case": "International expansion (Middle East, Australia, LatAm) + Foundations (Ojjo/osp) acquisitions drive $750M+ EBITDA.", "bear_case": "Utility transformer and interconnection delays push EPC tracker delivery schedules to the right.", "price": 78.89, "sma50": 83.9, "sma200": 107.26, "atr14": 4.55, "rsi14": 43.5, "rsi7": 41.2, "connors_rsi2": 62.5, "weekly_rsi14": 37.9, "ret_20d_pct": -2.42, "ret_60d_pct": -18.59, "weinstein_stage": "Stage 4 (Declining)", "data_source": "yfinance_live", "r1_score": 75.5, "r2_score": 79.0, "r3_score": 81.5, "r4_score": 82.5, "r5_delta": -1.5, "r5_score": 81.0, "r5_tech_gate": "Weinstein Stage 4 downtrend below declining 200d SMA (-2.5); Ideal accumulation RSI-14 (43.5) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 11.0, "final_action": "BUY", "buy_zone": "$76.13 - $79.68", "buy_low": 76.13, "buy_high": 79.68, "stop_loss": 67.94, "target_12m": 94.67, "upside_12m_pct": 20.0, "reward_risk": 1.44, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 22, "kelly_weight_pct": 1.25}, {"ticker": "MPC", "name": "Marathon Petroleum Corporation", "layer": "L3", "layer_name": "Refining & Distillate Crack Spreads", "subsector_node": "OIL_REFINERS", "role": "#1 Largest US Refiner (~3.0M bbl/d Across Gulf Coast, Midwest & West Coast) + 64% Controlling Owner of MPLX Midstream LP ($2.5B/yr Cash Distribution Spine)", "fallback_price": 152.6, "market_cap_b": 48.2, "rev_growth_pct": -5.8, "gross_margin_pct": 10.4, "fcf_margin_pct": 6.1, "div_yield_pct": 2.4, "pe_fwd": 13.4, "ev_ebitda": 6.8, "net_debt_ebitda": 1.35, "roic_pct": 15.8, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 42.0, "backlog_b": 0.0, "r0_score": 68.0, "r0_action": "HOLD", "r1_delta": 4.5, "r1_note": "Most aggressive share cannibal in the S&P 500 Energy sector \u2014 reduced diluted share count by ~50% since 2021 via Speedway sale proceeds and mid-cycle refining FCF.", "r2_delta": 4.0, "r2_note": "Structural differentiator: MPC's 64% stake in MPLX LP delivers ~$2.5B/yr in recurring fee-based cash distributions to MPC parent \u2014 enough to fund 100% of MPC's standalone refining capex AND 100% of MPC's regular dividend even if refining margins hit zero, leaving 100% of refining FCF for share buybacks.", "r3_delta": 1.0, "r3_note": "MPLX Marcellus/Utica and Permian natural gas gathering/processing assets benefit from Appalachian and Texas gas demand growth.", "r4_delta": 0.0, "r4_note": "Galveston Bay (631k bbl/d) and Garyville (596k bbl/d) mega-refineries anchor PADD 3 export scale, partially offset by California CARB regulatory friction on West Coast refineries.", "r5_note": "Superior structural floor among refiners thanks to $2.5B/yr MPLX distribution cover and relentless share buybacks.", "primary_moat": "Galveston Bay & Garyville Mega-Refineries + $2.5B/yr MPLX Midstream Cash Distribution Fully Covering Capex & Dividend", "key_agencies": ["EPA (RFS)", "FERC (MPLX)", "CARB", "OSHA"], "healthcare_hooks": ["Petrochemical Propylene & Solvents for Pharmaceutical/Medical Supply Chains"], "bull_case": "MPLX raises distributions another 10-12% while MPC retires another 8-10% of float per year.", "bear_case": "Narrow WCS-WTI heavy crude differentials and soft Midwest gasoline cracks compress refining capture rates below 90%.", "price": 457.22, "sma50": 409.24, "sma200": 282.78, "atr14": 16.64, "rsi14": 59.6, "rsi7": 46.9, "connors_rsi2": 15.0, "weekly_rsi14": 74.2, "ret_20d_pct": 16.19, "ret_60d_pct": 45.97, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 72.5, "r2_score": 76.5, "r3_score": 77.5, "r4_score": 77.5, "r5_delta": 3.0, "r5_score": 80.5, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (59.6) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 12.5, "final_action": "HOLD", "buy_zone": "$420.64 - $461.79", "buy_low": 420.64, "buy_high": 461.79, "stop_loss": 390.69, "target_12m": 502.94, "upside_12m_pct": 10.0, "reward_risk": 0.69, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 23, "kelly_weight_pct": 0.0}, {"ticker": "AWK", "name": "American Water Works Company, Inc.", "layer": "L6", "layer_name": "Regulated Electric Utilities & Water Treatment Infrastructure", "subsector_node": "WATER_INFRA", "role": "#1 Largest & Most Geographically Diversified US Regulated Water & Wastewater Utility (Serving 14M+ People Across 14 Regulated States & 18 Military Bases)", "fallback_price": 136.8, "market_cap_b": 26.6, "rev_growth_pct": 7.4, "gross_margin_pct": 59.8, "fcf_margin_pct": -11.2, "div_yield_pct": 2.35, "pe_fwd": 23.8, "ev_ebitda": 15.2, "net_debt_ebitda": 4.9, "roic_pct": 8.2, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 98.0, "backlog_b": 18.0, "r0_score": 69.0, "r0_action": "HOLD", "r1_delta": 1.0, "r1_note": "Consistent 7-9% long-term EPS and dividend CAGR, though negative FCF from its $17B-$18B 5-year capex plan and 4.9x Net Debt/EBITDA make AWK sensitive to 10Y Treasury yields.", "r2_delta": 3.5, "r2_note": "Operates across 14 regulated states (PA, NJ, MO, IL, IN, CA, etc.) utilizing Distribution System Improvement Charge (DSIC) automatic infrastructure surcharges that minimize regulatory lag between pipe replacement capex and customer rate recovery, plus 50-year Department of Defense military base water privatization contracts.", "r3_delta": 1.0, "r3_note": "Provides municipal water and cooling wastewater capacity across Mid-Atlantic and Midwest commercial corridors.", "r4_delta": 4.0, "r4_note": "Beneficiary of `ENU_R5`: the EPA's 4 ppt PFAS MCL rule (~$1B+ in AWK PFAS capital investment) and Lead and Copper Rule Improvements not only expand AWK's own regulated rate base at ~9.8% ROE, but also force distressed small municipal water systems (which cannot afford PFAS upgrades) to sell their systems to AWK under State Fair Market Value (FMV) legislation.", "r5_note": "High-quality defensive water monopoly and municipal consolidation roll-up; hold for steady 8-10% total return or add on rate-driven pullbacks.", "primary_moat": "14-State Regulated Water Monopoly + DSIC Automatic Rate Riders + Fair Market Value (FMV) Municipal Roll-Up Pipeline + 18 DoD Base Contracts", "key_agencies": ["EPA (PFAS MCL & LCRI)", "PA PUC / NJ BPU / MO PSC / IL ICC", "Department of Defense (Military Housing/Base Privatization)"], "healthcare_hooks": ["Municipal Drinking Water PFAS & Lead Service Line Replacement + Hospital Fire-Suppression & Potable Water Supply"], "bull_case": "EPA PFAS compliance costs accelerate municipal water system privatizations under FMV laws, driving 9%+ rate-base CAGR.", "bear_case": "Consumer water bill affordability pushback in Pennsylvania or New Jersey rate cases or rising long-term bond yields.", "price": 142.75, "sma50": 135.02, "sma200": 130.97, "atr14": 2.97, "rsi14": 70.1, "rsi7": 80.0, "connors_rsi2": 50.1, "weekly_rsi14": 56.7, "ret_20d_pct": 9.04, "ret_60d_pct": 5.04, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 70.0, "r2_score": 73.5, "r3_score": 74.5, "r4_score": 78.5, "r5_delta": 2.0, "r5_score": 80.5, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0)", "total_rsi_upgrade": 11.5, "final_action": "HOLD", "buy_zone": "$131.64 - $144.18", "buy_low": 131.64, "buy_high": 144.18, "stop_loss": 126.29, "target_12m": 157.03, "upside_12m_pct": 10.0, "reward_risk": 0.87, "horizon_tag": "Watchlist / Relative Underweight", "rank": 24, "kelly_weight_pct": 0.0}, {"ticker": "CVX", "name": "Chevron Corporation", "layer": "L1", "layer_name": "Integrated Oil Majors, Shale E&P & Oilfield Services", "subsector_node": "ENERGY", "role": "Global Integrated Supermajor \u2014 Permian No-Royalty Acreage, Tengiz (TCO) FGP Expansion, DJ/GoM & Eastern Med LNG", "fallback_price": 154.2, "market_cap_b": 274.0, "rev_growth_pct": 3.5, "gross_margin_pct": 35.1, "fcf_margin_pct": 10.6, "div_yield_pct": 4.25, "pe_fwd": 13.1, "ev_ebitda": 6.4, "net_debt_ebitda": 0.45, "roic_pct": 13.2, "wti_breakeven_usd": 38.0, "reserve_life_yrs": 13.2, "fee_or_ratebase_pct": 20.0, "backlog_b": 0.0, "r0_score": 68.0, "r0_action": "HOLD", "r1_delta": 6.5, "r1_note": "Tengizchevroil (TCO) Future Growth Project ramp in Kazakhstan + royalty-advantaged Permian mineral acreage unlock $6B-$8B incremental FCF inflection.", "r2_delta": 1.5, "r2_note": "37+ consecutive years of dividend increases with 4.25% yield and $10B-$20B annual buyback framework.", "r3_delta": 2.0, "r3_note": "Engineered behind-the-meter 4GW natural gas power JV with GE Vernova (using seven 7HA gas turbines) for US AI data centers.", "r4_delta": 0.5, "r4_note": "California CARB refining regulatory friction prompts headquarters move to Houston; CPC pipeline geopolitical exposure in Kazakhstan requires modest discount vs XOM.", "r5_note": "Attractive 4.25% yield + GE Vernova data-center power JV and TCO FCF inflection make CVX a high-floor income/value play.", "primary_moat": "No-Royalty Permian Mineral Fee Acreage + Tengiz Giant Field + GEV 4GW AI Power JV", "key_agencies": ["BOEM", "CARB", "DOE", "EPA"], "healthcare_hooks": ["Oronite Additives & Medical Polymer Feedstocks"], "bull_case": "TCO FGP hits 1M boe/d and 4GW GE Vernova AI power JV signs multi-decade hyperscaler PPAs at 15%+ unlevered IRR.", "bear_case": "Black Sea CPC pipeline disruptions or prolonged Brent <$60/bbl forces buyback curtailment toward $10B floor.", "price": 233.21, "sma50": 210.31, "sma200": 189.43, "atr14": 4.99, "rsi14": 76.9, "rsi7": 86.3, "connors_rsi2": 84.4, "weekly_rsi14": 71.4, "ret_20d_pct": 14.07, "ret_60d_pct": 22.33, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 74.5, "r2_score": 76.0, "r3_score": 78.0, "r4_score": 78.5, "r5_delta": 0.5, "r5_score": 79.0, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Near-term overbought RSI-14 (76.9); wait for pullback toward 21d/50d EMA (-1.5)", "total_rsi_upgrade": 11.0, "final_action": "HOLD", "buy_zone": "$214.55 - $235.54", "buy_low": 214.55, "buy_high": 235.54, "stop_loss": 205.57, "target_12m": 256.53, "upside_12m_pct": 10.0, "reward_risk": 0.84, "horizon_tag": "Watchlist / Relative Underweight", "rank": 25, "kelly_weight_pct": 0.0}, {"ticker": "DUK", "name": "Duke Energy Corporation", "layer": "L6", "layer_name": "Regulated Electric Utilities & Water Treatment Infrastructure", "subsector_node": "UTILITIES", "role": "100% Regulated Electric & Gas Utility Serving Carolinas, Florida, Indiana & Ohio (8.4M Electric Customers) + 11 GW Low-Cost Regulated Nuclear Fleet", "fallback_price": 116.2, "market_cap_b": 89.8, "rev_growth_pct": 6.4, "gross_margin_pct": 54.1, "fcf_margin_pct": -9.8, "div_yield_pct": 3.6, "pe_fwd": 18.5, "ev_ebitda": 12.8, "net_debt_ebitda": 5.2, "roic_pct": 7.9, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 98.0, "backlog_b": 83.0, "r0_score": 70.0, "r0_action": "HOLD", "r1_delta": 1.0, "r1_note": "Offers an attractive 3.60% dividend yield and 18.5x forward P/E after divesting commercial renewables to become 100% regulated, though 5.2x Net Debt/EBITDA and an $83B 5-year capex plan require $600M-$1B/yr of ATM equity issuance.", "r2_delta": 3.5, "r2_note": "North Carolina HB 951 bipartisan multi-year rate plans (MYRPs) and South Carolina/Florida settlements support ~7.2% annual rate-base growth, while Duke's 11-reactor regulated nuclear fleet earns ~$500M+/yr in IRA Section 45U nuclear production tax credits passed through to keep customer bills low (creating headroom for T&D rate-base capex).", "r3_delta": 3.5, "r3_note": "Carolinas and Indiana economic-development pipelines (AWS, Microsoft, Google, Toyota battery, Novo Nordisk GLP-1 manufacturing) are driving 3-4% load growth by 2028 and 6+ GW of new combined-cycle and combustion-turbine natural gas additions.", "r4_delta": 0.5, "r4_note": "Successfully securitized and recovered Hurricane Helene/Milton storm restoration costs via constructive state regulatory mechanisms.", "r5_note": "Dependable 3.6% yield + 5-7% EPS growth regulated compounder, slightly behind SO on balance-sheet FFO/Debt cushion.", "primary_moat": "Exclusive Carolinas/Florida/Midwest Territory Monopoly + 11 GW Regulated Nuclear Fleet + $83B 5-Yr Regulated Capex Plan", "key_agencies": ["NCUC (North Carolina)", "PSCSC (South Carolina)", "Florida PSC", "IURC (Indiana)", "NRC"], "healthcare_hooks": ["Dedicated High-Voltage Substations for Novo Nordisk & Eli Lilly GLP-1 Megafactories in NC & Indiana + Research Triangle Medical Centers"], "bull_case": "Carolinas IRP adds another 3-4 GW of CCGT gas and SMR nuclear rate base as hyperscaler load exceeds baseline forecasts.", "bear_case": "ATM equity issuance (~$1B/yr) and 5.2x leverage cap P/E multiple expansion if 10Y Treasury yields rise.", "price": 124.98, "sma50": 118.94, "sma200": 122.74, "atr14": 2.11, "rsi14": 68.3, "rsi7": 74.6, "connors_rsi2": 48.6, "weekly_rsi14": 54.5, "ret_20d_pct": 10.26, "ret_60d_pct": -0.15, "weinstein_stage": "Stage 1->2 (Breakout Transition)", "data_source": "yfinance_live", "r1_score": 71.0, "r2_score": 74.5, "r3_score": 78.0, "r4_score": 78.5, "r5_delta": 0.5, "r5_score": 79.0, "r5_tech_gate": "Weinstein Stage 1 basing / breakout transition (+0.5)", "total_rsi_upgrade": 9.0, "final_action": "HOLD", "buy_zone": "$115.97 - $126.23", "buy_low": 115.97, "buy_high": 126.23, "stop_loss": 111.23, "target_12m": 137.48, "upside_12m_pct": 10.0, "reward_risk": 0.91, "horizon_tag": "Watchlist / Relative Underweight", "rank": 26, "kelly_weight_pct": 0.0}, {"ticker": "SLB", "name": "SLB (Schlumberger Limited)", "layer": "L1", "layer_name": "Integrated Oil Majors, Shale E&P & Oilfield Services", "subsector_node": "ENERGY", "role": "Global #1 International & Offshore Oilfield Services, Subsea (OneSubsea), Digital Reservoir AI & Data-Center Cooling Modular Solutions", "fallback_price": 41.8, "market_cap_b": 58.5, "rev_growth_pct": 6.5, "gross_margin_pct": 21.2, "fcf_margin_pct": 11.8, "div_yield_pct": 2.75, "pe_fwd": 11.8, "ev_ebitda": 7.6, "net_debt_ebitda": 1.05, "roic_pct": 15.2, "wti_breakeven_usd": 50.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 35.0, "backlog_b": 4.8, "r0_score": 67.0, "r0_action": "HOLD", "r1_delta": 2.5, "r1_note": "80% international/offshore revenue mix (Middle East gas, Guyana, Brazil pre-salt) insulates SLB from US land rig softness; ChampionX acquisition shifts mix toward recurring production chemicals.", "r2_delta": 2.0, "r2_note": "High-margin Delfi digital reservoir AI platform and OneSubsea joint venture provide sticky multi-year service contracts.", "r3_delta": 1.5, "r3_note": "Launched Data Center Solutions division supplying modular cooling and power skids to hyperscalers, plus SLB Endotherm geothermal tech.", "r4_delta": 0.0, "r4_note": "Saudi Aramco oil maximum sustainable capacity (MSC) pause offset by Jafurah unconventional gas expansion.", "r5_note": "Historically cheap valuation (<12x P/E) with strong FCF conversion, though awaiting oil macro stabilization to exit Stage 4/1 base.", "primary_moat": "Global International/Offshore NOC Relationships + Delfi Digital Subsurface AI + ChampionX Production Chemicals", "key_agencies": ["BOEM", "DOJ (ChampionX Merger Review)", "International NOCs (Aramco, ADNOC, Petrobras)"], "healthcare_hooks": ["Specialty Production & Water Treatment Chemicals"], "bull_case": "ChampionX integration + offshore deepwater FIDs drive $4.5B+ annual FCF and 35% valuation re-rating.", "bear_case": "OPEC+ extends production cuts into 2027, delaying international offshore exploration budgets.", "price": 53.06, "sma50": 52.4, "sma200": 50.88, "atr14": 1.56, "rsi14": 60.3, "rsi7": 70.6, "connors_rsi2": 80.7, "weekly_rsi14": 55.4, "ret_20d_pct": 2.95, "ret_60d_pct": 9.05, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 69.5, "r2_score": 71.5, "r3_score": 73.0, "r4_score": 73.0, "r5_delta": 3.0, "r5_score": 76.0, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (60.3) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 9.0, "final_action": "HOLD", "buy_zone": "$51.09 - $53.59", "buy_low": 51.09, "buy_high": 53.59, "stop_loss": 47.22, "target_12m": 58.37, "upside_12m_pct": 10.0, "reward_risk": 0.91, "horizon_tag": "Watchlist / Relative Underweight", "rank": 27, "kelly_weight_pct": 0.0}, {"ticker": "VLO", "name": "Valero Energy Corporation", "layer": "L3", "layer_name": "Refining & Distillate Crack Spreads", "subsector_node": "OIL_REFINERS", "role": "Premier Pure-Play US Gulf Coast Independent Refiner (3.2M bbl/d Capacity, High Nelson Complexity) & Diamond Green Diesel (DGD) Renewable Diesel/SAF Leader", "fallback_price": 134.8, "market_cap_b": 42.5, "rev_growth_pct": -6.5, "gross_margin_pct": 9.8, "fcf_margin_pct": 5.2, "div_yield_pct": 3.35, "pe_fwd": 12.6, "ev_ebitda": 6.4, "net_debt_ebitda": 0.65, "roic_pct": 14.5, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 15.0, "backlog_b": 0.0, "r0_score": 66.0, "r0_action": "HOLD", "r1_delta": 3.5, "r1_note": "Lowest cash operating cost per barrel (~$4.65/bbl) among US refiners and pristine balance sheet; committed to returning 40-50%+ of adjusted net cash from operations via buybacks/dividends (retired >22% of float over 5 years).", "r2_delta": 2.0, "r2_note": "~60% of refining capacity sits on the US Gulf Coast (PADD 3) with cheap natural gas fuel advantage ($2-$3/MMBtu vs $10-$13/MMBtu in Europe) and ability to process discounted heavy/sour Canadian & Latin American crudes, plus 235M gal/yr neat Sustainable Aviation Fuel (SAF) at Port Arthur DGD.", "r3_delta": 0.0, "r3_note": "Minimal direct AI data-center revenue other than emergency diesel fuel for data-center backup generator fleets.", "r4_delta": 1.5, "r4_note": "Transition from the $1/gal Blenders Tax Credit (BTC, which subsidized foreign imports) to IRS Section 45Z domestic Clean Fuel Production Credit advantages DGD's domestic Port Arthur & St. Charles plants, while permanent closures of Lyondell Houston (268k bbl/d) and PSX Los Angeles (139k bbl/d) tighten US refining balances.", "r5_note": "Best-in-class pure-play refiner for crack spread seasonal recoveries and structural capacity rationalization.", "primary_moat": "Lowest Cash Opex/bbl ($4.65) in PADD 3 Gulf Coast + High-Complexity Coking Units + Diamond Green Diesel SAF First-Mover", "key_agencies": ["EPA (RFS/RINs)", "IRS (Sec 45Z)", "CARB (LCFS)", "OSHA"], "healthcare_hooks": ["ULSD Fuel for Hospital Emergency Backup Generators & Medical Cold-Chain Logistics"], "bull_case": "Permanent US/European refinery closures + IRS 45Z implementation trigger a spring/summer 3-2-1 crack spread rebound above $22/bbl.", "bear_case": "Global economic slowdown + Nigeria Dangote / Mexico Dos Bocas refinery ramps keep gasoline and diesel cracks below mid-cycle.", "price": 419.28, "sma50": 392.41, "sma200": 279.17, "atr14": 17.05, "rsi14": 51.2, "rsi7": 37.8, "connors_rsi2": 13.6, "weekly_rsi14": 71.3, "ret_20d_pct": 8.29, "ret_60d_pct": 35.03, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 69.5, "r2_score": 71.5, "r3_score": 71.5, "r4_score": 73.0, "r5_delta": 3.0, "r5_score": 76.0, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (51.2) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 10.0, "final_action": "HOLD", "buy_zone": "$385.74 - $423.47", "buy_low": 385.74, "buy_high": 423.47, "stop_loss": 355.05, "target_12m": 461.21, "upside_12m_pct": 10.0, "reward_risk": 0.65, "horizon_tag": "Tactical Swing (1-12 Wk) / Cyclical Value", "rank": 28, "kelly_weight_pct": 0.0}, {"ticker": "PSX", "name": "Phillips 66", "layer": "L3", "layer_name": "Refining & Distillate Crack Spreads", "subsector_node": "OIL_REFINERS", "role": "Diversified Downstream Conglomerate \u2014 Refining, NGL Midstream (DCP Roll-up + EPIC NGL), CPChem Petrochemicals (50% JV with Chevron) & Marketing", "fallback_price": 124.2, "market_cap_b": 51.0, "rev_growth_pct": -4.2, "gross_margin_pct": 11.2, "fcf_margin_pct": 5.5, "div_yield_pct": 3.7, "pe_fwd": 13.9, "ev_ebitda": 7.9, "net_debt_ebitda": 1.75, "roic_pct": 11.2, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 48.0, "backlog_b": 0.0, "r0_score": 65.0, "r0_action": "HOLD", "r1_delta": 1.5, "r1_note": "3.70% dividend yield and Elliott Management activist pressure driving $3B+ non-core asset sales and refining cost reductions.", "r2_delta": 2.0, "r2_note": "Midstream NGL wellhead-to-market platform (DCP Midstream + EPIC NGL acquisition) provides ~$3.8B+ steady EBITDA, though CPChem petrochemical polyethylene margins remain near trough.", "r3_delta": 0.5, "r3_note": "Permian NGL midstream growth via EPIC NGL and Sweeny Hub.", "r4_delta": -0.5, "r4_note": "Shutting down Los Angeles refinery in Q4 2025 due to California regulatory costs; Rodeo Renewable Energy Complex depends on Section 45Z / LCFS credit clarity.", "r5_note": "Sum-of-the-parts activist story (Elliott pressing for Midstream separation/monetization), but operational execution lags VLO and MPC.", "primary_moat": "Sweeny NGL Fractionation/Export Hub + CPChem Low-Cost Ethane Cracker JV + Elliott Activist Catalyst", "key_agencies": ["CARB", "EPA", "FERC", "IRS (Sec 45Z)"], "healthcare_hooks": ["CPChem Medical-Grade High-Density Polyethylene (HDPE) Pharmaceutical Bottles & Labware"], "bull_case": "Elliott Management forces a tax-efficient spin-off or high-multiple monetization of PSX's NGL Midstream business.", "bear_case": "Global polyethylene oversupply persists through 2027 while refining capture rates lag VLO/MPC.", "price": 283.18, "sma50": 262.45, "sma200": 194.1, "atr14": 8.86, "rsi14": 58.3, "rsi7": 48.0, "connors_rsi2": 16.2, "weekly_rsi14": 73.3, "ret_20d_pct": 10.73, "ret_60d_pct": 35.18, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 66.5, "r2_score": 68.5, "r3_score": 69.0, "r4_score": 68.5, "r5_delta": 3.0, "r5_score": 71.5, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0); Ideal accumulation RSI-14 (58.3) without overbought exhaustion (+1.0)", "total_rsi_upgrade": 6.5, "final_action": "HOLD", "buy_zone": "$260.53 - $286.01", "buy_low": 260.53, "buy_high": 286.01, "stop_loss": 244.58, "target_12m": 311.5, "upside_12m_pct": 10.0, "reward_risk": 0.73, "horizon_tag": "Watchlist / Relative Underweight", "rank": 29, "kelly_weight_pct": 0.0}, {"ticker": "OXY", "name": "Occidental Petroleum Corporation", "layer": "L1", "layer_name": "Integrated Oil Majors, Shale E&P & Oilfield Services", "subsector_node": "OIL_UPSTREAM", "role": "Permian E&P (CrownRock), OxyChem Chlor-Alkali/PVC & 1PointFive Direct Air Capture (Stratos DAC)", "fallback_price": 49.2, "market_cap_b": 46.5, "rev_growth_pct": 4.8, "gross_margin_pct": 44.0, "fcf_margin_pct": 12.5, "div_yield_pct": 1.95, "pe_fwd": 14.5, "ev_ebitda": 6.1, "net_debt_ebitda": 1.85, "roic_pct": 9.8, "wti_breakeven_usd": 48.0, "reserve_life_yrs": 12.5, "fee_or_ratebase_pct": 22.0, "backlog_b": 0.0, "r0_score": 66.0, "r0_action": "HOLD", "r1_delta": -7.5, "r1_note": "Penalized for elevated balance-sheet leverage ($24B+ debt post-$12B CrownRock acquisition + Berkshire Hathaway 8% preferred stock burden) and higher ~$48/bbl corporate breakeven.", "r2_delta": 1.0, "r2_note": "OxyChem provides steady chlor-alkali/PVC cash flows, but DAC (Stratos) commercial economics remain unproven without massive voluntary carbon credit subsidies.", "r3_delta": 1.5, "r3_note": "1PointFive signed carbon removal credit agreements with Microsoft (500,000 metric tons) to offset AI data-center emissions.", "r4_delta": -2.0, "r4_note": "Heavy reliance on IRS Section 45Q $180/ton Direct Air Capture tax credits exposes OXY to political/regulatory scrutiny on DAC capital intensity.", "r5_note": "High financial leverage to WTI oil prices blocks share buybacks until principal debt falls below $15B; inferior risk/reward vs EOG/XOM.", "primary_moat": "Permian CO2 Enhanced Oil Recovery (EOR) Pore Space + OxyChem + Berkshire Backing", "key_agencies": ["IRS (Sec 45Q $180/t DAC)", "EPA (Class VI CO2 Wells)", "RRC Texas"], "healthcare_hooks": ["OxyChem Medical-Grade PVC (IV Bags, Blood Bags, Medical Tubing) & KOH/Chlorine Water Disinfection"], "bull_case": "WTI spikes above $85/bbl, accelerating $15B debt paydown target and unlocking Stratos DAC 45Q cash flows.", "bear_case": "WTI <$60/bbl traps OXY in multi-year debt-service mode with zero share repurchases and DAC capex drag.", "price": 64.17, "sma50": 59.72, "sma200": 55.18, "atr14": 1.59, "rsi14": 68.6, "rsi7": 78.5, "connors_rsi2": 82.8, "weekly_rsi14": 61.6, "ret_20d_pct": 12.86, "ret_60d_pct": 15.22, "weinstein_stage": "Stage 2 (Advancing)", "data_source": "yfinance_live", "r1_score": 58.5, "r2_score": 59.5, "r3_score": 61.0, "r4_score": 59.0, "r5_delta": 2.0, "r5_score": 61.0, "r5_tech_gate": "Confirmed Weinstein Stage 2 advancing trend above rising 200d SMA (+2.0)", "total_rsi_upgrade": -5.0, "final_action": "AVOID", "buy_zone": "$59.04 - $64.81", "buy_low": 59.04, "buy_high": 64.81, "stop_loss": 56.18, "target_12m": 60.96, "upside_12m_pct": -5.0, "reward_risk": 0.0, "horizon_tag": "Watchlist / Relative Underweight", "rank": 30, "kelly_weight_pct": 0.0}, {"ticker": "HAL", "name": "Halliburton Company", "layer": "L1", "layer_name": "Integrated Oil Majors, Shale E&P & Oilfield Services", "subsector_node": "ENERGY", "role": "North American Pressure Pumping Leader (Zeus Electric Frac Fleets), Completion Tools & Directional Drilling", "fallback_price": 27.6, "market_cap_b": 24.2, "rev_growth_pct": -1.5, "gross_margin_pct": 18.4, "fcf_margin_pct": 10.5, "div_yield_pct": 2.45, "pe_fwd": 9.8, "ev_ebitda": 5.9, "net_debt_ebitda": 1.15, "roic_pct": 16.4, "wti_breakeven_usd": 56.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 25.0, "backlog_b": 0.0, "r0_score": 63.0, "r0_action": "HOLD", "r1_delta": -6.0, "r1_note": "Heavy ~44% North American land completions exposure faces pricing pressure as E&P consolidation (XOM/PXD, CVX/HES, COP/MRO, FANG/Endeavor) allows majors to do more lateral footage with fewer frac spreads.", "r2_delta": 1.5, "r2_note": "Zeus electric frac fleets (powered by VoltaGrid natural gas mobile microgrids) command multi-year contracts vs legacy diesel fleets.", "r3_delta": 1.0, "r3_note": "Gas basin completions (Haynesville/Marcellus) should recover in 2026/2027 to feed LNG and AI power demand.", "r4_delta": -1.0, "r4_note": "Directly vulnerable to `ENU_R3` if WTI approaches $55/bbl and North American E&Ps drop completion crews.", "r5_note": "Weinstein Stage 4 downtrend and North American completions deflation keep HAL on HOLD/AVOID despite 9.8x P/E.", "primary_moat": "Zeus Electric Frac Fleet Technology + Automated OCTIV Completions", "key_agencies": ["EPA", "RRC Texas", "BLM"], "healthcare_hooks": ["None direct"], "bull_case": "Haynesville and Marcellus gas completions surge in 2H 2026 to supply Plaquemines/Golden Pass LNG.", "bear_case": "US E&P consolidation permanently shrinks the North American frac fleet market by 15-20%.", "price": 34.92, "sma50": 34.13, "sma200": 35.51, "atr14": 1.01, "rsi14": 61.3, "rsi7": 70.5, "connors_rsi2": 79.1, "weekly_rsi14": 52.0, "ret_20d_pct": 6.59, "ret_60d_pct": 10.88, "weinstein_stage": "Stage 1 (Basing / Early Recovery)", "data_source": "yfinance_live", "r1_score": 57.0, "r2_score": 58.5, "r3_score": 59.5, "r4_score": 58.5, "r5_delta": 1.5, "r5_score": 60.0, "r5_tech_gate": "Weinstein Stage 1 basing / breakout transition (+0.5); Ideal accumulation RSI-14 (61.3) without overbought exhaustion (+1.0)", "total_rsi_upgrade": -3.0, "final_action": "AVOID", "buy_zone": "$33.28 - $35.27", "buy_low": 33.28, "buy_high": 35.27, "stop_loss": 31.08, "target_12m": 33.17, "upside_12m_pct": -5.0, "reward_risk": 0.0, "horizon_tag": "Watchlist / Relative Underweight", "rank": 31, "kelly_weight_pct": 0.0}, {"ticker": "ENPH", "name": "Enphase Energy, Inc.", "layer": "L5", "layer_name": "Behind-the-Meter Fuel Cells & Utility-Scale Solar", "subsector_node": "CLEAN_ENERGY", "role": "Residential Solar Microinverter (IQ8) & Home Battery Storage Leader", "fallback_price": 62.4, "market_cap_b": 8.3, "rev_growth_pct": -12.5, "gross_margin_pct": 47.2, "fcf_margin_pct": 24.5, "div_yield_pct": 0.0, "pe_fwd": 19.8, "ev_ebitda": 15.6, "net_debt_ebitda": -0.35, "roic_pct": 16.2, "wti_breakeven_usd": 0.0, "reserve_life_yrs": 0.0, "fee_or_ratebase_pct": 20.0, "backlog_b": 0.0, "r0_score": 61.0, "r0_action": "HOLD", "r1_delta": -3.5, "r1_note": "Despite preserving 47% gross margins via US 45X contract manufacturing, top-line revenue contracted sharply due to US residential solar loan freezes and European distributor destocking; SBC remains elevated at ~16% of revenue.", "r2_delta": -2.5, "r2_note": "Losing US residential inverter market share to Tesla Powerwall 3 (which integrates a string inverter directly into the battery) as California NEM 3.0 shifts the market from solar-only to solar+storage.", "r3_delta": 0.0, "r3_note": "Zero exposure to utility-scale hyperscaler AI data-center power buildouts.", "r4_delta": -4.0, "r4_note": "Directly hit by `ENU_R4` (elevated 10Y Treasury yields >4.5% driving 8-10% residential solar loan APRs) and potential congressional repeal of Section 25D residential solar tax credits.", "r5_note": "Weinstein Stage 4 downtrend with negative AI data-center correlation and Tesla Powerwall 3 competition; AVOID.", "primary_moat": "IQ8 Grid-Forming Microinverter ASIC Architecture + Installer Network", "key_agencies": ["CPUC (California NEM 3.0)", "IRS (Sec 25D / 48E TPO & Sec 45X)"], "healthcare_hooks": ["Residential Home Medical Device Battery Backup"], "bull_case": "Fed rate cuts + IQ9 GaN commercial microinverters and 4th-gen battery launch spark a 2026/2027 residential solar recovery.", "bear_case": "Section 25D residential tax credit is repealed and Tesla Powerwall 3 captures >50% of storage-attached residential installs.", "price": 31.6, "sma50": 34.78, "sma200": 41.14, "atr14": 1.6, "rsi14": 43.8, "rsi7": 47.9, "connors_rsi2": 64.0, "weekly_rsi14": 38.2, "ret_20d_pct": -2.47, "ret_60d_pct": -15.46, "weinstein_stage": "Stage 3 (Consolidation)", "data_source": "yfinance_live", "r1_score": 57.5, "r2_score": 55.0, "r3_score": 55.0, "r4_score": 51.0, "r5_delta": 0.5, "r5_score": 51.5, "r5_tech_gate": "Weinstein Stage 3 consolidation/distribution (-0.5); Ideal accumulation RSI-14 (43.8) without overbought exhaustion (+1.0)", "total_rsi_upgrade": -9.5, "final_action": "AVOID", "buy_zone": "$30.49 - $31.92", "buy_low": 30.49, "buy_high": 31.92, "stop_loss": 27.61, "target_12m": 30.02, "upside_12m_pct": -5.0, "reward_risk": 0.0, "horizon_tag": "Watchlist / Relative Underweight", "rank": 32, "kelly_weight_pct": 0.0}];
+const PRIVATES = [{"name": "Fervo Energy", "layer": "L5 / L1", "subsector_node": "CLEAN_ENERGY", "valuation_est_b": 1.8, "hq": "Houston, TX", "role": "Enhanced Geothermal Systems (EGS) Pioneer Applying Horizontal Shale Drilling & Multi-Stage Fracing + Fiber-Optic Sensing to 24/7 Carbon-Free Baseload Power", "commercial_traction": "Operating Project Red for Google's Nevada data centers and constructing the 400 MW Cape Station EGS project in Utah (with Southern California Edison & Google Clean Transition Tariff PPAs) delivering 24/7 dispatchable geothermal power using oilfield drilling rigs.", "public_read_through": "Bullish for oilfield directional drilling/completions technology transfer (`SLB`, `HAL`, `BKR`) and hyperscaler 24/7 clean baseload PPAs; long-term competitor to solar+battery (`FSLR`/`NXT`) in Western US basins."}, {"name": "Zanskar Geothermal & Minerals", "layer": "L5 / L1", "subsector_node": "CLEAN_ENERGY", "valuation_est_b": 0.35, "hq": "Salt Lake City, UT", "role": "AI-Driven Subsurface Geothermal Discovery & Blind Hydrothermal Reservoir Operator", "commercial_traction": "Uses machine learning, seismic/gravity/magnetic fusion, and modern drilling to identify 'blind' high-enthalpy geothermal systems with no surface hot springs; revived the Lightning Dock geothermal plant in New Mexico.", "public_read_through": "Complements `SLB` subsurface digital AI and offers non-intermittent Western grid capacity."}, {"name": "Commonwealth LNG", "layer": "L2", "subsector_node": "MIDSTREAM", "valuation_est_b": 4.5, "hq": "Houston, TX / Cameron Parish, LA", "role": "Modular 9.5 MTPA Gulf Coast LNG Export Terminal Developer", "commercial_traction": "Received DOE non-FTA export authorization following the lifting of the 2024 LNG permit pause; modular factory-fabricated liquefaction design targets lower $/ton capex and faster schedule in Cameron, Louisiana.", "public_read_through": "Directly drives incremental natural gas feedgas transport demand for `KMI`, `WMB`, `ET`, and `EQT`/`AR` and turbomachinery orders for `BKR`."}, {"name": "Grid United", "layer": "L4", "subsector_node": "GRID_EQUIPMENT", "valuation_est_b": 1.6, "hq": "Houston, TX", "role": "Independent High-Voltage Direct Current (HVDC) Interregional Transmission Developer", "commercial_traction": "Developing long-distance interregional HVDC transmission lines connecting ERCOT, WECC, and SPP/MISO (including North Plains Connector, awarded $700M DOE GRIP grant) to arbitrage regional wind/solar/gas congestion.", "public_read_through": "Direct EPC and HVDC converter/transformer customer for `PWR` (Quanta Services) and `GEV` (GE Vernova)."}, {"name": "LineVision", "layer": "L4", "subsector_node": "GRID_EQUIPMENT", "valuation_est_b": 0.45, "hq": "Boston, MA", "role": "Non-Contact LiDAR Dynamic Line Rating (DLR) & Grid-Enhancing Technologies (GETs) Leader", "commercial_traction": "Deploys tower-mounted optical/LiDAR sensors to monitor real-time transmission line sag, wind cooling, and ampacity \u2014 unlocking 15%-40% more power transfer capacity on existing transmission lines to comply with FERC Order 881 and DOE GRID deployments (with National Grid, AES, Duquesne Light, and Southern Company).", "public_read_through": "Near-term complement to `UTILITIES` (`SO`, `DUK`, `NEE`) seeking fast capacity unlocks while waiting on multi-year `PWR`/`GEV` transmission builds."}, {"name": "VEIR", "layer": "L4", "subsector_node": "GRID_EQUIPMENT", "valuation_est_b": 0.3, "hq": "Woburn, MA", "role": "High-Temperature Superconducting (HTS) Transmission Lines for Data Centers & Congested Corridors", "commercial_traction": "Uses liquid-nitrogen-cooled superconducting tape to transmit 5x-10x the power (MW) of conventional lines at lower voltages within existing narrow rights-of-way and inside gigawatt AI data-center campuses.", "public_read_through": "Next-generation high-density power corridor technology complementing `ETN` and `PWR` in space-constrained hyperscale substations."}, {"name": "Koloma", "layer": "L5 / L1", "subsector_node": "CLEAN_ENERGY", "valuation_est_b": 1.1, "hq": "Denver, CO", "role": "Geologic ('White' / Natural) Hydrogen Exploration & Subsurface Production Startup", "commercial_traction": "Backed by Breakthrough Energy Ventures, Amazon Climate Pledge Fund, and United Airlines (~$300M+ raised) to explore and drill naturally occurring subsurface geologic hydrogen accumulations at <$1.00/kg without electrolysis electricity consumption.", "public_read_through": "Leverages oil & gas subsurface logging (`SLB`/`BKR`) and could supply clean hydrogen fuel to `BE` (Bloom Energy SOFCs) and `GEV` hydrogen-ready gas turbines."}, {"name": "Gradiant", "layer": "L6", "subsector_node": "WATER_INFRA", "valuation_est_b": 1.2, "hq": "Boston, MA", "role": "Unicorn in Advanced Industrial Water, Semiconductor Ultrapure Water (UPW), Zero-Liquid-Discharge (ZLD) & ForeverOne PFAS Destruction", "commercial_traction": "Supplies end-to-end ultrapure water and wastewater recycling for TSMC, Micron, GSK, Pfizer, Coca-Cola, and Rio Tinto, plus ForeverOne foam-fractionation + electrochemical PFAS destruction that mineralizes forever chemicals on-site.", "public_read_through": "Validates the high-margin semiconductor/data-center/pharma ultrapure water & PFAS remediation market led publicly by `XYL` (Xylem/Evoqua)."}];
+const SUMMARY_ROUNDS = [{"round": "Round 0", "name": "Naive Momentum & Headline AI Power / Yield Screen", "critic_flaw": "Chases high-beta solar/clean-energy headlines (`ENPH`) and high-debt upstream (`OXY`) while under-weighting take-or-pay midstream pipelines (`WMB`, `LNG`, `KMI`) and LNG/grid turbomachinery (`BKR`, `GEV`).", "sub_skill": "Baseline Sector Multi-Factor Screen"}, {"round": "Round 1", "name": "Commodity Breakeven, Reserve Life & Post-Dividend FCF Yield Filter", "critic_flaw": "Exposes leveraged E&Ps (`OXY` 1.85x leverage, ~$48/bbl breakeven) and North American pressure pumpers (`HAL`) vs sub-$36/bbl fortress balance sheets (`XOM`, `EOG`, `COP`) and $2.00/MMBtu vertically integrated gas (`EQT`).", "sub_skill": "Forensic Breakeven & Balance-Sheet Runway Auditor"}, {"round": "Round 2", "name": "Take-or-Pay Contract Duration, Regulated Rate Base ROE & Backlog Margin Moat", "critic_flaw": "Separates commodity-exposed volumes from 15-20 year take-or-pay infrastructure tollbooths (`WMB` Transco, `LNG` SPAs, `KMI`, `EPD`, `ET`, `TRGP`), $119B/$34.5B grid backlogs (`GEV`, `PWR`, `ETN`), and 10.5%+ ROE Southeast utilities (`SO`, `NEE`).", "sub_skill": "Take-or-Pay Duration & Regulated Rate-Base Moat Verifier"}, {"round": "Round 3", "name": "AI Data-Center Gigawatt Power Pull-Through & Time-to-Power Bottleneck Alpha", "critic_flaw": "Quantifies physical MW-to-molecule bottlenecks: 120-210 week LPT transformer lead times (`GEV`, `ETN`, `PWR`), 90-day behind-the-meter SOFC time-to-power (`BE`), Transco/TGP gas laterals (`WMB`, `KMI`, `ET`, `EQT`), and semiconductor/data-center ultrapure water (`XYL`).", "sub_skill": "Gigawatt Interconnection & Time-to-Power Bottleneck Scanner"}, {"round": "Round 4", "name": "FERC / DOE / EPA / IRA Section 45X/45Q/48E & Tariff Regulatory Stress Test", "critic_flaw": "Audits FERC Order 1920 transmission mandates, DOE LNG permit unfreezing (`LNG`, `BKR`), EPA 4 ppt PFAS drinking water enforcement (`XYL`, `AWK`), and red-state Section 45X + 271% AD/CVD solar tariff walls (`FSLR`, `NXT`) vs NEM 3.0 rooftop solar headwinds (`ENPH`).", "sub_skill": "FERC/DOE/EPA/IRA Policy & Tariff Stress Simulator"}, {"round": "Round 5", "name": "Devil's Advocate Red-Team + Weinstein Stage & Multi-Timeframe RSI Technical Gate", "critic_flaw": "Prevents catching Stage 4 falling knives (`HAL`, `ENPH`, `OXY`) and sets exact ATR-based buy zones, stop-losses, 12-month targets, and Fractional Kelly weights across Short-Term Tactical and Long-Term Compounder mandates.", "sub_skill": "Weinstein Stage + Multi-RSI & Kelly Portfolio Optimizer"}];
+
+// Render 5-Round Sub-Skill Cards
+const subSkillsEl = document.getElementById("subSkillsContainer");
+SUMMARY_ROUNDS.forEach(s => {
+  const d = document.createElement("div");
+  d.className = "round-card";
+  d.innerHTML = `
+    <h3>Round ${s.round}: ${s.hat}</h3>
+    <div style="font-size:12.5px;font-weight:700;color:#f3f4f6;margin-bottom:6px;">${s.sub_skill}</div>
+    <p>${s.focus}</p>
+    <div class="formula-box">Top Beneficiaries: ${(s.top_beneficiaries || []).join(', ')} | Penalized: ${(s.top_penalized || []).join(', ')}</div>
+  `;
+  subSkillsEl.appendChild(d);
+});
+
+// Render 8 Private Challengers
+const privEl = document.getElementById("privatesContainer");
+PRIVATES.forEach(p => {
+  const d = document.createElement("div");
+  d.className = "round-card";
+  d.style.borderTopColor = "#a855f7";
+  d.innerHTML = `
+    <h3>${p.name} (${p.layer} · $${p.valuation_b}B)</h3>
+    <div style="font-size:12px;font-weight:700;color:#d8b4fe;margin-bottom:6px;">Node: ${p.subsector_node} | HQ: ${p.hq}</div>
+    <p>${p.moat}</p>
+    <div class="formula-box">Public Read-Through: ${p.public_readthrough}</div>
+  `;
+  privEl.appendChild(d);
+});
+
+let activeLayerFilter = "ALL";
+function setLayerFilter(f, btn) {
+  activeLayerFilter = f;
+  btn.parentElement.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderTable();
+}
+
+function badgeClass(action) {
+  if (action === "STRONG BUY") return "act-badge act-strong";
+  if (action === "BUY") return "act-badge act-buy";
+  if (action === "HOLD") return "act-badge act-hold";
+  return "act-badge act-avoid";
+}
+
+function fmtDelta(v) {
+  const s = v >= 0 ? `+${v.toFixed(1)}` : `${v.toFixed(1)}`;
+  const c = v > 0 ? "#34d399" : v < 0 ? "#fb7185" : "#94a3b8";
+  return `<span style="color:${c};font-family:monospace;font-weight:600;">${s}</span>`;
+}
+
+function renderTable() {
+  const q = (document.getElementById("searchInput").value || "").toLowerCase();
+  const tbody = document.getElementById("matrixBody");
+  tbody.innerHTML = "";
+
+  EQUITIES.filter(r => {
+    if (activeLayerFilter === "STRONG_BUY" && r.final_action !== "STRONG BUY") return false;
+    if (activeLayerFilter === "PORTFOLIO" && r.kelly_weight_pct <= 0) return false;
+    if (activeLayerFilter === "AVOID" && r.final_action !== "AVOID") return false;
+    if (["L1","L2","L3","L4","L5","L6"].includes(activeLayerFilter) && r.layer !== activeLayerFilter) return false;
+    if (q) {
+      const hay = `${r.ticker} ${r.name} ${r.role} ${r.layer} ${r.subsector_node} ${r.primary_moat} ${(r.key_agencies || []).join(' ')} ${(r.healthcare_hooks || []).join(' ')}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }).forEach(r => {
+    const tr = document.createElement("tr");
+    tr.style.cursor = "pointer";
+    tr.onclick = () => inspectEquity(r.ticker);
+    tr.innerHTML = `
+      <td style="font-weight:800;color:#f8fafc;">#${String(r.rank).padStart(2, '0')}</td>
+      <td style="font-weight:800;color:#2dd4bf;">${r.ticker}</td>
+      <td>
+        <div style="font-weight:700;color:#f3f4f6;">${r.name}</div>
+        <div style="font-size:11px;color:#9ca3af;max-width:300px;overflow:hidden;text-overflow:ellipsis;">${r.role}</div>
+      </td>
+      <td><span style="font-size:11px;color:#38bdf8;font-weight:700;">${r.layer} · ${r.subsector_node}</span></td>
+      <td>${r.r0_score.toFixed(1)}</td>
+      <td>${fmtDelta(r.r1_delta)}</td>
+      <td>${fmtDelta(r.r2_delta)}</td>
+      <td>${fmtDelta(r.r3_delta)}</td>
+      <td>${fmtDelta(r.r4_delta)}</td>
+      <td>${fmtDelta(r.r5_delta)}</td>
+      <td style="font-weight:800;font-size:13px;color:#5eead4;">${r.r5_score.toFixed(1)}</td>
+      <td style="font-weight:700;">$${r.price.toFixed(2)}</td>
+      <td style="font-family:monospace;font-size:11px;">
+        <span style="color:${r.ret_20d_pct >= 0 ? '#34d399' : '#fb7185'}">${r.ret_20d_pct >= 0 ? '+' : ''}${r.ret_20d_pct.toFixed(1)}%</span> /
+        <span style="color:${r.ret_60d_pct >= 0 ? '#34d399' : '#fb7185'}">${r.ret_60d_pct >= 0 ? '+' : ''}${r.ret_60d_pct.toFixed(1)}%</span>
+      </td>
+      <td style="color:${r.rsi14 > 72 ? '#fbbf24' : r.rsi14 < 34 ? '#38bdf8' : '#34d399'};font-weight:700;">${r.rsi14.toFixed(1)} <span style="color:#94a3b8;font-weight:400;">/ ${r.weekly_rsi14.toFixed(1)}</span></td>
+      <td style="font-size:11px;">${r.weinstein_stage}</td>
+      <td style="color:#93c5fd;font-family:monospace;">${r.buy_zone}</td>
+      <td style="color:#fb7185;font-family:monospace;">$${r.stop_loss.toFixed(2)}</td>
+      <td style="color:#34d399;font-family:monospace;">$${r.target_12m.toFixed(2)} <span style="font-size:10px;">(${r.upside_12m_pct >= 0 ? '+' : ''}${r.upside_12m_pct.toFixed(1)}%)</span></td>
+      <td style="font-weight:700;color:${r.reward_risk >= 2.0 ? '#34d399' : '#cbd5e1'};">${r.reward_risk.toFixed(2)}x</td>
+      <td style="font-weight:800;color:${r.kelly_weight_pct > 0 ? '#34d399' : '#64748b'};">${r.kelly_weight_pct.toFixed(2)}%</td>
+      <td><span class="${badgeClass(r.final_action)}">${r.final_action}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Interactive Canvas Graph Definition (8 Ecosystem Nodes + Agencies + Healthcare + Macro + Privates)
+const GRAPH_NODES = [
+  { id: "ENERGY", label: "ENERGY (Majors & OFS Roll-Up)", x: 250, y: 190, r: 25, color: "#14b8a6", group: "L1 Core Energy Node", tickers: ["XOM","CVX","SLB","HAL","BKR"], desc: "Integrated Supermajors & Oilfield/LNG Turbomachinery Services ($2.45T revenue pool). Sub-$38/bbl Permian/Guyana cost curve + $35.4B BKR IET backlog." },
+  { id: "OIL_UPSTREAM", label: "OIL_UPSTREAM (Permian & Marcellus E&P)", x: 230, y: 345, r: 23, color: "#14b8a6", group: "L1/L2 Upstream Node", tickers: ["COP","EOG","OXY","EQT","AR"], desc: "Shale & LNG Feedgas Upstream Producers ($980B pool). Led by net-cash EOG ($35/bbl breakeven) and vertically integrated Appalachian gas champion EQT (MVP pipeline)." },
+  { id: "MIDSTREAM", label: "MIDSTREAM (Gas Pipelines, NGLs & LNG)", x: 495, y: 270, r: 28, color: "#14b8a6", group: "L2 Tollbooth Node", tickers: ["WMB","KMI","LNG","EPD","ET","OKE","TRGP"], desc: "Irreplaceable FERC Section 7 interstate gas pipelines (WMB Transco, KMI SNG/TGP), Mont Belvieu NGL fractionators (TRGP, EPD, ET, OKE), and 95% contracted US LNG export leader Cheniere (LNG)." },
+  { id: "OIL_REFINERS", label: "OIL_REFINERS (PADD 3 Refining & RD)", x: 255, y: 495, r: 21, color: "#14b8a6", group: "L3 Downstream Node", tickers: ["MPC","VLO","PSX"], desc: "High-complexity Gulf Coast & Midwest refiners (MPC, VLO, PSX) supplying global distillates, jet fuel, renewable diesel/SAF (Sec 45Z), and pharmaceutical BTX precursors." },
+  { id: "GRID_EQUIPMENT", label: "GRID_EQUIPMENT (Turbines, Transformers & EPC)", x: 755, y: 195, r: 27, color: "#14b8a6", group: "L4 Physical Bottleneck Node", tickers: ["GEV","ETN","PWR"], desc: "The #1 physical bottleneck of the AI Supercycle: GEV ($150B backlog, H-class turbines & 500kV LPTs), PWR ($35.8B backlog, 68k linemen + Cupertino Electric), and ETN ($19.6B switchgear/UPS backlog)." },
+  { id: "CLEAN_ENERGY", label: "CLEAN_ENERGY (Domestic Solar & BTM SOFC)", x: 785, y: 355, r: 22, color: "#14b8a6", group: "L5 Clean Power Node", tickers: ["FSLR","NXT","BE","ENPH"], desc: "IRA Sec 45X + 271% AD/CVD tariff-shielded utility solar (FSLR CdTe, NXT trackers) and 90-day time-to-power behind-the-meter Solid-Oxide Fuel Cells (BE 1.05 GW AEP deal)." },
+  { id: "UTILITIES", label: "UTILITIES (Regulated AI Rate Base)", x: 560, y: 445, r: 25, color: "#14b8a6", group: "L6A Regulated Electric Node", tickers: ["SO","NEE","DUK"], desc: "Constructive Southeast/Florida regulated electric monopolies (SO, NEE, DUK) compounding 9.8%-10.6%+ ROE rate base via 10-15 yr minimum-bill Large-Load Data Center Tariffs." },
+  { id: "WATER_INFRA", label: "WATER_INFRA (PFAS, WFI & Ultrapure Water)", x: 520, y: 575, r: 23, color: "#14b8a6", group: "L6B Water Infrastructure Node", tickers: ["XYL","AWK"], desc: "Xylem/Evoqua (XYL) leads EPA 4.0 ppt PFAS remediation, FDA 21 CFR 211.68 pharmaceutical WFI, and semiconductor UPW; American Water (AWK) compounds DSIC water rate base." },
+
+  // Macro & Geopolitical Drivers
+  { id: "AI_CAPEX_MACRO", label: "AI_DEMAND · CAPEX_CYCLE · HYPERSCALERS", x: 535, y: 65, r: 20, color: "#38bdf8", group: "Macro & AI Driver", tickers: ["GEV","PWR","ETN","WMB","KMI","EQT","BE","SO"], desc: "100 MW - 1 GW AI training/inference clusters driving 833% PJM capacity price spikes ($269.92-$329.17/MW-day), 6-10 Bcf/d incremental gas demand, and 120-210 week transformer queues." },
+  { id: "OIL_GEO_RATES", label: "OIL_SUPPLY_SHOCK · GEOPOLITICAL_RISK · FED_RATE", x: 95, y: 270, r: 19, color: "#38bdf8", group: "Macro & Geopolitical Driver", tickers: ["XOM","EOG","COP","LNG","BKR","TRGP","ENPH"], desc: "Strait of Hormuz / Middle East supply shocks widen US crude & LNG export margins, while higher 10Y Treasury yields penalize residential solar (ENPH) and levered balance sheets (OXY)." },
+
+  // Government & Regulatory Agencies
+  { id: "FERC_DOE_NERC_PUCS", label: "FERC (1920/Sec 7) · DOE LNG · State PUCs · IRS 45X", x: 930, y: 255, r: 19, color: "#f59e0b", group: "Gov / Regulatory Gatekeeper", tickers: ["PWR","GEV","WMB","LNG","BKR","SO","FSLR"], desc: "FERC Order 1920 regional transmission & NGA Sec 7 certificates; DOE non-FTA LNG export authorizations; Georgia/Florida/NC PUCs; IRS Sec 45X/45Q/45U credits." },
+
+  // Healthcare Policy & Life Sciences Node
+  { id: "HEALTHCARE_EPA_FDA_CMS", label: "EPA 4.0 ppt PFAS · FDA 21 CFR 211.68 WFI · CMS 482.41", x: 865, y: 525, r: 20, color: "#f43f5e", group: "Healthcare & Environmental Policy", tickers: ["XYL","AWK","ETN","BE","SO","EPD","TRGP","XOM"], desc: "EPA 4.0 ppt PFOA/PFOS rule preventing cancer/renal disease; FDA cGMP Water for Injection (GLP-1/biologics) & AAMI ST108 hospital sterile water (XYL); CMS 42 CFR 482.41 hospital power (ETN, BE)." },
+
+  // Private Unicorns Node
+  { id: "PRIVATE_UNICORNS", label: "8 Private Unicorns (Fervo, Commonwealth LNG, Grid United, Gradiant)", x: 145, y: 90, r: 18, color: "#a855f7", group: "Private Challengers", tickers: ["BKR","SLB","PWR","GEV","WMB","XYL"], desc: "Fervo Energy ($1.8B EGS), Commonwealth LNG ($4.5B modular 9.5 MTPA), Grid United ($1.6B HVDC), LineVision (DLR), VEIR (HTS lines), Koloma (white H2), Gradiant ($1.2B UPW & ForeverOne PFAS)." }
+];
+
+const GRAPH_EDGES = [
+  { from: "AI_CAPEX_MACRO", to: "GRID_EQUIPMENT", weight: "+0.36 / +0.34", label: "Hyperscale substation, H-class turbine & 500kV EPC backlog" },
+  { from: "AI_CAPEX_MACRO", to: "MIDSTREAM", weight: "+0.28", label: "6-10 Bcf/d incremental AI baseload natural gas demand" },
+  { from: "AI_CAPEX_MACRO", to: "UTILITIES", weight: "+0.27", label: "Large-load data center tariffs & 8-9% load growth (SO, NEE, DUK)" },
+  { from: "AI_CAPEX_MACRO", to: "CLEAN_ENERGY", weight: "+0.24", label: "90-day time-to-power SOFC (BE) & 24/7 solar PPAs (FSLR, NXT)" },
+  { from: "AI_CAPEX_MACRO", to: "WATER_INFRA", weight: "+0.21", label: "Liquid-cooling data center water & semiconductor fab UPW (XYL, AWK)" },
+  { from: "OIL_GEO_RATES", to: "OIL_UPSTREAM", weight: "+0.35", label: "Supply shock widens margin above <$38/bbl Permian/Guyana breakevens" },
+  { from: "OIL_GEO_RATES", to: "MIDSTREAM", weight: "+0.31", label: "European/Asian energy security locks in 20-yr US LNG SPAs (LNG)" },
+  { from: "OIL_GEO_RATES", to: "CLEAN_ENERGY", weight: "-0.26", label: "High interest rates & NEM 3.0 squeeze residential solar (ENPH)" },
+  { from: "OIL_UPSTREAM", to: "ENERGY", weight: "+0.32", label: "Upstream cash flow & LNG turbomachinery orders (XOM, EOG, BKR)" },
+  { from: "OIL_UPSTREAM", to: "MIDSTREAM", weight: "+0.32", label: "Permian associated gas & NGL volume growth (TRGP, EPD, ET, OKE)" },
+  { from: "OIL_UPSTREAM", to: "OIL_REFINERS", weight: "+0.24", label: "Domestic Permian/WCS crude differentials feed PADD 3 refiners" },
+  { from: "MIDSTREAM", to: "UTILITIES", weight: "+0.29", label: "Firm interstate pipeline delivery (WMB Transco, KMI SNG) feeds CCGTs" },
+  { from: "MIDSTREAM", to: "GRID_EQUIPMENT", weight: "+0.28", label: "LNG train & compressor electrification orders (BKR, GEV, PWR)" },
+  { from: "GRID_EQUIPMENT", to: "UTILITIES", weight: "+0.33", label: "500kV transformer & EPC delivery converts capex into rate base" },
+  { from: "GRID_EQUIPMENT", to: "CLEAN_ENERGY", weight: "+0.27", label: "Substation upgrades unblock solar interconnection queues" },
+  { from: "FERC_DOE_NERC_PUCS", to: "GRID_EQUIPMENT", weight: "+0.34", label: "FERC Order 1920 20-yr transmission planning & NERC CIP-014" },
+  { from: "FERC_DOE_NERC_PUCS", to: "MIDSTREAM", weight: "+0.31", label: "FERC Sec 7 pipeline moat & DOE non-FTA LNG export permits" },
+  { from: "FERC_DOE_NERC_PUCS", to: "CLEAN_ENERGY", weight: "+0.28", label: "IRA Sec 45X domestic manufacturing credits & 271% AD/CVD shield" },
+  { from: "HEALTHCARE_EPA_FDA_CMS", to: "WATER_INFRA", weight: "+0.35", label: "EPA 4.0 ppt PFAS rule, FDA 21 CFR 211.68 WFI & AAMI ST108 (XYL, AWK)" },
+  { from: "HEALTHCARE_EPA_FDA_CMS", to: "GRID_EQUIPMENT", weight: "+0.22", label: "CMS 42 CFR 482.41 & NFPA 99 hospital Type 1 ATS/UPS power (ETN)" },
+  { from: "HEALTHCARE_EPA_FDA_CMS", to: "UTILITIES", weight: "+0.18", label: "Priority hospital feeder restoration & GLP-1 megafactory substations" },
+  { from: "PRIVATE_UNICORNS", to: "ENERGY", weight: "+0.20", label: "Fervo EGS & Commonwealth LNG drive BKR/SLB drilling & turbine orders" },
+  { from: "PRIVATE_UNICORNS", to: "GRID_EQUIPMENT", weight: "+0.22", label: "Grid United HVDC & VEIR HTS partner with PWR & GEV" }
+];
+
+const SCENARIOS = {
+  baseline: {
+    title: "Baseline Equilibrium (200-Path Monte Carlo Ready)",
+    desc: "Click any node on the canvas or any of the 32 stocks in the table below to inspect its 5-Round RSI trajectory, government agency gatekeepers, healthcare policy hooks, and Weinstein technical entry/stop levels.",
+    shocks: {}
+  },
+  ENU_R1: {
+    title: "ENU_R1: AI Power Supercycle, Transformer Shortage & DOE LNG Unfreeze (Regime A)",
+    desc: "200-Path Monte Carlo Output: UTILITIES +6.236σ, GRID_EQUIPMENT +4.478σ, CLEAN_ENERGY +2.727σ, WATER_INFRA +1.952σ, MIDSTREAM +1.644σ, ENERGY +0.150σ. Triggered by AI_DEMAND (+1.5σ) & CAPEX_CYCLE (+1.2σ) colliding with 120-210 week transformer queues and $329.17/MW-day PJM auction caps.",
+    shocks: { "GRID_EQUIPMENT": "+4.48σ", "UTILITIES": "+6.24σ", "CLEAN_ENERGY": "+2.73σ", "WATER_INFRA": "+1.95σ", "MIDSTREAM": "+1.64σ", "ENERGY": "+0.15σ" }
+  },
+  ENU_R2: {
+    title: "ENU_R2: Strait of Hormuz Supply Shock & US LNG Export Windfall (Regime B)",
+    desc: "200-Path Monte Carlo + ENU_R2 Output: OIL_UPSTREAM +0.925σ, ENERGY +0.871σ, MIDSTREAM +0.554σ, OIL_REFINERS +0.213σ, WATER_INFRA +0.364σ. Global crude/LNG spikes reward sub-$38/bbl US producers (EOG, XOM, COP, EQT) and US Gulf Coast LNG/NGL tollbooths (LNG, BKR, TRGP, EPD).",
+    shocks: { "OIL_UPSTREAM": "+0.93σ", "ENERGY": "+0.87σ", "MIDSTREAM": "+0.55σ", "OIL_REFINERS": "+0.21σ", "WATER_INFRA": "+0.36σ" }
+  },
+  ENU_R3: {
+    title: "ENU_R3: Higher-for-Longer 10Y Yield (>4.75%) & CPUC NEM 3.0 Freeze (Regime C)",
+    desc: "200-Path Monte Carlo Output: UTILITIES -2.381σ, CLEAN_ENERGY -1.447σ, WATER_INFRA -1.081σ, GRID_EQUIPMENT -0.895σ, MIDSTREAM -0.630σ. High financing rates crush residential solar (ENPH) and compress rate-sensitive utility P/Es, while net-cash GEV/EOG/FSLR and fee-based WMB/LNG outperform.",
+    shocks: { "CLEAN_ENERGY": "-1.45σ (ENPH)", "UTILITIES": "-2.38σ", "WATER_INFRA": "-1.08σ", "MIDSTREAM": "-0.63σ" }
+  },
+  ENU_R4: {
+    title: "ENU_R4: EPA 4.0 ppt PFAS Mandate + FDA WFI & Semiconductor UPW Boom (Regime D)",
+    desc: "200-Path Monte Carlo Output: UTILITIES +4.615σ, GRID_EQUIPMENT +3.447σ, CLEAN_ENERGY +1.990σ, WATER_INFRA +1.393σ (+ENU_R4 +0.85σ), MIDSTREAM +1.230σ. EPA 4.0 ppt PFOA/PFOS compliance + FDA 21 CFR 211.68 GLP-1 WFI loops + AAMI ST108 hospital sterile water drive multi-year growth for XYL (#10) and AWK (#24).",
+    shocks: { "WATER_INFRA": "+2.24σ (XYL/AWK)", "HEALTHCARE_EPA_FDA_CMS": "+1.35σ", "GRID_EQUIPMENT": "+3.45σ", "MIDSTREAM": "+1.23σ" }
+  },
+  ENU_R5: {
+    title: "ENU_R5: Permian Associated Gas Bottleneck & Waha Negative-Basis Blowout",
+    desc: "Trigger: OIL_UPSTREAM >= +1.0σ & MIDSTREAM takeaway tight. Waha Hub natural gas basis collapses toward zero/negative, handing massive gathering, fractionation, and pipeline marketing spreads to TRGP (#9), EPD (#15), ET (#16), KMI (#8), and OKE (#20).",
+    shocks: { "MIDSTREAM": "+1.40σ (TRGP/EPD/ET)", "OIL_REFINERS": "+0.45σ", "OIL_UPSTREAM": "-0.30σ (Unhedged Gas)" }
+  }
+};
+
+let selectedNode = GRAPH_NODES[4]; // Default to GRID_EQUIPMENT (#1 GEV, #2 PWR, #5 ETN)
+let currentScenario = "baseline";
+
+const canvas = document.getElementById("networkCanvas");
+const ctx = canvas.getContext("2d");
+
+function drawGraph() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const scen = SCENARIOS[currentScenario];
+
+  GRAPH_EDGES.forEach(e => {
+    const n1 = GRAPH_NODES.find(n => n.id === e.from);
+    const n2 = GRAPH_NODES.find(n => n.id === e.to);
+    if (!n1 || !n2) return;
+    const isHighlighted = selectedNode && (selectedNode.id === n1.id || selectedNode.id === n2.id);
+    ctx.beginPath();
+    ctx.moveTo(n1.x, n1.y);
+    ctx.lineTo(n2.x, n2.y);
+    ctx.strokeStyle = isHighlighted ? "#2dd4bf" : "rgba(148, 163, 184, 0.25)";
+    ctx.lineWidth = isHighlighted ? 2.4 : 1.2;
+    ctx.stroke();
+
+    if (isHighlighted) {
+      const mx = (n1.x + n2.x) / 2;
+      const my = (n1.y + n2.y) / 2;
+      ctx.fillStyle = "#5eead4";
+      ctx.font = "600 10.5px Inter, sans-serif";
+      ctx.fillText(`${e.weight}`, mx + 4, my - 4);
+    }
+  });
+
+  GRAPH_NODES.forEach(n => {
+    const isSel = selectedNode && selectedNode.id === n.id;
+    const shockLabel = scen.shocks[n.id];
+
+    if (isSel || shockLabel) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + 7, 0, Math.PI * 2);
+      ctx.fillStyle = shockLabel ? "rgba(245, 158, 11, 0.24)" : "rgba(20, 184, 166, 0.24)";
+      ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = n.color;
+    ctx.fill();
+    ctx.lineWidth = isSel ? 3 : 1.5;
+    ctx.strokeStyle = isSel ? "#ffffff" : "#0b0f17";
+    ctx.stroke();
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = "700 11.5px Inter, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(n.label, n.x, n.y + n.r + 15);
+
+    if (shockLabel) {
+      ctx.fillStyle = "#fde047";
+      ctx.font = "800 11px monospace";
+      ctx.fillText(shockLabel, n.x, n.y - n.r - 8);
+    }
+  });
+}
+
+function renderInspectorNode(node) {
+  const scen = SCENARIOS[currentScenario];
+  const nodeStocks = EQUITIES.filter(e => node.tickers.includes(e.ticker));
+  const edges = GRAPH_EDGES.filter(e => e.from === node.id || e.to === node.id);
+
+  let html = `
+    <span class="node-tag" style="background:${node.color}22;color:${node.color};border:1px solid ${node.color}66;">${node.group}</span>
+    <h3 style="font-size:16px;font-weight:800;color:#f8fafc;margin-bottom:6px;">${node.label}</h3>
+    <p style="font-size:12.5px;color:#cbd5e1;margin-bottom:12px;">${node.desc}</p>
+  `;
+
+  if (currentScenario !== "baseline") {
+    html += `
+      <div class="prop-row" style="border-color:#f59e0b;background:rgba(245,158,11,0.1);margin-bottom:12px;">
+        <div style="font-weight:700;color:#fbbf24;">${scen.title}</div>
+        <div style="color:#e2e8f0;margin-top:4px;">${scen.desc}</div>
+      </div>
+    `;
+  }
+
+  html += `<div style="font-size:11.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:8px;">Connected E1 Causal Edges (${edges.length})</div><div class="prop-list">`;
+  edges.forEach(e => {
+    html += `<div class="prop-row"><strong>${e.from} → ${e.to}</strong> <span style="color:#2dd4bf;font-family:monospace;">(${e.weight})</span><br/><span style="color:#9ca3af;">${e.label}</span></div>`;
+  });
+  html += `</div>`;
+
+  html += `<div style="font-size:11.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:14px;">Mapped Public Equities (Click to Inspect 5-Round RSI)</div><div class="prop-list">`;
+  nodeStocks.forEach(s => {
+    html += `
+      <div class="prop-row" style="cursor:pointer;" onclick="inspectEquity('${s.ticker}')">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <strong>#${s.rank} ${s.ticker} — ${s.name}</strong>
+          <span class="${badgeClass(s.final_action)}">${s.r5_score.toFixed(1)} (${s.final_action})</span>
+        </div>
+        <div style="color:#9ca3af;font-size:11px;margin-top:3px;">Price: $${s.price.toFixed(2)} | RSI-14: ${s.rsi14.toFixed(1)} | Buy: ${s.buy_zone} | Kelly: ${s.kelly_weight_pct.toFixed(2)}%</div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  document.getElementById("inspectorPanel").innerHTML = html;
+}
+
+function inspectEquity(ticker) {
+  const s = EQUITIES.find(x => x.ticker === ticker);
+  if (!s) return;
+  document.getElementById("inspectorPanel").innerHTML = `
+    <span class="node-tag" style="background:rgba(20,184,166,0.18);color:#2dd4bf;border:1px solid #14b8a6;">${s.layer} · ${s.subsector_node}</span>
+    <h3 style="font-size:17px;font-weight:800;color:#f8fafc;">#${s.rank} ${s.ticker} — ${s.name}</h3>
+    <p style="font-size:12px;color:#93c5fd;margin:4px 0 10px;">${s.role}</p>
+    <div style="margin-bottom:10px;"><span class="${badgeClass(s.final_action)}">${s.final_action} (Kelly Weight: ${s.kelly_weight_pct.toFixed(2)}% · ${s.horizon_tag})</span></div>
+    <div class="prop-list">
+      <div class="prop-row">
+        <strong>5-Round RSI Score Trajectory (Total Upgrade: ${s.total_rsi_upgrade >= 0 ? '+' + s.total_rsi_upgrade.toFixed(1) : s.total_rsi_upgrade.toFixed(1)})</strong><br/>
+        R0 Baseline: <b>${s.r0_score.toFixed(1)}</b> →
+        R1 Cost/Debt: <b>${s.r1_score.toFixed(1)}</b> (${s.r1_delta >= 0 ? '+' : ''}${s.r1_delta}) →
+        R2 FERC/Backlog: <b>${s.r2_score.toFixed(1)}</b> (${s.r2_delta >= 0 ? '+' : ''}${s.r2_delta}) →
+        R3 AI Power: <b>${s.r3_score.toFixed(1)}</b> (${s.r3_delta >= 0 ? '+' : ''}${s.r3_delta}) →
+        R4 Gov/Health: <b>${s.r4_score.toFixed(1)}</b> (${s.r4_delta >= 0 ? '+' : ''}${s.r4_delta}) →
+        <span style="color:#2dd4bf;font-weight:800;">R5 Final: ${s.r5_score.toFixed(1)}</span>
+      </div>
+      <div class="prop-row">
+        <strong>Forensic Fundamentals &amp; Physical Moat</strong><br/>
+        Mkt Cap: <b>$${s.market_cap_b}B</b> | Rev Growth: <b>${s.rev_growth_pct}%</b> | FCF Margin: <b>${s.fcf_margin_pct}%</b> | ROIC: <b>${s.roic_pct}%</b><br/>
+        Net Debt/EBITDA: <b>${s.net_debt_ebitda}x</b> | Div Yield: <b>${s.div_yield_pct}%</b> | Backlog: <b>$${s.backlog_b}B</b> | Fee/Rate-Base: <b>${s.fee_or_ratebase_pct}%</b><br/>
+        <span style="color:#cbd5e1;">Moat: ${s.primary_moat}</span>
+      </div>
+      <div class="prop-row">
+        <strong>Live Technical Setup &amp; Execution Levels (${s.data_source})</strong><br/>
+        Price: <b>$${s.price.toFixed(2)}</b> | RSI-14: <b>${s.rsi14.toFixed(1)}</b> | Weekly RSI: <b>${s.weekly_rsi14.toFixed(1)}</b> | Connors RSI(2): <b>${s.connors_rsi2.toFixed(1)}</b><br/>
+        Stage: <b>${s.weinstein_stage}</b> | SMA50: $${s.sma50.toFixed(2)} | SMA200: $${s.sma200.toFixed(2)} | ATR-14: $${s.atr14.toFixed(2)}<br/>
+        <span style="color:#93c5fd;">Buy Zone: <b>${s.buy_zone}</b></span> | <span style="color:#fb7185;">Stop: <b>$${s.stop_loss.toFixed(2)}</b></span> | <span style="color:#34d399;">12M Target: <b>$${s.target_12m.toFixed(2)} (${s.reward_risk.toFixed(2)}x R:R)</b></span>
+      </div>
+      <div class="prop-row">
+        <strong>Gov Agencies:</strong> ${(s.key_agencies || []).join(' · ')}<br/>
+        <strong>Healthcare Policy Hooks:</strong> ${(s.healthcare_hooks || []).join(' · ')}<br/>
+        <strong style="color:#34d399;">Bull Case:</strong> ${s.bull_case}<br/>
+        <strong style="color:#fbbf24;">Devil's Advocate Bear Case:</strong> ${s.bear_case}
+      </div>
+    </div>
+  `;
+}
+
+function runScenario(scenKey, btn) {
+  currentScenario = scenKey;
+  document.getElementById("activeScenarioBadge").textContent = scenKey;
+  btn.parentElement.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  drawGraph();
+  renderInspectorNode(selectedNode);
+}
+
+canvas.addEventListener("click", e => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+  for (const n of GRAPH_NODES) {
+    const dx = mx - n.x;
+    const dy = my - n.y;
+    if (Math.sqrt(dx*dx + dy*dy) <= n.r + 8) {
+      selectedNode = n;
+      drawGraph();
+      renderInspectorNode(n);
+      break;
+    }
+  }
+});
+
+drawGraph();
+renderInspectorNode(selectedNode);
+renderTable();
+</script>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

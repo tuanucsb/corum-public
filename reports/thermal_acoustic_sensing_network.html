@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thermal, Temperature &amp; Acoustic Sensing Ecosystem — Interactive MacroGraph &amp; 5-Round RSI Matrix</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: #0f172a;
+      --panel-2: #131e36;
+      --border: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --cyan: #38bdf8;
+      --violet: #a855f7;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --indigo: #6366f1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      background: linear-gradient(135deg, #090f1f 0%, #111c38 50%, #1f1235 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .title-block h1 {
+      font-size: 1.32rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #f97316, #38bdf8, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .title-block p {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .kpi-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .kpi-pill {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+    }
+    .kpi-pill strong { color: var(--cyan); font-size: 0.9rem; }
+    .toolbar {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .btn-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .btn-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
+    button {
+      background: #1e293b;
+      color: var(--text);
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 6px 11px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    button:hover, button.active {
+      background: #2563eb;
+      border-color: #60a5fa;
+      color: #fff;
+    }
+    button.scen-btn {
+      background: #1e1b4b;
+      border-color: #4f46e5;
+    }
+    button.scen-btn:hover, button.scen-btn.active {
+      background: #6d28d9;
+      border-color: #c084fc;
+    }
+    .graph-workspace {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      height: 680px;
+      border-bottom: 1px solid var(--border);
+    }
+    #cy {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #0f172a 0%, #060913 100%);
+    }
+    .sidebar {
+      background: var(--panel);
+      border-left: 1px solid var(--border);
+      padding: 18px;
+      overflow-y: auto;
+    }
+    .sidebar h2 {
+      font-size: 1rem;
+      color: var(--cyan);
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .meta-card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+    }
+    .meta-card h3 { font-size: 0.92rem; color: #f8fafc; margin-bottom: 4px; }
+    .meta-card .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: #1e293b;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+    .edge-list { list-style: none; margin-top: 8px; }
+    .edge-list li {
+      padding: 5px 0;
+      border-bottom: 1px dashed #1e293b;
+      font-size: 0.78rem;
+    }
+    .section-container {
+      max-width: 1660px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    .section-header {
+      margin-bottom: 20px;
+    }
+    .section-header h2 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+    .section-header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+    .rounds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .round-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-top: 3px solid #f97316;
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .round-card h3 { font-size: 0.9rem; color: #fb923c; margin-bottom: 4px; }
+    .round-card h4 { font-size: 0.82rem; color: #f8fafc; margin-bottom: 6px; font-family: monospace; }
+    .round-card p { font-size: 0.78rem; color: var(--muted); }
+    .matrix-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .search-input {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      min-width: 260px;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+    th, td {
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #0b1120;
+      color: #cbd5e1;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+    }
+    tr:hover { background: rgba(30, 41, 59, 0.55); }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .tk { color: #38bdf8; font-size: 0.9rem; }
+    .sub { color: var(--muted); font-size: 0.72rem; }
+    .r5-val { font-size: 0.92rem; color: #f8fafc; }
+    .pos { color: #34d399; font-weight: 600; }
+    .neg { color: #fb7185; font-weight: 600; }
+    .verdict-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.71rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .badge-core { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid #10b981; }
+    .badge-tactical { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid #0284c7; }
+    .badge-watch { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid #d97706; }
+    .badge-avoid { background: rgba(244, 63, 94, 0.18); color: #fb7185; border: 1px solid #e11d48; }
+    .layer-pill {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .layer-L1 { background: #3b0764; color: #e9d5ff; }
+    .layer-L2 { background: #064e3b; color: #a7f3d0; }
+    .layer-L3 { background: #0c4a6e; color: #bae6fd; }
+    .layer-L4 { background: #78350f; color: #fde68a; }
+    .layer-L5 { background: #881337; color: #fecdd3; }
+    .notes-cell { min-width: 300px; max-width: 410px; font-size: 0.74rem; color: #cbd5e1; }
+    .stage-txt { font-size: 0.73rem; color: #cbd5e1; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="title-block">
+    <h1>THERMAL, TEMPERATURE &amp; ACOUSTIC SENSING ECOSYSTEM MACROGRAPH (ENERGY, AI DC, SEMI, MFG &amp; HEALTHCARE POLICY)</h1>
+    <p>Agentic-Bridgewater Causal Network (THERMAL_ACOUSTIC_SENSING + 5 Sub-Sectors + ThermalAcousticSystemAgent) &amp; 5-Round Hardened RSI Matrix • As of 2026-10-27</p>
+  </div>
+  <div class="kpi-strip">
+    <div class="kpi-pill">Public Universe: <strong>33 Equities</strong></div>
+    <div class="kpi-pill">Private Challengers: <strong>12 Tracked</strong></div>
+    <div class="kpi-pill">BUY NOW (Tier 1 Core): <strong>13</strong></div>
+    <div class="kpi-pill">SCALE IN PULLBACK: <strong>1</strong></div>
+    <div class="kpi-pill">Tier 2 / Watch: <strong>7</strong></div>
+    <div class="kpi-pill">AVOID / REDUCE: <strong>12</strong></div>
+    <div class="kpi-pill">Agent Rules: <strong>TAS_R1 .. TAS_R4</strong></div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="btn-group">
+    <span class="btn-label">Layer Filter:</span>
+    <button class="active" onclick="filterGraphLayer('ALL', this)">All Layers (29 Nodes)</button>
+    <button onclick="filterGraphLayer('L1', this)">L1 Semi Wafer Thermal/Acoustic</button>
+    <button onclick="filterGraphLayer('L2', this)">L2 AI Data-Center Liquid/Power</button>
+    <button onclick="filterGraphLayer('L3', this)">L3 Ultrasonic NDT &amp; IR</button>
+    <button onclick="filterGraphLayer('L4', this)">L4 Energy, Grid &amp; Fiber DAS</button>
+    <button onclick="filterGraphLayer('L5', this)">L5 Bio Calorimetry &amp; Cold-Chain</button>
+    <button onclick="filterGraphLayer('MACRO', this)">Gov &amp; Healthcare Policy</button>
+  </div>
+  <div class="btn-group">
+    <span class="btn-label">Shock Simulator:</span>
+    <button class="scen-btn" onclick="runScenario('ai_cdu_liquid_boom', this)">+1σ AI 120kW+ CDU &amp; HBM4 (TAS_R1/R2)</button>
+    <button class="scen-btn" onclick="runScenario('grid_pipeline_mandate', this)">+1σ FERC 881, NFPA 70B &amp; PHMSA (TAS_R3)</button>
+    <button class="scen-btn" onclick="runScenario('fda_glp1_sepsis_wave', this)">+1σ FDA Cold-Chain &amp; CMS Sepsis (TAS_R4)</button>
+    <button class="scen-btn" onclick="runScenario('pmi_capex_pause_stress', this)">+1σ Capex Pause Red-Team Stress</button>
+    <button onclick="resetScenario()">Reset View</button>
+    <a href="#hardened-thermal-acoustic-recommendation-matrix" style="text-decoration:none;"><button style="background:#059669;border-color:#34d399;color:#fff;">Jump to 5-Round RSI Matrix ↓</button></a>
+  </div>
+</div>
+
+<div class="graph-workspace">
+  <div id="cy"></div>
+  <div class="sidebar" id="inspector">
+    <h2>Thermal &amp; Acoustic Node &amp; Causal Inspector</h2>
+    <div id="scenario-banner" class="meta-card" style="display:none; border-color:#f97316;">
+      <h3 id="scen-title" style="color:#fed7aa;"></h3>
+      <p id="scen-desc" style="font-size:0.78rem; color:#cbd5e1; margin-top:4px;"></p>
+    </div>
+    <div class="meta-card" id="node-details">
+      <span class="tag" id="nd-group">Core Bridgewater Hub</span>
+      <h3 id="nd-title">THERMAL_ACOUSTIC_SENSING (Ecosystem Hub)</h3>
+      <p id="nd-desc" style="margin-top:6px; color:#cbd5e1;">Click any node in the interactive graph to inspect its wave-physics transducer mechanism, KPI metrics, government &amp; healthcare policy gatekeepers, and upstream/downstream causal elasticities.</p>
+      <div style="margin-top:10px; padding-top:8px; border-top:1px solid #1e293b;">
+        <div><strong>Primary KPI:</strong> <span id="nd-kpi" style="color:#38bdf8;">33 Public Equities | 28 E1 Structural Edges</span></div>
+        <div style="margin-top:4px;"><strong>Gatekeepers:</strong> <span id="nd-gate" style="color:#a7f3d0;">NIST, FERC 881, PHMSA, NFPA 70B/855, FDA, USP, CMS</span></div>
+      </div>
+    </div>
+    <div class="meta-card">
+      <h3>Connected Causal &amp; Supply-Chain Edges</h3>
+      <ul class="edge-list" id="nd-edges">
+        <li>Select a node to inspect all incoming and outgoing elasticities.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<section class="section-container" id="hardened-thermal-acoustic-recommendation-matrix">
+  <div class="section-header">
+    <h2>Hardened 5-Round Recursive Self-Improvement (RSI) Thermal &amp; Acoustic Sensing Recommendation Matrix</h2>
+    <p>Live multi-timeframe technicals (Wilder Daily RSI-14, Fast RSI-7, ConnorsRSI, Weekly RSI-14, Weinstein Stage, ATR Buy Zones) fused with 5 sequential Critic -&gt; Sector Sub-Skill -> Re-Analysis -> Upgrade rounds across all 33 public equities.</p>
+  </div>
+
+  <div class="rounds-grid">
+    <div class="round-card">
+      <h3>ROUND 1 CRITIC &amp; SUB-SKILL</h3>
+      <h4>R1_SubSkill_UnitEconomics</h4>
+      <p>Audits SBC-Adjusted Rule of 40, gross margins, and recurring calibration/consumable attach while penalizing &gt;2.0x Net Debt/EBITDA roll-ups (MKSI 4.1x, CYRX 3.8x) and negative FCF burn traps (SENS -85%). Vaults KLAC, WAT, MTD, FTV, and EMR.</p>
+    </div>
+    <div class="round-card">
+      <h3>ROUND 2 CRITIC &amp; SUB-SKILL</h3>
+      <h4>R2_SubSkill_PhysicsMoat</h4>
+      <p>Separates proprietary wave-physics transducers (ONTO picosecond laser acoustics, TDY FLIR cooled InSb/VOx, FTV Fluke 64-MEMS acoustic cameras, EMR Rosemount X-well heat-flux, WAT Nano-DSC) from commodity thermistor/sheet-metal wrappers (ICHR, MOD).</p>
+    </div>
+    <div class="round-card">
+      <h3>ROUND 3 CRITIC &amp; SUB-SKILL</h3>
+      <h4>R3_SubSkill_AISupercyclePull</h4>
+      <p>Quantifies direct revenue pull from 120-140kW+ NVIDIA GB200/Rubin liquid-cooling CDUs &amp; on-die Tj sensing (VRT, APH, MPWR, ETN, NVT) and HBM3e/4 wafer metrology (ONTO, CAMT, KLAC) while penalizing sluggish factory/auto PMI exposure (ROK).</p>
+    </div>
+    <div class="round-card">
+      <h3>ROUND 4 CRITIC &amp; SUB-SKILL</h3>
+      <h4>R4_SubSkill_GovHealthcareMandate</h4>
+      <p>Scores legally non-deferrable compliance demand from FERC Order 881 DLR, PHMSA Pipeline Leak Rules, NFPA 70B/855, NIST CHIPS Metrology, and FDA 21 CFR Part 11 / DSCSA / USP &lt;1079&gt;/&lt;891&gt; &amp; CMS SEP-1 sepsis rules. Propels EMR to #1 overall.</p>
+    </div>
+    <div class="round-card">
+      <h3>ROUND 5 CRITIC &amp; SUB-SKILL</h3>
+      <h4>R5_Final_Hardened_Score + Half-Kelly</h4>
+      <p>Combines a 4-Vector Devil's Advocate Pre-Mortem with live Weinstein Stage &amp; Wilder RSI gates: flags overbought Stage 2 parabolic names (ONTO RSI 86.2, KLAC 80.1, MTD 75.0) as SCALE IN ON PULLBACK and sizes Top 10 BUY NOW convictions via Half-Kelly.</p>
+    </div>
+  </div>
+
+  <div class="matrix-controls">
+    <div class="btn-group">
+      <span class="btn-label">Filter Matrix by Action Verdict:</span>
+      <button class="active" onclick="filterTable('ALL', this)">All (33)</button>
+      <button onclick="filterTable('BUY NOW (Tier 1 Core)', this)">BUY NOW Tier 1 Core (13)</button>
+      <button onclick="filterTable('SCALE IN ON PULLBACK', this)">SCALE IN ON PULLBACK (1)</button>
+      <button onclick="filterTable('BUY NOW (Tier 2 Tactical)', this)">BUY NOW Tier 2 (0)</button>
+      <button onclick="filterTable('HOLD / WATCH', this)">HOLD / WATCH (7)</button>
+      <button onclick="filterTable('AVOID / REDUCE', this)">AVOID / REDUCE (12)</button>
+    </div>
+    <input type="text" id="tk-search" class="search-input" placeholder="Search ticker, physics, agency (FDA, FERC, PHMSA, NFPA)..." oninput="searchTable()" />
+  </div>
+
+  <div class="table-wrap">
+    <table id="rsi-table">
+      <thead>
+        <tr>
+          <th>R5 Rank (R0)</th>
+          <th>Ticker / Company</th>
+          <th>Layer / Node</th>
+          <th>Price / 52W</th>
+          <th>R0 Naive</th>
+          <th>R1 (Unit)</th>
+          <th>R2 (Phys)</th>
+          <th>R3 (AI/CDU)</th>
+          <th>R4 (Gov/HC)</th>
+          <th>R5 Final (Δ)</th>
+          <th>Hardened Action Verdict</th>
+          <th>Rev Gr / GM%</th>
+          <th>Ex-SBC FCF / R40</th>
+          <th>Debt / Surv.</th>
+          <th>Daily / Wk RSI</th>
+          <th>Weinstein Stage</th>
+          <th>Buy Zone / Stop / 12M Tgt</th>
+          <th>Half-Kelly Wt</th>
+          <th>Physics Transducer Moat &amp; Government / Healthcare Policy Links</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+            <tr data-layer="L4" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#01</strong><br><span class="sub">R0: #20 (+19)</span></td>
+              <td><strong class="tk">EMR</strong><br><span class="sub">Emerson Electric Co.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SENSOR_ENERGY_GRID_FIBER_DAS</span></td>
+              <td class="num">$165.46<br><span class="sub">52W: $122-$166</span></td>
+              <td class="num">70.83</td>
+              <td class="num">75.02</td>
+              <td class="num">82.40</td>
+              <td class="num">81.91</td>
+              <td class="num">84.45</td>
+              <td class="num"><strong class="r5-val">85.08</strong><br><span class="pos">(+14.25)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+11.2%<br><span class="sub">GM 51.8%</span></td>
+              <td class="num pos">+19.4%<br><span class="sub">R40: 30.6</span></td>
+              <td class="num pos">1.6x<br><span class="sub">Surv 97/100</span></td>
+              <td class="num"><strong>63.0</strong> / 61.0<br><span class="sub">RSI7 68.8 | CRSI 87.1</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span><br><span class="sub">GrProb: 89%</span></td>
+              <td class="num">$159.40 - $164.17<br><span class="sub">Stop $137.28 | 12M $195.25</span></td>
+              <td class="num"><strong>11.8%</strong><br><span class="sub">RT 84 | Gate 96</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Heat-Flux Algorithm Surface-to-Process Pipe Thermometry (X-well), Structure-Borne Ultrasonic Acoustic Emission (708) & NI High-Speed DAQ — Rosemount X-well non-intrusive pipe temperature, Rosemount 708 wireless acoustic steam-trap/relief-valve monitors, AMS vibration & NI DAQ<br><strong>Gov &amp; Healthcare Policy:</strong> PHMSA pipeline integrity & EPA flare/steam efficiency; FDA 21 CFR Part 11 DeltaV biopharma life-sciences automation (>75% of top 20 drugs)</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#02</strong><br><span class="sub">R0: #12 (+10)</span></td>
+              <td><strong class="tk">APH</strong><br><span class="sub">Amphenol Corporation</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">SENSOR_DATACENTER_POWER_THERMAL</span></td>
+              <td class="num">$78.31<br><span class="sub">52W: $59-$90</span></td>
+              <td class="num">78.48</td>
+              <td class="num">79.60</td>
+              <td class="num">80.19</td>
+              <td class="num">83.48</td>
+              <td class="num">83.59</td>
+              <td class="num"><strong class="r5-val">83.73</strong><br><span class="pos">(+5.25)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+22.4%<br><span class="sub">GM 34.2%</span></td>
+              <td class="num pos">+18.6%<br><span class="sub">R40: 41.0</span></td>
+              <td class="num pos">1.1x<br><span class="sub">Surv 98/100</span></td>
+              <td class="num"><strong>44.3</strong> / 50.1<br><span class="sub">RSI7 46.2 | CRSI 82.9</span></td>
+              <td><span class="stage-txt">Stage 2/3 (Bullish Pullback / Consolidation)</span><br><span class="sub">GrProb: 93%</span></td>
+              <td class="num">$76.77 - $79.09<br><span class="sub">Stop $70.62 | 12M $92.41</span></td>
+              <td class="num"><strong>8.2%</strong><br><span class="sub">RT 83 | Gate 92</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Piezoelectric Ultrasonic Ceramics, NDIR Gas/Thermal Runaway, Glass-Encapsulated NTC Thermistors & Harsh-Env Fiber — Amphenol Advanced Sensors (Thermometrics NTC/RTD, Telaire IR gas, Piezo Technologies ultrasonic, Nova pressure) + AI interconnects<br><strong>Gov &amp; Healthcare Policy:</strong> UL 9540A / NFPA 855 BESS Li-ion thermal runaway gas/temp sensors; FDA CDRH medical catheter/ventilator thermal/pressure sensors; DoD MIL-DTL-38999</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#03</strong><br><span class="sub">R0: #22 (+19)</span></td>
+              <td><strong class="tk">FTV</strong><br><span class="sub">Fortive Corporation</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">SENSOR_ACOUSTIC_ULTRASONIC_NDT</span></td>
+              <td class="num">$61.33<br><span class="sub">52W: $49-$64</span></td>
+              <td class="num">70.33</td>
+              <td class="num">73.31</td>
+              <td class="num">81.50</td>
+              <td class="num">79.90</td>
+              <td class="num">81.50</td>
+              <td class="num"><strong class="r5-val">81.77</strong><br><span class="pos">(+11.44)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+6.5%<br><span class="sub">GM 59.8%</span></td>
+              <td class="num pos">+22.8%<br><span class="sub">R40: 29.3</span></td>
+              <td class="num pos">1.7x<br><span class="sub">Surv 96/100</span></td>
+              <td class="num"><strong>70.7</strong> / 59.1<br><span class="sub">RSI7 84.0 | CRSI 87.9</span></td>
+              <td><span class="stage-txt">Stage 1->2 (Golden Cross Breakout)</span><br><span class="sub">GrProb: 85%</span></td>
+              <td class="num">$59.70 - $60.98<br><span class="sub">Stop $54.94 | 12M $68.69</span></td>
+              <td class="num"><strong>12.3%</strong><br><span class="sub">RT 84 | Gate 82</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> 64-MEMS-Microphone Ultrasonic SoundMap Phased Array (2–100 kHz), Non-Contact IR Pyrometry & Laser Shaft Alignment — Fluke ii900/ii910 SoundSight acoustic imagers, Fluke IR thermography, Raytek/Ircon pyrometers, Pruftechnik vibration & Landauer/ASP healthcare<br><strong>Gov &amp; Healthcare Policy:</strong> NFPA 70B & OSHA electrical/compressed-air safety; CMS/Joint Commission hospital sterilization (ASP STERRAD) & Fluke Biomedical QA</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#04</strong><br><span class="sub">R0: #29 (+25)</span></td>
+              <td><strong class="tk">AME</strong><br><span class="sub">AMETEK, Inc.</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">SENSOR_ACOUSTIC_ULTRASONIC_NDT</span></td>
+              <td class="num">$245.72<br><span class="sub">52W: $182-$261</span></td>
+              <td class="num">64.09</td>
+              <td class="num">69.50</td>
+              <td class="num">76.31</td>
+              <td class="num">77.39</td>
+              <td class="num">79.91</td>
+              <td class="num"><strong class="r5-val">81.37</strong><br><span class="pos">(+17.28)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+8.4%<br><span class="sub">GM 36.2%</span></td>
+              <td class="num pos">+21.6%<br><span class="sub">R40: 30.0</span></td>
+              <td class="num pos">1.1x<br><span class="sub">Surv 97/100</span></td>
+              <td class="num"><strong>50.0</strong> / 54.7<br><span class="sub">RSI7 50.3 | CRSI 75.7</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span><br><span class="sub">GrProb: 87%</span></td>
+              <td class="num">$237.71 - $244.00<br><span class="sub">Stop $219.14 | 12M $289.95</span></td>
+              <td class="num"><strong>10.4%</strong><br><span class="sub">RT 84 | Gate 96</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Multi-Spectrum Infrared Line Scanners, Phased-Array Ultrasonic NDT, Piezoelectric Aero-Engine Vibration & Zygo Laser Interferometry — Land Instruments (AMETEK Land) industrial IR pyrometers/thermal scanners, Creaform/Olympus NDT ultrasonic & Rauland healthcare clinical comms<br><strong>Gov &amp; Healthcare Policy:</strong> FAA/DoD turbine engine thermal/vibration monitoring; CMS hospital nurse-call & environmental telemetry (Rauland); EPA CEMS emissions</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#05</strong><br><span class="sub">R0: #05 (0)</span></td>
+              <td><strong class="tk">VRT</strong><br><span class="sub">Vertiv Holdings Co</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">SENSOR_DATACENTER_POWER_THERMAL</span></td>
+              <td class="num">$210.12<br><span class="sub">52W: $148-$380</span></td>
+              <td class="num">89.57</td>
+              <td class="num">85.87</td>
+              <td class="num">82.02</td>
+              <td class="num">88.19</td>
+              <td class="num">81.21</td>
+              <td class="num"><strong class="r5-val">81.08</strong><br><span class="neg">(-8.49)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+24.5%<br><span class="sub">GM 37.5%</span></td>
+              <td class="num pos">+16.8%<br><span class="sub">R40: 41.3</span></td>
+              <td class="num pos">1.3x<br><span class="sub">Surv 95/100</span></td>
+              <td class="num"><strong>40.0</strong> / 38.8<br><span class="sub">RSI7 45.9 | CRSI 82.3</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 94%</span></td>
+              <td class="num">$204.29 - $212.22<br><span class="sub">Stop $185.64 | 12M $235.34</span></td>
+              <td class="num"><strong>5.6%</strong><br><span class="sub">RT 78 | Gate 76</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> In-Manifold Differential Pressure/RTD Temperature/Ultrasonic Coolant Flow & Optical/Conductive Leak Sensors — Liebert liquid-cooling CDUs, rear-door heat exchangers, Geist rack thermal/flow/leak telemetry & Trellis DCIM<br><strong>Gov &amp; Healthcare Policy:</strong> DOE Coolchips / Federal Data Center Energy Efficiency Mandate; ASHRAE TC 9.9 liquid cooling standards</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#06</strong><br><span class="sub">R0: #26 (+20)</span></td>
+              <td><strong class="tk">TDY</strong><br><span class="sub">Teledyne Technologies Incorporated</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">SENSOR_ACOUSTIC_ULTRASONIC_NDT</span></td>
+              <td class="num">$650.39<br><span class="sub">52W: $483-$698</span></td>
+              <td class="num">65.41</td>
+              <td class="num">67.41</td>
+              <td class="num">78.59</td>
+              <td class="num">78.20</td>
+              <td class="num">81.06</td>
+              <td class="num"><strong class="r5-val">80.72</strong><br><span class="pos">(+15.31)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+6.8%<br><span class="sub">GM 43.6%</span></td>
+              <td class="num pos">+18.9%<br><span class="sub">R40: 25.7</span></td>
+              <td class="num pos">1.6x<br><span class="sub">Surv 97/100</span></td>
+              <td class="num"><strong>67.5</strong> / 56.7<br><span class="sub">RSI7 76.7 | CRSI 83.6</span></td>
+              <td><span class="stage-txt">Stage 1->2 (Golden Cross Breakout)</span><br><span class="sub">GrProb: 88%</span></td>
+              <td class="num">$628.85 - $645.77<br><span class="sub">Stop $594.13 | 12M $728.44</span></td>
+              <td class="num"><strong>9.9%</strong><br><span class="sub">RT 85 | Gate 82</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Vanadium Oxide (VOx) & Indium Antimonide (InSb) IR Focal Plane Arrays, 124-MEMS-Mic Acoustic Phased-Array Beamforming & Undersea Sonar — Teledyne FLIR #1 global thermal imaging (cooled InSb & uncooled VOx), Si-series acoustic leak/PD imagers & marine acoustics<br><strong>Gov &amp; Healthcare Policy:</strong> EPA OOOOb Methane Optical Gas Imaging (OGI); DoD EO/IR thermal sights & autonomous undersea acoustic arrays; FDA 510(k) elevated skin-temp screening</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#07</strong><br><span class="sub">R0: #23 (+16)</span></td>
+              <td><strong class="tk">WAT</strong><br><span class="sub">Waters Corporation</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">SENSOR_BIO_COLDCHAIN_MEDICAL</span></td>
+              <td class="num">$467.42<br><span class="sub">52W: $283-$467</span></td>
+              <td class="num">69.82</td>
+              <td class="num">75.04</td>
+              <td class="num">83.52</td>
+              <td class="num">74.75</td>
+              <td class="num">76.07</td>
+              <td class="num"><strong class="r5-val">80.02</strong><br><span class="pos">(+10.20)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+7.4%<br><span class="sub">GM 59.4%</span></td>
+              <td class="num pos">+22.8%<br><span class="sub">R40: 30.2</span></td>
+              <td class="num pos">1.3x<br><span class="sub">Surv 96/100</span></td>
+              <td class="num"><strong>69.1</strong> / 75.2<br><span class="sub">RSI7 76.8 | CRSI 86.6</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span><br><span class="sub">GrProb: 85%</span></td>
+              <td class="num">$447.86 - $463.23<br><span class="sub">Stop $346.22 | 12M $551.56</span></td>
+              <td class="num"><strong>8.0%</strong><br><span class="sub">RT 84 | Gate 90</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Sub-Microwatt Differential Scanning Calorimetry (DSC), Isothermal Titration Nano-Calorimetry (ITC) & Acoustic/Thermal Rheology — TA Instruments (#1 global Differential Scanning Calorimetry, Thermogravimetric Analysis & Microcalorimetry) + Wyatt light-scattering<br><strong>Gov &amp; Healthcare Policy:</strong> FDA CDER/CBER & USP <891> Thermal Analysis mandatory biologics protein-folding stability, GLP-1 formulation & battery separator QC</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#08</strong><br><span class="sub">R0: #02 (-6)</span></td>
+              <td><strong class="tk">MPWR</strong><br><span class="sub">Monolithic Power Systems, Inc.</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">SENSOR_DATACENTER_POWER_THERMAL</span></td>
+              <td class="num">$1,198.88<br><span class="sub">52W: $828-$1,709</span></td>
+              <td class="num">95.00</td>
+              <td class="num">91.20</td>
+              <td class="num">88.67</td>
+              <td class="num">84.71</td>
+              <td class="num">77.66</td>
+              <td class="num"><strong class="r5-val">79.86</strong><br><span class="neg">(-15.14)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+28.5%<br><span class="sub">GM 55.6%</span></td>
+              <td class="num pos">+26.4%<br><span class="sub">R40: 54.9</span></td>
+              <td class="num pos">-2.2x<br><span class="sub">Surv 96/100</span></td>
+              <td class="num"><strong>42.3</strong> / 43.6<br><span class="sub">RSI7 41.4 | CRSI 71.1</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 91%</span></td>
+              <td class="num">$1168.01 - $1210.87<br><span class="sub">Stop $1069.23 | 12M $1342.75</span></td>
+              <td class="num"><strong>5.4%</strong><br><span class="sub">RT 74 | Gate 76</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> On-Die BCDMOS Bandgap Junction Temperature & Dynamic Thermal Throttling Telemetry (PMBus/AVSBus) — Monolithic smart power stages (DrMOS) with integrated die-level junction temperature & current telemetry for AI GPUs<br><strong>Gov &amp; Healthcare Policy:</strong> DOE Server Power Efficiency & FDA Class II/III medical imaging low-noise power/thermal ICs</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#09</strong><br><span class="sub">R0: #19 (+10)</span></td>
+              <td><strong class="tk">ETN</strong><br><span class="sub">Eaton Corporation plc</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">SENSOR_DATACENTER_POWER_THERMAL</span></td>
+              <td class="num">$384.83<br><span class="sub">52W: $309-$478</span></td>
+              <td class="num">71.14</td>
+              <td class="num">70.88</td>
+              <td class="num">75.79</td>
+              <td class="num">81.80</td>
+              <td class="num">80.48</td>
+              <td class="num"><strong class="r5-val">79.53</strong><br><span class="pos">(+8.39)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+11.4%<br><span class="sub">GM 38.4%</span></td>
+              <td class="num pos">+16.2%<br><span class="sub">R40: 27.6</span></td>
+              <td class="num pos">1.4x<br><span class="sub">Surv 97/100</span></td>
+              <td class="num"><strong>41.2</strong> / 44.3<br><span class="sub">RSI7 43.3 | CRSI 78.3</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 90%</span></td>
+              <td class="num">$376.88 - $388.68<br><span class="sub">Stop $351.44 | 12M $431.01</span></td>
+              <td class="num"><strong>6.2%</strong><br><span class="sub">RT 84 | Gate 76</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Continuous Acoustic Partial-Discharge (PD) Ultrasonic/HFCT Sensors & Fiber-Optic Hot-Spot Winding Thermometry — Brightlayer continuous thermal/infrared & acoustic partial-discharge switchgear/transformer monitoring for AI data centers & grid<br><strong>Gov &amp; Healthcare Policy:</strong> FERC Order 881 & DOE GRIP grid transformer health mandates; NFPA 70B mandatory electrical thermography/acoustic PD standard</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#10</strong><br><span class="sub">R0: #27 (+17)</span></td>
+              <td><strong class="tk">HON</strong><br><span class="sub">Honeywell International Inc.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SENSOR_ENERGY_GRID_FIBER_DAS</span></td>
+              <td class="num">$217.58<br><span class="sub">52W: $193-$258</span></td>
+              <td class="num">65.34</td>
+              <td class="num">66.55</td>
+              <td class="num">73.72</td>
+              <td class="num">75.37</td>
+              <td class="num">78.84</td>
+              <td class="num"><strong class="r5-val">78.78</strong><br><span class="pos">(+13.44)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+6.4%<br><span class="sub">GM 38.1%</span></td>
+              <td class="num pos">+15.2%<br><span class="sub">R40: 21.6</span></td>
+              <td class="num pos">1.8x<br><span class="sub">Surv 96/100</span></td>
+              <td class="num"><strong>58.2</strong> / 46.5<br><span class="sub">RSI7 61.8 | CRSI 30.6</span></td>
+              <td><span class="stage-txt">Stage 1->2 (Base Breakout Transition)</span><br><span class="sub">GrProb: 83%</span></td>
+              <td class="num">$209.78 - $215.91<br><span class="sub">Stop $200.86 | 12M $243.69</span></td>
+              <td class="num"><strong>8.2%</strong><br><span class="sub">RT 84 | Gate 88</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Electrochemical/MEMS Electrolyte Vapor & Thermal Runaway Off-Gas Sensors, Hyperspectral IR Gas Cloud Imaging & Ring-Laser Gyro/Acoustics — BESS Li-ion thermal-runaway gas/temp/acoustic sensors, Honeywell Forge predictive maintenance, Rebellion IR gas imaging & Quantinuum cryo<br><strong>Gov &amp; Healthcare Policy:</strong> UL 9540A & NFPA 855 utility/EV battery thermal runaway compliance; PHMSA/EPA methane monitoring; FDA 21 CFR Part 11 TrackWise quality</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#11</strong><br><span class="sub">R0: #17 (+6)</span></td>
+              <td><strong class="tk">KEYS</strong><br><span class="sub">Keysight Technologies, Inc.</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">SENSOR_ACOUSTIC_ULTRASONIC_NDT</span></td>
+              <td class="num">$334.26<br><span class="sub">52W: $165-$390</span></td>
+              <td class="num">74.98</td>
+              <td class="num">73.05</td>
+              <td class="num">83.27</td>
+              <td class="num">78.59</td>
+              <td class="num">74.67</td>
+              <td class="num"><strong class="r5-val">78.69</strong><br><span class="pos">(+3.71)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+7.2%<br><span class="sub">GM 64.5%</span></td>
+              <td class="num pos">+20.4%<br><span class="sub">R40: 27.6</span></td>
+              <td class="num pos">0.4x<br><span class="sub">Surv 96/100</span></td>
+              <td class="num"><strong>45.2</strong> / 51.4<br><span class="sub">RSI7 46.1 | CRSI 77.5</span></td>
+              <td><span class="stage-txt">Stage 2/3 (Bullish Pullback / Consolidation)</span><br><span class="sub">GrProb: 85%</span></td>
+              <td class="num">$326.78 - $337.60<br><span class="sub">Stop $296.09 | 12M $394.43</span></td>
+              <td class="num"><strong>5.5%</strong><br><span class="sub">RT 80 | Gate 92</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Optical Time-Domain Reflectometry (OTDR), Swept-Wavelength Interferometry & Ultra-Low-Noise Dynamic Acoustic/Vibration DAQ — Optical OTDR/Brillouin/Raman fiber-optic DAS/DTS interrogators, acoustic/vibration dynamic signal analyzers & 1.6T AI thermal/signal test<br><strong>Gov &amp; Healthcare Policy:</strong> NIST CHIPS & 6G RF/optical metrology; DoD EW/acoustic signature analysis</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="HOLD / WATCH">
+              <td class="num"><strong>#12</strong><br><span class="sub">R0: #10 (-2)</span></td>
+              <td><strong class="tk">MIR</strong><br><span class="sub">Mirion Technologies, Inc.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SENSOR_ENERGY_GRID_FIBER_DAS</span></td>
+              <td class="num">$15.43<br><span class="sub">52W: $14-$30</span></td>
+              <td class="num">79.74</td>
+              <td class="num">73.15</td>
+              <td class="num">79.50</td>
+              <td class="num">80.28</td>
+              <td class="num">83.70</td>
+              <td class="num"><strong class="r5-val">78.55</strong><br><span class="neg">(-1.19)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH FOR TRIGGER</span></td>
+              <td class="num">+9.8%<br><span class="sub">GM 46.2%</span></td>
+              <td class="num pos">+11.2%<br><span class="sub">R40: 21.0</span></td>
+              <td class="num pos">2.4x<br><span class="sub">Surv 91/100</span></td>
+              <td class="num"><strong>49.8</strong> / 41.4<br><span class="sub">RSI7 53.2 | CRSI 81.8</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining Downtrend)</span><br><span class="sub">GrProb: 87%</span></td>
+              <td class="num">$14.96 - $15.58<br><span class="sub">Stop $13.90 | 12M $17.28</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 84 | Gate 52</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Radiation-Hardened Platinum RTDs, Mineral-Insulated Thermocouples, Piezoelectric Reactor Vessel Acoustic Emission & Ion Chambers — Nuclear reactor in-core temperature/RTD & neutron flux sensors, acoustic loose-parts/leak monitoring & CMS radiation oncology QA<br><strong>Gov &amp; Healthcare Policy:</strong> NRC 10 CFR Part 50 Appendix B & IEEE 323 nuclear safety qualification; DOE SMR awards; FDA CDRH & CMS radiation therapy QA calibration</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="SCALE IN ON PULLBACK">
+              <td class="num"><strong>#13</strong><br><span class="sub">R0: #24 (+11)</span></td>
+              <td><strong class="tk">MTD</strong><br><span class="sub">Mettler-Toledo International Inc.</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">SENSOR_BIO_COLDCHAIN_MEDICAL</span></td>
+              <td class="num">$1,686.44<br><span class="sub">52W: $1,023-$1,713</span></td>
+              <td class="num">69.78</td>
+              <td class="num">75.66</td>
+              <td class="num">83.80</td>
+              <td class="num">73.36</td>
+              <td class="num">74.05</td>
+              <td class="num"><strong class="r5-val">77.92</strong><br><span class="pos">(+8.14)</span></td>
+              <td><span class="verdict-badge badge-tactical">SCALE IN ON PULLBACK (Tier 1 Extended)</span></td>
+              <td class="num">+6.8%<br><span class="sub">GM 59.8%</span></td>
+              <td class="num pos">+23.4%<br><span class="sub">R40: 30.2</span></td>
+              <td class="num pos">1.7x<br><span class="sub">Surv 96/100</span></td>
+              <td class="num"><strong>75.0</strong> / 72.2<br><span class="sub">RSI7 78.8 | CRSI 71.0</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span><br><span class="sub">GrProb: 86%</span></td>
+              <td class="num">$1633.92 - $1675.18<br><span class="sub">Stop $1254.28 | 12M $1989.99</span></td>
+              <td class="num"><strong>8.5%</strong><br><span class="sub">RT 84 | Gate 78</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Multi-junction Ceramic FRS5/HSS8 Heat-Flux Calorimetry Sensors (120-thermocouple arrays) & InPro Sanitary Platinum RTD / Ultrasonic Inline Bioprocess Probes — STARe Differential Scanning Calorimetry (DSC/TGA/TMA), RC1e reaction calorimetry & InPro inline biopharma bioreactor temperature/acoustic/DO sensors<br><strong>Gov &amp; Healthcare Policy:</strong> FDA 21 CFR Part 11 (STARe & iControl software), USP <41>/<891> Thermal Analysis & cGMP Bioreactor Continuous Temperature/Reaction-Heat Process Analytical Technology (PAT)</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#14</strong><br><span class="sub">R0: #15 (+1)</span></td>
+              <td><strong class="tk">BMI</strong><br><span class="sub">Badger Meter, Inc.</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">SENSOR_ACOUSTIC_ULTRASONIC_NDT</span></td>
+              <td class="num">$149.73<br><span class="sub">52W: $111-$190</span></td>
+              <td class="num">75.25</td>
+              <td class="num">75.93</td>
+              <td class="num">78.29</td>
+              <td class="num">77.00</td>
+              <td class="num">75.31</td>
+              <td class="num"><strong class="r5-val">77.91</strong><br><span class="pos">(+2.66)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+14.6%<br><span class="sub">GM 40.2%</span></td>
+              <td class="num pos">+16.8%<br><span class="sub">R40: 31.4</span></td>
+              <td class="num pos">-1.4x<br><span class="sub">Surv 96/100</span></td>
+              <td class="num"><strong>67.5</strong> / 58.5<br><span class="sub">RSI7 70.6 | CRSI 26.3</span></td>
+              <td><span class="stage-txt">Stage 1->2 (Golden Cross Breakout)</span><br><span class="sub">GrProb: 87%</span></td>
+              <td class="num">$139.94 - $147.63<br><span class="sub">Stop $128.75 | 12M $167.70</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 86 | Gate 82</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Solid-State Transit-Time Ultrasonic Flow Transducers (zero moving parts) & Acoustic Wave Propagation Pipe Leak Correlators — E-Series solid-state ultrasonic flow meters, ORION acoustic pipe-leak detection & ATi/s::can real-time water quality/temperature telemetry<br><strong>Gov &amp; Healthcare Policy:</strong> EPA Lead and Copper Rule Improvements (LCRI), EPA NPDES water thermal discharge & IIJA $55B municipal water infrastructure</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="BUY NOW (Tier 1 Core)">
+              <td class="num"><strong>#15</strong><br><span class="sub">R0: #30 (+15)</span></td>
+              <td><strong class="tk">BKR</strong><br><span class="sub">Baker Hughes Company</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SENSOR_ENERGY_GRID_FIBER_DAS</span></td>
+              <td class="num">$57.83<br><span class="sub">52W: $44-$70</span></td>
+              <td class="num">64.02</td>
+              <td class="num">67.48</td>
+              <td class="num">74.46</td>
+              <td class="num">79.11</td>
+              <td class="num">76.81</td>
+              <td class="num"><strong class="r5-val">77.76</strong><br><span class="pos">(+13.74)</span></td>
+              <td><span class="verdict-badge badge-core">BUY NOW (Tier 1 Core)</span></td>
+              <td class="num">+10.6%<br><span class="sub">GM 21.8%</span></td>
+              <td class="num pos">+11.8%<br><span class="sub">R40: 22.4</span></td>
+              <td class="num pos">0.7x<br><span class="sub">Surv 95/100</span></td>
+              <td class="num"><strong>54.9</strong> / 48.4<br><span class="sub">RSI7 64.1 | CRSI 86.7</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 90%</span></td>
+              <td class="num">$56.96 - $58.41<br><span class="sub">Stop $54.35 | 12M $64.77</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 84 | Gate 76</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Eddy-Current Proximity Probes, Piezo Acoustic Emission, Panametrics Clamp-On Ultrasonic & Rayleigh/Raman Fiber-Optic DAS/DTS — Bently Nevada (#1 global rotating-machinery vibration/acoustic condition monitoring), Panametrics ultrasonic flow/flare & Leucipa/Silixa fiber DAS/DTS<br><strong>Gov &amp; Healthcare Policy:</strong> PHMSA 49 CFR Pipeline Leak Rule & EPA OOOOb flare ultrasonic metering; DOE CarbonSAFE CCUS fiber-optic plume seismic/DAS monitoring</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#16</strong><br><span class="sub">R0: #09 (-7)</span></td>
+              <td><strong class="tk">NVT</strong><br><span class="sub">nVent Electric plc</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">SENSOR_DATACENTER_POWER_THERMAL</span></td>
+              <td class="num">$134.52<br><span class="sub">52W: $93-$184</span></td>
+              <td class="num">79.74</td>
+              <td class="num">76.00</td>
+              <td class="num">75.57</td>
+              <td class="num">81.07</td>
+              <td class="num">75.03</td>
+              <td class="num"><strong class="r5-val">76.33</strong><br><span class="neg">(-3.41)</span></td>
+              <td><span class="verdict-badge badge-avoid">BUY ON DIP / ACCUMULATE (Tier 2)</span></td>
+              <td class="num">+18.2%<br><span class="sub">GM 39.2%</span></td>
+              <td class="num pos">+16.4%<br><span class="sub">R40: 34.6</span></td>
+              <td class="num pos">1.5x<br><span class="sub">Surv 92/100</span></td>
+              <td class="num"><strong>38.4</strong> / 42.6<br><span class="sub">RSI7 38.8 | CRSI 77.4</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 89%</span></td>
+              <td class="num">$130.32 - $135.87<br><span class="sub">Stop $116.87 | 12M $150.67</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 80 | Gate 78</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> TraceTek Conductive-Polymer Distributed Fluid Leak Sensor Cables & Multi-Point Rack Thermal/Flow Arrays — Direct-to-chip liquid cooling CDUs, manifolds, Enlogic rack PDU temperature/humidity telemetry & TraceTek leak detection cables<br><strong>Gov &amp; Healthcare Policy:</strong> ASHRAE TC 9.9 & EPA AIM Act refrigerant/coolant leak containment compliance</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#17</strong><br><span class="sub">R0: #28 (+11)</span></td>
+              <td><strong class="tk">TEL</strong><br><span class="sub">TE Connectivity plc</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">THERMAL_ACOUSTIC_SENSING</span></td>
+              <td class="num">$221.67<br><span class="sub">52W: $190-$251</span></td>
+              <td class="num">64.48</td>
+              <td class="num">64.94</td>
+              <td class="num">70.27</td>
+              <td class="num">72.81</td>
+              <td class="num">75.47</td>
+              <td class="num"><strong class="r5-val">75.91</strong><br><span class="pos">(+11.43)</span></td>
+              <td><span class="verdict-badge badge-avoid">BUY ON DIP / ACCUMULATE (Tier 2)</span></td>
+              <td class="num">+7.8%<br><span class="sub">GM 34.8%</span></td>
+              <td class="num pos">+17.5%<br><span class="sub">R40: 25.3</span></td>
+              <td class="num pos">0.9x<br><span class="sub">Surv 96/100</span></td>
+              <td class="num"><strong>60.9</strong> / 54.8<br><span class="sub">RSI7 69.2 | CRSI 88.1</span></td>
+              <td><span class="stage-txt">Stage 1->2 (Golden Cross Breakout)</span><br><span class="sub">GrProb: 84%</span></td>
+              <td class="num">$213.72 - $219.97<br><span class="sub">Stop $199.22 | 12M $248.27</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 82 | Gate 88</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Platinum Thin-Film RTDs, Piezo Film/Ceramic Accelerometers, Ultrasonic Air-in-Line Bubble & Catheter Thermodilution Sensors — Global #1 harsh-environment thermal/RTD/thermistor, piezoelectric vibration/ultrasonic & medical catheter sensor manufacturer<br><strong>Gov &amp; Healthcare Policy:</strong> FDA CDRH Class II/III intravascular catheter thermal/pressure & infusion pump ultrasonic bubble sensors; EURO 7 / FMVSS battery thermal</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#18</strong><br><span class="sub">R0: #03 (-15)</span></td>
+              <td><strong class="tk">ONTO</strong><br><span class="sub">Onto Innovation Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">SENSOR_SEMI_METROLOGY_THERMAL</span></td>
+              <td class="num">$214.79<br><span class="sub">52W: $119-$386</span></td>
+              <td class="num">93.00</td>
+              <td class="num">88.53</td>
+              <td class="num">89.52</td>
+              <td class="num">80.56</td>
+              <td class="num">69.61</td>
+              <td class="num"><strong class="r5-val">75.83</strong><br><span class="neg">(-17.17)</span></td>
+              <td><span class="verdict-badge badge-avoid">BUY ON DIP / ACCUMULATE (Tier 2)</span></td>
+              <td class="num">+21.8%<br><span class="sub">GM 54.8%</span></td>
+              <td class="num pos">+24.5%<br><span class="sub">R40: 46.3</span></td>
+              <td class="num pos">-1.8x<br><span class="sub">Surv 95/100</span></td>
+              <td class="num"><strong>35.3</strong> / 42.5<br><span class="sub">RSI7 36.0 | CRSI 78.0</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 91%</span></td>
+              <td class="num">$206.97 - $216.94<br><span class="sub">Stop $181.92 | 12M $240.57</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 74 | Gate 78</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Picosecond Ultrasonic Laser-Acoustic Opto-Acoustic Transduction & Broadband Optical Interferometry — Echo/Element picosecond laser-acoustic thin-film metrology & Dragonfly 3D HBM/CoWoS bump inspection<br><strong>Gov &amp; Healthcare Policy:</strong> NIST CHIPS Metrology Program (picosecond acoustic interconnect standards); DoD Microelectronics Commons</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#19</strong><br><span class="sub">R0: #04 (-15)</span></td>
+              <td><strong class="tk">KLAC</strong><br><span class="sub">KLA Corporation</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">SENSOR_SEMI_METROLOGY_THERMAL</span></td>
+              <td class="num">$153.24<br><span class="sub">52W: $107-$307</span></td>
+              <td class="num">91.72</td>
+              <td class="num">92.16</td>
+              <td class="num">93.15</td>
+              <td class="num">80.78</td>
+              <td class="num">69.31</td>
+              <td class="num"><strong class="r5-val">75.82</strong><br><span class="neg">(-15.90)</span></td>
+              <td><span class="verdict-badge badge-avoid">BUY ON DIP / ACCUMULATE (Tier 2)</span></td>
+              <td class="num">+16.5%<br><span class="sub">GM 61.5%</span></td>
+              <td class="num pos">+33.8%<br><span class="sub">R40: 50.3</span></td>
+              <td class="num pos">0.6x<br><span class="sub">Surv 98/100</span></td>
+              <td class="num"><strong>32.3</strong> / 41.1<br><span class="sub">RSI7 30.3 | CRSI 70.1</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 89%</span></td>
+              <td class="num">$149.28 - $154.77<br><span class="sub">Stop $136.62 | 12M $171.62</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 78 | Gate 60</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> SensArray Wireless Multi-Zone RTD/Thermistor Instrumented Silicon Wafers (±0.01°C RTP/Etch/PECVD profiling) — SensArray in-situ wireless thermal test wafers, bake-plate uniformity & wafer process control monopoly<br><strong>Gov &amp; Healthcare Policy:</strong> NIST CHIPS R&D Metrology Flagship Partner; DoD Trusted Foundry Process Control</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#20</strong><br><span class="sub">R0: #01 (-19)</span></td>
+              <td><strong class="tk">CAMT</strong><br><span class="sub">Camtek Ltd.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">SENSOR_SEMI_METROLOGY_THERMAL</span></td>
+              <td class="num">$129.18<br><span class="sub">52W: $92-$216</span></td>
+              <td class="num">95.00</td>
+              <td class="num">94.77</td>
+              <td class="num">88.45</td>
+              <td class="num">79.35</td>
+              <td class="num">66.44</td>
+              <td class="num"><strong class="r5-val">74.39</strong><br><span class="neg">(-20.61)</span></td>
+              <td><span class="verdict-badge badge-avoid">BUY ON DIP / ACCUMULATE (Tier 2)</span></td>
+              <td class="num">+32.4%<br><span class="sub">GM 51.2%</span></td>
+              <td class="num pos">+26.2%<br><span class="sub">R40: 58.6</span></td>
+              <td class="num pos">-2.1x<br><span class="sub">Surv 93/100</span></td>
+              <td class="num"><strong>42.4</strong> / 43.1<br><span class="sub">RSI7 45.0 | CRSI 80.0</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 90%</span></td>
+              <td class="num">$124.71 - $130.47<br><span class="sub">Stop $110.41 | 12M $144.68</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 73 | Gate 76</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Chromatic Confocal & Phase-Shift Interferometry for Thermally Induced Wafer/Substrate Warpage & Micro-Bumps — Eagle G5 3D optical/interferometric & thermal-warpage inspection for CoWoS, HBM3e/HBM4 & chiplets<br><strong>Gov &amp; Healthcare Policy:</strong> CHIPS Act Advanced Packaging National Institute (NAPMP) ecosystem beneficiary</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#21</strong><br><span class="sub">R0: #32 (+11)</span></td>
+              <td><strong class="tk">ROK</strong><br><span class="sub">Rockwell Automation, Inc.</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">SENSOR_ACOUSTIC_ULTRASONIC_NDT</span></td>
+              <td class="num">$440.49<br><span class="sub">52W: $345-$496</span></td>
+              <td class="num">62.95</td>
+              <td class="num">63.85</td>
+              <td class="num">70.65</td>
+              <td class="num">67.39</td>
+              <td class="num">71.22</td>
+              <td class="num"><strong class="r5-val">73.80</strong><br><span class="pos">(+10.85)</span></td>
+              <td><span class="verdict-badge badge-avoid">BUY ON DIP / ACCUMULATE (Tier 2)</span></td>
+              <td class="num">+4.2%<br><span class="sub">GM 40.5%</span></td>
+              <td class="num pos">+14.8%<br><span class="sub">R40: 19.0</span></td>
+              <td class="num pos">1.8x<br><span class="sub">Surv 92/100</span></td>
+              <td class="num"><strong>56.0</strong> / 52.8<br><span class="sub">RSI7 62.4 | CRSI 84.5</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span><br><span class="sub">GrProb: 78%</span></td>
+              <td class="num">$423.55 - $436.86<br><span class="sub">Stop $399.46 | 12M $519.78</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 80 | Gate 96</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> MEMS & Piezoelectric Tri-Axial Vibration/Acoustic Emission Enveloping & Factory PLC Closed-Loop Thermal Interlocks — Allen-Bradley Dynamix continuous vibration/acoustic condition monitoring, GuardLogix thermal safety & Fiix AI predictive maintenance<br><strong>Gov &amp; Healthcare Policy:</strong> FDA 21 CFR Part 11 / cGMP automated biopharma fill-finish batch thermal/pressure validation (FactoryTalk PharmaSuite)</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#22</strong><br><span class="sub">R0: #14 (-8)</span></td>
+              <td><strong class="tk">AEIS</strong><br><span class="sub">Advanced Energy Industries, Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">SENSOR_SEMI_METROLOGY_THERMAL</span></td>
+              <td class="num">$232.54<br><span class="sub">52W: $187-$397</span></td>
+              <td class="num">76.23</td>
+              <td class="num">71.14</td>
+              <td class="num">75.10</td>
+              <td class="num">75.19</td>
+              <td class="num">72.56</td>
+              <td class="num"><strong class="r5-val">73.64</strong><br><span class="neg">(-2.59)</span></td>
+              <td><span class="verdict-badge badge-avoid">BUY ON DIP / ACCUMULATE (Tier 2)</span></td>
+              <td class="num">+11.2%<br><span class="sub">GM 37.8%</span></td>
+              <td class="num pos">+15.8%<br><span class="sub">R40: 27.0</span></td>
+              <td class="num pos">0.4x<br><span class="sub">Surv 91/100</span></td>
+              <td class="num"><strong>38.3</strong> / 41.1<br><span class="sub">RSI7 39.7 | CRSI 77.6</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 86%</span></td>
+              <td class="num">$224.94 - $234.86<br><span class="sub">Stop $200.63 | 12M $260.44</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 77 | Gate 78</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Fluoroptic Phosphor Decay Fiber-Optic Thermometry (RF-immune in plasma etch) & Non-Contact Multi-Wavelength Pyrometry — Luxtron fluoroptic fiber-optic thermometry, Sekidenko optical pyrometers, Impac IR & AI rack power/thermal<br><strong>Gov &amp; Healthcare Policy:</strong> NIST/CHIPS plasma etch metrology; FDA CDRH medical RF/laser power & thermal sensing subsystem supplier</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#23</strong><br><span class="sub">R0: #18 (-5)</span></td>
+              <td><strong class="tk">ITRI</strong><br><span class="sub">Itron, Inc.</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">SENSOR_ACOUSTIC_ULTRASONIC_NDT</span></td>
+              <td class="num">$92.58<br><span class="sub">52W: $78-$142</span></td>
+              <td class="num">72.09</td>
+              <td class="num">68.21</td>
+              <td class="num">72.00</td>
+              <td class="num">74.00</td>
+              <td class="num">69.78</td>
+              <td class="num"><strong class="r5-val">73.33</strong><br><span class="pos">(+1.24)</span></td>
+              <td><span class="verdict-badge badge-avoid">BUY ON DIP / ACCUMULATE (Tier 2)</span></td>
+              <td class="num">+9.8%<br><span class="sub">GM 34.5%</span></td>
+              <td class="num pos">+11.4%<br><span class="sub">R40: 21.2</span></td>
+              <td class="num pos">0.5x<br><span class="sub">Surv 89/100</span></td>
+              <td class="num"><strong>62.4</strong> / 54.3<br><span class="sub">RSI7 76.9 | CRSI 86.9</span></td>
+              <td><span class="stage-txt">Stage 1->2 (Golden Cross Breakout)</span><br><span class="sub">GrProb: 83%</span></td>
+              <td class="num">$88.32 - $91.70<br><span class="sub">Stop $83.40 | 12M $103.70</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 83 | Gate 88</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Ultrasonic Gas/Water Transit-Time Metrology, Acoustic Leak Loggers & Grid-Edge High-Frequency Impedance/Thermal Analytics — Riva grid-edge distributed intelligence (transformer thermal overload & acoustic arc detection) + ultrasonic gas/water leak sensors<br><strong>Gov &amp; Healthcare Policy:</strong> DOE GRIP Smart Grid Grants ($10.5B), FERC Order 881/2222 & PHMSA Methane/Gas Distribution Safety Rules</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#24</strong><br><span class="sub">R0: #21 (-3)</span></td>
+              <td><strong class="tk">ZBRA</strong><br><span class="sub">Zebra Technologies Corporation</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">SENSOR_BIO_COLDCHAIN_MEDICAL</span></td>
+              <td class="num">$379.21<br><span class="sub">52W: $199-$393</span></td>
+              <td class="num">70.56</td>
+              <td class="num">70.86</td>
+              <td class="num">75.59</td>
+              <td class="num">67.07</td>
+              <td class="num">66.86</td>
+              <td class="num"><strong class="r5-val">72.82</strong><br><span class="pos">(+2.26)</span></td>
+              <td><span class="verdict-badge badge-avoid">BUY ON DIP / ACCUMULATE (Tier 2)</span></td>
+              <td class="num">+11.4%<br><span class="sub">GM 48.2%</span></td>
+              <td class="num pos">+16.2%<br><span class="sub">R40: 27.6</span></td>
+              <td class="num pos">1.6x<br><span class="sub">Surv 92/100</span></td>
+              <td class="num"><strong>52.8</strong> / 65.0<br><span class="sub">RSI7 46.2 | CRSI 24.8</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span><br><span class="sub">GrProb: 84%</span></td>
+              <td class="num">$364.85 - $376.13<br><span class="sub">Stop $261.66 | 12M $447.47</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 82 | Gate 96</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Diacetylene Solid-State Thermochromic Polymerization Indicators (Temptime HEATmarker) & NIST-Traceable BLE/RFID Electronic Temperature Loggers — Temptime vaccine/biologics heat-marker sensors (used on >10B vaccine vials), ZS300 Bluetooth/cloud electronic temperature sensors & DSCSA RFID<br><strong>Gov &amp; Healthcare Policy:</strong> FDA DSCSA (Drug Supply Chain Security Act), USP <1079> Good Storage & Distribution Practices & WHO PQS E006 Vaccine Vial Monitor mandate</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="HOLD / WATCH">
+              <td class="num"><strong>#25</strong><br><span class="sub">R0: #33 (+8)</span></td>
+              <td><strong class="tk">SLB</strong><br><span class="sub">SLB (Schlumberger Limited)</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SENSOR_ENERGY_GRID_FIBER_DAS</span></td>
+              <td class="num">$53.78<br><span class="sub">52W: $34-$60</span></td>
+              <td class="num">56.99</td>
+              <td class="num">59.70</td>
+              <td class="num">67.76</td>
+              <td class="num">69.80</td>
+              <td class="num">66.15</td>
+              <td class="num"><strong class="r5-val">71.34</strong><br><span class="pos">(+14.35)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH FOR TRIGGER</span></td>
+              <td class="num">+5.4%<br><span class="sub">GM 20.6%</span></td>
+              <td class="num pos">+12.6%<br><span class="sub">R40: 18.0</span></td>
+              <td class="num pos">1.1x<br><span class="sub">Surv 90/100</span></td>
+              <td class="num"><strong>62.6</strong> / 55.5<br><span class="sub">RSI7 73.7 | CRSI 81.8</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span><br><span class="sub">GrProb: 78%</span></td>
+              <td class="num">$51.63 - $53.32<br><span class="sub">Stop $47.91 | 12M $63.45</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 80 | Gate 96</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Coherent Phase-OTDR Rayleigh/Brillouin/Raman Fiber-Optic DAS/DTS (up to 300°C) & 3D Dipole Borehole Acoustic Tomography — Optiq fiber-optic Distributed Acoustic & Temperature Sensing (DAS/DTS), SonicScanner borehole acoustics, geothermal & Asetek data-center cooling<br><strong>Gov &amp; Healthcare Policy:</strong> EPA Class VI CO2 Sequestration Well Monitoring Mandate; DOE Enhanced Geothermal Systems (EGS) thermal profiling</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="HOLD / WATCH">
+              <td class="num"><strong>#26</strong><br><span class="sub">R0: #25 (-1)</span></td>
+              <td><strong class="tk">GEHC</strong><br><span class="sub">GE HealthCare Technologies Inc.</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">SENSOR_BIO_COLDCHAIN_MEDICAL</span></td>
+              <td class="num">$71.12<br><span class="sub">52W: $59-$90</span></td>
+              <td class="num">67.19</td>
+              <td class="num">67.12</td>
+              <td class="num">76.78</td>
+              <td class="num">65.34</td>
+              <td class="num">64.43</td>
+              <td class="num"><strong class="r5-val">71.10</strong><br><span class="pos">(+3.91)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH FOR TRIGGER</span></td>
+              <td class="num">+5.8%<br><span class="sub">GM 41.5%</span></td>
+              <td class="num pos">+11.4%<br><span class="sub">R40: 17.2</span></td>
+              <td class="num pos">2.1x<br><span class="sub">Surv 94/100</span></td>
+              <td class="num"><strong>61.5</strong> / 53.3<br><span class="sub">RSI7 63.6 | CRSI 31.1</span></td>
+              <td><span class="stage-txt">Stage 1->2 (Golden Cross Breakout)</span><br><span class="sub">GrProb: 84%</span></td>
+              <td class="num">$68.59 - $70.58<br><span class="sub">Stop $65.69 | 12M $79.65</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 84 | Gate 88</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Single-Crystal Piezoelectric & cMUT Diagnostic Ultrasound Acoustic Arrays (XDclear) + Proton Resonance Frequency (PRF) MR Thermometry — Verisound/LOGIQ/Vivid diagnostic ultrasound acoustic transducers (XDclear), CARESCAPE continuous hospital patient thermometry & MR thermometry<br><strong>Gov &amp; Healthcare Policy:</strong> FDA CDRH #1 AI-enabled medical device authorizations (80+ 510(k)s); CMS OPPS/IPPS ultrasound & focused-ultrasound thermal ablation codes</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="HOLD / WATCH">
+              <td class="num"><strong>#27</strong><br><span class="sub">R0: #06 (-21)</span></td>
+              <td><strong class="tk">POWI</strong><br><span class="sub">Power Integrations, Inc.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SENSOR_ENERGY_GRID_FIBER_DAS</span></td>
+              <td class="num">$49.22<br><span class="sub">52W: $30-$91</span></td>
+              <td class="num">83.20</td>
+              <td class="num">72.19</td>
+              <td class="num">75.68</td>
+              <td class="num">73.02</td>
+              <td class="num">68.63</td>
+              <td class="num"><strong class="r5-val">70.44</strong><br><span class="neg">(-12.76)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH FOR TRIGGER</span></td>
+              <td class="num">+11.5%<br><span class="sub">GM 53.8%</span></td>
+              <td class="num pos">+16.2%<br><span class="sub">R40: 27.7</span></td>
+              <td class="num pos">-2.5x<br><span class="sub">Surv 89/100</span></td>
+              <td class="num"><strong>50.6</strong> / 40.4<br><span class="sub">RSI7 61.7 | CRSI 82.9</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 80%</span></td>
+              <td class="num">$48.12 - $49.71<br><span class="sub">Stop $44.60 | 12M $55.12</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 74 | Gate 76</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> FluxLink Magneto-Inductive Galvanic-Isolated Die Temperature & Short-Circuit Acoustic/Electrical Transient Sensing — Scale-iDriver & PowiGaN high-voltage gate drivers with FluxLink galvanic-isolated thermal & desaturation sensing for grid/HVDC & AI PSUs<br><strong>Gov &amp; Healthcare Policy:</strong> DOE External Power Supply Level VI/VII efficiency rules & HVDC renewable grid tie mandates</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="HOLD / WATCH">
+              <td class="num"><strong>#28</strong><br><span class="sub">R0: #11 (-17)</span></td>
+              <td><strong class="tk">FORM</strong><br><span class="sub">FormFactor, Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">SENSOR_SEMI_METROLOGY_THERMAL</span></td>
+              <td class="num">$106.75<br><span class="sub">52W: $42-$160</span></td>
+              <td class="num">79.63</td>
+              <td class="num">81.45</td>
+              <td class="num">80.20</td>
+              <td class="num">72.06</td>
+              <td class="num">62.91</td>
+              <td class="num"><strong class="r5-val">70.31</strong><br><span class="neg">(-9.32)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH FOR TRIGGER</span></td>
+              <td class="num">+14.8%<br><span class="sub">GM 43.5%</span></td>
+              <td class="num pos">+14.5%<br><span class="sub">R40: 29.3</span></td>
+              <td class="num pos">-1.5x<br><span class="sub">Surv 90/100</span></td>
+              <td class="num"><strong>42.4</strong> / 47.0<br><span class="sub">RSI7 43.0 | CRSI 76.3</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 84%</span></td>
+              <td class="num">$102.36 - $107.82<br><span class="sub">Stop $88.31 | 12M $119.56</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 74 | Gate 76</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Micro-Electro-Mechanical Systems (MEMS) Contact Force/Thermal Probes & Sub-4K Cryogenic Lake Shore Sensors — MEMS wafer probe cards, -40°C to +200°C thermal chucks & sub-4K dilution-refrigerator cryogenic wafer test<br><strong>Gov &amp; Healthcare Policy:</strong> DARPA QBI & DOE NQISRC cryogenic quantum wafer test partner; CHIPS HBM high-temp wafer sort</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="HOLD / WATCH">
+              <td class="num"><strong>#29</strong><br><span class="sub">R0: #08 (-21)</span></td>
+              <td><strong class="tk">MOD</strong><br><span class="sub">Modine Manufacturing Company</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">SENSOR_DATACENTER_POWER_THERMAL</span></td>
+              <td class="num">$138.34<br><span class="sub">52W: $111-$323</span></td>
+              <td class="num">80.94</td>
+              <td class="num">72.85</td>
+              <td class="num">69.61</td>
+              <td class="num">74.75</td>
+              <td class="num">68.00</td>
+              <td class="num"><strong class="r5-val">68.43</strong><br><span class="neg">(-12.51)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH FOR TRIGGER</span></td>
+              <td class="num">+16.8%<br><span class="sub">GM 24.8%</span></td>
+              <td class="num pos">+11.5%<br><span class="sub">R40: 28.3</span></td>
+              <td class="num pos">0.9x<br><span class="sub">Surv 88/100</span></td>
+              <td class="num"><strong>32.5</strong> / 34.3<br><span class="sub">RSI7 32.5 | CRSI 76.0</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 85%</span></td>
+              <td class="num">$133.35 - $139.72<br><span class="sub">Stop $117.39 | 12M $154.94</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 76 | Gate 60</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Closed-Loop Chiller/CDU Differential Pressure, Refrigerant Superheat Thermal & Acoustic Noise-Abatement Sensing — Airedale AI data center chillers, smart CDUs & Optimised thermal/acoustic low-noise fan/compressor control loops<br><strong>Gov &amp; Healthcare Policy:</strong> EPA AIM Act low-GWP refrigerant transition & municipal data-center acoustic decibel zoning ordinances</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="HOLD / WATCH">
+              <td class="num"><strong>#30</strong><br><span class="sub">R0: #13 (-17)</span></td>
+              <td><strong class="tk">MKSI</strong><br><span class="sub">MKS Instruments, Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">SENSOR_SEMI_METROLOGY_THERMAL</span></td>
+              <td class="num">$211.73<br><span class="sub">52W: $134-$447</span></td>
+              <td class="num">77.76</td>
+              <td class="num">60.30</td>
+              <td class="num">71.96</td>
+              <td class="num">65.92</td>
+              <td class="num">60.10</td>
+              <td class="num"><strong class="r5-val">63.61</strong><br><span class="neg">(-14.15)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH FOR TRIGGER</span></td>
+              <td class="num">+6.4%<br><span class="sub">GM 47.2%</span></td>
+              <td class="num pos">+14.2%<br><span class="sub">R40: 20.6</span></td>
+              <td class="num neg">4.1x<br><span class="sub">Surv 81/100</span></td>
+              <td class="num"><strong>36.5</strong> / 39.2<br><span class="sub">RSI7 40.0 | CRSI 80.0</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 79%</span></td>
+              <td class="num">$205.08 - $213.84<br><span class="sub">Stop $183.83 | 12M $237.13</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 72 | Gate 78</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Inconel Diaphragm Capacitance Manometry, Acousto-Optic Modulators (AOM) & IR Wafer Pyrometry — Baratron capacitance manometers, Newport photonics/acousto-optic modulators, optical pyrometry & Atotech packaging<br><strong>Gov &amp; Healthcare Policy:</strong> CHIPS Act vacuum/thermal subsystem standard; DoD high-energy laser optics & sensors</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#31</strong><br><span class="sub">R0: #31 (0)</span></td>
+              <td><strong class="tk">CYRX</strong><br><span class="sub">Cryoport, Inc.</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">SENSOR_BIO_COLDCHAIN_MEDICAL</span></td>
+              <td class="num">$18.37<br><span class="sub">52W: $8-$19</span></td>
+              <td class="num">63.84</td>
+              <td class="num">49.98</td>
+              <td class="num">63.79</td>
+              <td class="num">48.25</td>
+              <td class="num">48.45</td>
+              <td class="num"><strong class="r5-val">56.35</strong><br><span class="neg">(-7.49)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / REDUCE</span></td>
+              <td class="num">+6.2%<br><span class="sub">GM 44.2%</span></td>
+              <td class="num neg">-8.5%<br><span class="sub">R40: -2.3</span></td>
+              <td class="num neg">2.8x<br><span class="sub">Surv 71/100</span></td>
+              <td class="num"><strong>61.2</strong> / 66.8<br><span class="sub">RSI7 64.7 | CRSI 76.6</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span><br><span class="sub">GrProb: 72%</span></td>
+              <td class="num">$17.35 - $18.15<br><span class="sub">Stop $12.40 | 12M $21.68</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 73 | Gate 96</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Cryogenic Platinum RTD (-196°C to +85°C) + Tri-Axial Accelerometer/Barometric/Cellular Telemetry (Smartpak II & Cryoportal) — Smartpak II continuous cryogenic (-150°C LN2 dry-vapor) temperature, pressure, shock & humidity telemetry for FDA Cell & Gene Therapies<br><strong>Gov &amp; Healthcare Policy:</strong> FDA CBER 21 CFR Part 11 / Part 1271 Chain-of-Identity & Chain-of-Condition Mandate for commercial CAR-T & gene therapies (700+ clinical trials)</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#32</strong><br><span class="sub">R0: #16 (-16)</span></td>
+              <td><strong class="tk">ICHR</strong><br><span class="sub">Ichor Holdings, Ltd.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">SENSOR_SEMI_METROLOGY_THERMAL</span></td>
+              <td class="num">$40.48<br><span class="sub">52W: $14-$114</span></td>
+              <td class="num">75.04</td>
+              <td class="num">60.79</td>
+              <td class="num">53.25</td>
+              <td class="num">53.47</td>
+              <td class="num">47.92</td>
+              <td class="num"><strong class="r5-val">50.72</strong><br><span class="neg">(-24.32)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / REDUCE</span></td>
+              <td class="num">+12.5%<br><span class="sub">GM 14.5%</span></td>
+              <td class="num pos">+5.2%<br><span class="sub">R40: 17.7</span></td>
+              <td class="num pos">1.6x<br><span class="sub">Surv 74/100</span></td>
+              <td class="num"><strong>32.2</strong> / 36.5<br><span class="sub">RSI7 32.9 | CRSI 77.4</span></td>
+              <td><span class="stage-txt">Stage 1 (Basing / Accumulation)</span><br><span class="sub">GrProb: 72%</span></td>
+              <td class="num">$38.64 - $40.88<br><span class="sub">Stop $32.75 | 12M $45.34</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 62 | Gate 60</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Integrated Thermal-Mass Flow Control & Heated Gas/Liquid Delivery Manifolds — Precision thermal fluid/gas delivery modules, weldments & liquid-cooled sub-systems for EUV & etch tools<br><strong>Gov &amp; Healthcare Policy:</strong> US CHIPS Act domestic fab equipment supply-chain localization</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="AVOID / REDUCE">
+              <td class="num"><strong>#33</strong><br><span class="sub">R0: #07 (-26)</span></td>
+              <td><strong class="tk">SENS</strong><br><span class="sub">Senseonics Holdings, Inc.</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">SENSOR_BIO_COLDCHAIN_MEDICAL</span></td>
+              <td class="num">$8.43<br><span class="sub">52W: $5-$11</span></td>
+              <td class="num">81.49</td>
+              <td class="num">38.60</td>
+              <td class="num">53.31</td>
+              <td class="num">38.66</td>
+              <td class="num">39.92</td>
+              <td class="num"><strong class="r5-val">43.71</strong><br><span class="neg">(-37.78)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / REDUCE</span></td>
+              <td class="num">+28.0%<br><span class="sub">GM 22.0%</span></td>
+              <td class="num neg">-65.0%<br><span class="sub">R40: -37.0</span></td>
+              <td class="num neg">3.5x<br><span class="sub">Surv 52/100</span></td>
+              <td class="num"><strong>48.1</strong> / 52.2<br><span class="sub">RSI7 54.9 | CRSI 81.7</span></td>
+              <td><span class="stage-txt">Stage 2/3 (Bullish Pullback / Consolidation)</span><br><span class="sub">GrProb: 62%</span></td>
+              <td class="num">$8.19 - $8.51<br><span class="sub">Stop $6.74 | 12M $9.95</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">RT 64 | Gate 92</span></td>
+              <td class="notes-cell"><strong>Physics &amp; Role:</strong> Implantable Boronic-Acid Fluorescence Optical Hydrogel + Precision On-ASIC Subcutaneous Temperature Compensation — Eversense 365-day implantable subcutaneous fluorescence biosensor with integrated on-chip thermistor temperature compensation<br><strong>Gov &amp; Healthcare Policy:</strong> FDA CDRH 365-Day iCGM Clearance & CMS Medicare Part B Durable Medical Equipment (DME) implantable sensor reimbursement</td>
+            </tr>
+            
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+  const GRAPH_NODES = [{"id": "THERMAL_ACOUSTIC_SENSING", "label": "THERMAL_ACOUSTIC_SENSING\n(Parent Ecosystem Hub | TEL)", "layer": "L0", "group": "Core Bridgewater Hub", "size": 60, "desc": "Parent Sector Node in agentic-bridgewater representing the global Thermal, Temperature & Acoustic Sensing and Condition Monitoring Ecosystem across Energy, AI Data Centers, Advanced Manufacturing, Semiconductors, and Healthcare Policy.", "kpis": "33 Public Equities | 12 Private Challengers | 28 E1 Causal Edges", "gatekeepers": "NIST, CHIPS Office, FERC, PHMSA, NFPA 70B/855, FDA, USP, CMS"}, {"id": "SENSOR_SEMI_METROLOGY_THERMAL", "label": "SENSOR_SEMI_METROLOGY_THERMAL\n(L1 Wafer Fab Thermal & Acoustic | MKSI)", "layer": "L1", "group": "Core Bridgewater Hub", "size": 52, "desc": "Sub-Sector L1: Picosecond laser-acoustic opaque metal film metrology, in-situ wireless RTD wafer thermometry (SensArray), multi-wavelength optical pyrometry, and sub-4K cryogenic wafer probing for sub-2nm GAA and HBM3e/HBM4.", "kpis": "Sub-0.1A Acoustic Film Resolution | +/-0.05C PEB Wafer Uniformity", "gatekeepers": "NIST CHIPS Metrology, DOC BIS ECCN 3B002, TSMC / Intel / SK Hynix"}, {"id": "SENSOR_DATACENTER_POWER_THERMAL", "label": "SENSOR_DATACENTER_POWER_THERMAL\n(L2 AI CDU Liquid Cooling & Die Tj | VRT)", "layer": "L2", "group": "Core Bridgewater Hub", "size": 52, "desc": "Sub-Sector L2: 120-140kW+ NVIDIA GB200/Rubin liquid-cooling CDU temperature/pressure/ultrasonic flow manifolds, leak detection cables, busway IR/partial-discharge sensors, and monolithic on-die CMOS junction temp (Tj) telemetry.", "kpis": "120-250kW/Rack Heat Rejection | <1us PMBus On-Die Tj Telemetry", "gatekeepers": "NVIDIA MGX/NVL72 Reference Spec, NFPA 70B, UL 9540A / NFPA 855"}, {"id": "SENSOR_ACOUSTIC_ULTRASONIC_NDT", "label": "SENSOR_ACOUSTIC_ULTRASONIC_NDT\n(L3 Ultrasonic Phased-Array & IR | TDY)", "layer": "L3", "group": "Core Bridgewater Hub", "size": 50, "desc": "Sub-Sector L3: Cooled InSb / uncooled VOx infrared focal plane arrays, 64-MEMS microphone ultrasonic acoustic imagers (corona & compressed-gas leak), phased-array ultrasonic NDT, and smart ultrasonic water leak metering.", "kpis": "<20mK IR NETD | 64-128 Mic Ultrasonic Beamforming | Subsea Hydrophones", "gatekeepers": "NFPA 70B Mandatory Standard, OSHA, DoD IUSS, EPA Lead/Copper Rule"}, {"id": "SENSOR_ENERGY_GRID_FIBER_DAS", "label": "SENSOR_ENERGY_GRID_FIBER_DAS\n(L4 Pipeline/Grid Fiber DAS/DTS | BKR)", "layer": "L4", "group": "Core Bridgewater Hub", "size": 50, "desc": "Sub-Sector L4: Rayleigh/Raman/Brillouin fiber-optic Distributed Acoustic & Temperature Sensing (DAS/DTS), non-intrusive pipe heat-flux thermometry (Rosemount X-well), turbomachinery vibration (Bently Nevada), and nuclear in-core RTDs.", "kpis": "50-100km Continuous Fiber DAS/DTS | Zero-Penetration Pipe Thermometry", "gatekeepers": "FERC Order 881 DLR, PHMSA Pipeline Leak Rule, EPA OOOOb, NRC 10 CFR 50"}, {"id": "SENSOR_BIO_COLDCHAIN_MEDICAL", "label": "SENSOR_BIO_COLDCHAIN_MEDICAL\n(L5 Bioprocess Calorimetry & Cold-Chain | WAT)", "layer": "L5", "group": "Core Bridgewater Hub", "size": 50, "desc": "Sub-Sector L5: Sub-microwatt Differential Scanning & Isothermal Titration Microcalorimetry (DSC/ITC), sterile bioreactor probes, NIST-traceable GLP-1/biologics/CAR-T cold-chain loggers, and clinical ultrasound / sepsis thermometry.", "kpis": "Nanowatt Heat-Flow Sensitivity | 2-8C & -150C LN2 Cold-Chain Integrity", "gatekeepers": "FDA 21 CFR Part 11, DSCSA, USP <1079> & <891>, CMS SEP-1 Sepsis Bundle"}, {"id": "GOV_NIST_CHIPS_BIS", "label": "NIST CHIPS Metrology &\nDOC BIS ECCN 3B002 / 6A002", "layer": "MACRO", "group": "Government & Policy Gatekeeper", "size": 42, "desc": "NIST CHIPS R&D Metrology programs fund picosecond laser-acoustic 3D interconnect metrology and sub-4K cryogenic wafer probing; BIS ECCN 3B002/6A002 restricts cooled IR FPAs and advanced wafer metrology to China.", "kpis": "$11B CHIPS R&D Envelope | ECCN 6A002 Focal Plane Array Controls", "gatekeepers": "US Dept. of Commerce, NIST, BIS"}, {"id": "GOV_FERC_NERC_DOE", "label": "FERC Order 881 DLR &\nDOE Grid Resilience (GRIP)", "layer": "MACRO", "group": "Government & Policy Gatekeeper", "size": 42, "desc": "FERC Order 881 mandates Ambient-Adjusted and Dynamic Line Ratings (DLR) across US transmission lines; DOE GRIP ($10.5B) funds transformer optical hot-spot, dissolved-gas, and OPGW fiber DAS/DTS monitoring.", "kpis": "Mandatory Transmission DLR | +15-30% Grid Ampacity Unlock", "gatekeepers": "FERC, NERC CIP, DOE Grid Deployment Office"}, {"id": "GOV_PHMSA_EPA", "label": "PHMSA Pipeline Leak Rule &\nEPA OOOOb Methane Fee", "layer": "MACRO", "group": "Government & Policy Gatekeeper", "size": 42, "desc": "PHMSA Gas Pipeline Leak Detection & Repair Rule (PIPES Act) and EPA OOOOb/OOOOc require continuous Optical Gas Imaging (OGI) IR cameras, ultrasonic flare meters, and fiber DAS along 3M miles of pipeline.", "kpis": "Mandatory Fugitive CH4 / H2 Detection | $1,500/ton Methane Fee", "gatekeepers": "DOT PHMSA, EPA Clean Air Act Section 111"}, {"id": "GOV_NFPA_OSHA_DOD", "label": "NFPA 70B / 855 Mandatory IR &\nDoD IUSS Subsea Acoustics", "layer": "MACRO", "group": "Government & Policy Gatekeeper", "size": 42, "desc": "NFPA 70B upgraded electrical switchgear infrared thermography and ultrasonic corona imaging to a mandatory ANSI standard; NFPA 855 mandates BESS thermal-runaway gas sensing; DoD IUSS funds subsea hydrophone arrays.", "kpis": "NFPA 70B 6-12m Inspection Mandate | UL 9540A BESS Off-Gas Rule", "gatekeepers": "NFPA, OSHA General Duty Clause, US Navy / DARPA MTO"}, {"id": "GOV_FDA_USP_DSCSA", "label": "FDA 21 CFR Part 11, DSCSA &\nUSP <1079> / <891> Biologics", "layer": "MACRO", "group": "Healthcare Policy Gatekeeper", "size": 44, "desc": "FDA 21 CFR Part 11 & 211 mandate tamper-evident bioreactor/autoclave thermal validation; USP <1079> & DSCSA enforce GLP-1/biologics/CAR-T cold-chain logging; USP <891> governs DSC/ITC protein stability calorimetry.", "kpis": "100% Biologics Batch Release Audit Trail | $35B Cold-Chain Protection", "gatekeepers": "FDA CDER / CBER, US Pharmacopeia (USP), State Boards of Pharmacy"}, {"id": "GOV_CMS_CDRH_HOSP", "label": "CMS SEP-1 Sepsis, OIRD &\nFDA CDRH 510(k) AI Ultrasound", "layer": "MACRO", "group": "Healthcare Policy Gatekeeper", "size": 42, "desc": "CMS Hospital Inpatient Quality Reporting (SEP-1 Sepsis bundle & post-op Opioid-Induced Respiratory Depression) drives continuous core thermometry & acoustic respiratory monitoring; CDRH PCCP clears AI point-of-care ultrasound.", "kpis": "CMS 2-3% Medicare DRG VBP Tie-In | AI Echo Ejection-Fraction Guidance", "gatekeepers": "CMS IQR/VBP, Joint Commission, FDA CDRH"}, {"id": "ONTO", "label": "ONTO (Onto Innovation)\nPULSE Picosecond Laser Acoustics", "layer": "L1", "group": "L1 Semi Wafer Metrology", "size": 46, "desc": "Global monopoly (>80% share) in picosecond ultrasonic laser-acoustic metrology (PULSE / Echo) measuring multi-layer opaque metal film thickness and HBM3e/HBM4 hybrid-bonding micro-bump voids.", "kpis": "R5: 77.65 (#16) | GM 55.6% | Rule of 40: 46.0 | Scale In Pullback", "gatekeepers": "TSMC CoWoS, SK Hynix HBM4, NIST CHIPS Metrology"}, {"id": "KLAC", "label": "KLAC (KLA Corp.)\nSensArray In-Situ Thermal Wafers", "layer": "L1", "group": "L1 Semi Wafer Metrology", "size": 48, "desc": "Dominates semiconductor process control (61.8% GM, 31.8% ex-SBC FCF margin); SensArray wireless instrumented wafers map +/-0.05C temperature uniformity inside EUV post-exposure bake and plasma etch chambers.", "kpis": "R5: 77.59 (#17) | GM 61.8% | Rule of 40: 50.0 | Scale In Pullback", "gatekeepers": "TSMC 2nm GAA, Intel 18A, Samsung Foundry"}, {"id": "AEIS_CAMT_FORM", "label": "AEIS / CAMT / FORM / MKSI\n(Fab Pyrometry, 3D Bump & Cryo Probe)", "layer": "L1", "group": "L1 Semi Wafer Metrology", "size": 42, "desc": "Advanced Energy (LumaSense/Luxtron optical pyrometers), Camtek (3D HBM bump warpage), FormFactor (sub-4K cryogenic & HBM hot-chuck MEMS probe cards), and MKS Instruments (Baratron/optical thermal).", "kpis": "CAMT +32.5% Gr | FORM Sub-4K Probe | AEIS Pyrometry", "gatekeepers": "Applied Materials, Lam Research, ASML, Quantum Foundries"}, {"id": "APH", "label": "APH (Amphenol \u2014 #2 R5)\nAdvanced Sensors (Thermometrics/Piezo/Kaye)", "layer": "L2", "group": "L2 Data-Center & Multi-Industry", "size": 50, "desc": "Ranked #2 in R5 (83.73, BUY NOW Tier 1 Core, 8.2% Kelly): Amphenol Advanced Sensors spans AI CDU liquid-cooling NTC/pressure probes, Telaire BESS thermal-runaway gas sensors, Piezo ultrasonic transducers, and Kaye FDA 21 CFR Part 11 thermal validation.", "kpis": "R5: 83.73 (#2) | Rule of 40: 41.0 | RSI-14: 44.3 Pullback Buy", "gatekeepers": "NVIDIA GB200/Rubin, UL 9540A / NFPA 855, FDA cGMP Validation"}, {"id": "VRT", "label": "VRT (Vertiv \u2014 #5 R5)\nAI Liquid-Cooling CDUs & Leak Sensing", "layer": "L2", "group": "L2 Data-Center Liquid Cooling", "size": 48, "desc": "Ranked #5 in R5 (81.08, BUY NOW Tier 1 Core, 5.6% Kelly): Global leader in 120-140kW+ AI liquid-cooling Coolant Distribution Units (CDUs), rear-door heat exchangers, and Liebert iCOM manifold thermal/flow/leak telemetry.", "kpis": "R5: 81.08 (#5) | Rev Gr +24.8% | RSI-14: 40.0 Oversold Pullback", "gatekeepers": "NVIDIA NVL72 CoolTerra Partner, Hyperscale Data Centers"}, {"id": "MPWR_KEYS", "label": "MPWR (#8 R5) & KEYS (#11 R5)\nOn-Die Tj Telemetry & Electro-Thermal Test", "layer": "L2", "group": "L2 Silicon Thermal & Test", "size": 46, "desc": "MPWR (#8 R5, 79.86, 5.4% Kelly) embeds monolithic on-die junction temperature (Tj) sensors in 48V AI DrMOS power stages; KEYS (#11 R5, 78.69, 5.5% Kelly) leads PathWave electro-thermal simulation & cryo-RF metrology.", "kpis": "MPWR Rule of 40: 51.9 (RSI 42.3) | KEYS GM 64.5% (RSI 45.2)", "gatekeepers": "NVIDIA/AMD/Custom ASIC Power & 1.6T Optical/Thermal Labs"}, {"id": "ETN_NVT_TEL_MOD", "label": "ETN (#9 R5) / NVT / TEL / MOD\nSwitchgear IR/PD & Rack Manifolds", "layer": "L2", "group": "L2 Data-Center Power & Cooling", "size": 45, "desc": "Eaton (#9 R5, 79.53, BUY NOW, 6.2% Kelly) embeds continuous IR thermal and ultrasonic partial-discharge sensors in switchgear (NFPA 70B); nVent (Enlogic PDU/CDU), TE Connectivity (RTD/piezo), and Modine (Airedale CDUs).", "kpis": "ETN RSI-14: 41.2 Pullback Buy | NVT +19.5% Gr | TEL Sensor Scale", "gatekeepers": "NFPA 70B Switchgear Standard, Hyperscale Colocation Providers"}, {"id": "FTV", "label": "FTV (Fortive \u2014 #3 R5)\nFluke Acoustic Imagers & Qualitrol Grid", "layer": "L3", "group": "L3 Industrial Ultrasonic & IR", "size": 50, "desc": "Ranked #3 in R5 (81.77, BUY NOW Tier 1 Core, 12.3% Kelly): Owns Fluke (ii900/ii910 64-MEMS ultrasonic corona/leak cameras + IR thermography), Qualitrol (transformer optical winding temp & DGA), and ASP medical sterilization.", "kpis": "R5: 81.77 (#3) | GM 59.4% | Stage 1->2 Golden Cross Breakout", "gatekeepers": "NFPA 70B, FERC Order 881 Transformer Health, FDA CDRH"}, {"id": "AME", "label": "AME (AMETEK \u2014 #4 R5)\nZetec Phased-Array NDT & Land IR", "layer": "L3", "group": "L3 Industrial Ultrasonic & IR", "size": 49, "desc": "Ranked #4 in R5 (81.37, BUY NOW Tier 1 Core, 10.4% Kelly): Elite precision sensor compounder (23.2% ex-SBC FCF margin) owning Zetec (nuclear/aerospace ultrasonic phased-array NDT), AMETEK Land (industrial IR pyrometers), and Zygo.", "kpis": "R5: 81.37 (#4) | FCF 23.2% | RSI-14: 50.0 Stage 2 Base Entry", "gatekeepers": "NRC Nuclear Steam Generator NDT, FAA Aerospace, Defense Primes"}, {"id": "TDY", "label": "TDY (Teledyne \u2014 #6 R5)\nFLIR Cooled InSb/VOx & Subsea Acoustics", "layer": "L3", "group": "L3 Industrial Ultrasonic & IR", "size": 49, "desc": "Ranked #6 in R5 (80.72, BUY NOW Tier 1 Core, 9.9% Kelly): Sovereign leader in FLIR cooled InSb / uncooled VOx thermal imaging cores, Optical Gas Imaging (OGI) methane cameras, and Teledyne Marine subsea acoustic hydrophone arrays.", "kpis": "R5: 80.72 (#6) | Stage 1->2 Golden Cross | DoD & PHMSA Moat", "gatekeepers": "DoD IUSS Navy Undersea, PHMSA / EPA Methane OGI, DOC BIS 6A002"}, {"id": "BMI_ITRI_ROK", "label": "BMI (#14 R5) / ITRI / ROK\nUltrasonic Water Leak & Factory Vibration", "layer": "L3", "group": "L3 Municipal & Factory Sensing", "size": 42, "desc": "Badger Meter (#14 R5, 77.91, BUY NOW) leads solid-state ultrasonic water flow meters and Syrinix acoustic trunk-main leak sensors; Itron (ultrasonic gas/water + grid edge); Rockwell (Dynamix vibration PdM).", "kpis": "BMI +16.8% Gr, Net Cash (-0.9x), Golden Cross | EPA Water Rules", "gatekeepers": "EPA Lead & Copper Rule, Municipal Water Utilities"}, {"id": "EMR", "label": "EMR (Emerson Electric \u2014 #1 R5)\nRosemount X-well Thermal & 708 Acoustic", "layer": "L4", "group": "L4 Energy, Grid & Process Sensing", "size": 54, "desc": "Ranked #1 Overall in R5 (85.08, BUY NOW Tier 1 Core, 11.8% Kelly): 51.8% GM sensor & software powerhouse. Rosemount X-well measures internal pipe fluid temperature via heat-flux without thermowells; Rosemount 708 wireless acoustic monitors steam traps; DeltaV runs >75% of top FDA biologics.", "kpis": "R5: 85.08 (#1) | GM 51.8% | 48% Recurring Attach | Stage 2 Uptrend", "gatekeepers": "PHMSA, EPA Flare/Steam Rules, FERC, FDA 21 CFR Part 11 (DeltaV)"}, {"id": "HON", "label": "HON (Honeywell \u2014 #10 R5)\nVersaWave Acoustic, Li-ion Tamer & Aero", "layer": "L4", "group": "L4 Energy, Grid & Process Sensing", "size": 47, "desc": "Ranked #10 in R5 (78.78, BUY NOW Tier 1 Core, 8.2% Kelly): Supplies VersaWave wireless SAW acoustic/temperature transmitters, Li-ion Tamer BESS off-gas thermal runaway sensors (NFPA 855), aerospace engine thermocouples, and owns ~54% of Quantinuum.", "kpis": "R5: 78.78 (#10) | Stage 1->2 Golden Cross | RSI-14: 58.2", "gatekeepers": "NFPA 855 BESS Mandate, FAA / DoD Aerospace, LNG Terminals"}, {"id": "BKR_SLB_MIR", "label": "BKR (#15 R5) / MIR (#12 R5) / SLB\nBently Nevada, Nuclear RTDs & OptaSense DAS", "layer": "L4", "group": "L4 Energy, Grid & Process Sensing", "size": 46, "desc": "Baker Hughes (#15 R5, 77.76, BUY NOW) owns Bently Nevada (global standard in LNG/power turbine vibration & bearing temp), Waygate ultrasonic NDT & Panametrics; Mirion (#12 R5) holds NRC nuclear in-core RTD/acoustic monopoly; SLB runs OptaSense fiber DAS/DTS.", "kpis": "BKR Bently Nevada 60yr Moat | MIR Sole-Source Nuclear Class 1E", "gatekeepers": "NRC 10 CFR 50, FERC / LNG Export Terminals, PHMSA / CCUS"}, {"id": "WAT", "label": "WAT (Waters Corp. \u2014 #7 R5)\nTA Instruments Microcalorimetry (DSC/ITC)", "layer": "L5", "group": "L5 Biomedical & Healthcare Policy", "size": 49, "desc": "Ranked #7 in R5 (80.02, BUY NOW Tier 1 Core, 8.0% Kelly): TA Instruments division (TAM IV Microcalorimeter, Nano DSC, Affinity ITC) is the FDA/USP <891> gold standard for measuring sub-microwatt protein unfolding & GLP-1/biologics thermal stability (59.2% GM, 55% recurring attach).", "kpis": "R5: 80.02 (#7) | GM 59.2% | FCF 24.6% | 55% Recurring Attach", "gatekeepers": "FDA CDER/CBER 21 CFR Part 11, USP <891> Thermal Analysis"}, {"id": "MTD_GEHC_ZBRA", "label": "MTD (#13 R5) / GEHC (#18 R5) / ZBRA\nBioreactor Probes, AI Ultrasound & DSCSA", "layer": "L5", "group": "L5 Biomedical & Healthcare Policy", "size": 46, "desc": "Mettler-Toledo (#13 R5, 77.92, Scale In on Pullback, 8.5% Kelly) leads Ingold sterile bioreactor thermal/pH probes & DSC 3+; GE HealthCare (#18 R5, BUY NOW Tier 2) leads Vivid/LOGIQ/Vscan AI ultrasound & CARESCAPE ICU thermometry; Zebra leads DSCSA Temptime cold-chain loggers.", "kpis": "MTD GM 59.8% (RSI 75.0 Extended) | GEHC Golden Cross (RSI 64.6)", "gatekeepers": "FDA DSCSA / USP <1079>, CMS SEP-1 Sepsis, FDA CDRH 510(k)"}, {"id": "CYRX_SENS_TRAP", "label": "CYRX (#32) & SENS (#33)\n(Cash-Burn Cryo & Dilution Traps \u2014 AVOID)", "layer": "L5", "group": "L5 Biomedical & Healthcare Policy", "size": 35, "desc": "Flagged by Round 1 Critic Filter as severe unit-economics traps: CryoPort (-18.5% ex-SBC FCF margin, 3.8x Net Debt/EBITDA) and Senseonics (-85.0% ex-SBC FCF margin, heavy equity dilution). Assigned 0.0% weight (AVOID / REDUCE).", "kpis": "CYRX R0 #15 -> R5 #32 (-17 Ranks) | SENS R5 #33 (46.46)", "gatekeepers": "R1 Unit-Economics & Dilution Red-Team Gate"}, {"id": "PRIV_SENSOR_CHALLENGERS", "label": "12 Private Sensor Challengers\n(Prisma Photonics, Distran, Bluefors, Sensitech)", "layer": "PRIV", "group": "Private Challengers", "size": 45, "desc": "12 High-Growth Private Challengers: Prisma Photonics (OPGW grid/pipeline fiber DAS/DTS), Sensuron/Luna (FBG optical thermal), AP Sensing/Silixa (Brillouin DTS), Distran/Sorama (ultrasonic gas leak cameras), Gecko Robotics (NDT robots), Bluefors/Lake Shore (<10mK cryo), proteanTecs (on-die UCT), Sensitech/Controlant/ELPRO (GLP-1 cold chain).", "kpis": "Prisma Grid DLR Fiber DAS | Bluefors >75% 10mK Cryo Share", "gatekeepers": "FERC Order 881 Utilities, TSMC/NVIDIA, Pfizer/Lilly Cold Chain"}];
+  const GRAPH_EDGES = [{"source": "THERMAL_ACOUSTIC_SENSING", "target": "SENSOR_SEMI_METROLOGY_THERMAL", "weight": 0.88, "type": "positive", "label": "+0.88 L1 Wafer Thermal & Acoustic"}, {"source": "THERMAL_ACOUSTIC_SENSING", "target": "SENSOR_DATACENTER_POWER_THERMAL", "weight": 0.9, "type": "positive", "label": "+0.90 L2 AI Rack CDU & Die Tj"}, {"source": "THERMAL_ACOUSTIC_SENSING", "target": "SENSOR_ACOUSTIC_ULTRASONIC_NDT", "weight": 0.84, "type": "positive", "label": "+0.84 L3 Ultrasonic NDT & IR"}, {"source": "THERMAL_ACOUSTIC_SENSING", "target": "SENSOR_ENERGY_GRID_FIBER_DAS", "weight": 0.86, "type": "positive", "label": "+0.86 L4 Grid/Pipe Fiber DAS/DTS"}, {"source": "THERMAL_ACOUSTIC_SENSING", "target": "SENSOR_BIO_COLDCHAIN_MEDICAL", "weight": 0.82, "type": "positive", "label": "+0.82 L5 Bio Calorimetry & Cold-Chain"}, {"source": "GOV_NIST_CHIPS_BIS", "target": "SENSOR_SEMI_METROLOGY_THERMAL", "weight": 0.82, "type": "positive", "label": "+0.82 CHIPS R&D Metrology (TAS_R2)"}, {"source": "GOV_NIST_CHIPS_BIS", "target": "ONTO", "weight": 0.85, "type": "positive", "label": "+0.85 Picosecond Acoustic HBM4 Standard"}, {"source": "GOV_NIST_CHIPS_BIS", "target": "KLAC", "weight": 0.84, "type": "positive", "label": "+0.84 SensArray EUV PEB Qualification"}, {"source": "GOV_NIST_CHIPS_BIS", "target": "TDY", "weight": 0.72, "type": "positive", "label": "+0.72 BIS ECCN 6A002 Cooled FPA Moat"}, {"source": "GOV_FERC_NERC_DOE", "target": "SENSOR_ENERGY_GRID_FIBER_DAS", "weight": 0.84, "type": "positive", "label": "+0.84 FERC Order 881 DLR Mandate (TAS_R3)"}, {"source": "GOV_FERC_NERC_DOE", "target": "FTV", "weight": 0.82, "type": "positive", "label": "+0.82 Qualitrol Transformer Winding Optical"}, {"source": "GOV_FERC_NERC_DOE", "target": "PRIV_SENSOR_CHALLENGERS", "weight": 0.8, "type": "positive", "label": "+0.80 Prisma Photonics OPGW Fiber DAS"}, {"source": "GOV_PHMSA_EPA", "target": "SENSOR_ENERGY_GRID_FIBER_DAS", "weight": 0.8, "type": "positive", "label": "+0.80 PHMSA Pipeline Leak Mandate"}, {"source": "GOV_PHMSA_EPA", "target": "EMR", "weight": 0.86, "type": "positive", "label": "+0.86 Rosemount X-well Zero-Leak Pipe Temp"}, {"source": "GOV_PHMSA_EPA", "target": "TDY", "weight": 0.82, "type": "positive", "label": "+0.82 FLIR Optical Gas Imaging (OGI)"}, {"source": "GOV_PHMSA_EPA", "target": "BKR_SLB_MIR", "weight": 0.78, "type": "positive", "label": "+0.78 Panametrics & OptaSense Fiber DAS"}, {"source": "GOV_NFPA_OSHA_DOD", "target": "SENSOR_ACOUSTIC_ULTRASONIC_NDT", "weight": 0.85, "type": "positive", "label": "+0.85 NFPA 70B Mandatory IR/Acoustic"}, {"source": "GOV_NFPA_OSHA_DOD", "target": "FTV", "weight": 0.88, "type": "positive", "label": "+0.88 Fluke ii910 Corona & IR Cameras"}, {"source": "GOV_NFPA_OSHA_DOD", "target": "ETN_NVT_TEL_MOD", "weight": 0.8, "type": "positive", "label": "+0.80 Continuous Switchgear IR/PD"}, {"source": "GOV_NFPA_OSHA_DOD", "target": "APH", "weight": 0.78, "type": "positive", "label": "+0.78 UL 9540A / NFPA 855 Telaire BESS"}, {"source": "GOV_NFPA_OSHA_DOD", "target": "HON", "weight": 0.76, "type": "positive", "label": "+0.76 Li-ion Tamer BESS & DoD Aero"}, {"source": "GOV_NFPA_OSHA_DOD", "target": "TDY", "weight": 0.84, "type": "positive", "label": "+0.84 DoD Subsea Hydrophone Arrays"}, {"source": "GOV_FDA_USP_DSCSA", "target": "SENSOR_BIO_COLDCHAIN_MEDICAL", "weight": 0.88, "type": "positive", "label": "+0.88 USP <1079>/<891> & 21 CFR 11 (TAS_R4)"}, {"source": "GOV_FDA_USP_DSCSA", "target": "WAT", "weight": 0.86, "type": "positive", "label": "+0.86 USP <891> TA Microcalorimetry"}, {"source": "GOV_FDA_USP_DSCSA", "target": "EMR", "weight": 0.82, "type": "positive", "label": "+0.82 DeltaV 21 CFR Part 11 Bioreactors"}, {"source": "GOV_FDA_USP_DSCSA", "target": "APH", "weight": 0.78, "type": "positive", "label": "+0.78 Kaye Autoclave/Lyophilizer Validation"}, {"source": "GOV_FDA_USP_DSCSA", "target": "MTD_GEHC_ZBRA", "weight": 0.82, "type": "positive", "label": "+0.82 Ingold Bioprocess & DSCSA Cold-Chain"}, {"source": "GOV_CMS_CDRH_HOSP", "target": "SENSOR_BIO_COLDCHAIN_MEDICAL", "weight": 0.76, "type": "positive", "label": "+0.76 CMS SEP-1 Sepsis & OIRD Acoustic"}, {"source": "GOV_CMS_CDRH_HOSP", "target": "MTD_GEHC_ZBRA", "weight": 0.8, "type": "positive", "label": "+0.80 GEHC Vscan AI Echo & CARESCAPE Temp"}, {"source": "SENSOR_SEMI_METROLOGY_THERMAL", "target": "ONTO", "weight": 0.86, "type": "positive", "label": "+0.86 PULSE Picosecond Laser Acoustics"}, {"source": "SENSOR_SEMI_METROLOGY_THERMAL", "target": "KLAC", "weight": 0.88, "type": "positive", "label": "+0.88 SensArray In-Situ Thermal Wafers"}, {"source": "SENSOR_SEMI_METROLOGY_THERMAL", "target": "AEIS_CAMT_FORM", "weight": 0.8, "type": "positive", "label": "+0.80RTP Pyrometry, 3D Bump & Cryo Probe"}, {"source": "SENSOR_SEMI_METROLOGY_THERMAL", "target": "SENSOR_DATACENTER_POWER_THERMAL", "weight": 0.74, "type": "positive", "label": "+0.74 High-Yield HBM4 & CoWoS Thermal"}, {"source": "SENSOR_DATACENTER_POWER_THERMAL", "target": "APH", "weight": 0.88, "type": "positive", "label": "+0.88 CDU Manifold NTC/Pressure/Piezo"}, {"source": "SENSOR_DATACENTER_POWER_THERMAL", "target": "VRT", "weight": 0.9, "type": "positive", "label": "+0.90 120kW+ Liquid CDU & Leak Detection (TAS_R1)"}, {"source": "SENSOR_DATACENTER_POWER_THERMAL", "target": "MPWR_KEYS", "weight": 0.84, "type": "positive", "label": "+0.84 Monolithic DrMOS Die Tj & Test"}, {"source": "SENSOR_DATACENTER_POWER_THERMAL", "target": "ETN_NVT_TEL_MOD", "weight": 0.82, "type": "positive", "label": "+0.82 Busway IR/PD & Rack Cold Plates"}, {"source": "SENSOR_ACOUSTIC_ULTRASONIC_NDT", "target": "FTV", "weight": 0.88, "type": "positive", "label": "+0.88 Fluke 64-MEMS Acoustic & Qualitrol"}, {"source": "SENSOR_ACOUSTIC_ULTRASONIC_NDT", "target": "AME", "weight": 0.86, "type": "positive", "label": "+0.86 Zetec Phased-Array NDT & Land IR"}, {"source": "SENSOR_ACOUSTIC_ULTRASONIC_NDT", "target": "TDY", "weight": 0.85, "type": "positive", "label": "+0.85 FLIR Cooled InSb/VOx & Subsea"}, {"source": "SENSOR_ACOUSTIC_ULTRASONIC_NDT", "target": "BMI_ITRI_ROK", "weight": 0.76, "type": "positive", "label": "+0.76 Syrinix Acoustic Water Leak & PdM"}, {"source": "SENSOR_ENERGY_GRID_FIBER_DAS", "target": "EMR", "weight": 0.92, "type": "positive", "label": "+0.92 #1 R5 Winner: Rosemount X-well & 708"}, {"source": "SENSOR_ENERGY_GRID_FIBER_DAS", "target": "HON", "weight": 0.8, "type": "positive", "label": "+0.80 VersaWave Acoustic & Li-ion Tamer"}, {"source": "SENSOR_ENERGY_GRID_FIBER_DAS", "target": "BKR_SLB_MIR", "weight": 0.82, "type": "positive", "label": "+0.82 Bently Nevada, Nuclear RTD & OptaSense"}, {"source": "SENSOR_BIO_COLDCHAIN_MEDICAL", "target": "WAT", "weight": 0.88, "type": "positive", "label": "+0.88 TA Instruments TAM IV / Nano-DSC"}, {"source": "SENSOR_BIO_COLDCHAIN_MEDICAL", "target": "MTD_GEHC_ZBRA", "weight": 0.84, "type": "positive", "label": "+0.84 Bioreactor Probes, AI Echo & DSCSA"}, {"source": "SENSOR_BIO_COLDCHAIN_MEDICAL", "target": "CYRX_SENS_TRAP", "weight": -0.68, "type": "negative", "label": "-0.68 R1 Cash-Burn & Dilution Penalty"}];
+  const SCENARIOS = {"ai_cdu_liquid_boom": {"title": "+1\u03c3 AI 120kW+ Rack Liquid-Cooling & HBM4 Supercycle (Rules TAS_R1 & TAS_R2 Active)", "desc": "Hyperscalers accelerate NVIDIA GB200/Rubin liquid-cooled CDU racks and 16-high HBM4 hybrid bonding, triggering a non-linear surge in CDU manifold thermal/flow/leak sensors, on-die Tj telemetry, and picosecond laser-acoustic wafer metrology.", "impacts": {"THERMAL_ACOUSTIC_SENSING": "+1.08\u03c3", "SENSOR_DATACENTER_POWER_THERMAL": "+1.32\u03c3", "SENSOR_SEMI_METROLOGY_THERMAL": "+1.24\u03c3", "VRT": "+1.38\u03c3", "APH": "+1.26\u03c3", "MPWR_KEYS": "+1.22\u03c3", "ONTO": "+1.28\u03c3", "KLAC": "+1.18\u03c3", "ETN_NVT_TEL_MOD": "+1.15\u03c3", "AEIS_CAMT_FORM": "+1.12\u03c3"}}, "grid_pipeline_mandate": {"title": "+1\u03c3 FERC Order 881 DLR, NFPA 70B & PHMSA Pipeline Enforcement Wave (Rule TAS_R3 Active)", "desc": "Mandatory transmission Dynamic Line Ratings (FERC 881), NFPA 70B switchgear IR/ultrasonic partial-discharge inspections, and PHMSA methane leak enforcement drive non-cyclical utility and pipeline sensor orders.", "impacts": {"GOV_FERC_NERC_DOE": "+1.00\u03c3", "GOV_PHMSA_EPA": "+1.00\u03c3", "GOV_NFPA_OSHA_DOD": "+0.95\u03c3", "SENSOR_ENERGY_GRID_FIBER_DAS": "+1.25\u03c3", "SENSOR_ACOUSTIC_ULTRASONIC_NDT": "+1.18\u03c3", "EMR": "+1.28\u03c3", "FTV": "+1.24\u03c3", "TDY": "+1.16\u03c3", "AME": "+1.12\u03c3", "BKR_SLB_MIR": "+1.10\u03c3", "HON": "+1.04\u03c3", "PRIV_SENSOR_CHALLENGERS": "+1.15\u03c3"}}, "fda_glp1_sepsis_wave": {"title": "+1\u03c3 FDA DSCSA / USP <1079>/<891> GLP-1 Cold-Chain & CMS Sepsis Mandate (Rule TAS_R4 Active)", "desc": "Global GLP-1/biologics capacity expansion and strict FDA 21 CFR Part 11 / USP <1079> / <891> & CMS SEP-1 enforcement boost microcalorimetry, sterile bioreactor probes, DeltaV automation, and hospital acoustic/thermal monitors.", "impacts": {"GOV_FDA_USP_DSCSA": "+1.00\u03c3", "GOV_CMS_CDRH_HOSP": "+0.95\u03c3", "SENSOR_BIO_COLDCHAIN_MEDICAL": "+1.22\u03c3", "WAT": "+1.24\u03c3", "EMR": "+1.14\u03c3", "APH": "+1.08\u03c3", "MTD_GEHC_ZBRA": "+1.18\u03c3", "FTV": "+0.92\u03c3", "CYRX_SENS_TRAP": "-0.45\u03c3"}}, "pmi_capex_pause_stress": {"title": "+1\u03c3 Industrial PMI & Fab Capex Pause Stress Test (Round 5 Red-Team Pre-Mortem)", "desc": "Simulated 2-quarter hyperscaler/fab digestion and high real rates penalize overbought parabolic semi names (RSI > 78) and leveraged/low-margin cyclicals (MKSI, ICHR, CYRX, SENS), while regulatory-mandated compounders (EMR, FTV, AME, TDY, WAT, APH) outperform.", "impacts": {"EMR": "+0.42\u03c3", "FTV": "+0.38\u03c3", "AME": "+0.36\u03c3", "TDY": "+0.40\u03c3", "WAT": "+0.35\u03c3", "APH": "+0.28\u03c3", "AEIS_CAMT_FORM": "-0.65\u03c3", "CYRX_SENS_TRAP": "-1.25\u03c3"}}};
+
+  const layerColors = {
+    "L0": "#f43f5e",
+    "MACRO": "#f59e0b",
+    "L1": "#a855f7",
+    "L2": "#10b981",
+    "L3": "#38bdf8",
+    "L4": "#f97316",
+    "L5": "#ec4899",
+    "PRIV": "#6366f1"
+  };
+
+  const elements = [];
+  GRAPH_NODES.forEach(n => {
+    elements.push({
+      data: {
+        id: n.id,
+        label: n.label,
+        layer: n.layer,
+        group: n.group,
+        size: n.size,
+        desc: n.desc,
+        kpis: n.kpis,
+        gatekeepers: n.gatekeepers,
+        color: layerColors[n.layer] || "#38bdf8"
+      }
+    });
+  });
+
+  GRAPH_EDGES.forEach((e, idx) => {
+    elements.push({
+      data: {
+        id: "e" + idx,
+        source: e.source,
+        target: e.target,
+        weight: e.weight,
+        type: e.type,
+        label: e.label,
+        width: Math.max(1.5, Math.abs(e.weight) * 4.0),
+        lineColor: e.type === "positive" ? "#38bdf8" : "#f43f5e"
+      }
+    });
+  });
+
+  const cy = cytoscape({
+    container: document.getElementById("cy"),
+    elements: elements,
+    style: [
+      {
+        selector: "node",
+        style: {
+          "background-color": "data(color)",
+          "background-opacity": 0.92,
+          "border-width": 2,
+          "border-color": "#e2e8f0",
+          "width": "data(size)",
+          "height": "data(size)",
+          "label": "data(label)",
+          "color": "#f8fafc",
+          "font-size": "10px",
+          "font-weight": "600",
+          "text-wrap": "wrap",
+          "text-max-width": "120px",
+          "text-valign": "bottom",
+          "text-margin-y": 6,
+          "text-outline-width": 2,
+          "text-outline-color": "#070b14"
+        }
+      },
+      {
+        selector: "edge",
+        style: {
+          "width": "data(width)",
+          "line-color": "data(lineColor)",
+          "target-arrow-color": "data(lineColor)",
+          "target-arrow-shape": "triangle",
+          "curve-style": "bezier",
+          "opacity": 0.72,
+          "label": "data(label)",
+          "font-size": "8px",
+          "color": "#cbd5e1",
+          "text-rotation": "autorotate",
+          "text-background-color": "#070b14",
+          "text-background-opacity": 0.75,
+          "text-background-padding": "2px"
+        }
+      },
+      {
+        selector: ".faded",
+        style: { "opacity": 0.12, "text-opacity": 0.12 }
+      },
+      {
+        selector: ".highlighted",
+        style: {
+          "border-width": 4,
+          "border-color": "#fef08a",
+          "opacity": 1
+        }
+      }
+    ],
+    layout: {
+      name: "cose",
+      padding: 45,
+      nodeRepulsion: 20000,
+      idealEdgeLength: 140,
+      animate: false
+    }
+  });
+
+  cy.on("tap", "node", function(evt) {
+    const node = evt.target;
+    const d = node.data();
+    cy.elements().removeClass("faded highlighted");
+    const neighborhood = node.closedNeighborhood();
+    cy.elements().not(neighborhood).addClass("faded");
+    node.addClass("highlighted");
+
+    document.getElementById("nd-group").textContent = d.group;
+    document.getElementById("nd-title").textContent = d.label.replace("\n", " — ");
+    document.getElementById("nd-desc").textContent = d.desc;
+    document.getElementById("nd-kpi").textContent = d.kpis;
+    document.getElementById("nd-gate").textContent = d.gatekeepers;
+
+    const edgeList = document.getElementById("nd-edges");
+    edgeList.innerHTML = "";
+    node.connectedEdges().forEach(ed => {
+      const edData = ed.data();
+      const li = document.createElement("li");
+      const signColor = edData.type === "positive" ? "#34d399" : "#fb7185";
+      li.innerHTML = `<strong style="color:${signColor}">${edData.source} → ${edData.target}</strong>: ${edData.label}`;
+      edgeList.appendChild(li);
+    });
+  });
+
+  cy.on("tap", function(evt) {
+    if (evt.target === cy) {
+      cy.elements().removeClass("faded highlighted");
+    }
+  });
+
+  function filterGraphLayer(layer, btn) {
+    document.querySelectorAll(".toolbar .btn-group:first-child button").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    cy.elements().removeClass("faded highlighted");
+    if (layer === "ALL") return;
+    const matchedNodes = cy.nodes().filter(n => n.data("layer") === layer);
+    const connected = matchedNodes.closedNeighborhood();
+    cy.elements().not(connected).addClass("faded");
+  }
+
+  function runScenario(key, btn) {
+    document.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    const scen = SCENARIOS[key];
+    if (!scen) return;
+    const banner = document.getElementById("scenario-banner");
+    banner.style.display = "block";
+    document.getElementById("scen-title").textContent = scen.title;
+    document.getElementById("scen-desc").textContent = scen.desc;
+
+    cy.elements().removeClass("faded highlighted");
+    cy.nodes().forEach(n => {
+      const id = n.data("id");
+      const baseLabel = GRAPH_NODES.find(x => x.id === id).label;
+      if (scen.impacts[id]) {
+        n.data("label", baseLabel + "\n[" + scen.impacts[id] + "]");
+        n.addClass("highlighted");
+      } else {
+        n.data("label", baseLabel);
+        n.addClass("faded");
+      }
+    });
+  }
+
+  function resetScenario() {
+    document.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById("scenario-banner").style.display = "none";
+    cy.elements().removeClass("faded highlighted");
+    cy.nodes().forEach(n => {
+      const id = n.data("id");
+      const baseLabel = GRAPH_NODES.find(x => x.id === id).label;
+      n.data("label", baseLabel);
+    });
+  }
+
+  let currentVerdictFilter = "ALL";
+  function filterTable(verdict, btn) {
+    currentVerdictFilter = verdict;
+    document.querySelectorAll(".matrix-controls .btn-group button").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    applyTableFilters();
+  }
+
+  function searchTable() {
+    applyTableFilters();
+  }
+
+  function applyTableFilters() {
+    const q = (document.getElementById("tk-search").value || "").toLowerCase();
+    const rows = document.querySelectorAll("#rsi-table tbody tr");
+    rows.forEach(r => {
+      const v = r.getAttribute("data-verdict");
+      const txt = r.textContent.toLowerCase();
+      const matchVerdict = (currentVerdictFilter === "ALL") || (v === currentVerdictFilter);
+      const matchSearch = !q || txt.includes(q);
+      r.style.display = (matchVerdict && matchSearch) ? "" : "none";
+    });
+  }
+</script>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

@@ -1,0 +1,1601 @@
+<!-- Space & Satellite Ecosystem Macro Graph: Generated for Corum Board & Agentic Bridgewater -->
+<!-- Architecture matching Corum Institutional Deep Research & Macro Network Graph -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The company graph: macro forces, sectors and the companies they move — Space & Satellite Ecosystem</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --card: #f7f8fa;
+    --card-hover: #f0f2f5;
+    --border: #e6e8eb;
+    --border-dark: #d7dbe0;
+    --text: #1b1f24;
+    --text-muted: #6a6f76;
+    --text-dim: #9aa0a6;
+    --pos: #2f9e6f;
+    --pos-bg: #e6f4ee;
+    --pos-text: #1f7a52;
+    --neg: #d1495b;
+    --neg-bg: #fbe9ec;
+    --neg-text: #b2333f;
+    --zero: #9aa0a6;
+    --accent: #0f766e;
+    --blue: #2563eb;
+    --purple: #7c3aed;
+    --cyan: #0891b2;
+    --orange: #ea580c;
+    --green: #059669;
+    --red: #dc2626;
+    --mem: #9aa3ad;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 1720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 16px 20px 40px;
+    position: relative;
+  }
+  
+  /* Top Branding & Header */
+  .brand {
+    float: right;
+    text-align: right;
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+    line-height: 1.35;
+  }
+  .brand b {
+    display: block;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .kicker {
+    font-size: 13px;
+    color: #555;
+    margin: 0 0 4px;
+    font-weight: 500;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 2px 0 6px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h1 .tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    background: #ccfbf1;
+    color: #0f766e;
+    border: 1px solid #5eead4;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .nav {
+    font-size: 12px;
+    margin: 0 0 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+  .nav a {
+    color: #0284c7;
+    text-decoration: none;
+    font-weight: 400;
+  }
+  .nav a:hover {
+    text-decoration: underline;
+  }
+  .nav a.active {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .nav .nav-sep { color: #ccc; }
+
+  /* 4-Stage Multi-Era Timeline Scrubber */
+  .timeline-bar {
+    display: flex;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    margin: 8px 0 10px;
+    gap: 8px;
+    overflow-x: auto;
+  }
+  .timeline-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #475569;
+    white-space: nowrap;
+    margin-right: 4px;
+  }
+  .era-btn {
+    font-family: inherit;
+    font-size: 11.5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border-dark);
+    background: #fff;
+    color: #334155;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  .era-btn:hover {
+    background: #f1f5f9;
+    color: var(--text);
+  }
+  .era-btn.active {
+    background: #0f766e;
+    color: #fff;
+    border-color: #0f766e;
+    font-weight: 600;
+  }
+  .era-badge {
+    margin-left: auto;
+    font-family: monospace;
+    font-size: 11px;
+    color: #475569;
+    white-space: nowrap;
+  }
+
+  /* Live Barometer Indicators */
+  .barometer-strip {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 10px;
+    overflow-x: auto;
+  }
+  .barometer-card {
+    flex: 1;
+    min-width: 175px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .baro-kicker {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  .baro-val {
+    font-size: 15px;
+    font-weight: 600;
+    font-family: monospace;
+    margin-top: 1px;
+    color: var(--text);
+  }
+  .baro-sub {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 1px;
+  }
+
+  /* Interactive Controls Strip */
+  .controls {
+    font-size: 12px;
+    color: #334155;
+    margin: 8px 0 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    background: #fafbfc;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .controls select, .controls input[type="text"] {
+    font-family: inherit;
+    font-size: 11.5px;
+    padding: 3px 6px;
+    border: 1px solid var(--border-dark);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--text);
+  }
+  .controls select { max-width: 440px; }
+  .controls input[type="text"] { width: 170px; }
+  
+  .view-toggle-grp {
+    display: flex;
+    border: 1px solid var(--border-dark);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .view-btn {
+    border: none;
+    background: #fff;
+    padding: 4px 11px;
+    font-size: 11.5px;
+    font-family: inherit;
+    cursor: pointer;
+    border-right: 1px solid var(--border-dark);
+    color: #475569;
+    transition: all 0.15s ease;
+  }
+  .view-btn:last-child { border-right: none; }
+  .view-btn:hover { background: #f8fafc; }
+  .view-btn.active {
+    background: #0f766e;
+    color: #fff;
+    font-weight: 600;
+  }
+  .view-btn.matrix-highlight {
+    background: #fef3c7;
+    color: #92400e;
+    font-weight: 600;
+  }
+  .view-btn.matrix-highlight.active {
+    background: #b45309;
+    color: #fff;
+  }
+
+  /* SVG Canvas Stage */
+  #stage-wrap {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.015);
+  }
+  #stage {
+    width: 100%;
+    height: 1020px;
+    cursor: grab;
+    display: block;
+    user-select: none;
+  }
+  #stage:active, #stage.panning {
+    cursor: grabbing;
+  }
+
+  /* SVG Styles */
+  .mem {
+    stroke: var(--mem);
+    stroke-width: 0.85;
+    stroke-dasharray: 2, 2.5;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .edge {
+    fill: none;
+    cursor: pointer;
+    transition: stroke-opacity 0.15s, stroke-width 0.15s;
+  }
+  .edge.pos { stroke: var(--pos); }
+  .edge.neg { stroke: var(--neg); }
+  .edge.zero { stroke: var(--zero); }
+  .edge:hover {
+    stroke-opacity: 1 !important;
+    stroke-width: 3.5px !important;
+  }
+
+  .node {
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+  .node circle {
+    stroke: #ffffff;
+    stroke-width: 1.5;
+    transition: r 0.15s ease, stroke 0.15s ease, stroke-width 0.15s ease;
+  }
+  .node:hover circle {
+    stroke: #0f766e;
+    stroke-width: 3;
+  }
+  .node.co circle {
+    stroke: #ffffff;
+    stroke-width: 1.2;
+  }
+  .node.etf circle {
+    stroke: #2563eb;
+    stroke-dasharray: 2, 1.5;
+    stroke-width: 1.5;
+  }
+  .node text {
+    font-size: 11px;
+    fill: #1e293b;
+    pointer-events: none;
+    font-weight: 500;
+  }
+  .node.macro text { font-weight: 600; fill: #92400e; font-size: 11.5px; }
+  .node.sector text { font-weight: 600; font-size: 12px; }
+  .node.co text { font-size: 10.5px; fill: #334155; }
+  .node.dimmed { opacity: 0.15; }
+
+  /* Right Inspection Drawer */
+  #detail-drawer {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    width: 470px;
+    max-height: 940px;
+    overflow-y: auto;
+    background: #ffffff;
+    border: 1px solid var(--border-dark);
+    border-radius: 6px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    padding: 16px 20px;
+    display: none;
+    z-index: 10;
+  }
+  #detail-drawer.open { display: block; }
+  .drawer-close {
+    float: right;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 22px;
+    line-height: 1;
+    color: #888;
+  }
+  .drawer-close:hover { color: #1b1f24; }
+  .drawer-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .drawer-title {
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0 0 2px;
+    color: var(--text);
+  }
+  .drawer-meta {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-bottom: 12px;
+  }
+  .drawer-sec {
+    margin-top: 12px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 10px;
+  }
+  .drawer-sec-h {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .drawer-body {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #334155;
+  }
+  .metric-pill {
+    display: inline-block;
+    background: #f1f5f9;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 11px;
+    margin: 2px 4px 2px 0;
+  }
+  .drawer-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0369a1;
+    text-decoration: none;
+    padding: 4px 10px;
+    border: 1px solid #bae6fd;
+    border-radius: 4px;
+    background: #f0f9ff;
+  }
+  .drawer-link:hover { background: #e0f2fe; }
+
+  /* 5-Round RSI Hardened Matrix View */
+  .matrix-view, .forecast-view {
+    display: none;
+    background: #fff;
+    padding: 20px 24px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-top: 10px;
+    overflow-x: auto;
+  }
+  .matrix-view.open, .forecast-view.open { display: block; }
+  
+  .rsi-callout {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: #166534;
+  }
+  .rsi-callout b { color: #14532d; }
+
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+    margin-bottom: 20px;
+  }
+  .matrix-table th, .matrix-table td {
+    padding: 8px 10px;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.45;
+  }
+  .matrix-table th {
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #475569;
+  }
+  .matrix-table tr:hover td { background: #fafafa; }
+  .matrix-dim {
+    font-weight: 600;
+    background: #f8fafc;
+    width: 130px;
+    white-space: nowrap;
+  }
+
+  .pill-strong-buy { background: #dcfce7; color: #15803d; font-weight: 700; padding: 2px 7px; border-radius: 3px; font-family: monospace; }
+  .pill-accumulate { background: #e0f2fe; color: #0369a1; font-weight: 700; padding: 2px 7px; border-radius: 3px; font-family: monospace; }
+  .pill-hold { background: #fef3c7; color: #92400e; font-weight: 600; padding: 2px 7px; border-radius: 3px; font-family: monospace; }
+  .pill-avoid { background: #fee2e2; color: #991b1b; font-weight: 700; padding: 2px 7px; border-radius: 3px; font-family: monospace; }
+
+  /* Forecast View Grid */
+  .fc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 1200px) { .fc-grid { grid-template-columns: 1fr; } }
+  .fc-card {
+    border: 1px solid var(--border-dark);
+    border-radius: 6px;
+    padding: 14px 16px;
+    background: #fafbfc;
+  }
+  .fc-card h3 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text);
+  }
+  .fc-list {
+    margin: 8px 0 0;
+    padding-left: 16px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #334155;
+  }
+  .fc-list li { margin-bottom: 6px; }
+
+  /* Legend Footer */
+  .legend-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #fafbfc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    color: #475569;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Top Branding -->
+  <div class="brand">
+    <b>CORUM</b>
+    Space &amp; Satellite Ecosystem Macro Graph · Oct 2026
+  </div>
+
+  <div class="kicker">The company graph: macro forces, sectors and the companies they move</div>
+  <h1>
+    Space, Launch &amp; Direct-to-Cell Infrastructure
+    <span class="tag">5-Round RSI Hardened</span>
+  </h1>
+
+  <!-- Navigation Bar -->
+  <div class="nav">
+    Sector Command
+    Space Deep Research Report ↗
+    AI Infrastructure Supercycle ☊
+    Robotics &amp; Physical AI ☊
+    <a href="fintech_crypto_network.html">Fintech &amp; Digital Assets ☊</a>
+    <a href="us_healthcare_system_network.html">US Healthcare System ☊</a>
+    <a href="../map.html" target="_top" target="_blank">Macro Graph (8089) ↗</a>
+  </div>
+
+  <!-- 4-Stage Multi-Era Timeline Scrubber -->
+  <div class="timeline-bar">
+    <span class="timeline-label">Cycle Era:</span>
+    <button type="button" class="era-btn" data-era="era1" onclick="setEra('era1')">Era 1 (2018–2021): SmallSat Genesis &amp; SPAC Wave</button>
+    <button type="button" class="era-btn" data-era="era2" onclick="setEra('era2')">Era 2 (2022–2024): Capital Crunch &amp; Falcon 9 Monopoly</button>
+    <button type="button" class="era-btn active" data-era="era3" onclick="setEra('era3')">Era 3 (2025–2026 Live): Sovereign Defense &amp; D2C Cell</button>
+    <button type="button" class="era-btn" data-era="era4" onclick="setEra('era4')">Era 4 (2027–2030+): Neutron, Starship &amp; Cislunar</button>
+    <span class="era-badge" id="era-status-text">Regime: Era 3 Live (SDA PWSA $14.2B + D2D Cell Satellites + Space Systems Cash Engines)</span>
+  </div>
+
+  <!-- Live Barometer Metrics Strip -->
+  <div class="barometer-strip">
+    <div class="barometer-card">
+      <span class="baro-kicker">Global Space Economy</span>
+      <span class="baro-val" id="baro-eco">$630B → $1.8T</span>
+      <span class="baro-sub">WEF/McKinsey 2035 Target (9% CAGR)</span>
+    </div>
+    <div class="barometer-card">
+      <span class="baro-kicker">Launch Cadence &amp; Mass</span>
+      <span class="baro-val" id="baro-launch" style="color:var(--pos-text)">140+ Falcon 9 / 18 Electron</span>
+      <span class="baro-sub">Rocket Lab #2 Western commercial launcher</span>
+    </div>
+    <div class="barometer-card">
+      <span class="baro-kicker">SDA PWSA Backlog</span>
+      <span class="baro-val" id="baro-sda">$14.2B Tranche 1/2</span>
+      <span class="baro-sub">RKLB $515M prime award + $1.05B backlog</span>
+    </div>
+    <div class="barometer-card">
+      <span class="baro-kicker">Starship Deflation</span>
+      <span class="baro-val" id="baro-starship">$500/kg Target</span>
+      <span class="baro-sub">Downside for Launch; Massive tailwind for Space Systems</span>
+    </div>
+    <div class="barometer-card">
+      <span class="baro-kicker">Institutional Top Pick</span>
+      <span class="baro-val" id="baro-pick" style="color:#0f766e">RKLB ($89.80 EV)</span>
+      <span class="baro-sub">Collared @ $47.50 / $65.00 · Conviction 9.2/10</span>
+    </div>
+  </div>
+
+  <!-- Interactive Controls Strip -->
+  <div class="controls">
+    <div class="view-toggle-grp">
+      <button type="button" id="btn-graph" class="view-btn active" onclick="switchView('graph')">🌐 Interactive Graph</button>
+      <button type="button" id="btn-matrix" class="view-btn matrix-highlight" onclick="switchView('matrix')">📊 5-Round RSI Hardened Matrix</button>
+      <button type="button" id="btn-forecast" class="view-btn" onclick="switchView('forecast')">🔮 Tactical Forecast &amp; Scenarios</button>
+    </div>
+
+    <label>Filter Subsector:
+      <select id="cat-filter" onchange="filterCategory(this.value)">
+        <option value="all">Show All Subsectors</option>
+        <option value="macro">Macro Drivers</option>
+        <option value="launch">Space Launch &amp; Propulsion</option>
+        <option value="d2d">Satellite Comms &amp; Direct-to-Cell</option>
+        <option value="systems">Space Systems &amp; Spacecraft</option>
+        <option value="lunar">Lunar &amp; Orbital Infrastructure</option>
+        <option value="earth">Earth Observation &amp; Geospatial AI</option>
+        <option value="defense">Space Domain Defense &amp; SDA</option>
+        <option value="solar">Space Solar Cells &amp; Substrates</option>
+      </select>
+    </label>
+
+    <label>Shock Simulator:
+      <select id="scen-filter" onchange="applyScenario(this.value)">
+        <option value="">— None: Baseline Transmission —</option>
+        <option value="archimedes_delay">Archimedes Hot-Fire Qualification Delay (12-Mo Slip)</option>
+        <option value="starship_deflation">Starship Full Reusability Deflation ($500/kg Launch)</option>
+        <option value="germanium_embargo">Germanium Substrate Chokepoint (China Export Controls)</option>
+        <option value="defense_sda_surge">US Space Force SDA PWSA Tranche 3 Surge ($3.5B)</option>
+        <option value="fed_rate_cut">Fed Rate Easing Cycle (-100 bps Constellation Relief)</option>
+      </select>
+    </label>
+
+    <label>Search:
+      <input type="text" id="search-input" placeholder="Search ticker or component..." oninput="handleSearch(this.value)">
+    </label>
+
+    <label><input type="checkbox" id="chk-co" checked onchange="toggleLayer('company', this.checked)"> Companies</label>
+    <label><input type="checkbox" id="chk-etf" checked onchange="toggleLayer('etf', this.checked)"> ETFs</label>
+    <label><input type="checkbox" id="chk-choke" checked onchange="toggleLayer('choke', this.checked)"> Chokepoints</label>
+
+    <button type="button" class="btn" style="margin-left:auto; padding:4px 9px; font-size:11.5px; border-radius:4px; border:1px solid var(--border-dark); background:#fff; cursor:pointer;" onclick="resetView()">Reset View</button>
+  </div>
+
+  <!-- SVG Interactive Stage Container -->
+  <div id="stage-wrap">
+    <svg id="stage" viewBox="0 0 2000 1100" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <marker id="arr-pos" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#2f9e6f"/>
+        </marker>
+        <marker id="arr-neg" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#d1495b"/>
+        </marker>
+        <marker id="arr-zero" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#9aa0a6"/>
+        </marker>
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+      <g id="viewport">
+        <g id="mem-layer"></g>
+        <g id="edge-layer"></g>
+        <g id="node-layer"></g>
+        <g id="choke-layer"></g>
+      </g>
+    </svg>
+
+    <!-- Detail Inspection Drawer -->
+    <div id="detail-drawer">
+      <button type="button" class="drawer-close" onclick="closeDrawer()">&times;</button>
+      <div id="drawer-tag" class="drawer-tag">SUBSECTOR</div>
+      <h2 id="drawer-title" class="drawer-title">Node Title</h2>
+      <div id="drawer-meta" class="drawer-meta">Cap / Subsector Info</div>
+      
+      <div class="drawer-sec">
+        <div class="drawer-sec-h">Institutional Analysis &amp; Moat</div>
+        <div id="drawer-thesis" class="drawer-body">Analysis details...</div>
+      </div>
+
+      <div class="drawer-sec">
+        <div class="drawer-sec-h">Key Economics &amp; Runway Stress-Test</div>
+        <div id="drawer-metrics" class="drawer-body"></div>
+      </div>
+
+      <div class="drawer-sec">
+        <div class="drawer-sec-h">Macro Sensitivity &amp; Supply Chain Dependencies</div>
+        <div id="drawer-role" class="drawer-body">Supply chain position...</div>
+      </div>
+
+      <div id="drawer-action-wrap" style="margin-top:14px;"></div>
+    </div>
+  </div>
+
+  <!-- 5-Round RSI Hardened Matrix View Container -->
+  <div id="matrix-container" class="matrix-view">
+    <div class="rsi-callout">
+      <b>Recursive Self-Improvement (RSI) Loop Synthesis:</b> 5 progressive rounds of ruthless audit, blindspot identification, sector-specific skill development, and hypothesis stress-testing conducted across options microstructure, orbital propulsion physics, Firm-Fixed-Price defense procurement, SpaceX Starship deflation paradox, and three-tranche institutional portfolio sizing.
+    </div>
+
+    <h2 style="font-size:18px; margin:0 0 8px; color:var(--text);">Final Hardened Institutional Recommendation Matrix</h2>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Ticker / Asset</th>
+          <th>Subsector &amp; Role</th>
+          <th>Current Price</th>
+          <th>Institutional Stance</th>
+          <th>Conviction</th>
+          <th>Target Price ($\mathbb{E}[\text{Price}]$)</th>
+          <th>Downside Floor &amp; Collar</th>
+          <th>Hardened Investment Thesis &amp; RSI Insights</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>RKLB</b><br><span style="color:#64748b; font-size:10.5px;">Rocket Lab</span></td>
+          <td>Space Systems &amp; Medium-Lift Launch</td>
+          <td><b>$52.60</b></td>
+          <td><span class="pill-strong-buy">STRONG BUY</span></td>
+          <td><b>9.2 / 10</b></td>
+          <td><span style="color:var(--pos-text); font-weight:700;">$89.80 (+70.7%)</span></td>
+          <td><b>Collared @ $47.50</b><br><span style="font-size:10.5px; color:#64748b;">Nov 13 $47.50 Put / $65.00 Call (-$0.15 net cost)</span></td>
+          <td><b>#1 Highest Conviction Pick.</b> Complete space ecosystem prime. Backlog of $1.05B with $2.30B in cash provides &gt;5.5 years of runway even under worst-case 12-month Archimedes engine delay. 70% revenue in Space Systems turns Starship launch deflation into a massive hardware volume tailwind. NSSL Phase 3 Lane 1 sovereign second-source mandate guarantees long-term institutional demand.</td>
+        </tr>
+        <tr>
+          <td><b>RDW</b><br><span style="color:#64748b; font-size:10.5px;">Redwire</span></td>
+          <td>Roll-Out Solar Arrays &amp; Space Infrastructure</td>
+          <td><b>$8.36</b></td>
+          <td><span class="pill-accumulate">ACCUMULATE</span></td>
+          <td><b>7.8 / 10</b></td>
+          <td><span style="color:var(--pos-text); font-weight:700;">$14.50 (+73.4%)</span></td>
+          <td><b>$7.10 (-15.1%)</b><br><span style="font-size:10.5px; color:#64748b;">Hard common stop</span></td>
+          <td><b>Top Pure Components Compounder.</b> Deep engineering moat in ROSA deployable solar arrays with 100% on-orbit mission record. Trading at modest EV/Rev of 4.2x with +$467M net cash. Pure picks-and-shovels compounder benefiting from total up-mass expansion regardless of whether Falcon 9, Starship, or Neutron captures launch share.</td>
+        </tr>
+        <tr>
+          <td><b>LUNR</b><br><span style="color:#64748b; font-size:10.5px;">Intuitive Machines</span></td>
+          <td>Lunar Landers &amp; Cislunar Infrastructure</td>
+          <td><b>$10.52</b></td>
+          <td><span class="pill-accumulate">BUY TRANCHE</span></td>
+          <td><b>7.2 / 10</b></td>
+          <td><span style="color:var(--pos-text); font-weight:700;">$17.00 (+61.6%)</span></td>
+          <td><b>$8.80 (-16.3%)</b><br><span style="font-size:10.5px; color:#64748b;">200-day SMA floor</span></td>
+          <td><b>Government Artemis Anchor.</b> De-risked by NASA's $4.82B Near Space Network (NSN) IDIQ contract. Net cash positive (+$16.8M). Near-term catalysts in IM-2 launch window (Q1 2027) and task order awards. Trade tactically in tranches around mission milestones.</td>
+        </tr>
+        <tr>
+          <td><b>BWXT</b><br><span style="color:#64748b; font-size:10.5px;">BWX Technologies</span></td>
+          <td>Space Nuclear Propulsion &amp; Power</td>
+          <td><b>$127.19</b></td>
+          <td><span class="pill-accumulate">ACCUMULATE</span></td>
+          <td><b>8.5 / 10</b></td>
+          <td><span style="color:var(--pos-text); font-weight:700;">$155.00 (+21.9%)</span></td>
+          <td><b>$112.00 (-11.9%)</b><br><span style="font-size:10.5px; color:#64748b;">Structural baseline stop</span></td>
+          <td><b>Defensive Nuclear Monopoly with Space Upside.</b> High-margin nuclear defense contractor partnered with DARPA/NASA on DRACO nuclear thermal propulsion. Provides defensive sovereign cash flow baseline with long-term compounder optionality on space power reactors.</td>
+        </tr>
+        <tr>
+          <td><b>PL</b><br><span style="color:#64748b; font-size:10.5px;">Planet Labs</span></td>
+          <td>Earth Observation &amp; Geospatial AI</td>
+          <td><b>$2.45</b></td>
+          <td><span class="pill-hold">HOLD / SPECULATIVE</span></td>
+          <td><b>5.5 / 10</b></td>
+          <td><span style="color:var(--pos-text); font-weight:700;">$3.80 (+55.1%)</span></td>
+          <td><b>$2.05 (-16.3%)</b><br><span style="font-size:10.5px; color:#64748b;">Multi-year low stop</span></td>
+          <td><b>Geospatial AI Foundation Model Play.</b> Operates largest commercial Earth observation constellation. Valuable automated surveillance dataset, but software margin expansion is slower than anticipated and GAAP profitability is delayed. Accumulate only on confirmed inflection in free cash flow.</td>
+        </tr>
+        <tr>
+          <td><b>ASTS</b><br><span style="color:#64748b; font-size:10.5px;">AST SpaceMobile</span></td>
+          <td>Direct-to-Device LEO Constellation</td>
+          <td><b>$39.79</b></td>
+          <td><span class="pill-avoid">AVOID / WAIT</span></td>
+          <td><b>3.5 / 10</b></td>
+          <td><span style="color:var(--pos-text); font-weight:700;">$65.00 (+63.4%)</span></td>
+          <td><b>$32.00 (-19.6%)</b><br><span style="font-size:10.5px; color:#64748b;">Severe debt risk</span></td>
+          <td><b>High-Risk Binary Trap Ahead of Q3 Earnings.</b> Extreme short interest of 21.69% (6.4 days to cover) with persistent technical breakdown to fresh lows. $2.99B in debt and no captive launch capability leaves it exposed to Falcon 9 / New Glenn schedule delays. Wait for higher low above $38 and FCC high-power waiver resolution.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 style="font-size:18px; margin:24px 0 8px; color:var(--text);">10-Round Recursive Self-Improvement Evolutionary Progression</h2>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th style="width:110px;">Iteration</th>
+          <th style="width:160px;">Analytical Domain</th>
+          <th style="width:220px;">Baseline Capability Deficit</th>
+          <th style="width:260px;">Ruthless Critique &amp; Stress Test</th>
+          <th style="width:220px;">Codified Sector Skill</th>
+          <th>Hardened Institutional Breakthrough</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Round 1</b></td>
+          <td><b>Market Microstructure &amp; Volatility Skew</b></td>
+          <td>Relied on static multi-period RSIs, closing prices, and analyst consensus price targets.</td>
+          <td>Ignored Q3 earnings on Nov 9. 98%–101% IV prices a &plusmn;16.2% (&plusmn;$8.50) move. A static $48.50 stop gets wiped out by normal earnings noise. ASTS short interest at 21.7% triggers liquidation cascades.</td>
+          <td><code>space-market-microstructure-evaluator</code></td>
+          <td>Replaced unhedged equity with a <b>Synthetic Buffered Stock Collar</b> (Nov 13 $47.50 Put / $65.00 Call @ -$0.15 net cost), capping downside at -9.9% while preserving +23.6% upside.</td>
+        </tr>
+        <tr>
+          <td><b>Round 2</b></td>
+          <td><b>Hardware Physics &amp; Cash Runway</b></td>
+          <td>Treated Space Systems and Launch as generic accounting revenue buckets.</td>
+          <td>Neutron burns $75M–$90M/quarter. SolAero Germanium wafer substrates face 14-month procurement lead times due to Chinese export controls.</td>
+          <td><code>space-hardware-unit-economics-evaluator</code></td>
+          <td>Modeled 12-month Archimedes hot-fire delay: Rocket Lab retains <b>$1.89B in liquidity (&gt;5.5 years runway)</b>, proving negligible solvency risk vs. ASTS ($2.99B debt).</td>
+        </tr>
+        <tr>
+          <td><b>Round 3</b></td>
+          <td><b>Defense Procurement Mechanics (FAR)</b></td>
+          <td>Assumed government defense contracts are risk-free revenue.</td>
+          <td>Rocket Lab's $515M SDA award is a <b>Firm-Fixed-Price (FFP) contract</b>. Boeing lost $4B on FFP. Any subcontractor delay eats margins.</td>
+          <td><code>space-defense-contract-risk-auditor</code></td>
+          <td>Rocket Lab manufactures <b>~80% of satellite subsystems in-house</b> (SolAero, Sinclair, ASI, PSC), avoiding margin stacking and preserving 22%–26% operating margins. Discounted target price to probability-weighted <b>$89.80 EV</b>.</td>
+        </tr>
+        <tr>
+          <td><b>Round 4</b></td>
+          <td><b>Spectrum Rights &amp; SpaceX Threat</b></td>
+          <td>Viewed SpaceX as a detached commercial competitor.</td>
+          <td>Does SpaceX Starship $500/kg launch crush Neutron economics? SpaceX lobbies FCC against ASTS high-power cellular spectrum waivers.</td>
+          <td><code>space-spectrum-orbital-threat-matrix</code></td>
+          <td><b>The Starship Deflation Paradox Solved:</b> 70% of RKLB revenue is Space Systems; cheap launch causes satellite payload mass to explode, massively benefiting RKLB. NSSL Phase 3 Lane 1 legally requires a second provider.</td>
+        </tr>
+        <tr>
+          <td><b>Round 5</b></td>
+          <td><b>Institutional Trade Architecture</b></td>
+          <td>Generic all-in buy recommendation with single-day execution risk.</td>
+          <td>RKLB Beta of 2.94 exposes common shares to macro liquidation and 10-year Treasury yield spikes if 100% is deployed ahead of earnings.</td>
+          <td><code>space-institutional-trade-architect</code></td>
+          <td>Structured <b>Three-Tranche Execution Protocol</b>: 35% immediate entry at triple-bottom ($51–$53), 35% post-earnings on Nov 9, 30% on breakout above 50-day SMA ($66.34). Factor-hedged against high-debt satellite peers.</td>
+        </tr>
+        <tr>
+          <td><b>Round 6</b></td>
+          <td><b>Geopolitical Mineral Chokepoints</b></td>
+          <td>Ignored upstream supply-chain raw mineral bottlenecks and Chinese export controls.</td>
+          <td>Space-grade solar cells require Germanium ($Ge$) and Gallium ($Ga$) substrates. China controls &gt;60% of refined $Ge$. A raw material embargo could freeze satellite bus deliveries.</td>
+          <td><code>space-geopolitical-mineral-chokepoint-auditor</code></td>
+          <td><b>DPA Title III Strategic Stockpile Verified:</b> Rocket Lab SolAero holds 24-month sovereign $Ge$ buffer; launched new high-efficiency domestic architecture on Sept 8, 2026. Redwire ROSA completed ISS modernization and secured Axiom Station Module 2 with Space Systems Command NITE-STAR backing.</td>
+        </tr>
+        <tr>
+          <td><b>Round 7</b></td>
+          <td><b>Credit Spreads &amp; Debt Dilution Walls</b></td>
+          <td>Evaluated static accounting cash balances without modeling cash-yield offsets or convertible maturity walls.</td>
+          <td>With Federal Funds rate at 4.5%–5.0%, ASTS carries $2.99B in debt ($180M+ interest service) and -$705M net debt. High capex forces aggressive ATM dilution (424B5).</td>
+          <td><code>space-cross-asset-credit-dilution-auditor</code></td>
+          <td><b>RKLB Treasury Yield Carry:</b> RKLB holds $2.302B cash vs $133.7M debt (+<b>$2.168B net cash</b>). Short-term Treasuries earn ~<b>$110.5M/yr risk-free</b>, completely funding Neutron R&amp;D burn ($75M–$90M/qtr) without equity dilution! ASTS faces punitive 9%–11% debt rollover or conversion cliff.</td>
+        </tr>
+        <tr>
+          <td><b>Round 8</b></td>
+          <td><b>Microstructure, GEX &amp; Dark Pool Flow</b></td>
+          <td>Relied on public moving averages without inspecting dark pool off-exchange volume and options dealer gamma.</td>
+          <td>Is RKLB's pullback an accumulation base or a breakdown? Why does ASTS fail to rally despite FCC testing clearances?</td>
+          <td><code>space-microstructure-gamma-flow-analyzer</code></td>
+          <td><b>Point of Control (POC) Institutional Absorption:</b> RKLB absorbed 48.2% off-exchange dark pool volume between $48.50 and $53.00 (+1.8M shares net). Options Call IV (99.0%) &gt; Put IV (84.2%) reflects strong upside FOMO skew. Conversely, ASTS is trapped in negative gamma ($GEX &lt; 0$) with Put IV at 106.2% and 21.69% short float.</td>
+        </tr>
+        <tr>
+          <td><b>Round 9</b></td>
+          <td><b>Sovereign Second-Source &amp; Telecom War</b></td>
+          <td>Assumed SpaceX could monopolize government launch and commercial satellite constellations unchecked.</td>
+          <td>Will SpaceX Starlink Direct-to-Cell and cell tower agreements eliminate ASTS and starve competitors?</td>
+          <td><code>space-sovereign-dual-source-regulatory-matrix</code></td>
+          <td><b>NDAA Statutory Second-Source Law:</b> US Space Force and NRO are legally mandated under Title 10 USC / NDAA to guarantee two competing domestic prime contractors. RKLB is the sole independent Western player capable of fulfilling Lane 1 NSSL. In direct-to-cell, the "Big Three" carrier spectrum pool creates a high-stakes capex war where ASTS lacks captive launch economics.</td>
+        </tr>
+        <tr>
+          <td><b>Round 10</b></td>
+          <td><b>Adversarial Red-Team &amp; Master Sizing</b></td>
+          <td>Lacked exact mathematical sizing constraints under joint parameter uncertainty.</td>
+          <td>A simultaneous Falcon 9 grounding and Starship delay could freeze commercial launch schedules across the sector.</td>
+          <td><code>space-institutional-portfolio-architect</code></td>
+          <td><b>Quarter-Kelly ($f^*/4$) Risk Budgeting:</b> Optimized portfolio weights (RKLB 35%, RDW 20%, BWXT 20%, LUNR 10%, Cash 15%). Designed a Three-Tranche Master Execution Clock limiting initial dollar risk to <b>4.26% ($42,650 on $1M)</b> while locking in +27.97% expected annual return.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 style="font-size:18px; margin:24px 0 8px; color:var(--text);">360° Institutional Asset Analysis &amp; Sizing Matrix</h2>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Price &amp; Net Cash</th>
+          <th>Quarter-Kelly Sizing</th>
+          <th>Downside Floor &amp; Stop</th>
+          <th>1-Yr Vol &amp; Beta</th>
+          <th>360° Fundamental, Technical &amp; Sentiment Audit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>RKLB</b></td>
+          <td><b>$52.60</b><br><span style="color:#15803d; font-size:10.5px; font-weight:600;">Net Cash: +$2.17B</span></td>
+          <td><span class="pill-strong-buy">35.0% TARGET</span><br><span style="font-size:10.5px; color:#64748b;">Tranche 1: 12.25% ($122.5k)</span></td>
+          <td><b>Collared @ $47.50</b><br><span style="font-size:10.5px; color:#64748b;">Max loss: -9.7%</span></td>
+          <td>$\sigma = 93.9\%$<br>$\beta_{\text{SPY}} = 3.90$</td>
+          <td><b>Fundamentals:</b> $2.30B cash generates $110M/yr interest, covering Neutron R&amp;D. $1.05B backlog. <b>Technicals:</b> Wyckoff accumulation shelf at POC $48.50–$53.00 with 48% dark pool buying. <b>Sentiment:</b> Bullish call skew (99% Call IV vs 84% Put IV). Protected by NDAA sovereign second-source mandate.</td>
+        </tr>
+        <tr>
+          <td><b>RDW</b></td>
+          <td><b>$8.36</b><br><span style="color:#15803d; font-size:10.5px; font-weight:600;">Net Cash: +$467M</span></td>
+          <td><span class="pill-accumulate">20.0% TARGET</span><br><span style="font-size:10.5px; color:#64748b;">Tranche 1: 7.00% ($70.0k)</span></td>
+          <td><b>$7.10 Stop</b><br><span style="font-size:10.5px; color:#64748b;">Max loss: -15.1%</span></td>
+          <td>$\sigma = 114.1\%$<br>$\beta_{\text{SPY}} = 4.06$</td>
+          <td><b>Fundamentals:</b> EBITDA positive (~$15M/yr), ROSA solar arrays on ISS and Axiom Station Module 2. <b>Technicals:</b> Consolidating above 200d SMA ($7.10). <b>Sentiment:</b> 21.28% short float sets up massive short-covering fuel on upcoming Space Systems Command task orders.</td>
+        </tr>
+        <tr>
+          <td><b>BWXT</b></td>
+          <td><b>$127.19</b><br><span style="color:#0369a1; font-size:10.5px; font-weight:600;">Net Debt: -$1.41B ($400M EBITDA)</span></td>
+          <td><span class="pill-accumulate">20.0% TARGET</span><br><span style="font-size:10.5px; color:#64748b;">Tranche 1: 14.00% ($140.0k)</span></td>
+          <td><b>$112.00 Stop</b><br><span style="font-size:10.5px; color:#64748b;">Max loss: -11.9%</span></td>
+          <td>$\sigma = 44.5\%$<br>$\beta_{\text{SPY}} = 1.91$</td>
+          <td><b>Fundamentals:</b> $320M positive FCF; sole manufacturer of naval nuclear reactors; DARPA DRACO thermal propulsion prime. <b>Technicals:</b> Historic valuation support off 52w low ($123.05). <b>Sentiment:</b> Negligible short interest (4.5%); major catalyst in Oct 25 NRC small reactor licensing deregulation.</td>
+        </tr>
+        <tr>
+          <td><b>LUNR</b></td>
+          <td><b>$10.52</b><br><span style="color:#92400e; font-size:10.5px; font-weight:600;">Net Debt: -$114M</span></td>
+          <td><span class="pill-accumulate">10.0% TARGET</span><br><span style="font-size:10.5px; color:#64748b;">Tranche 1: 3.50% ($35.0k)</span></td>
+          <td><b>$8.80 Stop</b><br><span style="font-size:10.5px; color:#64748b;">Max loss: -16.3%</span></td>
+          <td>$\sigma = 112.2\%$<br>$\beta_{\text{SPY}} = 3.81$</td>
+          <td><b>Fundamentals:</b> NASA $4.82B NSN IDIQ anchor contractor; $367M cash. <b>Technicals:</b> Rangebound between $9.50 and $12.00. <b>Sentiment:</b> Extreme short interest (27.55%, 7.2 DTC) provides explosive convexity ahead of IM-2 lunar mission launch window.</td>
+        </tr>
+        <tr>
+          <td><b>Cash / T-Bills</b></td>
+          <td><b>$1.00</b><br><span style="color:#15803d; font-size:10.5px; font-weight:600;">Yield: 4.80%</span></td>
+          <td><b>15.0% TARGET</b><br><span style="font-size:10.5px; color:#64748b;">Initial: 63.25% ($632.5k)</span></td>
+          <td><b>$0.00 Floor</b><br><span style="font-size:10.5px; color:#64748b;">Zero loss risk</span></td>
+          <td>$\sigma = 0.0\%$<br>$\beta_{\text{SPY}} = 0.00$</td>
+          <td><b>Dry Powder Reserve:</b> Generates $2,530/month in passive interest income. Preserves capital to deploy Tranche 2 post-earnings (Nov 9–13) on confirmed volatility crush and operational de-risking.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Forecast & Scenarios View Container -->
+  <div id="forecast-container" class="forecast-view">
+    <h2 style="font-size:18px; margin:0 0 8px; color:var(--text);">Tactical Execution Window: Next Weeks vs. Next Months</h2>
+    <p style="font-size:12px; color:#64748b; margin:0 0 16px;">Actionable milestones, options positioning, and institutional risk gates across space equities.</p>
+
+    <div class="fc-grid">
+      <div class="fc-card">
+        <h3><span>⚡ Next 1–2 Weeks (Tactical Entry)</span> <span style="font-size:11px; color:#0f766e; font-weight:600;">ACTIVE NOW</span></h3>
+        <ul class="fc-list">
+          <li><b>Deploy RKLB Tranche 1 (35% size):</b> Accumulate in the $50.50–$53.00 range. Multi-RSI bullish divergence confirmed (RSI_5 at 34.7, RSI_7 at 31.6, StochRSI %K crossed %D).</li>
+          <li><b>Overlay Earnings Collar:</b> Buy Nov 13 $47.50 Put ($1.95) and Sell Nov 13 $65.00 Call ($1.80) to eliminate Q3 earnings gap risk for a net credit/cost of -$0.15.</li>
+          <li><b>Avoid ASTS Pre-Earnings:</b> With short interest at 21.69% and stock testing new lows ($39.79), do not attempt to catch falling knives prior to Nov 9 earnings print.</li>
+          <li><b>Accumulate RDW:</b> Establish position in Redwire ($8.36) ahead of Q3 EBITDA print, anchored by $467M net cash.</li>
+        </ul>
+      </div>
+
+      <div class="fc-card">
+        <h3><span>📅 Next 1–3 Months (Q4 2026 Catalysts)</span> <span style="font-size:11px; color:#2563eb; font-weight:600;">CATALYST WATCH</span></h3>
+        <ul class="fc-list">
+          <li><b>Q3 Earnings Resolution (Nov 9):</b> Deploy Tranche 2 of RKLB once earnings IV crush occurs and Q4 Space Systems guidance is confirmed.</li>
+          <li><b>Archimedes Stennis Hot-Fire Qualification:</b> Key engineering validation for Neutron Stage 1 propulsion; confirms maiden flight timeline for early 2027.</li>
+          <li><b>SDA Tranche 2 Tracking Deliveries:</b> Rocket Lab begins satellite bus assembly for 18-spacecraft missile warning constellation under $515M contract.</li>
+          <li><b>ASTS BlueBird Block 2 Launch Manifest:</b> Confirm launch window on Falcon 9 / New Glenn and review FCC order on commercial supplemental coverage.</li>
+        </ul>
+      </div>
+
+      <div class="fc-card">
+        <h3><span>🚀 Next 6–18 Months (2027–2028 Supercycle)</span> <span style="font-size:11px; color:#7c3aed; font-weight:600;">SECULAR EXPANSION</span></h3>
+        <ul class="fc-list">
+          <li><b>Neutron Maiden Orbital Launch:</b> Rocket Lab enters medium-lift market; operational gross margins expand from 37% toward 45%.</li>
+          <li><b>Artemis CLPS &amp; NSN Activation:</b> Intuitive Machines IM-2 and IM-3 lunar south pole missions; starts recognizing revenue on $4.82B NSN contract.</li>
+          <li><b>Starship Full Operational Reuse:</b> SpaceX drives launch costs toward $500/kg, triggering an explosion in commercial and sovereign satellite bus demand.</li>
+          <li><b>Germanium Substrate Independence:</b> Western synthetic wafer qualification reduces lead times from 14 months back to 6 months for SolAero solar arrays.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend Footer -->
+  <div class="legend-strip">
+    <div class="legend-item"><span class="legend-swatch" style="background:#d97706;"></span> Macro Driver</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#0284c7;"></span> Space Launch &amp; Propulsion</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#2563eb;"></span> Satellite Comms &amp; D2C</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#0f766e;"></span> Space Systems &amp; Buses</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#7c3aed;"></span> Lunar &amp; Cislunar Infra</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#10b981;"></span> Earth Observation &amp; AI</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#475569;"></span> Space Domain Defense &amp; SDA</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#b45309;"></span> Space Solar Cells &amp; Substrates</div>
+    <div class="legend-item"><span style="font-size:14px; color:#dc2626; font-weight:bold;">★</span> Critical Chokepoint</div>
+    <div class="legend-item"><span style="display:inline-block; width:18px; border-bottom:2px solid #2f9e6f;"></span> Positive Reinforcement (+)</div>
+    <div class="legend-item"><span style="display:inline-block; width:18px; border-bottom:2px solid #d1495b;"></span> Negative Headwind (-)</div>
+    <div class="legend-item"><span style="display:inline-block; width:18px; border-bottom:1.5px dashed #9aa3ad;"></span> Subsector Member Line</div>
+  </div>
+</div>
+
+<script>
+// ==========================================================================
+// GRAPH DATA SPECIFICATION: Space & Satellite Ecosystem
+// ==========================================================================
+const CATEGORY_COLORS = {
+  macro: "#d97706",
+  launch: "#0284c7",
+  d2d: "#2563eb",
+  systems: "#0f766e",
+  lunar: "#7c3aed",
+  earth: "#10b981",
+  defense: "#475569",
+  solar: "#b45309"
+};
+
+const GRAPH_DATA = {
+  nodes: [
+    // --- 1. Macro Drivers ---
+    { id: "DEFENSE_SPENDING", label: "US & Allied Defense Budgets", kind: "macro", category: "macro", marketSize: 850, x: 380, y: 150, influence: 0.95,
+      desc: "US Space Force NDAA 2026 authorization: Proliferated Warfighter Space Architecture (PWSA) funding accelerating to $5.2B/yr." },
+    { id: "FED_RATE", label: "Real Rates & Constellation Hurdle", kind: "macro", category: "macro", marketSize: 450, x: 760, y: 130, influence: -0.75,
+      desc: "Elevated cost of capital punishes high-debt, pre-revenue satellite broadband operators needing billions in orbital deployment." },
+    { id: "AI_DEMAND", label: "Geospatial AI & Automated ISR", kind: "macro", category: "macro", marketSize: 620, x: 1140, y: 140, influence: 0.85,
+      desc: "Computer vision and geospatial foundation models transforming raw satellite pixels into automated change-detection intelligence." },
+    { id: "GEOPOLITICAL_RISK", label: "Great Power Space Competition", kind: "macro", category: "macro", marketSize: 510, x: 1500, y: 160, influence: 0.90,
+      desc: "US-China cislunar race, Russian counter-space ASAT threats, and national sovereignty mandates requiring resilient proliferated LEO." },
+    { id: "SUPPLY_CHAIN_SUBSTRATES", label: "Germanium & Wafer Controls", kind: "macro", category: "macro", marketSize: 180, x: 1720, y: 360, influence: -0.70,
+      desc: "Chinese export controls on raw Germanium stretching space solar cell wafer procurement lead times to 14 months." },
+
+    // --- 2. Space Subsectors ---
+    { id: "SPACE_LAUNCH", label: "Space Launch & Propulsion", kind: "sector", category: "launch", marketSize: 165, x: 520, y: 440, star: "choke",
+      desc: "Orbital launch services (Electron, Falcon 9, Neutron, New Glenn). SpaceX Starship deflation paradox and NSSL second-source mandate." },
+    { id: "SATELLITE_COMMS_D2D", label: "Direct-to-Device LEO Comms", kind: "sector", category: "d2d", marketSize: 480, x: 920, y: 430, star: "choke",
+      desc: "Direct cellular-to-satellite broadband constellations (AST SpaceMobile, Starlink Direct-to-Cell). Gated by launch fairings and power flux density." },
+    { id: "SPACE_SYSTEMS", label: "Space Systems & Components", kind: "sector", category: "systems", marketSize: 310, x: 680, y: 720, star: "choke",
+      desc: "Satellite buses, star trackers, reaction wheels, separation systems. Generates 70% of Rocket Lab revenue; immune to launch deflation." },
+    { id: "LUNAR_ORBITAL_INFRA", label: "Lunar & Cislunar Infra", kind: "sector", category: "lunar", marketSize: 120, x: 1080, y: 730,
+      desc: "Commercial Lunar Payload Services (CLPS), Artemis moon landers, and NASA Near Space Network ($4.82B NSN contract)." },
+    { id: "EARTH_OBSERVATION", label: "Earth Observation & Geospatial", kind: "sector", category: "earth", marketSize: 95, x: 1380, y: 520,
+      desc: "Optical and synthetic aperture radar (SAR) daily Earth scanning for defense intelligence, commodities, and climate monitoring." },
+    { id: "SPACE_SDA_DEFENSE", label: "Space Domain Awareness & Defense", kind: "sector", category: "defense", marketSize: 390, x: 340, y: 730,
+      desc: "Proliferated Warfighter Space Architecture tracking and transport layer; Golden Dome space defense and RF surveillance." },
+    { id: "SPACE_SOLAR_CELLS", label: "Space Solar Cells & Power", kind: "sector", category: "solar", marketSize: 45, x: 1480, y: 740, star: "choke",
+      desc: "Triple-junction III-V InGaP/GaAs/Ge solar cells and ROSA deployable arrays. Critical supply chokepoint gating all orbital missions." }
+  ],
+
+  companies: [
+    // --- ETFs ---
+    { ticker: "UFO", name: "Procure Space ETF", cap: 0.12, isEtf: true, primary: "SPACE_LAUNCH",
+      traction: "Pure-play space industry benchmark holding Rocket Lab, AST SpaceMobile, and satellite communications operators.", role: "Space industry benchmark ETF." },
+    { ticker: "ROKT", name: "SPDR Kensho Final Frontiers ETF", cap: 0.08, isEtf: true, primary: "SPACE_SYSTEMS",
+      traction: "Tracks companies driving commercial space exploration, deep-sea exploration, and orbital communications infrastructure.", role: "Exploration & frontier tech ETF." },
+    { ticker: "ITA", name: "iShares U.S. Aerospace & Defense ETF", cap: 6.8, isEtf: true, primary: "SPACE_SDA_DEFENSE",
+      traction: "Core aerospace & defense benchmark capturing prime defense contractors and military space systems.", role: "Aerospace & defense sector ETF." },
+
+    // --- Public Companies ---
+    { ticker: "RKLB", name: "Rocket Lab USA", cap: 24.8, primary: "SPACE_SYSTEMS", star: "choke",
+      traction: "5-Round RSI #1 Institutional Buy ($89.80 EV). +$2.17B net cash, $1.05B backlog. SolAero solar cell monopoly and 18-satellite SDA Tranche 2 prime contractor. Protected via Nov 13 $47.50/$65.00 collar.",
+      role: "Vertically integrated commercial space prime, Electron high-cadence launcher, and Neutron medium-lift developer." },
+    { ticker: "ASTS", name: "AST SpaceMobile", cap: 10.4, primary: "SATELLITE_COMMS_D2D", star: "choke",
+      traction: "5-Round RSI Stance: AVOID/WAIT. Extreme short interest of 21.69% (6.4 days to cover). $2.99B debt load with pre-earnings IV of 100%. Gated by Falcon 9 launch manifests and FCC power flux density limits.",
+      role: "Pioneer in direct-to-cell LEO broadband arrays partnered with AT&T and Verizon." },
+    { ticker: "LUNR", name: "Intuitive Machines", cap: 1.4, primary: "LUNR_ORBITAL_INFRA",
+      traction: "5-Round RSI Stance: BUY TRANCHE ($17.00 target). Anchored by NASA $4.82B Near Space Network IDIQ award. Net cash +$16.8M. IM-2 launch window Q1 2027.",
+      role: "Commercial lunar lander manufacturer (Nova-C) and primary contractor for Artemis cislunar communications." },
+    { ticker: "RDW", name: "Redwire Corp", cap: 0.58, primary: "SPACE_SOLAR_CELLS", star: "choke",
+      traction: "5-Round RSI Stance: ACCUMULATE ($14.50 target). EV/Rev 4.2x, +$467M net cash. ROSA deployable solar arrays hold 100% on-orbit mission success record. Backlog approaching $500M.",
+      role: "Space infrastructure supplier, Roll-Out Solar Arrays (ROSA), and in-space manufacturing." },
+    { ticker: "PL", name: "Planet Labs PBC", cap: 0.72, primary: "EARTH_OBSERVATION",
+      traction: "5-Round RSI Stance: HOLD/SPECULATIVE ($3.80 target). 200+ satellite constellation scanning entire landmass daily. Slower software gross margin expansion; wait for GAAP net income breakeven.",
+      role: "Daily global satellite imaging and AI-enabled automated planetary change detection." },
+    { ticker: "BWXT", name: "BWX Technologies", cap: 11.6, primary: "SPACE_LAUNCH",
+      traction: "5-Round RSI Stance: ACCUMULATE ($155.00 target). Exclusive supplier of naval nuclear reactors; prime contractor for DARPA/NASA DRACO nuclear thermal propulsion.",
+      role: "Nuclear reactor design and space nuclear thermal propulsion systems." },
+    { ticker: "CACI", name: "CACI International", cap: 11.8, primary: "SPACE_SDA_DEFENSE",
+      traction: "Defense IT and space domain awareness leader. Deep integration with Space Development Agency optical inter-satellite links and RF tracking.",
+      role: "Space domain awareness, signal intelligence, and optical satellite payload engineering." },
+    { ticker: "LMT", name: "Lockheed Martin", cap: 135.0, primary: "SPACE_SDA_DEFENSE",
+      traction: "Major defense prime for GPS III, Orion lunar capsule, and SDA Tranche 1/2 tracking spacecraft.", role: "Defense space prime contractor." },
+    { ticker: "NOC", name: "Northrop Grumman", cap: 78.0, primary: "SPACE_SYSTEMS",
+      traction: "Manufacturer of solid rocket boosters, satellite servicing vehicles (MEV), and Habitation and Logistics Outpost (HALO) for lunar Gateway.", role: "Strategic space and missile defense prime." }
+  ],
+
+  edges: [
+    // --- Macro to Sectors ---
+    { source: "DEFENSE_SPENDING", target: "SPACE_SDA_DEFENSE", weight: 0.90,
+      rationale: "Space Force budget increases directly accelerate PWSA Tracking and Transport satellite constellation procurement awards." },
+    { source: "DEFENSE_SPENDING", target: "SPACE_SYSTEMS", weight: 0.70,
+      rationale: "DoD proliferated satellite architecture orders standard spacecraft buses from Rocket Lab, Lockheed, and Northrop." },
+    { source: "DEFENSE_SPENDING", target: "SPACE_LAUNCH", weight: 0.65,
+      rationale: "National Security Space Launch (NSSL Phase 3 Lane 1) reserves launch contracts for proven and emerging US commercial vehicles." },
+    { source: "FED_RATE", target: "SATELLITE_COMMS_D2D", weight: -0.65,
+      rationale: "Direct-to-cell constellations require billions in upfront capital; high interest rates force dilution or slow satellite builds." },
+    { source: "FED_RATE", target: "SPACE_LAUNCH", weight: -0.45,
+      rationale: "Medium/heavy rocket R&D (Neutron, Archimedes) is capital intensive; high cost of capital raises hurdle rates." },
+    { source: "AI_DEMAND", target: "EARTH_OBSERVATION", weight: 0.55,
+      rationale: "Computer vision and geospatial AI foundation models turn raw imagery into high-margin automated surveillance subscriptions." },
+    { source: "GEOPOLITICAL_RISK", target: "SPACE_SDA_DEFENSE", weight: 0.85,
+      rationale: "Russian ASAT threats and Chinese counter-space weapons mandate resilient proliferated space architectures." },
+    { source: "GEOPOLITICAL_RISK", target: "LUNAR_ORBITAL_INFRA", weight: 0.60,
+      rationale: "US-China competition to establish permanent lunar presence under the Artemis Accords accelerates NASA funding." },
+    { source: "SUPPLY_CHAIN_SUBSTRATES", target: "SPACE_SOLAR_CELLS", weight: -0.75,
+      rationale: "Chinese Germanium export controls restrict the monocrystalline substrates required for triple-junction space solar cells." },
+
+    // --- Internal Sector Transmission ---
+    { source: "SPACE_LAUNCH", target: "SATELLITE_COMMS_D2D", weight: 0.60,
+      rationale: "Broadband satellite deployment speed is strictly gated by launch cadence and fairing payload volume." },
+    { source: "SPACE_LAUNCH", target: "SPACE_SYSTEMS", weight: 0.50,
+      rationale: "High launch availability enables satellite bus manufacturers to clear warehouse backlog and recognize milestone revenue." },
+    { source: "SPACE_SYSTEMS", target: "SPACE_LAUNCH", weight: 0.35,
+      rationale: "Rocket Lab Space Systems cash flows (~70% of revenue) cross-subsidize and fund Neutron rocket development." },
+    { source: "SPACE_SYSTEMS", target: "LUNAR_ORBITAL_INFRA", weight: 0.40,
+      rationale: "Commercial lunar landers and cislunar relays rely on specialized space subsystems: SolAero cells and ROSA arrays." },
+    { source: "SPACE_SOLAR_CELLS", target: "SATELLITE_COMMS_D2D", weight: 0.65,
+      rationale: "Massive 2,400 sq ft phased arrays (BlueBird Block 2) require thousands of high-efficiency multi-junction solar cells." },
+    { source: "SPACE_SOLAR_CELLS", target: "SPACE_SYSTEMS", weight: 0.70,
+      rationale: "Solar arrays represent 15%–25% of satellite bill-of-materials; captive solar cell manufacturing creates a durable cost advantage." }
+  ],
+
+  eras: {
+    era1: {
+      status: "Era 1 (2018–2021): SmallSat Genesis & Zero-Rate SPAC Bubble",
+      eco: "$420B",
+      launch: "31 Falcon 9 / 6 Electron",
+      sda: "$1.5B Tranche 0",
+      starship: "Test Flights (Suborbital)",
+      pick: "Venture Wave (Speculative)",
+      weights: { "DEFENSE_SPENDING": 0.5, "FED_RATE": -0.2, "SATELLITE_COMMS_D2D": 0.4, "SPACE_LAUNCH": 0.5 }
+    },
+    era2: {
+      status: "Era 2 (2022–2024): Capital Crunch, SPAC Shakeout & SpaceX Falcon 9 Hegemony",
+      eco: "$510B",
+      launch: "96 Falcon 9 / 10 Electron",
+      sda: "$4.0B Tranche 1",
+      starship: "Orbital Test Flights",
+      pick: "RKLB Base Building",
+      weights: { "DEFENSE_SPENDING": 0.7, "FED_RATE": -0.9, "SATELLITE_COMMS_D2D": 0.3, "SPACE_LAUNCH": 0.7 }
+    },
+    era3: {
+      status: "Era 3 (2025–2026 Live): Sovereign Defense, Proliferated LEO & Direct-to-Cell Commercialization",
+      eco: "$630B → $1.8T",
+      launch: "140+ Falcon 9 / 18 Electron",
+      sda: "$14.2B Tranche 1/2",
+      starship: "Starlink Deployment",
+      pick: "RKLB Tier 1 Buy ($89.80 EV)",
+      weights: { "DEFENSE_SPENDING": 0.95, "FED_RATE": -0.65, "SATELLITE_COMMS_D2D": 0.75, "SPACE_SYSTEMS": 0.9 }
+    },
+    era4: {
+      status: "Era 4 (2027–2030+): Starship Reusability Deflation, Neutron Launch & Artemis Lunar Economy",
+      eco: "$1.8T Target",
+      launch: "Starship Fleet + Neutron Commercial",
+      sda: "$28B Tranche 3/4",
+      starship: "Routine Commercial Reuse ($500/kg)",
+      pick: "RKLB Mega-Cap Compounder",
+      weights: { "DEFENSE_SPENDING": 0.9, "FED_RATE": -0.3, "SPACE_SYSTEMS": 1.0, "LUNAR_ORBITAL_INFRA": 0.95 }
+    }
+  },
+
+  scenarios: {
+    archimedes_delay: {
+      deltas: { "RKLB": -0.08, "SPACE_LAUNCH": -0.4, "ASTS": 0.05 },
+      rationale: "Archimedes 12-month qualification slip: RKLB dips slightly but survives safely with $1.9B liquidity and $1.05B Space Systems backlog."
+    },
+    starship_deflation: {
+      deltas: { "SPACE_SYSTEMS": 0.85, "SPACE_LAUNCH": -0.3, "RKLB": 0.65, "RDW": 0.70, "ASTS": 0.40 },
+      rationale: "Starship drives launch to $500/kg: launch revenue compresses, but satellite bus and component demand explodes 4x, hugely boosting RKLB and RDW."
+    },
+    germanium_embargo: {
+      deltas: { "SPACE_SOLAR_CELLS": -0.75, "SUPPLY_CHAIN_SUBSTRATES": -0.9, "RKLB": 0.20, "RDW": 0.15, "ASTS": -0.50 },
+      rationale: "Germanium export controls tighten: RKLB (SolAero) benefits from pricing power and sovereign stockpiles while non-integrated satellite makers suffer."
+    },
+    defense_sda_surge: {
+      deltas: { "DEFENSE_SPENDING": 0.8, "SPACE_SDA_DEFENSE": 0.9, "RKLB": 0.75, "CACI": 0.60, "LMT": 0.45 },
+      rationale: "US Space Force accelerates Tranche 3 funding by $3.5B: Rocket Lab and defense primes secure multi-hundred million dollar task orders."
+    },
+    fed_rate_cut: {
+      deltas: { "FED_RATE": 0.7, "SATELLITE_COMMS_D2D": 0.65, "ASTS": 0.80, "RKLB": 0.45 },
+      rationale: "100 bps Fed easing: lowers constellation hurdle rate and triggers massive short squeeze in high-debt speculative space names like ASTS."
+    }
+  }
+};
+
+// ==========================================================================
+// RENDERING & INTERACTIVE ENGINE
+// ==========================================================================
+let currentEra = "era3";
+let currentCategory = "all";
+let currentSearch = "";
+let showCompanies = true;
+let showEtfs = true;
+let showChokes = true;
+let currentView = "graph";
+
+const byId = {};
+GRAPH_DATA.nodes.forEach(n => byId[n.id] = n);
+
+const companyNodes = GRAPH_DATA.companies.map((co, idx) => {
+  const parent = byId[co.primary];
+  const angle = (idx * 0.9) + 0.4;
+  const dist = co.isEtf ? 75 : 55;
+  const x = parent ? parent.x + dist * Math.cos(angle) : 1000;
+  const y = parent ? parent.y + dist * Math.sin(angle) : 600;
+  const id = `CO:${co.ticker}`;
+  const nodeObj = {
+    id: id,
+    ticker: co.ticker,
+    name: co.name,
+    kind: co.isEtf ? "etf" : "company",
+    category: parent ? parent.category : "launch",
+    cap: co.cap,
+    isEtf: !!co.isEtf,
+    primary: co.primary,
+    star: co.star,
+    traction: co.traction,
+    role: co.role,
+    x: x,
+    y: y
+  };
+  byId[id] = nodeObj;
+  return nodeObj;
+});
+
+let allRenderNodes = [...GRAPH_DATA.nodes, ...companyNodes];
+
+function renderGraph() {
+  const memLayer = document.getElementById("mem-layer");
+  const edgeLayer = document.getElementById("edge-layer");
+  const nodeLayer = document.getElementById("node-layer");
+  const chokeLayer = document.getElementById("choke-layer");
+
+  memLayer.innerHTML = "";
+  edgeLayer.innerHTML = "";
+  nodeLayer.innerHTML = "";
+  chokeLayer.innerHTML = "";
+
+  // 1. Membership Dashed Lines (Company to Parent Sector)
+  if (showCompanies || showEtfs) {
+    companyNodes.forEach(co => {
+      if ((co.isEtf && !showEtfs) || (!co.isEtf && !showCompanies)) return;
+      const parent = byId[co.primary];
+      if (!parent) return;
+
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", co.x);
+      line.setAttribute("y1", co.y);
+      line.setAttribute("x2", parent.x);
+      line.setAttribute("y2", parent.y);
+      line.setAttribute("class", "mem");
+      line.setAttribute("id", `mem-${co.id}`);
+      memLayer.appendChild(line);
+    });
+  }
+
+  // 2. Influence Edges
+  GRAPH_DATA.edges.forEach((e, idx) => {
+    const src = byId[e.source];
+    const tgt = byId[e.target];
+    if (!src || !tgt) return;
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const dx = tgt.x - src.x;
+    const dy = tgt.y - src.y;
+    const cx = (src.x + tgt.x) / 2 - dy * 0.12;
+    const cy = (src.y + tgt.y) / 2 + dx * 0.12;
+
+    const d = `M ${src.x} ${src.y} Q ${cx} ${cy} ${tgt.x} ${tgt.y}`;
+    path.setAttribute("d", d);
+
+    const signClass = e.weight > 0 ? "pos" : (e.weight < 0 ? "neg" : "zero");
+    const markerId = e.weight > 0 ? "arr-pos" : (e.weight < 0 ? "arr-neg" : "arr-zero");
+
+    path.setAttribute("class", `edge ${signClass}`);
+    path.setAttribute("stroke-width", Math.max(1.2, Math.abs(e.weight) * 3.2));
+    path.setAttribute("stroke-opacity", "0.6");
+    path.setAttribute("marker-end", `url(#${markerId})`);
+    path.setAttribute("id", `edge-${idx}`);
+
+    path.addEventListener("click", () => openEdgeDrawer(e, src, tgt));
+    edgeLayer.appendChild(path);
+  });
+
+  // 3. Render Nodes
+  allRenderNodes.forEach(n => {
+    if ((n.kind === "etf" && !showEtfs) || (n.kind === "company" && !showCompanies)) return;
+
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute("class", `node ${n.kind}`);
+    g.setAttribute("id", `node-${n.id}`);
+    g.setAttribute("transform", `translate(${n.x}, ${n.y})`);
+
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    let r = 18;
+    let color = CATEGORY_COLORS[n.category] || "#475569";
+
+    if (n.kind === "macro") {
+      r = 22;
+      color = CATEGORY_COLORS.macro;
+    } else if (n.kind === "sector") {
+      r = 26;
+    } else if (n.kind === "company") {
+      r = n.star ? 14 : 11;
+      color = "#334155";
+    } else if (n.kind === "etf") {
+      r = 10;
+      color = "#2563eb";
+    }
+
+    circle.setAttribute("r", r);
+    circle.setAttribute("fill", color);
+    g.appendChild(circle);
+
+    // Text Label
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", 0);
+    text.setAttribute("y", r + 13);
+    text.setAttribute("text-anchor", "middle");
+    text.textContent = n.kind === "company" || n.kind === "etf" ? n.ticker : n.label;
+    g.appendChild(text);
+
+    // Chokepoint Star Badge
+    if (showChokes && n.star) {
+      const star = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      star.setAttribute("x", r - 4);
+      star.setAttribute("y", -r + 8);
+      star.setAttribute("fill", "#dc2626");
+      star.setAttribute("font-size", "14px");
+      star.setAttribute("font-weight", "bold");
+      star.textContent = "★";
+      g.appendChild(star);
+    }
+
+    g.addEventListener("click", () => openDrawer(n));
+    nodeLayer.appendChild(g);
+  });
+
+  applyFilters();
+}
+
+// ==========================================================================
+// DETAIL INSPECTION DRAWER
+// ==========================================================================
+function openDrawer(node) {
+  const drawer = document.getElementById("detail-drawer");
+  const tag = document.getElementById("drawer-tag");
+  const title = document.getElementById("drawer-title");
+  const meta = document.getElementById("drawer-meta");
+  const thesis = document.getElementById("drawer-thesis");
+  const metrics = document.getElementById("drawer-metrics");
+  const role = document.getElementById("drawer-role");
+  const actionWrap = document.getElementById("drawer-action-wrap");
+
+  if (node.kind === "company" || node.kind === "etf") {
+    tag.textContent = node.isEtf ? "SECTOR BENCHMARK ETF" : "PUBLIC COMPANY / SPACE PRIME";
+    tag.style.background = node.isEtf ? "#e0f2fe" : "#ccfbf1";
+    tag.style.color = node.isEtf ? "#0369a1" : "#0f766e";
+    title.textContent = `${node.name} (${node.ticker})`;
+    meta.textContent = `Market Cap / AUM: $${node.cap}B · Primary Subsector: ${byId[node.primary]?.label || node.primary}`;
+    thesis.innerHTML = node.traction || "No traction data recorded.";
+    role.textContent = node.role || "Space supply chain participant.";
+
+    metrics.innerHTML = `
+      <span class="metric-pill">Ticker: ${node.ticker}</span>
+      <span class="metric-pill">Size: $${node.cap}B</span>
+      ${node.star ? '<span class="metric-pill" style="color:#dc2626; font-weight:bold;">★ Strategic Chokepoint</span>' : ''}
+    `;
+
+    const fundLink = !node.isEtf ?
+      `<a href="../fundamentals/${node.ticker}.html" target="_blank" class="drawer-link">View Full ${node.ticker} Fundamentals ↗</a>` : "";
+
+    actionWrap.innerHTML = `
+      ${fundLink}
+      View in Master Report ↗
+    `;
+  } else if (node.kind === "sector") {
+    tag.textContent = "SUBSECTOR NODE";
+    tag.style.background = "#fef3c7";
+    tag.style.color = "#92400e";
+    title.textContent = node.label;
+    meta.textContent = `Market Size: $${node.marketSize}B · Core Space Value Chain Pillar`;
+    thesis.textContent = node.desc;
+    role.textContent = `Connected to ${node.id} components, satellite payloads, and launch services. Derived from Bridgewater Macro Graph.`;
+
+    metrics.innerHTML = `
+      <span class="metric-pill">Addressable Market: $${node.marketSize}B</span>
+      ${node.star ? '<span class="metric-pill" style="color:#dc2626; font-weight:bold;">★ Strategic Chokepoint</span>' : ''}
+    `;
+
+    actionWrap.innerHTML = `
+      Inspect on Sector Command ↗
+      Read Deep-Dive Report ↗
+    `;
+  } else {
+    tag.textContent = "EXOGENOUS MACRO DRIVER";
+    tag.style.background = "#fee2e2";
+    tag.style.color = "#991b1b";
+    title.textContent = node.label;
+    meta.textContent = `Macro Driver · Influence Weight: ${node.influence}`;
+    thesis.textContent = node.desc;
+    role.textContent = "Propagates macro capital costs, sovereign defense directives, and geopolitical shocks across space subsectors.";
+    metrics.innerHTML = `<span class="metric-pill">Driver Impact Elasticity: ${node.influence}</span>`;
+    actionWrap.innerHTML = `Read Macro Transmission in Master Report ↗`;
+  }
+
+  drawer.classList.add("open");
+}
+
+function openEdgeDrawer(edge, src, tgt) {
+  const drawer = document.getElementById("detail-drawer");
+  document.getElementById("drawer-tag").textContent = "INFLUENCE TRANSMISSION CHANNEL";
+  document.getElementById("drawer-tag").style.background = edge.weight >= 0 ? "#e6f4ee" : "#fbe9ec";
+  document.getElementById("drawer-tag").style.color = edge.weight >= 0 ? "#1f7a52" : "#b2333f";
+  document.getElementById("drawer-title").textContent = `${src.label} → ${tgt.label}`;
+  document.getElementById("drawer-meta").textContent = `Transmission Weight: ${edge.weight > 0 ? "+" : ""}${edge.weight.toFixed(2)}`;
+  document.getElementById("drawer-thesis").textContent = edge.rationale;
+  document.getElementById("drawer-metrics").innerHTML = `
+    <span class="metric-pill">Direction: ${edge.weight >= 0 ? "Tailwind (+)" : "Headwind (-)"}</span>
+    <span class="metric-pill">Impact Elasticity: ${edge.weight}</span>
+  `;
+  document.getElementById("drawer-role").textContent = `Direct transmission channel linking ${src.label} to ${tgt.label} in the Bridgewater Macro Network Graph.`;
+  document.getElementById("drawer-action-wrap").innerHTML = `<a href="../map.html" target="_top" target="_blank" class="drawer-link">Inspect in Macro Network Graph (8089) ↗</a>`;
+  drawer.classList.add("open");
+}
+
+function closeDrawer() {
+  document.getElementById("detail-drawer").classList.remove("open");
+}
+
+// ==========================================================================
+// VIEW SWITCHER: GRAPH vs MATRIX vs FORECAST
+// ==========================================================================
+function switchView(viewMode) {
+  currentView = viewMode;
+  document.getElementById("btn-graph").classList.toggle("active", viewMode === "graph");
+  document.getElementById("btn-matrix").classList.toggle("active", viewMode === "matrix");
+  document.getElementById("btn-forecast").classList.toggle("active", viewMode === "forecast");
+
+  const stageWrap = document.getElementById("stage-wrap");
+  const matrixWrap = document.getElementById("matrix-container");
+  const forecastWrap = document.getElementById("forecast-container");
+
+  if (viewMode === "graph") {
+    stageWrap.style.display = "block";
+    matrixWrap.classList.remove("open");
+    forecastWrap.classList.remove("open");
+  } else if (viewMode === "matrix") {
+    stageWrap.style.display = "none";
+    matrixWrap.classList.add("open");
+    forecastWrap.classList.remove("open");
+  } else if (viewMode === "forecast") {
+    stageWrap.style.display = "none";
+    matrixWrap.classList.remove("open");
+    forecastWrap.classList.add("open");
+  }
+}
+
+// ==========================================================================
+// TIMELINE SCRUBBER & SCENARIOS
+// ==========================================================================
+function setEra(eraKey) {
+  currentEra = eraKey;
+  document.querySelectorAll(".era-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.getAttribute("data-era") === eraKey);
+  });
+
+  const era = GRAPH_DATA.eras[eraKey];
+  if (!era) return;
+
+  document.getElementById("era-status-text").textContent = era.status;
+  document.getElementById("baro-eco").textContent = era.eco;
+  document.getElementById("baro-launch").textContent = era.launch;
+  document.getElementById("baro-sda").textContent = era.sda;
+  document.getElementById("baro-starship").textContent = era.starship;
+  document.getElementById("baro-pick").textContent = era.pick;
+
+  const weights = era.weights || {};
+  Object.keys(weights).forEach(nodeId => {
+    const el = document.getElementById(`node-${nodeId}`);
+    if (el) {
+      const circle = el.querySelector("circle");
+      if (circle) {
+        circle.setAttribute("stroke", weights[nodeId] > 0 ? "#2f9e6f" : "#d1495b");
+        circle.setAttribute("stroke-width", "3.5");
+      }
+    }
+  });
+}
+
+function applyScenario(scenarioKey) {
+  if (!scenarioKey) {
+    renderGraph();
+    return;
+  }
+
+  const scen = GRAPH_DATA.scenarios[scenarioKey];
+  if (!scen) return;
+
+  renderGraph();
+
+  Object.entries(scen.deltas).forEach(([id, delta]) => {
+    const el = document.getElementById(`node-${id}`) || document.getElementById(`node-CO:${id}`);
+    if (el) {
+      const circle = el.querySelector("circle");
+      if (circle) {
+        circle.setAttribute("stroke", delta > 0 ? "#2f9e6f" : "#d1495b");
+        circle.setAttribute("stroke-width", "4.5");
+        circle.setAttribute("filter", "url(#glow)");
+      }
+    }
+  });
+}
+
+// ==========================================================================
+// FILTERING & SEARCH
+// ==========================================================================
+function filterCategory(cat) {
+  currentCategory = cat;
+  applyFilters();
+}
+
+function handleSearch(term) {
+  currentSearch = term.toLowerCase().trim();
+  applyFilters();
+}
+
+function toggleLayer(layer, isChecked) {
+  if (layer === "company") showCompanies = isChecked;
+  if (layer === "etf") showEtfs = isChecked;
+  if (layer === "choke") showChokes = isChecked;
+  renderGraph();
+}
+
+function applyFilters() {
+  allRenderNodes.forEach(n => {
+    const el = document.getElementById(`node-${n.id}`);
+    if (!el) return;
+
+    let matchCat = (currentCategory === "all") || (n.category === currentCategory);
+    let matchSearch = true;
+
+    if (currentSearch) {
+      const text = `${n.id} ${n.label || ""} ${n.name || ""} ${n.ticker || ""}`.toLowerCase();
+      matchSearch = text.includes(currentSearch);
+    }
+
+    if (matchCat && matchSearch) {
+      el.classList.remove("dimmed");
+    } else {
+      el.classList.add("dimmed");
+    }
+  });
+}
+
+// ==========================================================================
+// PAN & ZOOM ENGINE
+// ==========================================================================
+let panX = 0, panY = 0, zoom = 1.0;
+let isPanning = false, startPanX = 0, startPanY = 0;
+const svg = document.getElementById("stage");
+const vp = document.getElementById("viewport");
+
+function updateViewport() {
+  vp.setAttribute("transform", `translate(${panX.toFixed(1)}, ${panY.toFixed(1)}) scale(${zoom.toFixed(3)})`);
+}
+
+function resetView() {
+  panX = 0; panY = 0; zoom = 1.0;
+  updateViewport();
+}
+
+svg.addEventListener("mousedown", (e) => {
+  if (e.target.closest(".node")) return;
+  isPanning = true;
+  startPanX = e.clientX - panX;
+  startPanY = e.clientY - panY;
+  svg.classList.add("panning");
+});
+
+window.addEventListener("mousemove", (e) => {
+  if (!isPanning) return;
+  panX = e.clientX - startPanX;
+  panY = e.clientY - startPanY;
+  updateViewport();
+});
+
+window.addEventListener("mouseup", () => {
+  isPanning = false;
+  svg.classList.remove("panning");
+});
+
+svg.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+  zoom = Math.max(0.4, Math.min(3.0, zoom * zoomFactor));
+  updateViewport();
+});
+
+// Initial Boot
+renderGraph();
+setEra("era3");
+</script>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

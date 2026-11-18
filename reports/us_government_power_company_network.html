@@ -1,0 +1,2017 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>U.S. Government Power &amp; Corporate Relationship Network Graph · CORUM Research</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --ground: #faf8f3;
+      --paper: #fdfcf9;
+      --line: #e4ded3;
+      --line-soft: #efe9df;
+      --sand: #f1ece2;
+      --ink: #16191d;
+      --muted: #5f656c;
+      --teal: #1d4e5f;
+      --gold: #8a6d1f;
+      --gold-ink: #735a14;
+      --green: #14614a;
+      --red: #9c2f22;
+      --green-bg: #e1efe8;
+      --red-bg: #f6e3df;
+      --amber-bg: #fbf3e0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--ground);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 18px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--teal);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .15s ease;
+    }
+    .back-btn:hover {
+      border-color: var(--teal);
+      background: var(--sand);
+    }
+    .badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--teal);
+      color: #fff;
+    }
+    .stats {
+      margin-left: auto;
+      font-size: 12.5px;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .action-btn {
+      font: inherit;
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .action-btn:hover { border-color: var(--teal); }
+    .content-wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+    .article-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 12px 0 16px;
+      color: var(--ink);
+    }
+    h2 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 24px;
+      font-weight: 500;
+      margin: 36px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--ink);
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 24px 0 10px;
+      color: var(--ink);
+    }
+    h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 18px 0 8px;
+    }
+    p, ul, ol {
+      margin: 0 0 16px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    a {
+      color: var(--teal);
+      text-underline-offset: 3px;
+    }
+    a.ticker-chip {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 1px 6px;
+      margin: 0 2px;
+      background: #eef4f6;
+      border: 1px solid #c8d9df;
+      border-radius: 4px;
+      color: var(--teal);
+      text-decoration: none;
+    }
+    a.ticker-chip:hover {
+      background: var(--teal);
+      color: #fff;
+    }
+    .tablewrap {
+      overflow-x: auto;
+      margin: 20px 0 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      background: var(--sand);
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: top;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: #fbf9f5;
+    }
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      background: var(--sand);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #f4eee2;
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+    }
+    blockquote {
+      margin: 18px 0;
+      padding: 12px 18px;
+      background: var(--amber-bg);
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      font-size: 13.5px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 32px 0;
+    }
+    .article-body img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 6px;
+    }
+    @media (max-width: 768px) {
+      .content-wrap { padding: 20px 16px 60px; }
+      h1 { font-size: 26px; }
+      h2 { font-size: 20px; }
+      .topbar { padding: 8px 14px; }
+      .stats { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="../index.html" target="_top" class="back-btn">← Back to CORUM Reports</a>
+    <span class="badge">U.S. Government &amp; Corporate Power Graph</span>
+    <span class="stats">69 min read · 15,106 words · Enacted 2025</span>
+    
+    <button onclick="window.print()" class="action-btn">Print / PDF</button>
+  </div>
+  <main class="content-wrap">
+    <article class="article-body">
+      <h1>U.S. Government Power &amp; Corporate Relationship Network Graph</h1>
+<h2>Complete Institutional Map of All Cabinet Secretaries, Deputy/Under Secretaries, U.S. Congress Committees &amp; 112 Public/Private Companies</h2>
+<ul>
+<li><strong>Total U.S. Government Nodes Mapped</strong>: <strong>75</strong> (6 White House Apex, 21 Cabinet Secretaries &amp; Independent Regulators, 32 Deputy/Under Secretaries &amp; Sub-Agency Heads, 16 U.S. Senate &amp; House Leadership/Committees)</li>
+<li><strong>Total Companies Mapped</strong>: <strong>112</strong> across 6 strategic sector clusters</li>
+<li><strong>Total Directed, Mechanism-Cited Relationships</strong>: <strong>932</strong></li>
+</ul>
+<hr />
+<h2>1. Executive Summary: Why the 'Under Secretary + Committee' Layer Drives Corporate Alpha</h2>
+<p>While headline macro commentary focuses on Presidential announcements, actual federal contract awards, export licenses, regulatory approvals, and tariff exemptions are executed through a <strong>three-stage institutional chain of command</strong>:</p>
+<ol>
+<li><strong>Tier 0 &amp; Tier 1 (White House &amp; Cabinet Secretaries)</strong>: Establish strategic policy direction via Executive Orders (e.g., EO 14186 <em>Golden Dome</em>, EO 14154 <em>Unleashing American Energy</em>, EO 14178 <em>Digital Financial Technology</em>, EO 14212 <em>MFN Drug Pricing</em>) and statutory emergency invokes (IEEPA, Section 232, Section 301, DPA Title III).</li>
+<li><strong>Tier 2 (Deputy Secretaries, Under Secretaries &amp; Sub-Agency Heads — the 'Under Sec' Layer)</strong>: Hold the operational pen on line-item procurement, licensing, and reimbursement:
+<ul>
+<li><strong>Pentagon (<code>USEC_DOD_*</code>)</strong>: DepSec <strong>Stephen Feinberg</strong>, USD(Policy) <strong>Elbridge Colby</strong>, USD(A&amp;S) <strong>Michael Duffey</strong>, USD(R&amp;E) <strong>Emil Michael</strong>, Golden Dome Director <strong>Gen. Michael Guetlein</strong>, and Service Secretaries <strong>John Phelan</strong> (Navy) &amp; <strong>Dan Driscoll</strong> (Army) control $960B+ in weapon-system awards, OTA commercial prototypes, and rare-earth equity/price-floor contracts.</li>
+<li><strong>Commerce &amp; State (<code>USEC_COMM_*</code>, <code>USEC_STATE_*</code>)</strong>: DepSec <strong>Paul Dabbar</strong> (CHIPS), BIS Under Sec. <strong>Jeffrey Kessler</strong> (AI chip/HBM export controls), NTIA Asst. Sec. <strong>Arielle Roth</strong> ($42.5B BEAD LEO satellite rewrite), State Under Sec. <strong>Jacob Helberg</strong> (<em>Pax Silica</em> sovereign AI deals), and Under Sec. <strong>Thomas DiNanno</strong> ($110B+ FMS/ITAR arms exports).</li>
+<li><strong>HHS (<code>USEC_HHS_*</code>)</strong>: DepSec <strong>Jim O'Neill</strong>, CMS Administrator <strong>Dr. Mehmet Oz</strong> (+5.06% MA rate notice, site-neutral ASC expansion), FDA Commissioner <strong>Dr. Marty Makary</strong> &amp; CBER Director <strong>Dr. Vinay Prasad</strong> (rare-disease <em>Plausible Mechanism</em> vs. stricter vaccine bars), and NIH Director <strong>Dr. Jay Bhattacharya</strong>.</li>
+<li><strong>Energy &amp; Interior (<code>USEC_DOE_*</code>, <code>USEC_DOI_*</code>, <code>USEC_FERC_NRC</code>)</strong>: DepSec <strong>James Danly</strong> (DOE Loan Programs Office &amp; grid emergency orders), Under Sec. <strong>Darío Gil</strong> (17 National Labs &amp; <em>Genesis Mission</em> AI supercomputers), NNSA Under Sec. <strong>Brandon Williams</strong> ($2.7B domestic HALEU &amp; naval reactors), Interior DepSec <strong>Katharine MacGregor</strong> (FAST-41 mining/LNG permits), and <strong>FERC / NRC</strong> Chairs.</li>
+<li><strong>Treasury &amp; DOJ (<code>USEC_TREAS_*</code>, <code>USEC_DOJ_*</code>)</strong>: DepSec <strong>Michael Faulkender</strong> (tax code/45X/CAMT rules), Under Sec. <strong>Luke Pettit</strong> &amp; FHFA Dir. <strong>Bill Pulte</strong> (GSIB SLR relief, Fannie/Freddie conservatorship exit, stablecoins), Under Sec. <strong>John Hurley</strong> (OFAC/CFIUS), OCC/FDIC heads <strong>Jonathan Gould</strong> &amp; <strong>Travis Hill</strong>, DAG <strong>Todd Blanche</strong>, and Antitrust AAG <strong>Gail Slater</strong>.</li>
+</ul>
+</li>
+<li><strong>Tier 3 (U.S. Congress — Senate &amp; House Leadership &amp; Committees)</strong>: Control the constitutional purse strings (Article I, Section 9), reconciliation tax/spending vehicles, statutory authorizations (NDAA, ADVANCE Act, GENIUS Act, BIOSECURE Act), and unilateral oversight subpoenas across both the <strong>119th Congress</strong> (Unified GOP Trifecta) and <strong>120th Congress</strong> (Divided House/Senate checks).</li>
+</ol>
+<hr />
+<h2>2. Tier 0 &amp; Tier 1: White House Apex, All 15 Cabinet Secretaries &amp; Independent Regulators</h2>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Node ID</th>
+<th style="text-align:left">Official &amp; Title</th>
+<th style="text-align:left">Tier</th>
+<th style="text-align:left">Department / Branch</th>
+<th style="text-align:left">Budget / Scope</th>
+<th style="text-align:left">Primary Connected Tickers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>WH_TRUMP</code></td>
+<td style="text-align:left"><strong>President Donald J. Trump</strong><br/><em>47th President of the United States</em></td>
+<td style="text-align:left">Tier 0 · White House Apex</td>
+<td style="text-align:left">Executive (Article II)</td>
+<td style="text-align:left">$6.8T Federal Executive Branch · Commander-in-Chief · Article II Directives &amp; Veto Pen</td>
+<td style="text-align:left"><code>LMT</code>, <code>RTX</code>, <code>PLTR</code>, <code>NVDA</code>, <code>NUE</code>, <code>LNG</code>, <code>GEO</code>, <code>JPM</code>, <code>COIN</code>, <code>TSLA</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>WH_VANCE</code></td>
+<td style="text-align:left"><strong>Vice President JD Vance</strong><br/><em>50th Vice President of the United States &amp; President of the Senate</em></td>
+<td style="text-align:left">Tier 0 · White House Apex</td>
+<td style="text-align:left">Executive &amp; Legislative Bridge (Art. I Sec. 3)</td>
+<td style="text-align:left">Senate Tie-Breaker · Capitol Hill Reconciliation Whip · Populist Antitrust &amp; Industrial Anchor</td>
+<td style="text-align:left"><code>NUE</code>, <code>CLF</code>, <code>MP</code>, <code>PLTR</code>, <code>AVAV</code>, <code>KTOS</code>, <code>GOOGL</code>, <code>CVS</code>, <code>CI</code>, <code>RNMBY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>WH_WILES_MILLER</code></td>
+<td style="text-align:left"><strong>Susie Wiles &amp; Stephen Miller</strong><br/><em>White House Chief of Staff (Wiles) &amp; Deputy CoS for Policy / Homeland Security Advisor (Miller)</em></td>
+<td style="text-align:left">Tier 0 · White House Apex</td>
+<td style="text-align:left">Executive Office of the President (EOP)</td>
+<td style="text-align:left">White House Policy Gatekeeping, Proclamation 10886 Border Emergency &amp; Inter-Agency Enforcement</td>
+<td style="text-align:left"><code>GEO</code>, <code>CXW</code>, <code>PLTR</code>, <code>AXON</code>, <code>LDOS</code>, <code>CACI</code>, <code>DHI</code>, <code>LEN</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>WH_VOUGHT_OMB_DOGE</code></td>
+<td style="text-align:left"><strong>Russell Vought (OMB &amp; DOGE)</strong><br/><em>Director of the Office of Management and Budget (OMB) &amp; DOGE Integration Lead</em></td>
+<td style="text-align:left">Tier 0 · White House Apex</td>
+<td style="text-align:left">Executive Office of the President (OMB / OIRA)</td>
+<td style="text-align:left">$6.8T Apportionment Gate · OIRA Regulatory Review · EO 14192 (10-for-1 Deregulation) · Federal IT Audits</td>
+<td style="text-align:left"><code>PLTR</code>, <code>NOW</code>, <code>MSFT</code>, <code>ORCL</code>, <code>BAH</code>, <code>SAIC</code>, <code>CACI</code>, <code>ACN</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>WH_SACKS_AI_CRYPTO</code></td>
+<td style="text-align:left"><strong>David Sacks (AI &amp; Crypto Czar)</strong><br/><em>White House AI &amp; Crypto Czar / Chair of PCAST (with Sr. AI Advisor Sriram Krishnan)</em></td>
+<td style="text-align:left">Tier 0 · White House Apex</td>
+<td style="text-align:left">Executive Office of the President</td>
+<td style="text-align:left">President's Working Group on Digital Assets · Strategic Bitcoin Reserve · Sovereign AI Compute Deals</td>
+<td style="text-align:left"><code>NVDA</code>, <code>AMD</code>, <code>AVGO</code>, <code>COIN</code>, <code>MSTR</code>, <code>HOOD</code>, <code>ORCL</code>, <code>MSFT</code>, <code>OPENAI</code>, <code>XAI</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>WH_NAVARRO_HOMAN</code></td>
+<td style="text-align:left"><strong>Peter Navarro &amp; Tom Homan</strong><br/><em>Sr. Counselor for Trade &amp; Manufacturing (Navarro) &amp; White House Border Czar (Homan)</em></td>
+<td style="text-align:left">Tier 0 · White House Apex</td>
+<td style="text-align:left">Executive Office of the President</td>
+<td style="text-align:left">Buy-American Procurement Rules · Sec. 232 Pharma/Auto/Steel Enforcement · ICE Deportation Logistics</td>
+<td style="text-align:left"><code>GEO</code>, <code>CXW</code>, <code>NUE</code>, <code>CLF</code>, <code>LLY</code>, <code>PFE</code>, <code>GM</code>, <code>F</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_DEFENSE_HEGSETH</code></td>
+<td style="text-align:left"><strong>Sec. Pete Hegseth (Defense)</strong><br/><em>Secretary of Defense (DoD / Pentagon)</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Defense</td>
+<td style="text-align:left">$1.0T FY26/27 Defense Plan ($850B Base + $150B Reconciliation Supplemental)</td>
+<td style="text-align:left"><code>LMT</code>, <code>RTX</code>, <code>NOC</code>, <code>GD</code>, <code>LHX</code>, <code>HII</code>, <code>PLTR</code>, <code>AVAV</code>, <code>KTOS</code>, <code>ANDURIL</code>, <code>SPACEX</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_STATE_RUBIO</code></td>
+<td style="text-align:left"><strong>Sec. Marco Rubio (State &amp; NSC)</strong><br/><em>Secretary of State &amp; Acting National Security Advisor</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of State &amp; National Security Council</td>
+<td style="text-align:left">$60B+ State/USAID Realigned Budget · $110B+ Foreign Military Sales (FMS) · Sanctions &amp; Minerals Diplomacy</td>
+<td style="text-align:left"><code>LMT</code>, <code>RTX</code>, <code>LNG</code>, <code>MP</code>, <code>FCX</code>, <code>ALB</code>, <code>XOM</code>, <code>CVX</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_TREASURY_BESSENT</code></td>
+<td style="text-align:left"><strong>Sec. Scott Bessent (Treasury)</strong><br/><em>Secretary of the Treasury</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of the Treasury</td>
+<td style="text-align:left">$28T+ US Sovereign Debt Market · IRS Tax Code · FSOC Chair · CFIUS Chair · OFAC Sanctions</td>
+<td style="text-align:left"><code>JPM</code>, <code>GS</code>, <code>MS</code>, <code>BAC</code>, <code>C</code>, <code>WFC</code>, <code>BX</code>, <code>APO</code>, <code>CAT</code>, <code>COIN</code>, <code>FNMA</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_COMMERCE_LUTNICK</code></td>
+<td style="text-align:left"><strong>Sec. Howard Lutnick (Commerce)</strong><br/><em>Secretary of Commerce</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Commerce</td>
+<td style="text-align:left">Sec. 232 Tariffs · $39B CHIPS Office · U.S. Investment Accelerator ($1B+ Projects) · BIS · NTIA · USPTO</td>
+<td style="text-align:left"><code>NVDA</code>, <code>TSM</code>, <code>INTC</code>, <code>MU</code>, <code>AAPL</code>, <code>NUE</code>, <code>STLD</code>, <code>ASTS</code>, <code>SPACEX</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_HHS_RFK</code></td>
+<td style="text-align:left"><strong>Sec. Robert F. Kennedy Jr. (HHS)</strong><br/><em>Secretary of Health and Human Services</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Health and Human Services</td>
+<td style="text-align:left">$1.8T+ Mandatory &amp; Discretionary Health Spend (CMS, FDA, NIH, CDC, ARPA-H, BARDA)</td>
+<td style="text-align:left"><code>UNH</code>, <code>HUM</code>, <code>CVS</code>, <code>LLY</code>, <code>NVO</code>, <code>PFE</code>, <code>MRNA</code>, <code>HCA</code>, <code>ISRG</code>, <code>PEP</code>, <code>KO</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_ENERGY_WRIGHT</code></td>
+<td style="text-align:left"><strong>Sec. Chris Wright (Energy / DOE)</strong><br/><em>Secretary of Energy (Vice Chair, National Energy Dominance Council)</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Energy</td>
+<td style="text-align:left">$52B Annual Budget + $400B+ LPO Loan Authority · LNG Exports · 17 National Labs · NNSA Nuclear Stockpile</td>
+<td style="text-align:left"><code>LNG</code>, <code>VG</code>, <code>CEG</code>, <code>VST</code>, <code>TLN</code>, <code>OKLO</code>, <code>SMR</code>, <code>LEU</code>, <code>GEV</code>, <code>HAL</code>, <code>SLB</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_INTERIOR_BURGUM</code></td>
+<td style="text-align:left"><strong>Sec. Doug Burgum (Interior &amp; NEDC)</strong><br/><em>Secretary of the Interior &amp; Chair of the National Energy Dominance Council (NEDC)</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of the Interior &amp; White House NEDC</td>
+<td style="text-align:left">500M+ Acres Federal Lands · 1.7B Acres Outer Continental Shelf · BLM, BOEM, USGS Critical Minerals</td>
+<td style="text-align:left"><code>XOM</code>, <code>CVX</code>, <code>COP</code>, <code>OXY</code>, <code>WMB</code>, <code>KMI</code>, <code>FCX</code>, <code>ALB</code>, <code>MP</code>, <code>PPTA</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_DOJ_BONDI</code></td>
+<td style="text-align:left"><strong>AG Pam Bondi (Justice / DOJ)</strong><br/><em>Attorney General of the United States</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Justice</td>
+<td style="text-align:left">$37B DOJ Budget · Antitrust Division · Civil/False Claims Act · Criminal/FCPA · Solicitor General</td>
+<td style="text-align:left"><code>GOOGL</code>, <code>AAPL</code>, <code>UNH</code>, <code>HUM</code>, <code>CVS</code>, <code>GEO</code>, <code>CXW</code>, <code>PLTR</code>, <code>AXON</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_DHS_NOEM</code></td>
+<td style="text-align:left"><strong>Sec. Kristi Noem (Homeland Security)</strong><br/><em>Secretary of Homeland Security</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Homeland Security</td>
+<td style="text-align:left">$107B Base + $175B Reconciliation Homeland Security Supplemental (CBP, ICE, CISA, TSA, USCG, FEMA)</td>
+<td style="text-align:left"><code>GEO</code>, <code>CXW</code>, <code>PLTR</code>, <code>AXON</code>, <code>MSI</code>, <code>LDOS</code>, <code>CACI</code>, <code>HII</code>, <code>PANW</code>, <code>CRWD</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_DOT_DUFFY</code></td>
+<td style="text-align:left"><strong>Sec. Sean Duffy (Transportation)</strong><br/><em>Secretary of Transportation</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Transportation</td>
+<td style="text-align:left">$110B+ Annual Aviation, Highway, Rail &amp; Maritime Infrastructure (FAA, NHTSA, FHWA, FRA, MARAD)</td>
+<td style="text-align:left"><code>TSLA</code>, <code>GM</code>, <code>F</code>, <code>BA</code>, <code>GE</code>, <code>RKLB</code>, <code>UBER</code>, <code>UNP</code>, <code>DAL</code>, <code>URI</code>, <code>CAT</code>, <code>SPACEX</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_VA_COLLINS</code></td>
+<td style="text-align:left"><strong>Sec. Doug Collins (Veterans Affairs)</strong><br/><em>Secretary of Veterans Affairs</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Veterans Affairs</td>
+<td style="text-align:left">$370B+ Mandatory &amp; Discretionary Budget · 9.1M Enrolled Veterans · VHA &amp; VBA</td>
+<td style="text-align:left"><code>HCA</code>, <code>THC</code>, <code>UHS</code>, <code>LDOS</code>, <code>MMS</code>, <code>ORCL</code>, <code>CACI</code>, <code>ISRG</code>, <code>UNH</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_USDA_ROLLINS</code></td>
+<td style="text-align:left"><strong>Sec. Brooke Rollins (Agriculture)</strong><br/><em>Secretary of Agriculture</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Agriculture</td>
+<td style="text-align:left">$210B+ Farm Bill, SNAP Nutrition, Commodity Credit Corp (CCC) &amp; U.S. Forest Service</td>
+<td style="text-align:left"><code>DE</code>, <code>CTVA</code>, <code>CF</code>, <code>ADM</code>, <code>BG</code>, <code>KO</code>, <code>PEP</code>, <code>WMT</code>, <code>COST</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_LABOR_CHAVEZ</code></td>
+<td style="text-align:left"><strong>Sec. Lori Chavez-DeRemer (Labor)</strong><br/><em>Secretary of Labor</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Labor</td>
+<td style="text-align:left">FLSA Wage/Hour Rules · OSHA Workplace Standards · EBSA/ERISA $12T Retirement Plans · Trade Apprenticeships</td>
+<td style="text-align:left"><code>UBER</code>, <code>PWR</code>, <code>EME</code>, <code>FIX</code>, <code>ROK</code>, <code>BX</code>, <code>APO</code>, <code>KKR</code>, <code>HII</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_HUD_TURNER</code></td>
+<td style="text-align:left"><strong>Sec. Scott Turner (HUD)</strong><br/><em>Secretary of Housing and Urban Development</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Housing and Urban Development</td>
+<td style="text-align:left">$70B+ HUD Budget · $1.4T FHA Mortgage Insurance Portfolio · Ginnie Mae MBS · Opportunity Zones 2.0</td>
+<td style="text-align:left"><code>DHI</code>, <code>LEN</code>, <code>PHM</code>, <code>URI</code>, <code>CAT</code>, <code>FNMA</code>, <code>FMCC</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>SEC_ED_MCMAHON</code></td>
+<td style="text-align:left"><strong>Sec. Linda McMahon (Education)</strong><br/><em>Secretary of Education</em></td>
+<td style="text-align:left">Tier 1 · Cabinet Secretary</td>
+<td style="text-align:left">Department of Education</td>
+<td style="text-align:left">$1.6T Federal Student Loan Portfolio · Title I / IDEA Block Grants · Workforce Pell Grants</td>
+<td style="text-align:left"><code>SOFI</code>, <code>SLM</code>, <code>NAVI</code>, <code>JPM</code>, <code>BAC</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CAB_USTR_GREER</code></td>
+<td style="text-align:left"><strong>Amb. Jamieson Greer (USTR)</strong><br/><em>United States Trade Representative (Cabinet Rank)</em></td>
+<td style="text-align:left">Tier 1 · Cabinet-Rank Trade</td>
+<td style="text-align:left">Executive Office of the President (USTR)</td>
+<td style="text-align:left">Section 301 Tariffs · Reciprocal Tariff Deals · 2026 USMCA Joint Review · Digital Services Tax (DST) Retaliation</td>
+<td style="text-align:left"><code>NUE</code>, <code>STLD</code>, <code>CLF</code>, <code>FSLR</code>, <code>MP</code>, <code>CAT</code>, <code>DE</code>, <code>GM</code>, <code>F</code>, <code>META</code>, <code>GOOGL</code>, <code>AAPL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CAB_EPA_ZELDIN</code></td>
+<td style="text-align:left"><strong>Admin. Lee Zeldin (EPA)</strong><br/><em>Administrator of the Environmental Protection Agency (Cabinet Rank)</em></td>
+<td style="text-align:left">Tier 1 · Cabinet-Rank Regulator</td>
+<td style="text-align:left">Environmental Protection Agency</td>
+<td style="text-align:left">Clean Air Act Sec. 111(d) Power Plant Rules · Light/Heavy-Duty Vehicle Tailpipe Rules · TSCA Chemical Reviews</td>
+<td style="text-align:left"><code>VST</code>, <code>TLN</code>, <code>CEG</code>, <code>GEV</code>, <code>XOM</code>, <code>CVX</code>, <code>GM</code>, <code>F</code>, <code>NUE</code>, <code>DOW</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CAB_INTEL_GABBARD_RATCLIFFE</code></td>
+<td style="text-align:left"><strong>DNI Tulsi Gabbard &amp; CIA Dir. John Ratcliffe</strong><br/><em>Director of National Intelligence (Gabbard) &amp; Director of the CIA (Ratcliffe)</em></td>
+<td style="text-align:left">Tier 1 · Cabinet-Rank Intelligence</td>
+<td style="text-align:left">U.S. Intelligence Community (ODNI / CIA / NSA / NRO / NGA)</td>
+<td style="text-align:left">$106B+ National Intelligence Program (NIP) &amp; Military Intelligence Program (MIP) Classified Spend</td>
+<td style="text-align:left"><code>PLTR</code>, <code>AMZN</code>, <code>MSFT</code>, <code>ORCL</code>, <code>BAH</code>, <code>CACI</code>, <code>LDOS</code>, <code>RKLB</code>, <code>PANW</code>, <code>SPACEX</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CAB_SEC_ATKINS_CFTC</code></td>
+<td style="text-align:left"><strong>SEC Chair Paul Atkins &amp; CFTC Chair Brian Quintenz</strong><br/><em>Chair of the Securities and Exchange Commission (Atkins) &amp; Chair of the CFTC (Quintenz)</em></td>
+<td style="text-align:left">Tier 1 · Independent Financial Regulator</td>
+<td style="text-align:left">Securities and Exchange Commission &amp; CFTC</td>
+<td style="text-align:left">$120T+ U.S. Equity, Fixed Income, Derivatives, Private Fund &amp; Digital Asset Markets</td>
+<td style="text-align:left"><code>COIN</code>, <code>HOOD</code>, <code>MSTR</code>, <code>BLK</code>, <code>JPM</code>, <code>GS</code>, <code>MS</code>, <code>BX</code>, <code>APO</code>, <code>KKR</code>, <code>KALSHI_POLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CAB_FTC_FERGUSON_FCC_CARR</code></td>
+<td style="text-align:left"><strong>FTC Chair Andrew Ferguson &amp; FCC Chair Brendan Carr</strong><br/><em>Chair of the Federal Trade Commission (Ferguson) &amp; Chair of the Federal Communications Commission (Carr)</em></td>
+<td style="text-align:left">Tier 1 · Independent Tech/Comms Regulator</td>
+<td style="text-align:left">Federal Trade Commission &amp; Federal Communications Commission</td>
+<td style="text-align:left">HSR Merger Review · PBM 6(b) Litigation · Big Tech Censorship Probes · Spectrum Auctions &amp; LEO Satellite Rules</td>
+<td style="text-align:left"><code>META</code>, <code>GOOGL</code>, <code>AMZN</code>, <code>CVS</code>, <code>CI</code>, <code>UNH</code>, <code>ASTS</code>, <code>SPACEX</code>, <code>TMUS</code>, <code>VZ</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CAB_FED_POWELL_BOWMAN</code></td>
+<td style="text-align:left"><strong>Fed Chair Jerome Powell &amp; Vice Chair Michelle Bowman</strong><br/><em>Chair of the Federal Reserve (Powell) &amp; Vice Chair for Supervision (Bowman)</em></td>
+<td style="text-align:left">Tier 1 · Central Bank &amp; Bank Supervision</td>
+<td style="text-align:left">Board of Governors of the Federal Reserve System</td>
+<td style="text-align:left">$6.8T Fed Balance Sheet · Federal Funds Rate Path · G-SIB Bank Capital Rules (eSLR &amp; Basel III Endgame)</td>
+<td style="text-align:left"><code>JPM</code>, <code>GS</code>, <code>MS</code>, <code>BAC</code>, <code>C</code>, <code>WFC</code>, <code>BX</code>, <code>APO</code>, <code>BLK</code>, <code>DHI</code>, <code>LEN</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>3. Tier 2: Complete Directory of Deputy Secretaries, Under Secretaries &amp; Sub-Agency Gatekeepers ('Under Sec' Layer)</h2>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Node ID</th>
+<th style="text-align:left">Deputy / Under Secretary / Agency Head</th>
+<th style="text-align:left">Parent Department</th>
+<th style="text-align:left">Operational &amp; Statutory Gatekeeping Power</th>
+<th style="text-align:left">Key Connected Companies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>USEC_DOD_DEP_FEINBERG</code></td>
+<td style="text-align:left"><strong>DepSec Stephen Feinberg (DoD COO)</strong><br/><em>Deputy Secretary of Defense (Pentagon COO &amp; Industrial Base Financier)</em></td>
+<td style="text-align:left">Department of Defense (OSD)</td>
+<td style="text-align:left">Co-founder of Cerberus Capital Management serving as Pentagon COO. Enforces strict Fixed-Price Incentive Fee (FPIF) discipline on legacy cost-plus overruns while channeling private/strategic capital into munitions, hypersonics, and autonomous defense challengers.</td>
+<td style="text-align:left"><code>LMT</code>, <code>RTX</code>, <code>NOC</code>, <code>GD</code>, <code>PLTR</code>, <code>AVAV</code>, <code>KTOS</code>, <code>ANDURIL</code>, <code>SHIELD_AI</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOD_POLICY_COLBY</code></td>
+<td style="text-align:left"><strong>Under Sec. Elbridge Colby (USD Policy)</strong><br/><em>Under Secretary of Defense for Policy (USD(P))</em></td>
+<td style="text-align:left">Department of Defense (Policy)</td>
+<td style="text-align:left">Architect of the 'Strategy of Denial'. Shifts US force posture and long-range anti-ship/air-defense munitions reserves to the First Island Chain (Taiwan/Indo-Pacific) while requiring European NATO allies to fund their own conventional deterrence via US FMS.</td>
+<td style="text-align:left"><code>LMT</code>, <code>RTX</code>, <code>NOC</code>, <code>HII</code>, <code>GD</code>, <code>BWXT</code>, <code>LHX</code>, <code>KTOS</code>, <code>AVAV</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOD_ACQ_DUFFEY</code></td>
+<td style="text-align:left"><strong>Under Sec. Michael Duffey (USD Acquisition &amp; Sustainment)</strong><br/><em>Under Secretary of Defense for Acquisition and Sustainment (USD(A&amp;S))</em></td>
+<td style="text-align:left">Department of Defense (Acquisition &amp; Sustainment)</td>
+<td style="text-align:left">Chief defense buyer. Executes multi-year procurement contracts for PAC-3 MSE, THAAD, SM-6, JASSM/LRASM, and 155mm shells; uses DPA Title III grants to break bottlenecks in solid rocket motors (LHX/NOC/Anduril) and critical defense minerals (MP/PPTA).</td>
+<td style="text-align:left"><code>LMT</code>, <code>RTX</code>, <code>LHX</code>, <code>NOC</code>, <code>GD</code>, <code>HEI</code>, <code>DRS</code>, <code>MP</code>, <code>PPTA</code>, <code>ATI</code>, <code>CRS</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOD_RNE_MICHAEL</code></td>
+<td style="text-align:left"><strong>Under Sec. Emil Michael (USD Research &amp; Eng / DIU / CDAO)</strong><br/><em>Under Secretary of Defense for Research and Engineering (CTO — overseeing DARPA, DIU, CDAO &amp; SCO)</em></td>
+<td style="text-align:left">Department of Defense (R&amp;E / DIU / CDAO)</td>
+<td style="text-align:left">Former Uber operational chief serving as Pentagon CTO. Scales commercial dual-use autonomy (DIU Replicator 2), Palantir/Anduril Maven Smart System CJADC2 battle management, counter-UAS directed energy, and hypersonic test beds.</td>
+<td style="text-align:left"><code>PLTR</code>, <code>AVAV</code>, <code>KTOS</code>, <code>NVDA</code>, <code>MSFT</code>, <code>AMZN</code>, <code>PANW</code>, <code>ANDURIL</code>, <code>SHIELD_AI</code>, <code>SARONIC</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOD_GOLDEN_DOME_SPACE</code></td>
+<td style="text-align:left"><strong>Gen. Michael Guetlein, Gen. Chance Saltzman, SecAF Troy Meink &amp; Lt. Gen. Heath Collins</strong><br/><em>Golden Dome Program Manager (Guetlein), Space Force CSO (Saltzman), SecAF (Meink) &amp; MDA Dir. (Collins)</em></td>
+<td style="text-align:left">U.S. Space Force, SDA, Missile Defense Agency (MDA) &amp; U.S. Air Force</td>
+<td style="text-align:left">Operates the highest-priority defense growth programs: Space Development Agency (SDA) Tranche 2/3 LEO infrared missile-tracking satellites, space-based boost-phase interceptors, Next-Gen Interceptor (NGI), Collaborative Combat Aircraft (CCA), and F-47.</td>
+<td style="text-align:left"><code>LMT</code>, <code>RTX</code>, <code>NOC</code>, <code>LHX</code>, <code>BA</code>, <code>KTOS</code>, <code>RKLB</code>, <code>ASTS</code>, <code>PLTR</code>, <code>SPACEX</code>, <code>ANDURIL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOD_NAVY_ARMY</code></td>
+<td style="text-align:left"><strong>SecNavy John Phelan &amp; SecArmy Dan Driscoll</strong><br/><em>Secretary of the Navy (Phelan) &amp; Secretary of the Army (Driscoll)</em></td>
+<td style="text-align:left">Department of the Navy &amp; Department of the Army</td>
+<td style="text-align:left">Phelan drives the $30B+ reconciliation shipbuilding surge across Virginia/Columbia nuclear submarines (HII, GD, BWXT) and unmanned surface vessels (Saronic); Driscoll cuts legacy Army wheeled vehicles to fund Patriot/IFPC air defense, FPV drones, and electronic warfare.</td>
+<td style="text-align:left"><code>HII</code>, <code>GD</code>, <code>BWXT</code>, <code>DRS</code>, <code>LMT</code>, <code>RTX</code>, <code>AVAV</code>, <code>PLTR</code>, <code>SARONIC</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_STATE_DEP_LANDAU</code></td>
+<td style="text-align:left"><strong>DepSec Christopher Landau &amp; Under Sec. Allison Hooker (State)</strong><br/><em>Deputy Secretary of State (Landau) &amp; Under Secretary for Political Affairs (Hooker)</em></td>
+<td style="text-align:left">Department of State</td>
+<td style="text-align:left">Landau spearheads commercial diplomacy, Panama Canal port security, and Mexican cross-border USMCA enforcement; Hooker manages Indo-Pacific alliance coordination and the 60-day Russia-Ukraine energy ceasefire sanctions review.</td>
+<td style="text-align:left"><code>XOM</code>, <code>CVX</code>, <code>UNP</code>, <code>GM</code>, <code>F</code>, <code>LNG</code>, <code>FCX</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_STATE_ECON_HELBERG</code></td>
+<td style="text-align:left"><strong>Under Sec. Jacob Helberg (State Economic Growth, Energy &amp; AI)</strong><br/><em>Under Secretary of State for Economic Growth, Energy, and the Environment</em></td>
+<td style="text-align:left">Department of State (E Bureau)</td>
+<td style="text-align:left">Former Palantir advisor and US-China Commission member. Negotiates sovereign AI data-center deals with Gulf/Indo-Pacific allies (requiring US cloud/chip stacks and excluding Huawei) and secures ex-China rare-earth, copper, and lithium offtake compacts.</td>
+<td style="text-align:left"><code>NVDA</code>, <code>MSFT</code>, <code>ORCL</code>, <code>PLTR</code>, <code>CSCO</code>, <code>MP</code>, <code>ALB</code>, <code>FCX</code>, <code>OPENAI</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_STATE_ARMS_DINANNO</code></td>
+<td style="text-align:left"><strong>Under Sec. Thomas DiNanno (State Arms Control &amp; FMS)</strong><br/><em>Under Secretary of State for Arms Control and International Security (DDTC / Political-Military Affairs)</em></td>
+<td style="text-align:left">Department of State (T Bureau / DDTC)</td>
+<td style="text-align:left">Controls the ITAR and Foreign Military Sales (FMS) approval gate. Fast-tracks F-35, Patriot PAC-3, HIMARS, and Apache sales to NATO, Poland, Japan, Taiwan, Israel, and Gulf allies while modernizing AUKUS Pillar II export exemptions.</td>
+<td style="text-align:left"><code>LMT</code>, <code>RTX</code>, <code>BA</code>, <code>NOC</code>, <code>GD</code>, <code>LHX</code>, <code>KTOS</code>, <code>AVAV</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_TREAS_DEP_FAULKENDER</code></td>
+<td style="text-align:left"><strong>DepSec Michael Faulkender &amp; Asst. Sec. Kenneth Kies (Treasury Tax)</strong><br/><em>Deputy Secretary of the Treasury (Faulkender) &amp; Assistant Secretary for Tax Policy (Kies)</em></td>
+<td style="text-align:left">Department of the Treasury (Tax Policy &amp; IRS)</td>
+<td style="text-align:left">Writes the Treasury/IRS regulations implementing retroactive Sec. 174 domestic R&amp;D expensing, 100% factory/equipment bonus depreciation, Foreign-Entity-of-Concern (FEOC) restrictions on 45X/45Q/45U credits, and corporate minimum tax (CAMT) relief.</td>
+<td style="text-align:left"><code>CAT</code>, <code>DE</code>, <code>URI</code>, <code>NUE</code>, <code>MSFT</code>, <code>GOOGL</code>, <code>META</code>, <code>CEG</code>, <code>FSLR</code>, <code>MP</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_TREAS_DOM_PETTIT</code></td>
+<td style="text-align:left"><strong>Under Sec. Luke Pettit (Domestic Finance) &amp; FHFA Dir. Bill Pulte</strong><br/><em>Under Secretary of the Treasury for Domestic Finance (Pettit) &amp; Director of FHFA (Pulte)</em></td>
+<td style="text-align:left">Department of the Treasury &amp; Federal Housing Finance Agency</td>
+<td style="text-align:left">Manages the US Treasury yield curve (balancing T-bill vs. coupon issuance to keep the 10Y yield below 4.75%), regulates stablecoin issuers as structural T-bill buyers, and structures the recapitalization and conservatorship exit of Fannie Mae and Freddie Mac.</td>
+<td style="text-align:left"><code>FNMA</code>, <code>FMCC</code>, <code>JPM</code>, <code>GS</code>, <code>MS</code>, <code>BAC</code>, <code>COIN</code>, <code>BLK</code>, <code>DHI</code>, <code>LEN</code>, <code>TETHER_CIRCLE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_TREAS_TFI_HURLEY</code></td>
+<td style="text-align:left"><strong>Under Sec. John Hurley (Treasury TFI / OFAC / FinCEN / CFIUS)</strong><br/><em>Under Secretary of the Treasury for Terrorism and Financial Intelligence (overseeing OFAC &amp; FinCEN)</em></td>
+<td style="text-align:left">Department of the Treasury (TFI / OFAC / CFIUS)</td>
+<td style="text-align:left">Wields the OFAC sanctions weapon and General License waivers (including temporary Russian diesel/energy licenses to cap pump prices), enforces outbound US investment bans on Chinese AI/quantum/semis, and leads CFIUS reviews of industrial M&amp;A.</td>
+<td style="text-align:left"><code>XOM</code>, <code>CVX</code>, <code>MPC</code>, <code>VLO</code>, <code>NUE</code>, <code>CLF</code>, <code>JPM</code>, <code>C</code>, <code>COIN</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_TREAS_OCC_FDIC</code></td>
+<td style="text-align:left"><strong>OCC Comptroller Jonathan Gould &amp; FDIC Chair Travis Hill</strong><br/><em>Comptroller of the Currency (Gould) &amp; Chairman of the FDIC (Hill)</em></td>
+<td style="text-align:left">Office of the Comptroller of the Currency (OCC) &amp; FDIC</td>
+<td style="text-align:left">Rescinds prior OCC/FDIC prior-approval barriers so national banks can custody Bitcoin/digital assets and issue tokenized deposits, accelerates regional bank M&amp;A approvals, and coordinates with Fed Gov. Bowman on eSLR and Basel III relief.</td>
+<td style="text-align:left"><code>JPM</code>, <code>BAC</code>, <code>C</code>, <code>WFC</code>, <code>GS</code>, <code>MS</code>, <code>COIN</code>, <code>HOOD</code>, <code>SOFI</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_COMM_DEP_DABBAR</code></td>
+<td style="text-align:left"><strong>DepSec Paul Dabbar (Commerce COO, CHIPS &amp; Quantum)</strong><br/><em>Deputy Secretary of Commerce (overseeing CHIPS Program Office, Investment Accelerator &amp; Quantum)</em></td>
+<td style="text-align:left">Department of Commerce</td>
+<td style="text-align:left">Former DOE Under Secretary for Science and Bohr Quantum CEO. Oversees CHIPS milestone disbursements (TSMC Arizona, Micron Idaho/NY, Intel, Texas Instruments), HBM/advanced packaging grants, and federal quantum/photonics commercialization.</td>
+<td style="text-align:left"><code>TSM</code>, <code>MU</code>, <code>INTC</code>, <code>NVDA</code>, <code>AVGO</code>, <code>AMAT</code>, <code>LRCX</code>, <code>KLAC</code>, <code>IBM</code>, <code>GOOGL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_COMM_BIS_KESSLER</code></td>
+<td style="text-align:left"><strong>Under Sec. Jeffrey Kessler (Commerce BIS Export Controls)</strong><br/><em>Under Secretary of Commerce for Industry and Security (Bureau of Industry and Security — BIS)</em></td>
+<td style="text-align:left">Department of Commerce (BIS)</td>
+<td style="text-align:left">Controls the global AI hardware valve: enforces the 1.4 GB/s/mm² HBM bandwidth-density ban and sub-2nm WFE curbs against China (CXMT/YMTC/Huawei/SMIC) while issuing validated end-user licenses for US-controlled hyperscale AI clusters in the UAE and Saudi Arabia.</td>
+<td style="text-align:left"><code>NVDA</code>, <code>AMD</code>, <code>AVGO</code>, <code>MU</code>, <code>TSM</code>, <code>KLAC</code>, <code>LRCX</code>, <code>AMAT</code>, <code>ORCL</code>, <code>MSFT</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_COMM_USPTO_SQUIRES</code></td>
+<td style="text-align:left"><strong>Under Sec. John Squires (USPTO Director &amp; PTAB)</strong><br/><em>Under Secretary of Commerce for Intellectual Property and Director of the USPTO</em></td>
+<td style="text-align:left">Department of Commerce (USPTO &amp; PTAB)</td>
+<td style="text-align:left">Former Goldman Sachs chief IP counsel. Strengthens patent holder rights by expanding PTAB discretionary denials of repetitive Inter Partes Reviews (IPRs) and clarifying Section 101 patent eligibility for AI, semiconductor memory (JEDEC/HBM), and diagnostics.</td>
+<td style="text-align:left"><code>QCOM</code>, <code>RMBS</code>, <code>LLY</code>, <code>VRTX</code>, <code>REGN</code>, <code>ABBV</code>, <code>IBM</code>, <code>AAPL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_COMM_NTIA_ROTH</code></td>
+<td style="text-align:left"><strong>Asst. Sec. Arielle Roth (Commerce NTIA Broadband &amp; Spectrum)</strong><br/><em>Assistant Secretary of Commerce for Communications and Information (NTIA Administrator)</em></td>
+<td style="text-align:left">Department of Commerce (NTIA)</td>
+<td style="text-align:left">Former Senate Commerce telecom counsel to Sen. Ted Cruz. Rewrote the $42.5B BEAD broadband rules to be strictly 'tech-neutral'—stripping union-labor/rate-regulation mandates and shifting billions in rural broadband awards to LEO satellite constellations.</td>
+<td style="text-align:left"><code>SPACEX</code>, <code>ASTS</code>, <code>AMZN</code>, <code>RKLB</code>, <code>TMUS</code>, <code>VZ</code>, <code>T</code>, <code>CSCO</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_HHS_DEP_ONEILL</code></td>
+<td style="text-align:left"><strong>DepSec Jim O'Neill (HHS COO, ARPA-H &amp; BARDA)</strong><br/><em>Deputy Secretary of Health and Human Services (overseeing HHS Operations, ARPA-H &amp; ASPR/BARDA)</em></td>
+<td style="text-align:left">Department of Health and Human Services</td>
+<td style="text-align:left">Former Thiel Foundation CEO and longevity biotech advocate. Champions progressive FDA approval pathways for regenerative/longevity therapies, AI-accelerated clinical trials, and BARDA Strategic National Stockpile biodefense procurement.</td>
+<td style="text-align:left"><code>VRTX</code>, <code>REGN</code>, <code>TEM</code>, <code>VEEV</code>, <code>AMGN</code>, <code>LLY</code>, <code>ISRG</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_HHS_CMS_OZ</code></td>
+<td style="text-align:left"><strong>CMS Admin. Dr. Mehmet Oz &amp; CMMI Dir. Abe Sutton</strong><br/><em>Administrator of the Centers for Medicare &amp; Medicaid Services (Oz) &amp; Deputy Admin. / CMMI Dir. (Sutton)</em></td>
+<td style="text-align:left">Centers for Medicare &amp; Medicaid Services (CMS / CMMI)</td>
+<td style="text-align:left">Single most powerful healthcare reimbursement gatekeeper: delivered the +5.06% CY2026 Medicare Advantage rate update (lifting UNH/HUM/CVS), while enforcing V28/RADV upcoding audits, Section 1115 Medicaid work requirements (-HCA/-CNC), site-neutral billing, and CMMI MFN drug pricing pilots.</td>
+<td style="text-align:left"><code>UNH</code>, <code>HUM</code>, <code>CVS</code>, <code>CI</code>, <code>ELV</code>, <code>CNC</code>, <code>HCA</code>, <code>THC</code>, <code>UHS</code>, <code>ISRG</code>, <code>BSX</code>, <code>LLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_HHS_FDA_MAKARY</code></td>
+<td style="text-align:left"><strong>FDA Comm. Dr. Marty Makary &amp; CBER/CDER Dir. Dr. Vinay Prasad</strong><br/><em>Commissioner of Food and Drugs (Makary) &amp; Director of CBER / Chief Medical &amp; Scientific Officer (Prasad)</em></td>
+<td style="text-align:left">U.S. Food and Drug Administration (FDA)</td>
+<td style="text-align:left">Bifurcated FDA regime: accelerates rare-disease 'plausible-mechanism' approvals, biosimilar interchangeability, surgical robotics/PFA devices, and AI SaMD diagnostics, while tightening post-market vaccine trials (Prasad) and restricting synthetic food dyes/additives.</td>
+<td style="text-align:left"><code>VRTX</code>, <code>REGN</code>, <code>LLY</code>, <code>NVO</code>, <code>AMGN</code>, <code>ISRG</code>, <code>BSX</code>, <code>GEHC</code>, <code>MRNA</code>, <code>PFE</code>, <code>TEM</code>, <code>KO</code>, <code>PEP</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_HHS_NIH_BHATTACHARYA</code></td>
+<td style="text-align:left"><strong>NIH Dir. Dr. Jay Bhattacharya</strong><br/><em>Director of the National Institutes of Health (NIH)</em></td>
+<td style="text-align:left">National Institutes of Health (NIH)</td>
+<td style="text-align:left">Reforms the $48B NIH grant engine: caps university indirect Facilities &amp; Administrative (F&amp;A) overhead at 15% (pressuring academic lab tool budgets until modified by Congress), halts gain-of-function virology, and redirects grants to chronic disease, nutrition, and AI genomics.</td>
+<td style="text-align:left"><code>TMO</code>, <code>DHR</code>, <code>ILMN</code>, <code>A</code>, <code>VEEV</code>, <code>TEM</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOE_DEP_DANLY</code></td>
+<td style="text-align:left"><strong>DepSec James Danly &amp; Under Sec. Wells Griffith (DOE Infrastructure &amp; LPO)</strong><br/><em>Deputy Secretary of Energy (Danly) &amp; Under Secretary for Infrastructure / Loan Programs Office (Griffith)</em></td>
+<td style="text-align:left">Department of Energy (Infrastructure, Grid Deployment &amp; LPO)</td>
+<td style="text-align:left">Danly (former FERC Chair) uses emergency FPA 202(c) orders to prevent coal/gas/nuclear plant retirements and accelerate AI data-center grid interconnections; Griffith directs DOE LPO loans toward nuclear restarts (Palisades/Three Mile Island), SMRs, and critical mineral refining.</td>
+<td style="text-align:left"><code>CEG</code>, <code>VST</code>, <code>TLN</code>, <code>LNG</code>, <code>VG</code>, <code>GEV</code>, <code>ETN</code>, <code>PWR</code>, <code>OKLO</code>, <code>SMR</code>, <code>LEU</code>, <code>MP</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOE_SCIENCE_GIL</code></td>
+<td style="text-align:left"><strong>Under Sec. Darío Gil (DOE Science, Genesis AI &amp; National Labs)</strong><br/><em>Under Secretary of Energy for Science and Innovation (overseeing 17 DOE National Labs, AI, Quantum &amp; Fusion)</em></td>
+<td style="text-align:left">Department of Energy (Office of Science)</td>
+<td style="text-align:left">Former SVP &amp; Director of IBM Research. Leads the DOE 'Genesis Mission' co-locating frontier AI supercomputers, quantum processors, and fusion demonstration reactors at DOE National Labs with NVIDIA, AMD, IBM, Microsoft, Oracle, and OpenAI.</td>
+<td style="text-align:left"><code>NVDA</code>, <code>AMD</code>, <code>IBM</code>, <code>ORCL</code>, <code>MSFT</code>, <code>HPE</code>, <code>DELL</code>, <code>MU</code>, <code>OPENAI</code>, <code>ANTHROPIC</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOE_NNSA_WILLIAMS</code></td>
+<td style="text-align:left"><strong>Under Sec. Brandon Williams (DOE Nuclear Security / NNSA)</strong><br/><em>Under Secretary of Energy for Nuclear Security and Administrator of the NNSA</em></td>
+<td style="text-align:left">National Nuclear Security Administration (NNSA)</td>
+<td style="text-align:left">Former US Representative and nuclear submarine officer. Oversees warhead modernization (W87-1/W93), naval nuclear propulsion fuel (BWXT), and the $3.4B domestic LEU/HALEU uranium enrichment awards (Centrus LEU) replacing Russian Tenex fuel.</td>
+<td style="text-align:left"><code>BWXT</code>, <code>LEU</code>, <code>CCJ</code>, <code>UEC</code>, <code>UUUU</code>, <code>NOC</code>, <code>GD</code>, <code>HII</code>, <code>FLR</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_FERC_NRC</code></td>
+<td style="text-align:left"><strong>FERC Chair Mark Christie / David Rosner &amp; NRC Chair David Wright</strong><br/><em>Federal Energy Regulatory Commission (FERC) &amp; Nuclear Regulatory Commission (NRC)</em></td>
+<td style="text-align:left">FERC &amp; NRC</td>
+<td style="text-align:left">FERC sets the rules for co-located gigawatt AI data-center power plants, PJM capacity auction price caps ($269.92+/MW-day), and interstate natural gas pipelines (WMB/KMI/ET); NRC executes ADVANCE Act 18-month licensing fast-tracks for SMRs and reactor uprates.</td>
+<td style="text-align:left"><code>CEG</code>, <code>VST</code>, <code>TLN</code>, <code>GEV</code>, <code>ETN</code>, <code>PWR</code>, <code>VRT</code>, <code>WMB</code>, <code>KMI</code>, <code>ET</code>, <code>OKLO</code>, <code>SMR</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOI_DEP_MACGREGOR</code></td>
+<td style="text-align:left"><strong>DepSec Katharine MacGregor &amp; Asst. Sec. Leslie Beyer (DOI Land &amp; Minerals)</strong><br/><em>Deputy Secretary of the Interior (MacGregor) &amp; Assistant Secretary for Land and Minerals Management (Beyer)</em></td>
+<td style="text-align:left">Department of the Interior (BLM / BOEM / OSMRE)</td>
+<td style="text-align:left">Compresses NEPA environmental impact reviews on federal lands from 3-5 years to 14-28 days under the National Energy Emergency, unlocking Permian/Gulf drilling permits (XOM/CVX/OXY), Resolution Copper (FCX/RIO), Thacker Pass lithium, and Stibnite antimony (PPTA).</td>
+<td style="text-align:left"><code>XOM</code>, <code>CVX</code>, <code>COP</code>, <code>OXY</code>, <code>SLB</code>, <code>HAL</code>, <code>FCX</code>, <code>ALB</code>, <code>MP</code>, <code>PPTA</code>, <code>UUUU</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOJ_DAG_BLANCHE_SAUER</code></td>
+<td style="text-align:left"><strong>Deputy AG Todd Blanche &amp; Solicitor General D. John Sauer (DOJ)</strong><br/><em>Deputy Attorney General (Blanche) &amp; Solicitor General of the United States (Sauer)</em></td>
+<td style="text-align:left">Department of Justice</td>
+<td style="text-align:left">Blanche manages all 94 US Attorneys, pausing FCPA enforcement on US infrastructure/defense exporters while aggressively pursuing False Claims Act (FCA) Medicare Advantage upcoding and federal contractor cyber fraud; Sauer defends Article II tariffs and deregulation at SCOTUS.</td>
+<td style="text-align:left"><code>UNH</code>, <code>HUM</code>, <code>CVS</code>, <code>GS</code>, <code>JPM</code>, <code>BA</code>, <code>PLTR</code>, <code>PANW</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOJ_ANTITRUST_SLATER</code></td>
+<td style="text-align:left"><strong>Asst. AG Gail Slater (DOJ Antitrust Division)</strong><br/><em>Assistant Attorney General for the Antitrust Division</em></td>
+<td style="text-align:left">Department of Justice (Antitrust Division)</td>
+<td style="text-align:left">Former economic/tech advisor to JD Vance. Continues structural antitrust enforcement against Google (search/ad-tech remedies), Apple, and vertical health-insurer/PBM consolidation (UNH/Optum), while reopening constructive divestiture/remedy pathways for industrial, financial, and mid-cap tech M&amp;A.</td>
+<td style="text-align:left"><code>GOOGL</code>, <code>AAPL</code>, <code>META</code>, <code>UNH</code>, <code>CVS</code>, <code>CI</code>, <code>GS</code>, <code>MS</code>, <code>NVDA</code>, <code>SNPS</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DHS_CBP_ICE_CISA</code></td>
+<td style="text-align:left"><strong>DHS DepSec Troy Edgar, CBP Comm. Rodney Scott, ICE Dir. Todd Lyons &amp; CISA</strong><br/><em>Deputy Secretary of DHS (Edgar), CBP Commissioner (Scott), Acting ICE Director (Lyons) &amp; CISA</em></td>
+<td style="text-align:left">Department of Homeland Security (CBP / ICE / CISA)</td>
+<td style="text-align:left">Edgar (former Navy CFO) oversees rapid contracting of the $175B reconciliation border/detention tranche: sole-source reactivation of private ICE detention facilities (GEO/CXW), autonomous border surveillance towers (Anduril/Elbit), ImmigrationOS analytics (PLTR), and CISA zero-trust cyber.</td>
+<td style="text-align:left"><code>GEO</code>, <code>CXW</code>, <code>PLTR</code>, <code>AXON</code>, <code>MSI</code>, <code>LDOS</code>, <code>CACI</code>, <code>PANW</code>, <code>CRWD</code>, <code>ZS</code>, <code>ANDURIL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_DOT_FAA_NHTSA</code></td>
+<td style="text-align:left"><strong>DOT DepSec Steven Bradbury, FAA Admin. Bryan Bedford &amp; NHTSA</strong><br/><em>Deputy Secretary of Transportation (Bradbury), FAA Administrator (Bedford) &amp; NHTSA Administrator</em></td>
+<td style="text-align:left">Department of Transportation (FAA &amp; NHTSA)</td>
+<td style="text-align:left">Bradbury (former DOT General Counsel) leads regulatory repeal of EV CAFE penalties and federal preemption for autonomous vehicles/Robotaxis (TSLA/Waymo); Bedford overhauls FAA air traffic control radar/telecom systems and accelerates Part 450 rocket launch permits (SpaceX/RKLB).</td>
+<td style="text-align:left"><code>TSLA</code>, <code>GOOGL</code>, <code>GM</code>, <code>F</code>, <code>BA</code>, <code>GE</code>, <code>RKLB</code>, <code>LHX</code>, <code>RTX</code>, <code>LDOS</code>, <code>SPACEX</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_NASA_DFC_SBA</code></td>
+<td style="text-align:left"><strong>NASA Admin. Jared Isaacman, DFC CEO Ben Black &amp; SBA Admin. Kelly Loeffler</strong><br/><em>NASA Administrator (Isaacman), U.S. Development Finance Corp CEO (Black) &amp; SBA Administrator (Loeffler)</em></td>
+<td style="text-align:left">NASA, U.S. International Development Finance Corp (DFC) &amp; SBA</td>
+<td style="text-align:left">Isaacman shifts NASA from cost-plus SLS/Orion bloat toward fixed-price commercial Lunar/Mars landers, cislunar nuclear power, and LEO stations (SpaceX, LUNR, RKLB, BWXT); Black deploys DFC sovereign equity and debt into strategic overseas critical minerals and subsea cables.</td>
+<td style="text-align:left"><code>RKLB</code>, <code>LUNR</code>, <code>BWXT</code>, <code>LMT</code>, <code>BA</code>, <code>MP</code>, <code>FCX</code>, <code>ALB</code>, <code>PPTA</code>, <code>SPACEX</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>USEC_VA_VHA_DOL_USDA</code></td>
+<td style="text-align:left"><strong>VA DepSec Paul Lawrence, DOL DepSec Keith Sonderling &amp; USDA Under Sec. Luke Lindberg</strong><br/><em>Deputy Sec. of VA (Lawrence), Deputy Sec. of Labor (Sonderling) &amp; USDA Under Sec. for Trade (Lindberg)</em></td>
+<td style="text-align:left">Departments of Veterans Affairs, Labor &amp; Agriculture</td>
+<td style="text-align:left">Lawrence expands automated PACT Act disability medical exams (LDOS, MMS) and private hospital referrals (HCA, UHS); Sonderling preempts restrictive state/federal AI hiring audits; Lindberg negotiates bilateral LNG + grain/soybean purchase commitments to offset tariff friction.</td>
+<td style="text-align:left"><code>LDOS</code>, <code>MMS</code>, <code>HCA</code>, <code>UHS</code>, <code>ORCL</code>, <code>UBER</code>, <code>DE</code>, <code>ADM</code>, <code>BG</code>, <code>CF</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>4. Tier 3: U.S. Congress — Senate &amp; House Leadership and Key Committees (119th vs. 120th Dynamics)</h2>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Node ID</th>
+<th style="text-align:left">Committee / Leadership</th>
+<th style="text-align:left">Chairs &amp; Ranking Members</th>
+<th style="text-align:left">Purse &amp; Statutory Jurisdiction</th>
+<th style="text-align:left">Corporate Impact &amp; Key Tickers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>CONG_SEN_LEADERSHIP</code></td>
+<td style="text-align:left"><strong>U.S. Senate Leadership: John Thune (R-SD) &amp; Chuck Schumer (D-NY)</strong></td>
+<td style="text-align:left">Senate Republican Leader John Thune &amp; Senate Democratic Leader Chuck Schumer</td>
+<td style="text-align:left">Senate Floor Calendar · 50-Vote Reconciliation (119th) vs. 60-Vote Cloture &amp; Confirmation Gate (120th)</td>
+<td style="text-align:left">Governs the Senate floor: in the 119th Congress, Thune and VP Vance passed the One Big Beautiful Bill reconciliation package; in a 120th Divided Senate, Schumer controls the Executive Calendar (blocking partisan FTC/SEC/NLRB/Fed confirmations) while advancing bipartisan NDAA and China/FMS bills.<br/><strong>Tickers:</strong> <code>LMT</code>, <code>RTX</code>, <code>JPM</code>, <code>UNH</code>, <code>HCA</code>, <code>GEO</code>, <code>NEE</code>, <code>FSLR</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_SASC</code></td>
+<td style="text-align:left"><strong>Senate Armed Services Committee (SASC): Roger Wicker (R-MS) &amp; Jack Reed (D-RI)</strong></td>
+<td style="text-align:left">Chair/Ranking Sen. Roger Wicker (R-MS) &amp; Ranking/Chair Sen. Jack Reed (D-RI)</td>
+<td style="text-align:left">$950B–$1.0T Annual National Defense Authorization Act (NDAA) &amp; $150B Reconciliation Defense Subtitle</td>
+<td style="text-align:left">Bipartisan defense hawk stronghold. Wicker authored the $150B reconciliation defense surge (Golden Dome, 2nd Virginia-class submarine per year, B-21 Raider, munitions industrial base); Reed ensures bipartisan continuity for naval nuclear, NATO/Ukraine/Taiwan FMS, and cyber defense.<br/><strong>Tickers:</strong> <code>HII</code>, <code>GD</code>, <code>BWXT</code>, <code>LMT</code>, <code>RTX</code>, <code>NOC</code>, <code>LHX</code>, <code>PLTR</code>, <code>KTOS</code>, <code>AVAV</code>, <code>ANDURIL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_SAC</code></td>
+<td style="text-align:left"><strong>Senate Appropriations Committee (SAC): Susan Collins (R-ME), Mitch McConnell (R-KY) &amp; Patty Murray (D-WA)</strong></td>
+<td style="text-align:left">Chair/Ranking Sen. Susan Collins (R-ME), Defense Subcomm. Mitch McConnell (R-KY) &amp; Sen. Patty Murray (D-WA)</td>
+<td style="text-align:left">$1.65T+ Annual Discretionary Budget Authority across 12 Appropriations Subcommittees</td>
+<td style="text-align:left">Writes the binding discretionary spending checks: Collins (representing Bath Iron Works in Maine) and McConnell protect DDG-51 destroyer shipyards and Foreign Military Financing; Murray protects NIH extramural research grants (blocking the 15% F&amp;A cap via statutory riders) and Boeing/WA aerospace.<br/><strong>Tickers:</strong> <code>GD</code>, <code>HII</code>, <code>LMT</code>, <code>RTX</code>, <code>BA</code>, <code>TMO</code>, <code>DHR</code>, <code>ILMN</code>, <code>HCA</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_SFC</code></td>
+<td style="text-align:left"><strong>Senate Finance Committee (SFC): Mike Crapo (R-ID) &amp; Ron Wyden (D-OR)</strong></td>
+<td style="text-align:left">Chair/Ranking Sen. Mike Crapo (R-ID) &amp; Ranking/Chair Sen. Ron Wyden (D-OR)</td>
+<td style="text-align:left">Jurisdiction over 100% of Federal Tax Code, Tariffs/Customs, Medicare ($1.0T+) &amp; Medicaid ($880B+)</td>
+<td style="text-align:left">Controls the corporate tax code AND Medicare/Medicaid: Crapo locked in permanent 100% bonus depreciation, Sec. 174 R&amp;D expensing, and nuclear 45U/45Y credits; Crapo and Wyden jointly champion bipartisan Pharmacy Benefit Manager (PBM) delinking and spread-pricing bans.<br/><strong>Tickers:</strong> <code>CVS</code>, <code>CI</code>, <code>UNH</code>, <code>HUM</code>, <code>HCA</code>, <code>LLY</code>, <code>MCK</code>, <code>COR</code>, <code>CAH</code>, <code>CAT</code>, <code>MSFT</code>, <code>CEG</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_SEN_BANKING</code></td>
+<td style="text-align:left"><strong>Senate Banking Committee: Tim Scott (R-SC), Cynthia Lummis (R-WY) &amp; Elizabeth Warren (D-MA)</strong></td>
+<td style="text-align:left">Chair/Ranking Sen. Tim Scott (R-SC), Digital Assets Subcomm. Cynthia Lummis (R-WY) &amp; Sen. Elizabeth Warren (D-MA)</td>
+<td style="text-align:left">Federal Reserve, SEC, FDIC, OCC, FHFA, Export-Import Bank, CFIUS &amp; Digital Asset Market Structure</td>
+<td style="text-align:left">Scott and Lummis drove the GENIUS Act stablecoin regulatory framework and digital asset market structure legislation while backing Fed/OCC capital relief; Warren leads populist oversight of private equity in healthcare, big bank M&amp;A, and crypto conflicts of interest.<br/><strong>Tickers:</strong> <code>COIN</code>, <code>MSTR</code>, <code>HOOD</code>, <code>JPM</code>, <code>GS</code>, <code>MS</code>, <code>BAC</code>, <code>BX</code>, <code>APO</code>, <code>FNMA</code>, <code>FMCC</code>, <code>TETHER_CIRCLE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_SEN_COMMERCE</code></td>
+<td style="text-align:left"><strong>Senate Commerce, Science &amp; Transportation: Ted Cruz (R-TX) &amp; Maria Cantwell (D-WA)</strong></td>
+<td style="text-align:left">Chair/Ranking Sen. Ted Cruz (R-TX) &amp; Ranking/Chair Sen. Maria Cantwell (D-WA)</td>
+<td style="text-align:left">FCC Spectrum Auction Authority ($80B+), NASA/Commercial Space (Starbase TX), CHIPS/NIST, FAA &amp; Rail</td>
+<td style="text-align:left">Cruz restored FCC spectrum auction authority in reconciliation, champions Texas commercial spaceflight (SpaceX Starbase, Intuitive Machines) and tech-neutral LEO satellite BEAD awards; Cantwell co-authored the CHIPS Act and oversees Boeing/FAA aviation safety.<br/><strong>Tickers:</strong> <code>SPACEX</code>, <code>ASTS</code>, <code>RKLB</code>, <code>LUNR</code>, <code>BA</code>, <code>TSLA</code>, <code>INTC</code>, <code>MU</code>, <code>NVDA</code>, <code>TMUS</code>, <code>VZ</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_SEN_ENR_EPW</code></td>
+<td style="text-align:left"><strong>Senate Energy (ENR) &amp; Environment (EPW): Mike Lee (R-UT), Shelley Moore Capito (R-WV) &amp; Martin Heinrich (D-NM)</strong></td>
+<td style="text-align:left">ENR Chair/Ranking Sen. Mike Lee (R-UT), EPW Chair Sen. Shelley Moore Capito (R-WV) &amp; Sen. Martin Heinrich (D-NM)</td>
+<td style="text-align:left">DOE, FERC, NRC (ADVANCE Act), DOI Federal Land Leasing, NEPA Judicial Review Reform &amp; Interstate Transmission</td>
+<td style="text-align:left">Governs baseload power and permitting: Capito authored the bipartisan ADVANCE Act accelerating NRC SMR nuclear licensing and leads EPA Clean Power Plan oversight; Lee and Heinrich negotiate bipartisan NEPA judicial review time-limits for interstate transmission and critical mineral mines.<br/><strong>Tickers:</strong> <code>CEG</code>, <code>VST</code>, <code>TLN</code>, <code>OKLO</code>, <code>SMR</code>, <code>LEU</code>, <code>GEV</code>, <code>PWR</code>, <code>WMB</code>, <code>KMI</code>, <code>XOM</code>, <code>MP</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_SEN_HELP_JUDICIARY</code></td>
+<td style="text-align:left"><strong>Senate HELP &amp; Judiciary: Bill Cassidy (R-LA), Chuck Grassley (R-IA), Bernie Sanders (I-VT) &amp; Dick Durbin (D-IL)</strong></td>
+<td style="text-align:left">HELP Chair Bill Cassidy (R-LA) / Bernie Sanders (I-VT) &amp; Judiciary Chair Chuck Grassley (R-IA) / Dick Durbin (D-IL)</td>
+<td style="text-align:left">FDA User Fees (PDUFA), 340B Drug Pricing, False Claims Act, Patent Reform (PREVAIL Act) &amp; Antitrust</td>
+<td style="text-align:left">Cassidy (a physician) oversees FDA/NIH/CDC confirmations and 340B hospital audits; Sanders and Grassley form a populist pincer with Trump/Vance against GLP-1/branded pharma list prices and PBM vertical integration; Judiciary advances the PREVAIL Act curbing PTAB patent challenges.<br/><strong>Tickers:</strong> <code>LLY</code>, <code>NVO</code>, <code>ABBV</code>, <code>PFE</code>, <code>UNH</code>, <code>CVS</code>, <code>CI</code>, <code>HCA</code>, <code>VRTX</code>, <code>QCOM</code>, <code>GOOGL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_HOUSE_LEADERSHIP</code></td>
+<td style="text-align:left"><strong>U.S. House Leadership: Speaker Mike Johnson (R-LA) &amp; Dem Leader/Speaker Hakeem Jeffries (D-NY)</strong></td>
+<td style="text-align:left">Speaker/GOP Leader Mike Johnson (R-LA) &amp; Democratic Leader/Speaker Hakeem Jeffries (D-NY)</td>
+<td style="text-align:left">House Floor Control · 119th OBBBA Reconciliation vs. 120th Dem Majority Appropriations &amp; Subpoena Firewall</td>
+<td style="text-align:left">Johnson whipped the 119th Congress 'One Big Beautiful Bill' reconciliation act through a razor-thin House margin; in the 120th Congress, a Democratic House majority under Jeffries blocks Reconciliation 2.0 Medicaid/IRA cuts, extends ACA ePTC subsidies, and attaches riders capping ICE private detention.<br/><strong>Tickers:</strong> <code>HCA</code>, <code>THC</code>, <code>CNC</code>, <code>FSLR</code>, <code>NEE</code>, <code>LMT</code>, <code>LNG</code>, <code>GEO</code>, <code>CXW</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_WAYS_MEANS</code></td>
+<td style="text-align:left"><strong>House Ways &amp; Means Committee: Jason Smith (R-MO) &amp; Richard Neal (D-MA)</strong></td>
+<td style="text-align:left">Chair/Ranking Rep. Jason Smith (R-MO) &amp; Ranking/Chair Rep. Richard Neal (D-MA)</td>
+<td style="text-align:left">Constitutional Origination of All Tax Legislation, Tariff Oversight, Medicare Part A/B &amp; Social Security</td>
+<td style="text-align:left">Originated the 2025 Tax Reconciliation Act (100% bonus depreciation, Sec. 174 R&amp;D, SALT cap deal) while 18+ GOP District members protected red-state IRA Section 45X domestic manufacturing and 45Q carbon-capture tax credits; Neal protects ACA subsidies, hospitals, and renewable tax credits.<br/><strong>Tickers:</strong> <code>FSLR</code>, <code>MP</code>, <code>ALB</code>, <code>OXY</code>, <code>CEG</code>, <code>CAT</code>, <code>DE</code>, <code>NUE</code>, <code>HCA</code>, <code>UNH</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_HAC</code></td>
+<td style="text-align:left"><strong>House Appropriations Committee (HAC): Tom Cole (R-OK), Ken Calvert (R-CA) &amp; Rosa DeLauro (D-CT)</strong></td>
+<td style="text-align:left">Chair/Ranking Rep. Tom Cole (R-OK), Defense Subcomm. Chair Ken Calvert (R-CA) &amp; Rep. Rosa DeLauro (D-CT)</td>
+<td style="text-align:left">Originates All 12 Annual Federal Discretionary Appropriations Bills ($850B+ Defense, DHS, HHS, Energy)</td>
+<td style="text-align:left">Calvert and Cole write the line-item Pentagon procurement checks (F-35, B-21, Virginia/Columbia submarines in CT/VA, counter-UAS, Golden Dome); DeLauro (representing Connecticut's Pratt &amp; Whitney/RTX and Electric Boat/GD) protects defense industrial base jobs alongside NIH/Medicaid/ACA funding.<br/><strong>Tickers:</strong> <code>RTX</code>, <code>GD</code>, <code>LMT</code>, <code>NOC</code>, <code>HII</code>, <code>BWXT</code>, <code>AVAV</code>, <code>KTOS</code>, <code>TMO</code>, <code>HCA</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_HASC</code></td>
+<td style="text-align:left"><strong>House Armed Services Committee (HASC): Mike Rogers (R-AL) &amp; Adam Smith (D-WA)</strong></td>
+<td style="text-align:left">Chair/Ranking Rep. Mike Rogers (R-AL) &amp; Ranking/Chair Rep. Adam Smith (D-WA)</td>
+<td style="text-align:left">House NDAA Authorizations · U.S. Space Command (Huntsville AL) · Golden Dome · Acquisition Streamlining</td>
+<td style="text-align:left">Rogers (representing Alabama's missile/space hub in Huntsville) champions U.S. Space Command, MDA Golden Dome interceptors (NGI/THAAD/PAC-3), and solid rocket motor expansion; Rogers and Smith co-authored the SPEED Act streamlining Pentagon software/drone acquisition.<br/><strong>Tickers:</strong> <code>LMT</code>, <code>RTX</code>, <code>NOC</code>, <code>LHX</code>, <code>BA</code>, <code>PLTR</code>, <code>KTOS</code>, <code>AVAV</code>, <code>RKLB</code>, <code>ANDURIL</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_HOUSE_EC</code></td>
+<td style="text-align:left"><strong>House Energy &amp; Commerce Committee (E&amp;C): Brett Guthrie (R-KY) &amp; Frank Pallone (D-NJ)</strong></td>
+<td style="text-align:left">Chair/Ranking Rep. Brett Guthrie (R-KY) &amp; Ranking/Chair Rep. Frank Pallone (D-NJ)</td>
+<td style="text-align:left">Broadest House Jurisdiction: Medicaid, Medicare Part B/D, FDA, DOE/FERC Grid Baseload, AI/Data Privacy &amp; FCC Spectrum</td>
+<td style="text-align:left">Authored the 2025 reconciliation subtitles on Medicaid work requirements, provider-tax caps, and FCC spectrum auctions, while holding joint hearings with FERC/DOE on gigawatt AI data-center power shortages; Pallone defends Medicaid/ACA expansion and NJ biopharma/telecom interests.<br/><strong>Tickers:</strong> <code>HCA</code>, <code>THC</code>, <code>CNC</code>, <code>UNH</code>, <code>CVS</code>, <code>LLY</code>, <code>MRK</code>, <code>JNJ</code>, <code>CEG</code>, <code>VST</code>, <code>GEV</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_HFSC</code></td>
+<td style="text-align:left"><strong>House Financial Services Committee (HFSC): French Hill (R-AR) &amp; Maxine Waters (D-CA)</strong></td>
+<td style="text-align:left">Chair/Ranking Rep. French Hill (R-AR) &amp; Ranking/Chair Rep. Maxine Waters (D-CA)</td>
+<td style="text-align:left">Banking, Capital Markets, SEC/Fed Oversight, Digital Asset Market Structure (CLARITY/FIT21) &amp; Stablecoins</td>
+<td style="text-align:left">French Hill (a former commercial bank CEO) spearheads bipartisan crypto market structure legislation (dividing SEC/CFTC jurisdiction), stablecoin bank reserves, SEC capital-formation deregulation, and regional bank regulatory tailoring.<br/><strong>Tickers:</strong> <code>COIN</code>, <code>HOOD</code>, <code>MSTR</code>, <code>JPM</code>, <code>GS</code>, <code>MS</code>, <code>BAC</code>, <code>BLK</code>, <code>BX</code>, <code>APO</code>, <code>SOFI</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_HOUSE_OVERSIGHT</code></td>
+<td style="text-align:left"><strong>House Oversight &amp; Government Reform: James Comer (R-KY) &amp; Robert Garcia (D-CA)</strong></td>
+<td style="text-align:left">Chair/Ranking Rep. James Comer (R-KY) &amp; Ranking/Chair Rep. Robert Garcia (D-CA)</td>
+<td style="text-align:left">Federal IT Procurement ($100B+/yr), GSA Contracting, DOGE Workforce/Contract Audits &amp; Subpoena Power</td>
+<td style="text-align:left">Under Comer (119th), investigated PBM spread pricing (CVS/CI/UNH) and partnered with DOGE to audit federal consulting contracts; under Garcia (120th Dem House), wields unilateral subpoena power to investigate DOGE data access, private ICE detention contractors (GEO/CXW), and executive conflicts.<br/><strong>Tickers:</strong> <code>CVS</code>, <code>CI</code>, <code>UNH</code>, <code>GEO</code>, <code>CXW</code>, <code>PLTR</code>, <code>BAH</code>, <code>SAIC</code>, <code>ORCL</code>, <code>NOW</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>CONG_HOUSE_CCP</code></td>
+<td style="text-align:left"><strong>House Select Committee on the CCP: John Moolenaar (R-MI) &amp; Raja Krishnamoorthi (D-IL)</strong></td>
+<td style="text-align:left">Chair Rep. John Moolenaar (R-MI) &amp; Ranking Rep. Raja Krishnamoorthi (D-IL)</td>
+<td style="text-align:left">Bipartisan China Decoupling Engine: BIOSECURE Act, DJI/Autel Drone Ban, China HBM/Semis, Critical Minerals &amp; De Minimis</td>
+<td style="text-align:left">The strongest bipartisan policy engine on Capitol Hill: drives the BIOSECURE Act (shifting pharma CDMO contracts from WuXi to US/allied biologics suppliers), bans DJI drones in favor of US tactical UAS (AVAV/Skydio), pushes BIS HBM/FDPR bans on China, and backs DoD price floors for US rare earths (MP).<br/><strong>Tickers:</strong> <code>AVAV</code>, <code>KTOS</code>, <code>MP</code>, <code>UUUU</code>, <code>PPTA</code>, <code>NVDA</code>, <code>MU</code>, <code>KLAC</code>, <code>LRCX</code>, <code>TMO</code>, <code>DHR</code>, <code>AMZN</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>5. Tier 4: Master Corporate-Government Relationship Matrix (112 Public &amp; Private Companies)</h2>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Ticker</th>
+<th style="text-align:left">Company</th>
+<th style="text-align:left">Sector Arena</th>
+<th style="text-align:left">Policy Stance &amp; Beta</th>
+<th style="text-align:left">Primary Secretaries</th>
+<th style="text-align:left">Primary Under Secretaries</th>
+<th style="text-align:left">Congressional Committees</th>
+<th style="text-align:left">Catalysts vs. Headwinds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>LMT</code></strong></td>
+<td style="text-align:left">Lockheed Martin Corp.</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.84</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecState Marco Rubio</td>
+<td style="text-align:left">Golden Dome / Space Force / MDA / USAF, USD(A&amp;S) Michael Duffey, Under Sec. Thomas DiNanno (Arms/FMS)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Appropriations (Cole, Calvert &amp; DeLauro), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Golden Dome NGI/THAAD/PAC-3 MSE multi-year interceptors, SDA tracking satellites &amp; NATO 3.5-5% FMS F-35/HIMARS surge.<br/><strong>Risk:</strong> DepSec Feinberg FPIF fixed-price development audits &amp; F-35 Tech Refresh 3 margin scrutiny.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>RTX</code></strong></td>
+<td style="text-align:left">RTX Corporation (Raytheon)</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecState Marco Rubio</td>
+<td style="text-align:left">USD(A&amp;S) Michael Duffey, Golden Dome / Space Force / MDA / USAF, Under Sec. Thomas DiNanno (Arms/FMS)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Appropriations (Cole, Calvert &amp; DeLauro), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Patriot GEM-T, SM-3 Block IIA, SM-6, GPI hypersonic interceptor &amp; LTAMDS radar Golden Dome/NATO FMS replenishment.<br/><strong>Risk:</strong> Pratt &amp; Whitney GTF powdered-metal inspection costs &amp; Sec. 232 aerospace tariff pass-through.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>NOC</code></strong></td>
+<td style="text-align:left">Northrop Grumman Corp.</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.80</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, Gabbard (DNI) &amp; Ratcliffe (CIA)</td>
+<td style="text-align:left">Golden Dome / Space Force / MDA / USAF, USD(A&amp;S) Michael Duffey, Under Sec. Brandon Williams (NNSA)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), Senate Appropriations (Collins/Murray/McConnell), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> B-21 Raider bomber production ramp, SDA Tranche 2/3 tracking satellites, and Solid Rocket Motor (GEM 63/hab) duopoly.<br/><strong>Risk:</strong> Sentinel ICBM Nunn-McCurdy restructuring &amp; fixed-price LRIP lot accounting.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>GD</code></strong></td>
+<td style="text-align:left">General Dynamics Corp.</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.78</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth</td>
+<td style="text-align:left">SecNavy Phelan &amp; SecArmy Driscoll, USD(A&amp;S) Michael Duffey, Under Sec. Brandon Williams (NNSA)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), Senate Appropriations (Collins/Murray/McConnell), House Appropriations (Cole, Calvert &amp; DeLauro)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Electric Boat Columbia &amp; Virginia-class nuclear submarine industrial base funding + 155mm artillery propellant ramp.<br/><strong>Risk:</strong> DOGE scrutiny on GDIT legacy federal IT service task orders &amp; Gulfstream tariff sensitivity.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>LHX</code></strong></td>
+<td style="text-align:left">L3Harris Technologies</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.83</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecDOT Sean Duffy</td>
+<td style="text-align:left">Golden Dome / Space Force / MDA / USAF, USD(A&amp;S) Michael Duffey, Bradbury (DOT), Bedford (FAA) &amp; NHTSA</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith), House Appropriations (Cole, Calvert &amp; DeLauro)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Aerojet Rocketdyne Solid Rocket Motor DPA Title III expansion, SDA HBTSS infrared hypersonic tracking &amp; FAA telecom.<br/><strong>Risk:</strong> Fixed-price space payload development milestones.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HII</code></strong></td>
+<td style="text-align:left">Huntington Ingalls Industries</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.79</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecDHS Kristi Noem, SecLabor Chavez-DeRemer</td>
+<td style="text-align:left">SecNavy Phelan &amp; SecArmy Driscoll, DepSecDef Stephen Feinberg</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), Senate Appropriations (Collins/Murray/McConnell), House Appropriations (Cole, Calvert &amp; DeLauro)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Sole builder of US nuclear aircraft carriers &amp; co-builder of Virginia/Columbia submarines + White House Shipbuilding Office support.<br/><strong>Risk:</strong> Shipyard skilled trade labor inflation (mitigated by Navy wage pass-through &amp; DOL apprenticeship grants).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>BWXT</code></strong></td>
+<td style="text-align:left">BWX Technologies</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.88</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecEnergy Chris Wright</td>
+<td style="text-align:left">Under Sec. Brandon Williams (NNSA), SecNavy Phelan &amp; SecArmy Driscoll, Isaacman (NASA), Black (DFC) &amp; Loeffler (SBA)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), House Appropriations (Cole, Calvert &amp; DeLauro)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Sole-source manufacturer of US Navy nuclear submarine/carrier reactor cores + DoD Pele microreactor &amp; NASA nuclear propulsion.<br/><strong>Risk:</strong> Minimal; enjoys statutory sole-source monopoly with multi-decade backlog.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>PLTR</code></strong></td>
+<td style="text-align:left">Palantir Technologies</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.92</code>)</td>
+<td style="text-align:left">Russell Vought (OMB/DOGE), SecDef Pete Hegseth, SecDHS Kristi Noem, Gabbard (DNI) &amp; Ratcliffe (CIA)</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA, Golden Dome / Space Force / MDA / USAF</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith), House Oversight (Comer &amp; Garcia)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Maven Smart System CJADC2 expansion, Army TITAN, DHS/ICE ImmigrationOS targeting, and DOGE agency data consolidation.<br/><strong>Risk:</strong> 120th Congress Dem House Oversight (Rep. Garcia) subpoenas on DHS/ICE &amp; DOGE data integration.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>LDOS</code></strong></td>
+<td style="text-align:left">Leidos Holdings</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.74</code>)</td>
+<td style="text-align:left">SecVA Doug Collins, SecDef Pete Hegseth, SecDHS Kristi Noem</td>
+<td style="text-align:left">Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA), Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA, Bradbury (DOT), Bedford (FAA) &amp; NHTSA</td>
+<td style="text-align:left">Senate Appropriations (Collins/Murray/McConnell), House Appropriations (Cole, Calvert &amp; DeLauro), Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> High-margin VA PACT Act Medical Disability Examinations (MDEs), MHS GENESIS EHR, CBP border ports &amp; FAA ATC modernization.<br/><strong>Risk:</strong> DOGE fixed-price re-competes on generic federal IT helpdesk contracts.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>BAH</code></strong></td>
+<td style="text-align:left">Booz Allen Hamilton</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>MIXED / BIFURCATED</strong> (<code>+0.18</code>)</td>
+<td style="text-align:left">Russell Vought (OMB/DOGE), Gabbard (DNI) &amp; Ratcliffe (CIA), SecDef Pete Hegseth</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA)</td>
+<td style="text-align:left">House Oversight (Comer &amp; Garcia), House Appropriations (Cole, Calvert &amp; DeLauro)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Leading federal AI/cyber implementation partner for NSA, Space Force &amp; Defense Health.<br/><strong>Risk:</strong> Direct target of OMB/DOGE (Vought) time-and-materials management consulting contract audits &amp; rate caps.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>CACI</code></strong></td>
+<td style="text-align:left">CACI International</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.76</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecDHS Kristi Noem, Gabbard (DNI) &amp; Ratcliffe (CIA)</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Software-defined electronic warfare (EW), counter-UAS, Space Force optical terminals, and DHS border network modernization.<br/><strong>Risk:</strong> Minor civil IT agency contract review.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>KTOS</code></strong></td>
+<td style="text-align:left">Kratos Defense &amp; Security</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.87</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, VP JD Vance</td>
+<td style="text-align:left">Golden Dome / Space Force / MDA / USAF, USD(R&amp;E) Emil Michael, USD(A&amp;S) Michael Duffey</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> XQ-58A Valkyrie attritable CCA drone, Erinyes/Dark Fury hypersonic test flyers, Zeus SRMs &amp; low-cost cruise-missile turbofans.<br/><strong>Risk:</strong> Lumpy LRIP-to-full-rate production contract timing.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>AVAV</code></strong></td>
+<td style="text-align:left">AeroVironment (incl. BlueHalo)</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.89</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecState Marco Rubio, VP JD Vance</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, SecNavy Phelan &amp; SecArmy Driscoll, Under Sec. Thomas DiNanno (Arms/FMS)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Replicator 1/2 Switchblade 300/600 loitering munitions, BlueHalo LOCUST laser counter-UAS, SCAR space phased arrays &amp; DJI ban.<br/><strong>Risk:</strong> Ukraine aid fluctuations (offset by Taiwan/NATO FMS &amp; US Army LASSO).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>RKLB</code></strong></td>
+<td style="text-align:left">Rocket Lab USA</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.85</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecDOT Sean Duffy</td>
+<td style="text-align:left">Golden Dome / Space Force / MDA / USAF, Isaacman (NASA), Black (DFC) &amp; Loeffler (SBA), Bradbury (DOT), Bedford (FAA) &amp; NHTSA</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> $515M+ SDA Tranche 2 Beta satellite prime, HASTE hypersonic test launches for MDA Golden Dome, Neutron NSSL Phase 3 &amp; FAA Part 450.<br/><strong>Risk:</strong> Neutron medium-lift pad qualification schedule.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ASTS</code></strong></td>
+<td style="text-align:left">AST SpaceMobile</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.76</code>)</td>
+<td style="text-align:left">SecComm Howard Lutnick, Ferguson (FTC) &amp; Carr (FCC)</td>
+<td style="text-align:left">NTIA Admin. Arielle Roth, Golden Dome / Space Force / MDA / USAF</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> FCC Chair Carr Direct-to-Cell spectrum approvals, NTIA Roth tech-neutral $42.5B BEAD satellite eligibility &amp; SDA tactical contracts.<br/><strong>Risk:</strong> Competition with SpaceX Starlink Direct-to-Cell.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>LUNR</code></strong></td>
+<td style="text-align:left">Intuitive Machines</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.81</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth</td>
+<td style="text-align:left">Isaacman (NASA), Black (DFC) &amp; Loeffler (SBA), Golden Dome / Space Force / MDA / USAF</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate Appropriations (Collins/Murray/McConnell)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> $4.82B NASA Near Space Network cislunar relay contract &amp; CLPS lunar lander awards backed by NASA Admin. Isaacman &amp; Sen. Ted Cruz.<br/><strong>Risk:</strong> Mission execution risk on lunar south pole landings.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>DRS</code></strong></td>
+<td style="text-align:left">Leonardo DRS</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.82</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth</td>
+<td style="text-align:left">SecNavy Phelan &amp; SecArmy Driscoll, USD(A&amp;S) Michael Duffey</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Appropriations (Cole, Calvert &amp; DeLauro)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Sole-source Columbia-class submarine integrated electric propulsion + Army M-SHORAD counter-UAS &amp; infrared sensing.<br/><strong>Risk:</strong> Supply-chain lead times on naval power electronics.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HEI</code></strong></td>
+<td style="text-align:left">HEICO Corporation</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.80</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecDOT Sean Duffy, Russell Vought (OMB/DOGE)</td>
+<td style="text-align:left">USD(A&amp;S) Michael Duffey, Bradbury (DOT), Bedford (FAA) &amp; NHTSA</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> DOGE &amp; DoD Acquisition push for lower-cost FAA PMA replacement parts + high-reliability radiation-hardened missile/space subcomponents.<br/><strong>Risk:</strong> None; beneficiary of both defense spending growth and Pentagon cost-efficiency drives.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>SPACEX</code></strong></td>
+<td style="text-align:left">SpaceX (Starlink &amp; Starshield)</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.94</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecDef Pete Hegseth, SecComm Howard Lutnick, Ferguson (FTC) &amp; Carr (FCC)</td>
+<td style="text-align:left">Golden Dome / Space Force / MDA / USAF, Isaacman (NASA), Black (DFC) &amp; Loeffler (SBA), NTIA Admin. Arielle Roth, Bradbury (DOT), Bedford (FAA) &amp; NHTSA</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Primary beneficiary of EO 14186 Golden Dome LEO tracking/interceptor layer, FAA Part 450 Starship cadence, NASA Mars/Artemis, and NTIA $42.5B BEAD rewrite.<br/><strong>Risk:</strong> 120th Congress Dem House Oversight procurement conflict-of-interest inquiries.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ANDURIL</code></strong></td>
+<td style="text-align:left">Anduril Industries</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.93</code>)</td>
+<td style="text-align:left">VP JD Vance, SecDef Pete Hegseth, SecDHS Kristi Noem</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, Golden Dome / Space Force / MDA / USAF, Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Selected for USAF CCA Increment 1 (Fury), Replicator 2 autonomous swarms, CBP autonomous border towers, and DPA solid rocket motor factory.<br/><strong>Risk:</strong> Scaling Arsenal-1 manufacturing facility in Ohio.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>SHIELD_AI</code></strong></td>
+<td style="text-align:left">Shield AI</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.85</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecDHS Kristi Noem</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, Golden Dome / Space Force / MDA / USAF, Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Hivemind GPS-denied AI autonomy stack for CCA fighter drones (Kratos Valkyrie) &amp; Coast Guard/Navy V-BAT maritime surveillance.<br/><strong>Risk:</strong> Competition in tactical VTOL drone tenders.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>SARONIC</code></strong></td>
+<td style="text-align:left">Saronic Technologies</td>
+<td style="text-align:left"><code>DEFENSE_SPACE</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">VP JD Vance, SecDef Pete Hegseth</td>
+<td style="text-align:left">SecNavy Phelan &amp; SecArmy Driscoll, USD(R&amp;E) Emil Michael, USD(P) Elbridge Colby</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> SecNavy Phelan &amp; USD(P) Colby pivot to attritable autonomous surface vessels (Corsair/Cutlass) and Port Alpha autonomous shipyard.<br/><strong>Risk:</strong> Rapid naval autonomous certification timelines.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>NVDA</code></strong></td>
+<td style="text-align:left">NVIDIA Corporation</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.76</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, David Sacks (AI &amp; Crypto), SecComm Howard Lutnick, SecEnergy Chris Wright</td>
+<td style="text-align:left">Under Sec. Jeffrey Kessler (BIS), Under Sec. Darío Gil (DOE Science/AI), Under Sec. Jacob Helberg (State Econ)</td>
+<td style="text-align:left">House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi), Senate Commerce (Cruz &amp; Cantwell)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Rescission of Biden AI Diffusion cap in favor of multi-GW UAE/Saudi Sovereign AI deals, DOE Genesis AI supercomputers &amp; US capex tariff exemption.<br/><strong>Risk:</strong> Strict BIS China AI GPU (H20/Blackwell) export restrictions &amp; House CCP smuggling probes.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>AMD</code></strong></td>
+<td style="text-align:left">Advanced Micro Devices</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.72</code>)</td>
+<td style="text-align:left">David Sacks (AI &amp; Crypto), SecComm Howard Lutnick, SecEnergy Chris Wright</td>
+<td style="text-align:left">Under Sec. Darío Gil (DOE Science/AI), Under Sec. Jeffrey Kessler (BIS), Under Sec. Jacob Helberg (State Econ)</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> DOE Office of Science (Darío Gil) Exascale &amp; Genesis AI supercomputer awards + bilateral Gulf Sovereign AI cluster participation.<br/><strong>Risk:</strong> BIS China MI308 export license requirements.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>AVGO</code></strong></td>
+<td style="text-align:left">Broadcom Inc.</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.75</code>)</td>
+<td style="text-align:left">David Sacks (AI &amp; Crypto), SecComm Howard Lutnick</td>
+<td style="text-align:left">Under Sec. Jeffrey Kessler (BIS), DepSecComm Paul Dabbar</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> US AI data-center capex boom (100% bonus depreciation) &amp; US-domiciled semiconductor champion status.<br/><strong>Risk:</strong> DOGE review of federal VMware enterprise license bundle renewals.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>TSM</code></strong></td>
+<td style="text-align:left">Taiwan Semiconductor (TSMC)</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.82</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecComm Howard Lutnick</td>
+<td style="text-align:left">DepSecComm Paul Dabbar, Under Sec. Jeffrey Kessler (BIS), USD(P) Elbridge Colby</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> White House &amp; Sec. Lutnick $100B+ Arizona fab/packaging expansion commitment secures Section 232 semiconductor tariff exemption + CHIPS funds.<br/><strong>Risk:</strong> Cross-strait geopolitical tail risk &amp; BIS China foundry customer restrictions.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>MU</code></strong></td>
+<td style="text-align:left">Micron Technology</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.88</code>)</td>
+<td style="text-align:left">SecComm Howard Lutnick, SecEnergy Chris Wright</td>
+<td style="text-align:left">DepSecComm Paul Dabbar, Under Sec. Jeffrey Kessler (BIS), Under Sec. Darío Gil (DOE Science/AI)</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate Armed Services (Wicker &amp; Reed), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Only US-based HBM/DRAM manufacturer: protected by BIS 1.4 GB/s/mm² HBM export ban on China (CXMT) and $6.14B CHIPS grant + 25% ITC for Idaho/NY fabs.<br/><strong>Risk:</strong> High cleanroom CapEx intensity.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>INTC</code></strong></td>
+<td style="text-align:left">Intel Corporation</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.62</code>)</td>
+<td style="text-align:left">SecComm Howard Lutnick, SecDef Pete Hegseth</td>
+<td style="text-align:left">DepSecComm Paul Dabbar, USD(R&amp;E) Emil Michael</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Strategic national-security imperative for domestic leading-edge x86/18A defense foundry (Secure Enclave) &amp; Section 232 tariff protection.<br/><strong>Risk:</strong> Strict Commerce (Lutnick/Dabbar) CHIPS milestone disbursement gates.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>QCOM</code></strong></td>
+<td style="text-align:left">Qualcomm Inc.</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.60</code>)</td>
+<td style="text-align:left">SecComm Howard Lutnick, Ferguson (FTC) &amp; Carr (FCC)</td>
+<td style="text-align:left">USPTO Dir. John Squires, NTIA Admin. Arielle Roth</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> USPTO Dir. Squires strong Standard-Essential Patent (SEP) protection, FTC dropping prior licensing hostility, and FCC 6G spectrum pipeline.<br/><strong>Risk:</strong> US-China tariff/Entity List exposure on handset shipments.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>AAPL</code></strong></td>
+<td style="text-align:left">Apple Inc.</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>MIXED / BIFURCATED</strong> (<code>+0.25</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecComm Howard Lutnick, AG Pam Bondi (DOJ)</td>
+<td style="text-align:left">AAG Gail Slater (DOJ Antitrust), DepSecComm Paul Dabbar</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders), House Ways &amp; Means (Smith &amp; Neal)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Trump/Lutnick Section 232 tariff carve-outs following Apple's $500B US AI server (Houston), TSMC Arizona, and MP Materials magnet commitments.<br/><strong>Risk:</strong> DOJ Antitrust (AAG Gail Slater) Sherman Act Sec. 2 smartphone monopoly lawsuit &amp; China assembly exposure.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>MSFT</code></strong></td>
+<td style="text-align:left">Microsoft Corporation</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.78</code>)</td>
+<td style="text-align:left">David Sacks (AI &amp; Crypto), Russell Vought (OMB/DOGE), SecDef Pete Hegseth, SecEnergy Chris Wright</td>
+<td style="text-align:left">Under Sec. Darío Gil (DOE Science/AI), USD(R&amp;E) Emil Michael, DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), House Ways &amp; Means (Smith &amp; Neal)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Azure Classified IL6/JWCC federal AI workloads, Three Mile Island nuclear restart PPA (NRC/DOE), and multibillion-dollar Sec. 174 R&amp;D tax cash windfall.<br/><strong>Risk:</strong> FTC cloud bundling &amp; cybersecurity procurement audits.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>AMZN</code></strong></td>
+<td style="text-align:left">Amazon.com (AWS &amp; Project Kuiper)</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.58</code>)</td>
+<td style="text-align:left">Gabbard (DNI) &amp; Ratcliffe (CIA), SecComm Howard Lutnick, SecDef Pete Hegseth</td>
+<td style="text-align:left">NTIA Admin. Arielle Roth, Golden Dome / Space Force / MDA / USAF, DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Dominant CIA/NSA/DoD classified cloud provider (AWS Secret/Top Secret), NTIA tech-neutral BEAD awards for Kuiper LEO, and de minimis closure hurting Temu/Shein.<br/><strong>Risk:</strong> FTC antitrust trial &amp; Section 301 tariffs on third-party marketplace sellers.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>GOOGL</code></strong></td>
+<td style="text-align:left">Alphabet Inc. (Google &amp; Waymo)</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>MIXED / BIFURCATED</strong> (<code>+0.12</code>)</td>
+<td style="text-align:left">AG Pam Bondi (DOJ), SecDOT Sean Duffy, VP JD Vance</td>
+<td style="text-align:left">AAG Gail Slater (DOJ Antitrust), Bradbury (DOT), Bedford (FAA) &amp; NHTSA, DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders), Senate Commerce (Cruz &amp; Cantwell)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> DOT/NHTSA national autonomous vehicle framework benefits Waymo Robotaxi expansion + Sec. 174 R&amp;D expensing &amp; USTR defense against foreign DSTs.<br/><strong>Risk:</strong> DOJ Antitrust (AAG Slater &amp; VP Vance) structural remedies in Search distribution and Ad-Tech monopolization rulings.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>META</code></strong></td>
+<td style="text-align:left">Meta Platforms</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.52</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, David Sacks (AI &amp; Crypto), USTR Jamieson Greer, Ferguson (FTC) &amp; Carr (FCC)</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">House Ways &amp; Means (Smith &amp; Neal), Senate Commerce (Cruz &amp; Cantwell)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> White House AI Action Plan support for open-weight AI, DoD/IC adoption of Llama models, 100% data-center bonus depreciation, and USTR pushback on EU DMA/DSTs.<br/><strong>Risk:</strong> FTC Chair Ferguson antitrust litigation &amp; child-safety congressional legislation.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ORCL</code></strong></td>
+<td style="text-align:left">Oracle Corporation</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, David Sacks (AI &amp; Crypto), SecVA Doug Collins, SecEnergy Chris Wright</td>
+<td style="text-align:left">Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA), Under Sec. Darío Gil (DOE Science/AI), Under Sec. Jacob Helberg (State Econ)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Appropriations (Cole, Calvert &amp; DeLauro)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Core White House Stargate $500B AI infrastructure partner, VA Secretary Collins EHR rollout acceleration, TikTok US data security host, and Sovereign AI clouds.<br/><strong>Risk:</strong> High data-center debt/CapEx leverage.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>IBM</code></strong></td>
+<td style="text-align:left">IBM Corporation</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.76</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecComm Howard Lutnick</td>
+<td style="text-align:left">Under Sec. Darío Gil (DOE Science/AI), DepSecComm Paul Dabbar</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Former IBM Research chief Darío Gil now leads DOE Science &amp; National Labs; primary beneficiary of National Quantum Initiative &amp; NIST FIPS 203-205 PQC migration.<br/><strong>Risk:</strong> DOGE tightening on legacy federal mainframes/consulting.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>NOW</code></strong></td>
+<td style="text-align:left">ServiceNow Inc.</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.82</code>)</td>
+<td style="text-align:left">Russell Vought (OMB/DOGE), SecDef Pete Hegseth, SecVA Doug Collins</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA</td>
+<td style="text-align:left">House Oversight (Comer &amp; Garcia)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> OMB/DOGE mandate to replace manual civil-service workflows and expensive human IT contractors with commercial AI workflow software.<br/><strong>Risk:</strong> Short-term procurement pauses during agency contract reviews.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>PANW</code></strong></td>
+<td style="text-align:left">Palo Alto Networks</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.83</code>)</td>
+<td style="text-align:left">SecDHS Kristi Noem, SecDef Pete Hegseth, Gabbard (DNI) &amp; Ratcliffe (CIA)</td>
+<td style="text-align:left">Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA, USD(R&amp;E) Emil Michael</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Platformization winner as OMB/DOGE and CISA consolidate fragmented agency point-tools into unified Zero-Trust &amp; AI SOC platforms.<br/><strong>Risk:</strong> Federal budget continuing-resolution timing.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>CRWD</code></strong></td>
+<td style="text-align:left">CrowdStrike Holdings</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.80</code>)</td>
+<td style="text-align:left">SecDHS Kristi Noem, SecDef Pete Hegseth</td>
+<td style="text-align:left">Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA, USD(R&amp;E) Emil Michael</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Mandatory DoD CMMC 2.0 compliance across 80,000 defense contractors + CISA endpoint detection and CCP Volt/Salt Typhoon defense.<br/><strong>Risk:</strong> None material.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ZS</code></strong></td>
+<td style="text-align:left">Zscaler Inc.</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.78</code>)</td>
+<td style="text-align:left">SecDef Pete Hegseth, SecDHS Kristi Noem, Russell Vought (OMB/DOGE)</td>
+<td style="text-align:left">Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA, USD(R&amp;E) Emil Michael</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Eliminates legacy federal VPNs/MPLS circuits under DoD Thunderdome and OMB/DOGE network cost-reduction mandates.<br/><strong>Risk:</strong> Competition with Palo Alto Networks in federal agencies.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>KLAC</code></strong></td>
+<td style="text-align:left">KLA Corporation</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.68</code>)</td>
+<td style="text-align:left">SecComm Howard Lutnick</td>
+<td style="text-align:left">Under Sec. Jeffrey Kessler (BIS), DepSecComm Paul Dabbar</td>
+<td style="text-align:left">House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi), Senate Commerce (Cruz &amp; Cantwell)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Monopoly optical/e-beam metrology for TSMC Arizona, Micron HBM3e/HBM4, and Intel 18A US fabs backed by 25% CHIPS investment tax credit.<br/><strong>Risk:</strong> BIS (Kessler) tightening of metrology export licenses to Chinese fabs.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>LRCX</code></strong></td>
+<td style="text-align:left">Lam Research Corp.</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.69</code>)</td>
+<td style="text-align:left">SecComm Howard Lutnick</td>
+<td style="text-align:left">DepSecComm Paul Dabbar, Under Sec. Jeffrey Kessler (BIS)</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Syndion TSV etch monopoly for HBM4 &amp; Cryo 3.0 NAND etch for US/allied memory megafabs.<br/><strong>Risk:</strong> BIS China CXMT/YMTC wafer fab equipment restrictions.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>AMAT</code></strong></td>
+<td style="text-align:left">Applied Materials</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.65</code>)</td>
+<td style="text-align:left">SecComm Howard Lutnick</td>
+<td style="text-align:left">DepSecComm Paul Dabbar, Under Sec. Jeffrey Kessler (BIS), DAG Blanche &amp; SG Sauer (DOJ)</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Domestic US fab equipment orders (TSMC AZ, Micron ID/NY, TI TX) + advanced HBM hybrid bonding.<br/><strong>Risk:</strong> BIS/DOJ export control compliance audits on historic China shipments.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>SNDK</code></strong></td>
+<td style="text-align:left">SanDisk Corporation</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.74</code>)</td>
+<td style="text-align:left">SecComm Howard Lutnick, SecEnergy Chris Wright</td>
+<td style="text-align:left">Under Sec. Jeffrey Kessler (BIS), Under Sec. Darío Gil (DOE Science/AI)</td>
+<td style="text-align:left">House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> BIS Entity List restrictions on China's YMTC shield SanDisk/Kioxia's BiCS8 enterprise QLC eSSD share in US hyperscale &amp; federal AI clouds.<br/><strong>Risk:</strong> NAND flash cyclicality.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>OPENAI</code></strong></td>
+<td style="text-align:left">OpenAI (Stargate &amp; OpenAI Gov)</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.85</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, David Sacks (AI &amp; Crypto), SecEnergy Chris Wright, SecDef Pete Hegseth</td>
+<td style="text-align:left">Under Sec. Darío Gil (DOE Science/AI), USD(R&amp;E) Emil Michael, Under Sec. Jacob Helberg (State Econ)</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Flagship White House Stargate partner, DOE National Lab scientific AI deployment (Los Alamos/Venado), and DoD/Air Force ChatGPT Gov deployments.<br/><strong>Risk:</strong> Federal copyright &amp; safety inquiries.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ANTHROPIC</code></strong></td>
+<td style="text-align:left">Anthropic</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.79</code>)</td>
+<td style="text-align:left">David Sacks (AI &amp; Crypto), Gabbard (DNI) &amp; Ratcliffe (CIA), SecDef Pete Hegseth</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, Under Sec. Darío Gil (DOE Science/AI)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> First frontier lab accredited on Palantir/AWS IL6 classified networks for US Intelligence &amp; Defense workflow automation.<br/><strong>Risk:</strong> White House pushback against overly restrictive state AI rules.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>XAI</code></strong></td>
+<td style="text-align:left">xAI (Colossus &amp; Grok)</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.84</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, David Sacks (AI &amp; Crypto), SecEnergy Chris Wright, EPA Admin. Lee Zeldin</td>
+<td style="text-align:left">Danly &amp; Griffith (DOE Grid/LPO), USD(R&amp;E) Emil Michael</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> EPA/DOE fast-track permitting for on-site natural gas turbines powering the 1M+ GPU Memphis Colossus cluster + federal Grok integration.<br/><strong>Risk:</strong> 120th Congress Dem House Oversight environmental/conflict scrutiny.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>SCALE_AI</code></strong></td>
+<td style="text-align:left">Scale AI</td>
+<td style="text-align:left"><code>AI_SEMI_CLOUD</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">David Sacks (AI &amp; Crypto), SecDef Pete Hegseth, Gabbard (DNI) &amp; Ratcliffe (CIA)</td>
+<td style="text-align:left">USD(R&amp;E) Emil Michael, USD(P) Elbridge Colby</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House Armed Services (Rogers &amp; Smith)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Awarded DoD CDAO 'Thunderforge' flagship contract to deploy agentic AI planning across INDOPACOM and EUCOM.<br/><strong>Risk:</strong> Data-labeling competition.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>UNH</code></strong></td>
+<td style="text-align:left">UnitedHealth Group (UnitedHealthcare &amp; Optum)</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>MIXED / BIFURCATED</strong> (<code>+0.15</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., AG Pam Bondi (DOJ), SecVA Doug Collins</td>
+<td style="text-align:left">Dr. Mehmet Oz (CMS) &amp; Sutton, AAG Gail Slater (DOJ Antitrust), DAG Blanche &amp; SG Sauer (DOJ)</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders), House Oversight (Comer &amp; Garcia)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Major winner from Dr. Oz's +5.06% CY2026 Medicare Advantage benchmark rate notice and VA OptumServe Community Care / disability exam volume.<br/><strong>Risk:</strong> DOJ Antitrust (Slater) &amp; Civil FCA (Blanche) risk-coding probe + bipartisan Senate Finance (Crapo/Wyden) PBM rebate delinking.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HUM</code></strong></td>
+<td style="text-align:left">Humana Inc.</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.42</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., SecVA Doug Collins</td>
+<td style="text-align:left">Dr. Mehmet Oz (CMS) &amp; Sutton, Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA)</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), House Ways &amp; Means (Smith &amp; Neal)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Highest operating leverage to Dr. Oz's +5.06% CY2026 Medicare Advantage rate update and Star Rating cutpoint stabilization.<br/><strong>Risk:</strong> CMS V28 risk-adjustment phase-in &amp; RADV audit clawbacks.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>CVS</code></strong></td>
+<td style="text-align:left">CVS Health (Aetna &amp; Caremark PBM)</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>MIXED / BIFURCATED</strong> (<code>-0.18</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., Ferguson (FTC) &amp; Carr (FCC), VP JD Vance</td>
+<td style="text-align:left">Dr. Mehmet Oz (CMS) &amp; Sutton, AAG Gail Slater (DOJ Antitrust)</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), House Oversight (Comer &amp; Garcia), Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Aetna Medicare Advantage margin recovery under CMS +5.06% rate update.<br/><strong>Risk:</strong> Direct target of FTC Chair Ferguson PBM 6(b) lawsuit and bipartisan Senate Finance (Crapo/Wyden) NADAC delinking &amp; spread-pricing ban.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>CI</code></strong></td>
+<td style="text-align:left">The Cigna Group (Express Scripts &amp; Evernorth)</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>REGULATORY HEADWIND</strong> (<code>-0.24</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., Ferguson (FTC) &amp; Carr (FCC), VP JD Vance</td>
+<td style="text-align:left">Dr. Mehmet Oz (CMS) &amp; Sutton, AAG Gail Slater (DOJ Antitrust)</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), House Oversight (Comer &amp; Garcia), Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Evernorth specialty biosimilar (Humira/Stelara) pass-through adoption.<br/><strong>Risk:</strong> High exposure to FTC PBM enforcement, Trump 'eliminate the middleman' directives, and bipartisan Congressional PBM fee delinking.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>CNC</code></strong></td>
+<td style="text-align:left">Centene Corporation</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>MIXED / BIFURCATED</strong> (<code>-0.35</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr.</td>
+<td style="text-align:left">Dr. Mehmet Oz (CMS) &amp; Sutton</td>
+<td style="text-align:left">House Energy &amp; Commerce (Guthrie &amp; Pallone), House Leaders Johnson &amp; Jeffries, Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> 120th Congress Dem House Majority (Speaker Jeffries / Rep. Pallone) extends ACA Enhanced Premium Tax Credits (ePTC) and blocks new Medicaid cuts.<br/><strong>Risk:</strong> Enacted 2025 reconciliation Medicaid work requirements (80 hrs/mo) &amp; redetermination disenrollments under CMS.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HCA</code></strong></td>
+<td style="text-align:left">HCA Healthcare</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.22</code>)</td>
+<td style="text-align:left">SecVA Doug Collins, HHS Sec. RFK Jr.</td>
+<td style="text-align:left">Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA), Dr. Mehmet Oz (CMS) &amp; Sutton</td>
+<td style="text-align:left">House Leaders Johnson &amp; Jeffries, Senate Finance (Crapo &amp; Wyden), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> VA Secretary Collins expansion of private Community Care hospital referrals + 120th Dem Congress protection of ACA ePTC subsidies and DSH hospital payments.<br/><strong>Risk:</strong> CMS site-neutral outpatient billing proposals &amp; 2025 reconciliation Medicaid work rules.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>THC</code></strong></td>
+<td style="text-align:left">Tenet Healthcare</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.48</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., SecVA Doug Collins</td>
+<td style="text-align:left">Dr. Mehmet Oz (CMS) &amp; Sutton, Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA)</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> CMS (Dr. Oz &amp; Abe Sutton) site-neutral billing and procedure migration from hospital inpatient to lower-cost Ambulatory Surgery Centers (USPI).<br/><strong>Risk:</strong> Medicaid supplemental payment adjustments.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>LLY</code></strong></td>
+<td style="text-align:left">Eli Lilly and Company</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>MIXED / BIFURCATED</strong> (<code>+0.18</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, HHS Sec. RFK Jr., SecComm Howard Lutnick</td>
+<td style="text-align:left">Dr. Mehmet Oz (CMS) &amp; Sutton, Dr. Marty Makary (FDA) &amp; Prasad, USPTO Dir. John Squires</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> FDA (Makary) termination of compounded tirzepatide shortage exemptions, $27B US API manufacturing pledge securing Sec. 232 tariff relief, and Medicare obesity coverage.<br/><strong>Risk:</strong> Trump May 2025 Most-Favored-Nation (MFN) reference pricing EO &amp; IRA Part D Round 3 negotiation.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>NVO</code></strong></td>
+<td style="text-align:left">Novo Nordisk</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>REGULATORY HEADWIND</strong> (<code>-0.32</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, HHS Sec. RFK Jr., SecComm Howard Lutnick</td>
+<td style="text-align:left">Dr. Mehmet Oz (CMS) &amp; Sutton, Dr. Marty Makary (FDA) &amp; Prasad</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders), Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> FDA enforcement against illegal semaglutide compounders.<br/><strong>Risk:</strong> CMS IRA Part D negotiated price cuts on Ozempic/Wegovy (2027 effect), Trump MFN pricing EO, and European import tariff exposure.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>PFE</code></strong></td>
+<td style="text-align:left">Pfizer Inc.</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>REGULATORY HEADWIND</strong> (<code>-0.38</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., Pres. Donald Trump</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, Dr. Mehmet Oz (CMS) &amp; Sutton</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Oncology ADC pipeline &amp; FTC HSR clearance for biotech bolt-ons.<br/><strong>Risk:</strong> HHS Sec. RFK Jr. &amp; CBER Dir. Vinay Prasad vaccine ACIP/post-market trial overhaul + MFN international reference pricing.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>MRNA</code></strong></td>
+<td style="text-align:left">Moderna Inc.</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>REGULATORY HEADWIND</strong> (<code>-0.58</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr.</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, DepSecHHS Jim O'Neill</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Individualized neoantigen oncology vaccine (mRNA-4157) with Merck.<br/><strong>Risk:</strong> Direct headwind from HHS Sec. RFK Jr. and FDA CBER (Prasad) tightening Covid/respiratory mRNA vaccine boosters and BARDA contract reviews.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>VRTX</code></strong></td>
+<td style="text-align:left">Vertex Pharmaceuticals</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.72</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., VP JD Vance</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, Dr. Mehmet Oz (CMS) &amp; Sutton, USPTO Dir. John Squires</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders), Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> FDA Comm. Makary 'plausible-mechanism' rare-disease pathway, bipartisan NOPAIN Act separate Medicare reimbursement for Journavx (suzetrigine) non-opioid pain drug, and orphan IRA exemption.<br/><strong>Risk:</strong> Minimal MFN exposure due to high OECD rare-disease pricing.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>REGN</code></strong></td>
+<td style="text-align:left">Regeneron Pharmaceuticals</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.54</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr.</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, DepSecHHS Jim O'Neill, Dr. Mehmet Oz (CMS) &amp; Sutton</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Strong domestic US biologics manufacturing in NY (insulated from Sec. 232 pharma tariffs) &amp; BARDA antibody partnerships.<br/><strong>Risk:</strong> CMS Medicare Part B Average Sales Price (ASP) and MFN reference pricing proposals.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>AMGN</code></strong></td>
+<td style="text-align:left">Amgen Inc.</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.56</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., Ferguson (FTC) &amp; Carr (FCC)</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, Dr. Mehmet Oz (CMS) &amp; Sutton</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> FDA (Makary) elimination of switching-study barriers for interchangeable biosimilars + expanded US biologics manufacturing in Ohio/NC.<br/><strong>Risk:</strong> Medicare Part B/D negotiation on legacy immunology drugs.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ISRG</code></strong></td>
+<td style="text-align:left">Intuitive Surgical</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.78</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., SecVA Doug Collins</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, Dr. Mehmet Oz (CMS) &amp; Sutton, Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA)</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Zero MFN/PBM drug pricing exposure; benefits from FDA AI/robotics clearance velocity, CMS ASC soft-tissue procedure additions, and 100% hospital capital equipment bonus depreciation.<br/><strong>Risk:</strong> Minor component tariff pass-through.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>BSX</code></strong></td>
+<td style="text-align:left">Boston Scientific</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.76</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr.</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, Dr. Mehmet Oz (CMS) &amp; Sutton</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> CMS inpatient/outpatient reimbursement tailwinds for electrophysiology (FARAPULSE PFA) and structural heart devices; insulated from pharma MFN.<br/><strong>Risk:</strong> None material.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>GEHC</code></strong></td>
+<td style="text-align:left">GE HealthCare Technologies</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.70</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., SecVA Doug Collins</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, Dr. Mehmet Oz (CMS) &amp; Sutton, Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA)</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> CMS final rule unbundling diagnostic radiopharmaceutical payments above $630/day + FDA (Makary) AI clinical software acceleration &amp; VA imaging fleet upgrades.<br/><strong>Risk:</strong> China hospital procurement tariff friction.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>MCK</code></strong></td>
+<td style="text-align:left">McKesson Corporation</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.68</code>)</td>
+<td style="text-align:left">SecVA Doug Collins, HHS Sec. RFK Jr.</td>
+<td style="text-align:left">Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA), Dr. Mehmet Oz (CMS) &amp; Sutton, Dr. Marty Makary (FDA) &amp; Prasad</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Sole-source Department of Veterans Affairs (VA) pharmaceutical prime vendor; benefits from volume growth, GLP-1 cold-chain distribution, and fee-for-service transparency.<br/><strong>Risk:</strong> Minimal exposure to branded list-price cuts (fee-for-service distributor).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>COR</code></strong></td>
+<td style="text-align:left">Cencora Inc.</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.66</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr.</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, Dr. Mehmet Oz (CMS) &amp; Sutton</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Captures high-margin specialty biologics and biosimilar distribution spreads as FDA accelerates biosimilar interchangeability.<br/><strong>Risk:</strong> Low regulatory risk.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>VEEV</code></strong></td>
+<td style="text-align:left">Veeva Systems</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.75</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr.</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, DepSecHHS Jim O'Neill</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> FDA (Makary) &amp; HHS (O'Neill) push to modernize clinical trial data standards, real-world evidence (RWE), and automated regulatory submissions.<br/><strong>Risk:</strong> NIH academic grant cap has zero impact on Veeva's commercial biopharma base.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>MMS</code></strong></td>
+<td style="text-align:left">Maximus Inc.</td>
+<td style="text-align:left"><code>HEALTHCARE_BIO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.84</code>)</td>
+<td style="text-align:left">SecVA Doug Collins, HHS Sec. RFK Jr.</td>
+<td style="text-align:left">Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA), Dr. Mehmet Oz (CMS) &amp; Sutton</td>
+<td style="text-align:left">House Energy &amp; Commerce (Guthrie &amp; Pallone), House Appropriations (Cole, Calvert &amp; DeLauro)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Dual policy winner: executes outsourced VA PACT Act disability medical exams AND state Medicaid work-requirement/eligibility verification contracts.<br/><strong>Risk:</strong> DOGE contract pricing reviews.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>XOM</code></strong></td>
+<td style="text-align:left">ExxonMobil Corporation</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.72</code>)</td>
+<td style="text-align:left">SecInterior Doug Burgum, SecEnergy Chris Wright, EPA Admin. Lee Zeldin</td>
+<td style="text-align:left">MacGregor &amp; Beyer (DOI BLM/BOEM), DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">House Ways &amp; Means (Smith &amp; Neal), Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> DOI (Burgum/MacGregor) 5-year Gulf of America offshore leasing, EPA tailpipe/refinery deregulation, and House Ways &amp; Means preservation of Sec. 45Q carbon capture credits.<br/><strong>Risk:</strong> White House '3-3-3' lower crude oil price target (-$60-$65/bbl WTI cap).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>CVX</code></strong></td>
+<td style="text-align:left">Chevron Corporation</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.70</code>)</td>
+<td style="text-align:left">SecInterior Doug Burgum, SecEnergy Chris Wright, Ferguson (FTC) &amp; Carr (FCC)</td>
+<td style="text-align:left">MacGregor &amp; Beyer (DOI BLM/BOEM), FERC &amp; NRC Chairs (Power/Nuclear)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> FTC clearance of Hess acquisition, DOI Gulf of America deepwater permitting fast-track, and GE Vernova/Chevron 4 GW behind-the-meter AI data center gas power JV.<br/><strong>Risk:</strong> OFAC Venezuela license recalibrations &amp; lower crude price target.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>LNG</code></strong></td>
+<td style="text-align:left">Cheniere Energy</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.90</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecEnergy Chris Wright, SecState Marco Rubio, USTR Jamieson Greer</td>
+<td style="text-align:left">Danly &amp; Griffith (DOE Grid/LPO), FERC &amp; NRC Chairs (Power/Nuclear)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Day-1 EO 14154 &amp; Sec. Wright unfreezing of DOE non-FTA LNG export authorizations (Corpus Christi Stage 3 / Sabine Pass Expansion) + USTR tariff deals requiring EU/Japan/Korea to buy US LNG.<br/><strong>Risk:</strong> Global LNG liquefaction supply additions in 2027-2028.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>WMB</code></strong></td>
+<td style="text-align:left">The Williams Companies</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecInterior Doug Burgum, EPA Admin. Lee Zeldin</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Danly &amp; Griffith (DOE Grid/LPO), MacGregor &amp; Beyer (DOI BLM/BOEM)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Moves 30%+ of US natural gas; FERC (Christie/Rosner) &amp; NEDC (Burgum) fast-track Southeast/Mid-Atlantic pipeline expansions feeding Virginia/Ohio AI data centers and Gulf LNG.<br/><strong>Risk:</strong> State-level Northeast pipeline litigation.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>KMI</code></strong></td>
+<td style="text-align:left">Kinder Morgan</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.84</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecInterior Doug Burgum</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Danly &amp; Griffith (DOE Grid/LPO)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> 50%+ share of feedgas deliveries to US Gulf Coast LNG terminals + multi-billion-dollar Trident/Mississippi Crossing pipeline backlog for AI power.<br/><strong>Risk:</strong> Interest rate sensitivity on project debt.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>CEG</code></strong></td>
+<td style="text-align:left">Constellation Energy</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.88</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecTreas Scott Bessent</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Danly &amp; Griffith (DOE Grid/LPO), DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">Senate Finance (Crapo &amp; Wyden), Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), House Ways &amp; Means (Smith &amp; Neal)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Senate Finance &amp; Ways &amp; Means preserved Section 45U ($15/MWh nuclear PTC) in reconciliation; NRC fast-tracks Three Mile Island (Crane) restart for Microsoft &amp; DOJ cleared Calpine gas acquisition.<br/><strong>Risk:</strong> FERC rulings on behind-the-meter vs. front-of-meter grid network upgrade cost allocation.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>VST</code></strong></td>
+<td style="text-align:left">Vistra Corp.</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.85</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, EPA Admin. Lee Zeldin</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Danly &amp; Griffith (DOE Grid/LPO)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> EPA Admin. Zeldin rescission of Clean Power Plan 2.0 extends Vistra's gas/coal fleet life while PJM $269.92/MW-day capacity auction and nuclear 45U credits boost FCF.<br/><strong>Risk:</strong> Wholesale power price volatility.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>TLN</code></strong></td>
+<td style="text-align:left">Talen Energy</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.83</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, EPA Admin. Lee Zeldin</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Danly &amp; Griffith (DOE Grid/LPO)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Expanded 1,920 MW front-of-the-meter nuclear PPA with Amazon AWS at Susquehanna (resolving FERC co-location friction) + PJM capacity price surge.<br/><strong>Risk:</strong> Single-asset nuclear concentration.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>GEV</code></strong></td>
+<td style="text-align:left">GE Vernova</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.91</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecEnergy Chris Wright, EPA Admin. Lee Zeldin, USTR Jamieson Greer</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Danly &amp; Griffith (DOE Grid/LPO), Under Sec. Jacob Helberg (State Econ)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Sold-out slot reservations for HA-class heavy-duty gas turbines powering AI data centers, $14B+ Saudi/Gulf turbine export deals on Trump state visits, and TVA Clinch River BWRX-300 SMR.<br/><strong>Risk:</strong> Offshore wind segment wind-down (already ring-fenced).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ETN</code></strong></td>
+<td style="text-align:left">Eaton Corporation</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.84</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecComm Howard Lutnick, SecDef Pete Hegseth</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Danly &amp; Griffith (DOE Grid/LPO), DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), House Ways &amp; Means (Smith &amp; Neal)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> 128-week transformer/switchgear bottleneck across AI data centers, utilities, and reshoring factories backed by 100% bonus depreciation.<br/><strong>Risk:</strong> Section 232 electrical steel input costs (passed through via pricing power).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>PWR</code></strong></td>
+<td style="text-align:left">Quanta Services</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecInterior Doug Burgum, SecLabor Chavez-DeRemer</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Danly &amp; Griffith (DOE Grid/LPO), MacGregor &amp; Beyer (DOI BLM/BOEM)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> 3-5 year backlog building 500kV/765kV transmission lines and AI data-center substations accelerated by NEDC/DOI NEPA permitting cuts.<br/><strong>Risk:</strong> Project weather delays.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>OKLO</code></strong></td>
+<td style="text-align:left">Oklo Inc.</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.82</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecDef Pete Hegseth</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Under Sec. Brandon Williams (NNSA), Danly &amp; Griffith (DOE Grid/LPO)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), Senate Armed Services (Wicker &amp; Reed)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Energy Sec. Chris Wright previously sat on Oklo's board; direct beneficiary of DOE INL site permits, HALEU fuel allocations, NRC ADVANCE Act Part 53 fast-track, and Air Force base microreactor awards.<br/><strong>Risk:</strong> Pre-revenue FOAK NRC Combined License timeline (2027-2028).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>SMR</code></strong></td>
+<td style="text-align:left">NuScale Power</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.76</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecState Marco Rubio</td>
+<td style="text-align:left">FERC &amp; NRC Chairs (Power/Nuclear), Danly &amp; Griffith (DOE Grid/LPO), Isaacman (NASA), Black (DFC) &amp; Loeffler (SBA)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Holds the only NRC-approved SMR design certification in the US + DFC/EXIM financing for Eastern European coal-to-nuclear repowering.<br/><strong>Risk:</strong> Awaiting binding Tier-1 US hyperscaler customer FID.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>LEU</code></strong></td>
+<td style="text-align:left">Centrus Energy</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.89</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecDef Pete Hegseth</td>
+<td style="text-align:left">Under Sec. Brandon Williams (NNSA), FERC &amp; NRC Chairs (Power/Nuclear)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), Senate Armed Services (Wicker &amp; Reed), Senate Appropriations (Collins/Murray/McConnell)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Monopoly Piketon, Ohio American Centrifuge cascade awarded multi-billion-dollar DOE/NNSA task orders ahead of the Jan 1, 2028 Russian enriched uranium import cliff.<br/><strong>Risk:</strong> Cascade manufacturing scale-up schedule.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>FSLR</code></strong></td>
+<td style="text-align:left">First Solar Inc.</td>
+<td style="text-align:left"><code>ENERGY_NUCLEAR_GRID</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.58</code>)</td>
+<td style="text-align:left">USTR Jamieson Greer, SecComm Howard Lutnick</td>
+<td style="text-align:left">DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">House Ways &amp; Means (Smith &amp; Neal), House Leaders Johnson &amp; Jeffries, House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Protected by USTR/Commerce &gt;100% AD/CVD &amp; Section 301 tariffs on Southeast Asian Chinese crystalline silicon panels, FEOC rules, and 120th Dem Congress IRA 45X firewall.<br/><strong>Risk:</strong> 119th GOP phase-down of wind/solar 48E investment tax credits.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>JPM</code></strong></td>
+<td style="text-align:left">JPMorgan Chase &amp; Co.</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.82</code>)</td>
+<td style="text-align:left">SecTreas Scott Bessent, Powell &amp; Bowman (Fed/FOMC), Paul Atkins (SEC) &amp; CFTC</td>
+<td style="text-align:left">Gould (OCC) &amp; Hill (FDIC), Under Sec. Pettit &amp; Pulte (FHFA), AAG Gail Slater (DOJ Antitrust)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), House Financial Services (Hill &amp; Waters)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Fed Vice Chair Bowman &amp; Treasury Sec. Bessent eSLR exemption for US Treasuries + Basel III Endgame capital relief unlock tens of billions in excess CET1 capital and M&amp;A advisory fees.<br/><strong>Risk:</strong> 120th Congress Dem Senate Banking (Sen. Warren) oversight hearings.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>GS</code></strong></td>
+<td style="text-align:left">The Goldman Sachs Group</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">SecTreas Scott Bessent, Powell &amp; Bowman (Fed/FOMC), Paul Atkins (SEC) &amp; CFTC, Ferguson (FTC) &amp; Carr (FCC)</td>
+<td style="text-align:left">AAG Gail Slater (DOJ Antitrust), Gould (OCC) &amp; Hill (FDIC), Under Sec. Pettit &amp; Pulte (FHFA)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), House Financial Services (Hill &amp; Waters)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Purest financial beneficiary of FTC/DOJ reopening sponsor M&amp;A exits, SEC Chair Atkins IPO streamlining, and Fed stress-capital-buffer (SCB) reductions.<br/><strong>Risk:</strong> Market volatility delaying IPO windows.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>MS</code></strong></td>
+<td style="text-align:left">Morgan Stanley</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.83</code>)</td>
+<td style="text-align:left">SecTreas Scott Bessent, Paul Atkins (SEC) &amp; CFTC, Powell &amp; Bowman (Fed/FOMC)</td>
+<td style="text-align:left">Gould (OCC) &amp; Hill (FDIC), DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), House Financial Services (Hill &amp; Waters), Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> TCJA estate/high-net-worth tax permanence, M&amp;A/IPO underwriting rebound, and OCC/SEC clearance to offer spot crypto trading across E*TRADE and wealth channels.<br/><strong>Risk:</strong> None material.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>BAC</code></strong></td>
+<td style="text-align:left">Bank of America Corp.</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.78</code>)</td>
+<td style="text-align:left">SecTreas Scott Bessent, Powell &amp; Bowman (Fed/FOMC)</td>
+<td style="text-align:left">Gould (OCC) &amp; Hill (FDIC), Under Sec. Pettit &amp; Pulte (FHFA)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), House Financial Services (Hill &amp; Waters)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Exempting Treasuries/reserves from eSLR directly relieves BAC's balance-sheet capacity while Bessent's &lt;4.75% 10Y yield discipline reduces HTM bond unrealized losses.<br/><strong>Risk:</strong> Net interest income sensitivity to rapid Fed rate cuts.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>BX</code></strong></td>
+<td style="text-align:left">Blackstone Inc.</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.84</code>)</td>
+<td style="text-align:left">SecTreas Scott Bessent, SecLabor Chavez-DeRemer, Paul Atkins (SEC) &amp; CFTC, SecEnergy Chris Wright</td>
+<td style="text-align:left">AAG Gail Slater (DOJ Antitrust), Danly &amp; Griffith (DOE Grid/LPO)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), House Financial Services (Hill &amp; Waters)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> DOL (Chavez-DeRemer/Sonderling) &amp; SEC (Atkins) opening $12T 401(k) defined-contribution plans to private equity/credit + QTS hyperscale AI data-center power permitting.<br/><strong>Risk:</strong> 120th Dem Congress scrutiny on institutional single-family housing ownership.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>APO</code></strong></td>
+<td style="text-align:left">Apollo Global Management</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.85</code>)</td>
+<td style="text-align:left">SecTreas Scott Bessent, SecComm Howard Lutnick, SecLabor Chavez-DeRemer, Paul Atkins (SEC) &amp; CFTC</td>
+<td style="text-align:left">DepSecComm Paul Dabbar, Gould (OCC) &amp; Hill (FDIC)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), House Financial Services (Hill &amp; Waters)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Finances multi-billion-dollar US reshoring fabs (Intel Fab 34) and AI energy infrastructure via Athene private investment-grade credit + DOL 401(k) private credit access.<br/><strong>Risk:</strong> NAIC insurance capital risk-weight adjustments.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>BLK</code></strong></td>
+<td style="text-align:left">BlackRock Inc.</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.80</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecState Marco Rubio, SecTreas Scott Bessent, Paul Atkins (SEC) &amp; CFTC</td>
+<td style="text-align:left">DepSec Landau &amp; Political (Hooker), Under Sec. Pettit &amp; Pulte (FHFA)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), House Financial Services (Hill &amp; Waters)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Led consortium acquiring Panama Canal ports (Balboa/Cristobal) from CK Hutchison alongside Trump/Rubio hemispheric push; SEC Atkins expands iShares IBIT/ETHA crypto ETF ecosystem.<br/><strong>Risk:</strong> Red-state ESG pension reviews (mitigated by BlackRock's infrastructure/energy pivot).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>COIN</code></strong></td>
+<td style="text-align:left">Coinbase Global</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.91</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, David Sacks (AI &amp; Crypto), Paul Atkins (SEC) &amp; CFTC, SecTreas Scott Bessent</td>
+<td style="text-align:left">Under Sec. Pettit &amp; Pulte (FHFA), Gould (OCC) &amp; Hill (FDIC)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), House Financial Services (Hill &amp; Waters)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> SEC dismissed its enforcement lawsuit against Coinbase; primary institutional custodian for the US Marshals Service / Strategic Bitcoin Reserve and co-economist of Circle's USDC under the GENIUS Act.<br/><strong>Risk:</strong> Traditional banks entering crypto custody post-SAB 121 repeal.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>MSTR</code></strong></td>
+<td style="text-align:left">Strategy (MicroStrategy)</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.84</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, David Sacks (AI &amp; Crypto), SecTreas Scott Bessent, Paul Atkins (SEC) &amp; CFTC</td>
+<td style="text-align:left">DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> White House Strategic Bitcoin Reserve EO legitimizes sovereign/corporate BTC treasuries while Treasury (Bessent/Faulkender) CAMT guidance shields unrealized FASB crypto gains from the 15% minimum tax.<br/><strong>Risk:</strong> Leveraged Bitcoin price volatility.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>HOOD</code></strong></td>
+<td style="text-align:left">Robinhood Markets</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">David Sacks (AI &amp; Crypto), Paul Atkins (SEC) &amp; CFTC</td>
+<td style="text-align:left">Gould (OCC) &amp; Hill (FDIC)</td>
+<td style="text-align:left">House Financial Services (Hill &amp; Waters), Senate Banking (Scott, Lummis &amp; Warren)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> SEC closed its Robinhood Crypto investigation with zero action; CFTC (Quintenz) clears political/economic event prediction contracts and 24/5 tokenized trading.<br/><strong>Risk:</strong> Retail trading volume cyclicality.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>SOFI</code></strong></td>
+<td style="text-align:left">SoFi Technologies</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.81</code>)</td>
+<td style="text-align:left">SecEd Linda McMahon, SecTreas Scott Bessent</td>
+<td style="text-align:left">Gould (OCC) &amp; Hill (FDIC)</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders), House Financial Services (Hill &amp; Waters)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Education Sec. Linda McMahon ending Biden's SAVE loan forgiveness and reconciliation caps on Grad PLUS federal loans drive a massive wave of high-FICO borrowers back into SoFi private refinancing.<br/><strong>Risk:</strong> Consumer credit cycle.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>FNMA</code></strong></td>
+<td style="text-align:left">Fannie Mae (Federal National Mortgage Assoc.)</td>
+<td style="text-align:left"><code>FINANCE_CRYPTO</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.85</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecTreas Scott Bessent, SecHUD Scott Turner</td>
+<td style="text-align:left">Under Sec. Pettit &amp; Pulte (FHFA)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren), House Financial Services (Hill &amp; Waters)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Treasury Sec. Bessent, Under Sec. Luke Pettit, and FHFA Dir. Bill Pulte preparing administrative recapitalization and exit from 2008 conservatorship while preserving implicit MBS rate stability.<br/><strong>Risk:</strong> Treasury Senior Preferred Stock warrant dilution structure.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>NUE</code></strong></td>
+<td style="text-align:left">Nucor Corporation</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.88</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, VP JD Vance, SecComm Howard Lutnick, USTR Jamieson Greer</td>
+<td style="text-align:left">DepSec Faulkender &amp; Kies (Tax), DepSecComm Paul Dabbar</td>
+<td style="text-align:left">House Ways &amp; Means (Smith &amp; Neal), Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Trump &amp; Lutnick eliminated all country exemptions on Section 232 steel tariffs (raising duties to 25-50%), driving domestic hot-rolled coil (HRC) pricing power and mill utilization.<br/><strong>Risk:</strong> Non-residential construction cyclicality.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>STLD</code></strong></td>
+<td style="text-align:left">Steel Dynamics Inc.</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, VP JD Vance, SecComm Howard Lutnick, USTR Jamieson Greer</td>
+<td style="text-align:left">DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">House Ways &amp; Means (Smith &amp; Neal)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Dual beneficiary of Section 232 steel tariffs AND aluminum tariffs as its new Columbus, MS recycled aluminum flat-rolled mill ramps.<br/><strong>Risk:</strong> Auto OEM production volume shifts.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>MP</code></strong></td>
+<td style="text-align:left">MP Materials Corp.</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.93</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, VP JD Vance, SecDef Pete Hegseth, SecInterior Doug Burgum</td>
+<td style="text-align:left">USD(A&amp;S) Michael Duffey, MacGregor &amp; Beyer (DOI BLM/BOEM), DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi), House Ways &amp; Means (Smith &amp; Neal)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Crown jewel of US mineral sovereignty: DoD became MP's largest shareholder ($400M preferred equity), guaranteed a 10-year $110/kg NdPr price floor and 100% magnet offtake, plus Apple $500M recycling deal and IRA 45X credits.<br/><strong>Risk:</strong> Heavy rare-earth separation commissioning execution.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>UUUU</code></strong></td>
+<td style="text-align:left">Energy Fuels Inc.</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.84</code>)</td>
+<td style="text-align:left">SecEnergy Chris Wright, SecInterior Doug Burgum, SecDef Pete Hegseth</td>
+<td style="text-align:left">Under Sec. Brandon Williams (NNSA), MacGregor &amp; Beyer (DOI BLM/BOEM), USD(A&amp;S) Michael Duffey</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Operates the only licensed conventional uranium &amp; monazite rare-earth mill in the US (White Mesa, UT), producing separated NdPr and piloting Dysprosium/Terbium heavy REEs + Ac-225 oncology isotopes.<br/><strong>Risk:</strong> Uranium spot price swings.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>PPTA</code></strong></td>
+<td style="text-align:left">Perpetua Resources</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.86</code>)</td>
+<td style="text-align:left">SecInterior Doug Burgum, SecDef Pete Hegseth, SecAg Brooke Rollins</td>
+<td style="text-align:left">USD(A&amp;S) Michael Duffey, MacGregor &amp; Beyer (DOI BLM/BOEM), Isaacman (NASA), Black (DFC) &amp; Loeffler (SBA)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), House CCP Select Comm. (Moolenaar &amp; Krishnamoorthi), Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Following China's total export ban on antimony (essential for 155mm munitions primers &amp; night-vision), received final federal permitting, DoD DPA Title III funding, and a $1.8B EXIM Bank debt financing LOI.<br/><strong>Risk:</strong> Mine construction execution in Idaho.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>FCX</code></strong></td>
+<td style="text-align:left">Freeport-McMoRan</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.80</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecComm Howard Lutnick, SecInterior Doug Burgum</td>
+<td style="text-align:left">MacGregor &amp; Beyer (DOI BLM/BOEM), DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">Senate Energy &amp; EPW (Lee, Capito &amp; Heinrich), House Ways &amp; Means (Smith &amp; Neal)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Trump ordered a Section 232 investigation into copper imports (lifting US COMEX copper premium over LME), while DOI fast-tracks Arizona federal land permitting for AI/grid copper demand.<br/><strong>Risk:</strong> Global industrial growth sensitivity.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>CAT</code></strong></td>
+<td style="text-align:left">Caterpillar Inc.</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.81</code>)</td>
+<td style="text-align:left">SecTreas Scott Bessent, SecInterior Doug Burgum, SecDOT Sean Duffy</td>
+<td style="text-align:left">DepSec Faulkender &amp; Kies (Tax), MacGregor &amp; Beyer (DOI BLM/BOEM), Danly &amp; Griffith (DOE Grid/LPO)</td>
+<td style="text-align:left">House Ways &amp; Means (Smith &amp; Neal), Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Permanent 100% first-year bonus depreciation in the 2025 Reconciliation Act supercharges US contractor purchases of Caterpillar excavators and 3516-series AI data-center backup reciprocating generators.<br/><strong>Risk:</strong> Section 232 steel input costs &amp; foreign tariff retaliation.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>DE</code></strong></td>
+<td style="text-align:left">Deere &amp; Company</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.62</code>)</td>
+<td style="text-align:left">SecAg Brooke Rollins, SecTreas Scott Bessent, USTR Jamieson Greer</td>
+<td style="text-align:left">Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA), DepSec Faulkender &amp; Kies (Tax)</td>
+<td style="text-align:left">House Ways &amp; Means (Smith &amp; Neal), Senate Finance (Crapo &amp; Wyden)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> USDA Sec. Rollins $15B-$30B CCC farmer indemnification payments + 100% bonus depreciation stabilize US farm equipment replacement demand.<br/><strong>Risk:</strong> China retaliatory tariffs on US soybeans/corn &amp; Trump warnings against Mexican factory shifts.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>TSLA</code></strong></td>
+<td style="text-align:left">Tesla Inc.</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.64</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecDOT Sean Duffy, SecComm Howard Lutnick</td>
+<td style="text-align:left">Bradbury (DOT), Bedford (FAA) &amp; NHTSA, FERC &amp; NRC Chairs (Power/Nuclear)</td>
+<td style="text-align:left">Senate Commerce (Cruz &amp; Cantwell), House Ways &amp; Means (Smith &amp; Neal)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Highest US domestic parts content (~85%) shields Tesla from Section 232 auto tariffs relative to rivals, while DOT/NHTSA (Duffy/Bradbury) advances federal preemption for Cybercab/FSD autonomous fleets.<br/><strong>Risk:</strong> Elimination of IRA Section 30D $7,500 consumer EV tax credit &amp; regulatory ZEV credit revenue.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>GM</code></strong></td>
+<td style="text-align:left">General Motors</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>MIXED / BIFURCATED</strong> (<code>-0.15</code>)</td>
+<td style="text-align:left">SecDOT Sean Duffy, EPA Admin. Lee Zeldin, SecComm Howard Lutnick, USTR Jamieson Greer</td>
+<td style="text-align:left">Bradbury (DOT), Bedford (FAA) &amp; NHTSA</td>
+<td style="text-align:left">House Ways &amp; Means (Smith &amp; Neal), House Energy &amp; Commerce (Guthrie &amp; Pallone)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> EPA Admin. Zeldin &amp; DOT Sec. Duffy repeal of EV tailpipe mandates and punitive CAFE fines saves GM billions in compliance credits on high-margin V8 trucks/SUVs.<br/><strong>Risk:</strong> Heavy exposure to Section 232 25% tariffs on Mexican/Canadian vehicle assembly and Korean imports.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>BA</code></strong></td>
+<td style="text-align:left">The Boeing Company</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>NET BENEFICIARY</strong> (<code>+0.72</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, SecDef Pete Hegseth, SecComm Howard Lutnick, SecDOT Sean Duffy</td>
+<td style="text-align:left">Golden Dome / Space Force / MDA / USAF, Bradbury (DOT), Bedford (FAA) &amp; NHTSA, Under Sec. Thomas DiNanno (Arms/FMS)</td>
+<td style="text-align:left">Senate Armed Services (Wicker &amp; Reed), Senate Appropriations (Collins/Murray/McConnell), Senate Commerce (Cruz &amp; Cantwell)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Won the flagship USAF F-47 (NGAD) sixth-generation fighter contract + Trump/Lutnick use bilateral tariff deals to lock in massive Boeing widebody orders (Qatar Airways 210 jets, IAG/UK, Japan); FAA lifting 737 MAX cap.<br/><strong>Risk:</strong> China CAAC delivery pauses during tariff flare-ups.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>GEO</code></strong></td>
+<td style="text-align:left">The GEO Group</td>
+<td style="text-align:left"><code>DHS_BORDER</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.78</code>)</td>
+<td style="text-align:left">Pres. Donald Trump, Wiles &amp; Miller (WH CoS), Navarro (Trade) &amp; Homan (Border), SecDHS Kristi Noem, AG Pam Bondi (DOJ)</td>
+<td style="text-align:left">Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA</td>
+<td style="text-align:left">Senate Appropriations (Collins/Murray/McConnell), House Appropriations (Cole, Calvert &amp; DeLauro), House Oversight (Comer &amp; Garcia)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> 2025 Reconciliation Act locked in multi-year mandatory DHS funding ($45B+ for ICE detention beds), enabling reactivation of idle GEO facilities toward 100k+ national bed capacity.<br/><strong>Risk:</strong> 120th Congress Dem House Appropriations (DeLauro) &amp; Oversight (Garcia) riders and subpoenas targeting annual discretionary ICE beds.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>CXW</code></strong></td>
+<td style="text-align:left">CoreCivic Inc.</td>
+<td style="text-align:left"><code>DHS_BORDER</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.76</code>)</td>
+<td style="text-align:left">Wiles &amp; Miller (WH CoS), Navarro (Trade) &amp; Homan (Border), SecDHS Kristi Noem, AG Pam Bondi (DOJ)</td>
+<td style="text-align:left">Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA</td>
+<td style="text-align:left">House Appropriations (Cole, Calvert &amp; DeLauro), House Oversight (Comer &amp; Garcia)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Reactivating Dilley, TX family facility and idle state/federal beds under multi-year reconciliation ICE funding and Laken Riley Act mandatory detention mandates.<br/><strong>Risk:</strong> 120th Dem House oversight hearings.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>AXON</code></strong></td>
+<td style="text-align:left">Axon Enterprise</td>
+<td style="text-align:left"><code>DHS_BORDER</code></td>
+<td style="text-align:left"><strong>STRONG TAILWIND</strong> (<code>+0.84</code>)</td>
+<td style="text-align:left">SecDHS Kristi Noem, AG Pam Bondi (DOJ), SecDef Pete Hegseth</td>
+<td style="text-align:left">Edgar (DHS), Scott (CBP), Lyons (ICE) &amp; CISA, USD(R&amp;E) Emil Michael</td>
+<td style="text-align:left">Senate Appropriations (Collins/Murray/McConnell), House Appropriations (Cole, Calvert &amp; DeLauro)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Bipartisan federal/local law-enforcement funding surge, CBP/ICE body-cam &amp; Dedrone counter-UAS deployments, and Draft One AI police report automation.<br/><strong>Risk:</strong> Valuation multiple.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>DHI</code></strong></td>
+<td style="text-align:left">D.R. Horton</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>MIXED / BIFURCATED</strong> (<code>+0.28</code>)</td>
+<td style="text-align:left">SecHUD Scott Turner, SecInterior Doug Burgum, SecDHS Kristi Noem, Powell &amp; Bowman (Fed/FOMC)</td>
+<td style="text-align:left">MacGregor &amp; Beyer (DOI BLM/BOEM), Under Sec. Pettit &amp; Pulte (FHFA)</td>
+<td style="text-align:left">Senate Banking (Scott, Lummis &amp; Warren)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> HUD Sec. Turner &amp; DOI Sec. Burgum joint release of federal BLM land for affordable housing + Treasury/FHFA mortgage spread tightening.<br/><strong>Risk:</strong> DHS interior immigration enforcement tightening residential construction labor &amp; Canadian softwood lumber duties.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>KO</code></strong></td>
+<td style="text-align:left">The Coca-Cola Company</td>
+<td style="text-align:left"><code>TRADE_IND</code></td>
+<td style="text-align:left"><strong>REGULATORY HEADWIND</strong> (<code>-0.25</code>)</td>
+<td style="text-align:left">HHS Sec. RFK Jr., SecAg Brooke Rollins, SecComm Howard Lutnick</td>
+<td style="text-align:left">Dr. Marty Makary (FDA) &amp; Prasad, Lawrence (VA), Sonderling (DOL) &amp; Lindberg (USDA)</td>
+<td style="text-align:left">Senate HELP &amp; Judiciary (Cassidy/Grassley/Sanders)</td>
+<td style="text-align:left"><strong>Tailwind:</strong> Transitioning US formulation options (cane sugar / zero-sugar) to align with MAHA preferences.<br/><strong>Risk:</strong> USDA Sec. Rollins &amp; HHS Sec. RFK Jr. approving state SNAP waivers banning soda purchases with food stamps + 25% Section 232 aluminum tariffs.</td>
+</tr>
+</tbody>
+</table></div>
+
+    </article>
+  </main>
+  
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

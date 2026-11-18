@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Company Graph: Fintech, Crypto &amp; Digital Monetary Infrastructure</title>
+<style>
+:root {
+  --bg: #0c0f17;
+  --surface: #141a29;
+  --surface-hover: #1b2337;
+  --border: #232d44;
+  --text: #e2e8f0;
+  --text-muted: #8896ab;
+  --text-bright: #ffffff;
+  --gold: #f59e0b;
+  --gold-glow: rgba(245, 158, 11, 0.2);
+  --blue: #3b82f6;
+  --cyan: #06b6d4;
+  --emerald: #10b981;
+  --purple: #8b5cf6;
+  --slate: #64748b;
+  --rose: #f43f5e;
+  --pos-text: #34d399;
+  --neg-text: #f87171;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+  font-size: 13px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1980px;
+  margin: 0 auto;
+  padding: 16px 20px;
+}
+
+h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: var(--text-bright);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+h1 .tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nav {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+.nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+.nav a:hover {
+  color: var(--text);
+}
+.nav a.active {
+  color: var(--gold);
+  border-color: var(--gold);
+  font-weight: 600;
+}
+
+/* Multi-Era Timeline Scrubber */
+.timeline-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.timeline-label {
+  font-weight: 700;
+  font-size: 11.5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+}
+.era-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 5px 11px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-weight: 500;
+}
+.era-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+  border-color: #3b4766;
+}
+.era-btn.active {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--gold);
+  border-color: var(--gold);
+  font-weight: 600;
+}
+.era-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #a0aec0;
+  background: #090c13;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* Live Barometer Strip */
+.barometer-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.barometer-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  position: relative;
+  overflow: hidden;
+}
+.barometer-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--gold);
+}
+.baro-kicker {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.baro-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-bright);
+  font-family: ui-monospace, monospace;
+  letter-spacing: -0.02em;
+}
+.baro-sub {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* Interactive Controls Bar */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+.controls select {
+  background: #090c13;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+.controls select:focus {
+  border-color: var(--gold);
+}
+.controls button {
+  background: #1b2337;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.controls button:hover {
+  background: #232d44;
+  border-color: #3b4766;
+}
+.view-toggle-grp {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.view-btn {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.view-btn.active {
+  background: var(--gold);
+  color: #0c0f17;
+  font-weight: 700;
+}
+
+/* Stage Canvas */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 820px;
+  background: #080a11;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+}
+svg#cg {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  user-select: none;
+}
+svg#cg:active {
+  cursor: grabbing;
+}
+
+/* SVG Elements Styling */
+line.mem {
+  stroke: #222d42;
+  stroke-width: 1.2;
+  stroke-dasharray: 2 2;
+  transition: stroke 0.2s, stroke-width 0.2s;
+}
+path.edge {
+  fill: none;
+  transition: stroke 0.2s, stroke-width 0.2s, stroke-opacity 0.2s;
+}
+path.edge.pos { stroke: #2f9e6f; }
+path.edge.neg { stroke: #d1495b; }
+path.edge.highlight {
+  stroke-opacity: 1 !important;
+  stroke-width: 3.5 !important;
+}
+
+g.node {
+  cursor: pointer;
+}
+g.node circle {
+  stroke: #1b2337;
+  stroke-width: 2;
+  transition: transform 0.15s ease, stroke 0.2s, fill 0.2s;
+}
+g.node:hover circle {
+  stroke: #ffffff;
+  stroke-width: 2.5;
+}
+g.node.co circle {
+  stroke-width: 1.5;
+}
+g.node.etf circle {
+  stroke: #3b82f6 !important;
+  stroke-width: 2 !important;
+  stroke-dasharray: 3 2;
+}
+text.label {
+  fill: #e2e8f0;
+  font-size: 11.5px;
+  font-weight: 600;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8);
+}
+text.co-label {
+  fill: #cbd5e1;
+  font-size: 10px;
+  font-weight: 500;
+  pointer-events: none;
+  font-family: ui-monospace, monospace;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+}
+
+path.star {
+  fill: #f59e0b;
+  stroke: #0c0f17;
+  stroke-width: 1;
+  cursor: pointer;
+  filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.8));
+}
+path.star.watch {
+  fill: #f43f5e;
+  filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.8));
+}
+
+/* Legend */
+.legend-head {
+  fill: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.legend-sub {
+  fill: #64748b;
+  font-size: 10px;
+}
+
+/* Ranked Impact Side Panel */
+.side {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 280px;
+  background: rgba(14, 18, 28, 0.92);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  pointer-events: auto;
+  z-index: 10;
+  max-height: 480px;
+  overflow-y: auto;
+}
+.side h3 {
+  margin: 0 0 3px;
+  font-size: 13px;
+  color: var(--text-bright);
+}
+.side .kicker-t {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+}
+.side-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  border-radius: 4px;
+  margin-bottom: 3px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.side-row:hover {
+  background: var(--surface-hover);
+}
+.side-ticker {
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--text);
+}
+.side-score {
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.side-score.pos { background: rgba(52, 211, 153, 0.15); color: var(--pos-text); }
+.side-score.neg { background: rgba(248, 113, 113, 0.15); color: var(--neg-text); }
+
+/* Right Drawer for Detail View */
+.drawer {
+  position: absolute;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  height: 100%;
+  background: rgba(15, 20, 31, 0.96);
+  border-left: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 24px 20px;
+  overflow-y: auto;
+  transition: right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 20;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.7);
+}
+.drawer.open {
+  right: 0;
+}
+.close-x {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 20px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.close-x:hover {
+  color: var(--text-bright);
+}
+.drawer h2 {
+  font-size: 18px;
+  margin: 0 0 6px;
+  color: var(--text-bright);
+}
+.drawer .ticker-pill {
+  display: inline-block;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  margin-bottom: 12px;
+}
+.drawer .sec-kicker {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 14px 0 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.drawer .desc-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  line-height: 1.5;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+.drawer .badge-contract {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: #60a5fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* Choke Points Modal */
+.chokes {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 580px;
+  max-width: 90vw;
+  background: #111624;
+  border: 1px solid var(--rose);
+  border-radius: 10px;
+  padding: 20px;
+  z-index: 30;
+  display: none;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 20px rgba(244, 63, 94, 0.2);
+}
+.close-choke {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 20px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.close-choke:hover { color: #fff; }
+
+/* Evolution Matrix Modal / View */
+.matrix-view {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: #090c13;
+  z-index: 25;
+  padding: 24px;
+  overflow-y: auto;
+}
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 11.5px;
+}
+.matrix-table th, .matrix-table td {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  vertical-align: top;
+  line-height: 1.45;
+}
+.matrix-table th {
+  background: #141a29;
+  color: var(--gold);
+  font-size: 11.5px;
+  text-align: left;
+}
+.matrix-dim {
+  background: #0e131f;
+  font-weight: 700;
+  color: var(--text-bright);
+  width: 170px;
+}
+.pill {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.pill-deal { background: rgba(245, 158, 11, 0.2); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.4); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>
+    The Company Graph: Fintech, Crypto &amp; Digital Monetary Infrastructure
+    <span class="tag">Institutional Matrix</span>
+  </h1>
+
+  <div class="nav">
+    <a href="../index.html" target="_top">graph</a>
+    <a href="../map.html" target="_top">influence map</a>
+    <a href="/connections">connections</a>
+    <a href="/evidence">evidence</a>
+    <a href="/companies">company graph (AI supercycle)</a>
+    <a href="fintech_crypto_network.html" class="active">fintech &amp; crypto network</a>
+    <a href="fintech_crypto_blockchain_ecosystem_deep_research_report.html">deep research report ↗</a>
+  </div>
+
+  <!-- Multi-Era Timeline Scrubber -->
+  <div class="timeline-bar">
+    <span class="timeline-label">⚡ Infrastructure Epoch:</span>
+    <button class="era-btn" data-era="2020_2021">2020–2021: DeFi Summer &amp; Treasuries</button>
+    <button class="era-btn" data-era="2022_2023">2022–2023: Contagion &amp; SAB 121</button>
+    <button class="era-btn" data-era="2024_2025">2024–2025: Institutional ETFs &amp; Halving</button>
+    <button class="era-btn active" data-era="2026_current">2026 Current: Quadruple Convergence</button>
+    <button class="era-btn" data-era="2027_horizon">2027+ Horizon: Sovereign Reserves &amp; Space</button>
+    <span class="era-badge" id="era-badge">Epoch: 2026 (Quadruple Convergence · $165B T-Bills · 3.8GW HPC)</span>
+  </div>
+
+  <!-- Live Barometer Strip -->
+  <div class="barometer-strip">
+    <div class="barometer-card">
+      <div class="baro-kicker">Stablecoin T-Bill Absorption</div>
+      <div class="baro-val" id="baro-tbills" style="color:var(--pos-text)">$165.4B</div>
+      <div class="baro-sub">Top 15 Holder of US Sovereign Debt</div>
+    </div>
+    <div class="barometer-card">
+      <div class="baro-kicker">Miner HPC Power Backlog</div>
+      <div class="baro-val" id="baro-miners" style="color:var(--gold)">3.85 GW</div>
+      <div class="baro-sub">Energized High-Voltage Substation Capacity</div>
+    </div>
+    <div class="barometer-card">
+      <div class="baro-kicker">USMS Seized Asset Custody</div>
+      <div class="baro-val" id="baro-usms" style="color:var(--cyan)">$32.5M</div>
+      <div class="baro-sub">Coinbase Prime Federal Service Mandate</div>
+    </div>
+    <div class="barometer-card">
+      <div class="baro-kicker">Starlink Gateway Run-Rate</div>
+      <div class="baro-val" id="baro-spacex" style="color:var(--purple)">$6.6B / yr</div>
+      <div class="baro-sub">Shift4 Payments (FOUR) Sole Billing Rail</div>
+    </div>
+    <div class="barometer-card">
+      <div class="baro-kicker">Crypto High-Yield Spread</div>
+      <div class="baro-val" id="baro-risk" style="color:var(--neg-text)">465 bps</div>
+      <div class="baro-sub">Convertible Debt Refinancing Window</div>
+    </div>
+  </div>
+
+  <!-- Interactive Controls Bar -->
+  <div class="controls">
+    <label>Shock 
+      <select id="scen">
+        <option value="">— none: show baseline graph —</option>
+        <option value="sovereign_btc_reserve">US Strategic Bitcoin Reserve Act passed (1M BTC accumulation)</option>
+        <option value="miner_hpc_expansion">Hyperscalers acquire miner power rights ($10B+ 12-yr leases)</option>
+        <option value="stablecoin_clarity_act">Comprehensive US Stablecoin Act passes; banks issue yield tokens</option>
+        <option value="fed_rate_hike_shock">Fed pauses rate cuts / credit spread blowout (+100 bps HY)</option>
+        <option value="orbital_mesh_activation">SpaceX Starlink deploys LEO laser mesh for sovereign block propagation</option>
+        <option value="us_gov_forfeiture_sale">USMS auctions 50,000 Silk Road BTC onto spot market</option>
+        <option value="drv:FED_RATE">+1σ Fed policy rate shock (valuation compression)</option>
+        <option value="drv:DEFENSE_SPENDING">+1σ Federal defense &amp; intelligence contract surge</option>
+        <option value="drv:SPACE_SYSTEMS">+1σ LEO constellation launch cadence &amp; orbital compute</option>
+        <option value="drv:AI_DEMAND">+1σ Hyperscaler AI capex demand (accelerates miner pivot)</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="showedges" checked> influence edges</label>
+    <label><input type="checkbox" id="showcos" checked> companies (satellites)</label>
+    <label><input type="checkbox" id="showetfs" checked> ETFs <span style="color:#3b82f6">[ETF]</span></label>
+    <label><input type="checkbox" id="showchokes" checked> <span style="color:#f43f5e">★</span> choke points</label>
+    <button id="chokelist" type="button">★ choke list</button>
+    <button id="reset-positions" type="button" title="Reset all dragged nodes to default orbit positions">reset layout</button>
+    <button id="reset-view" type="button">reset view</button>
+    <div class="view-toggle-grp">
+      <button class="view-btn active" id="btn-orbit">○ company orbit</button>
+      <button class="view-btn" id="btn-flow">⇄ value flow</button>
+      <button class="view-btn" id="btn-matrix">📈 evolution matrix</button>
+    </div>
+    <span style="color:#777; margin-left:auto;">💡 <b>drag any node</b> to reposition · wheel to zoom · click for details</span>
+  </div>
+
+  <!-- Graph Stage -->
+  <div class="stage" id="stage">
+    <svg id="cg" viewBox="0 0 2000 1560" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="c-arr-pos" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#2f9e6f"/>
+        </marker>
+        <marker id="c-arr-neg" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#d1495b"/>
+        </marker>
+        <marker id="c-arr-zero" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#9aa0a6"/>
+        </marker>
+      </defs>
+      <g id="vp">
+        <!-- Membership edges (behind) -->
+        <g id="mem"></g>
+        <!-- Influence edges -->
+        <g id="inf"></g>
+        <!-- Nodes & orbiting companies -->
+        <g id="nodes"></g>
+        <!-- Choke point stars -->
+        <g id="chokes-layer"></g>
+      </g>
+      <!-- Bottom Legend -->
+      <g id="legend" transform="translate(40, 1420)">
+        <text x="20" y="20" class="legend-head">Capitalization / TAM Scaling</text>
+        <circle cx="32" cy="50" r="18" fill="#555"/>
+        <text x="58" y="54" class="legend-sub">Mega Sector ($1T - $10T TAM)</text>
+        <circle cx="230" cy="50" r="12" fill="#555"/>
+        <text x="250" y="54" class="legend-sub">Subsector ($100B - $500B)</text>
+        <circle cx="410" cy="50" r="8" fill="#555"/>
+        <text x="426" y="54" class="legend-sub">Company ($10B - $100B)</text>
+        <circle cx="570" cy="50" r="6" fill="#333" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="2 1.5"/>
+        <text x="586" y="54" class="legend-sub">Thematic ETF [ETF]</text>
+
+        <text x="740" y="20" class="legend-head">Physical &amp; Statutory Chokes</text>
+        <path class="star watch" d="M752,40 L754.5,47 L762,47 L756,51.5 L758.5,58.5 L752,54 L745.5,58.5 L748,51.5 L742,47 L749.5,47 Z"/>
+        <text x="770" y="52" class="legend-sub">CRITICAL CHOKE: Energized Substation, T-Bills, USMS Custody, Starlink LEO</text>
+
+        <text x="1180" y="20" class="legend-head">Influence Transmission</text>
+        <line x1="1180" y1="46" x2="1220" y2="46" stroke="#2f9e6f" stroke-width="2.2" marker-end="url(#c-arr-pos)"/>
+        <text x="1230" y="50" class="legend-sub">positive expansion (+)</text>
+        <line x1="1180" y1="74" x2="1220" y2="74" stroke="#d1495b" stroke-width="2.2" marker-end="url(#c-arr-neg)"/>
+        <text x="1230" y="78" class="legend-sub">constraint / negative impact (−)</text>
+
+        <g id="impact-scale">
+          <text x="1480" y="20" class="legend-head">Move under selected shock (σ)</text>
+          <rect x="1480" y="38" width="34" height="12" fill="#b2333f"/><text x="1497" y="64" text-anchor="middle" class="legend-sub">−1.0</text>
+          <rect x="1514" y="38" width="34" height="12" fill="#e48b96"/><text x="1531" y="64" text-anchor="middle" class="legend-sub">−0.3</text>
+          <rect x="1548" y="38" width="34" height="12" fill="#334155"/><text x="1565" y="64" text-anchor="middle" class="legend-sub">0.0</text>
+          <rect x="1582" y="38" width="34" height="12" fill="#8fd0b2"/><text x="1599" y="64" text-anchor="middle" class="legend-sub">+0.3</text>
+          <rect x="1616" y="38" width="34" height="12" fill="#1f7a52"/><text x="1633" y="64" text-anchor="middle" class="legend-sub">+1.0</text>
+        </g>
+      </g>
+    </svg>
+
+    <!-- Ranked Impact Panel (Left Side) -->
+    <div class="side" id="side-panel">
+      <h3>Companies Moved Most</h3>
+      <div class="kicker-t" id="side-kicker">Under selected shock scenario</div>
+      <div id="side-rows"></div>
+    </div>
+
+    <!-- Choke Points Modal List -->
+    <div class="chokes" id="choke-modal">
+      <span class="close-choke" id="close-choke">&times;</span>
+      <h3 style="color:#f43f5e; margin:0 0 6px;">★ Critical Systemic Choke Points</h3>
+      <div style="color:#94a3b8; font-size:11px; margin-bottom:12px;">Physical, regulatory, and settlement bottlenecks in digital finance:</div>
+      <div id="choke-rows"></div>
+    </div>
+
+    <!-- Right Drawer -->
+    <div class="drawer" id="drawer">
+      <span class="close-x" id="close-drawer">&times;</span>
+      <div id="drawer-content"></div>
+    </div>
+  </div>
+
+  <!-- Full Screen Evolution Matrix View -->
+  <div class="matrix-view" id="matrix-container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <div>
+        <h2 style="margin:0 0 4px; font-size:18px; color:#fff;">📈 Digital Assets &amp; Monetary Infrastructure Evolution Matrix</h2>
+        <div style="font-size:12px; color:#94a3b8;">Cross-era evolution across monetary status, miner power pivots, stablecoins, defense contracts, and SpaceX settlement</div>
+      </div>
+      <button id="close-matrix-btn" style="padding:6px 14px; font-size:12px; background:#1e293b; color:#fff; border:1px solid #334155; border-radius:6px; cursor:pointer;">Back to Graph</button>
+    </div>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>2020–2021: DeFi &amp; Treasuries</th>
+          <th>2022–2023: Contagion &amp; Shakeout</th>
+          <th>2024–2025: Institutional ETFs</th>
+          <th>2026: Quadruple Convergence (Current)</th>
+          <th>2027+ Horizon: Sovereign Reserves</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="matrix-dim">Monetary Role &amp; Access</td>
+          <td><b>Speculative Retail &amp; DeFi</b><br>Initial corporate treasuries (MSTR, TSLA). Pure risk-on duration asset.</td>
+          <td><b>Balance Sheet Contagion</b><br>CeFi wipeout (FTX, 3AC). SAB 121 shuts custody for regulated banks.</td>
+          <td><b>Regulated Wall Street Access</b><br>SEC approves spot BTC &amp; ETH ETFs. BlackRock IBIT passes $40B AUM in record speed.</td>
+          <td><b>Sovereign Asset &amp; Strategic Reserve</b><br><span class="pill pill-deal">National Strategic Bitcoin Reserve</span><br>Bipartisan Senate codification; 1M BTC Treasury accumulation proposed.</td>
+          <td><b>Global Reserve Currency Hedge</b><br>Central banks allocate 2-5% of foreign exchange reserves alongside gold; multi-currency settlement.</td>
+        </tr>
+        <tr>
+          <td class="matrix-dim">Miners &amp; Energy Arbitrage</td>
+          <td><b>Pure SHA-256 Mining</b><br>Hashrate chasing cheap curtailment, flared gas, and Chinese hydro before ban.</td>
+          <td><b>Hashprice Compression &amp; Debt Squeeze</b><br>Rising energy costs + falling coin price causes widespread ASIC bankruptcy (Core Scientific Ch. 11).</td>
+          <td><b>Halving Squeeze &amp; Emergence of Dual-Model</b><br>Block reward cut to 3.125 BTC. Miners evaluate energized power assets vs ASIC revenue.</td>
+          <td><b>HPC &amp; AI Datacenter Landgrab</b><br><span class="pill pill-deal">CoreWeave $10B+ 12-yr Deals</span><br>210-week grid delays force hyperscalers to lease energized miner substations (CORZ, IREN, WULF).</td>
+          <td><b>Gigawatt Nuclear &amp; Off-Grid Campuses</b><br>Miners co-locate with SMRs and behind-the-meter nuclear plants; autonomous energy load balancing.</td>
+        </tr>
+        <tr>
+          <td class="matrix-dim">Stablecoin Velocity &amp; Reserves</td>
+          <td><b>Offshore Crypto Collateral</b><br>USDT dominance; algorithmic experiments (Terra/Luna dawn); primitive fiat rails.</td>
+          <td><b>De-pegging &amp; Flight to Quality</b><br>Terra collapse ($40B wiped); SVB run triggers USDC temporary de-peg; cash reserves shift to BNY Mellon.</td>
+          <td><b>Yield Starvation &amp; US T-Bill Engine</b><br>Circle/Tether hold $120B+ in short-dated Treasuries; 5% risk-free rate generates billions in net interest.</td>
+          <td><b>Synthetic Dollar Hegemony &amp; Legislation</b><br><span class="pill pill-deal">$165B+ US T-Bill Absorption</span><br>Payment Stablecoin Act passage; Stripe acquires Bridge ($1.1B); Visa/Mastercard roll out L2 settlement.</td>
+          <td><b>Autonomous Agentic Micropayments</b><br>AI agent swarms transact instantaneously in streaming stablecoins; cross-border remittances settle in seconds.</td>
+        </tr>
+        <tr>
+          <td class="matrix-dim">Federal Defense &amp; Intelligence</td>
+          <td><b>Law Enforcement Seizures</b><br>FBI and DOJ seize Silk Road and darknet coins; ad-hoc auction sales via General Services Admin.</td>
+          <td><b>Regulatory Enforcement Regime</b><br>SEC "regulation by enforcement"; OFAC sanctions Tornado Cash; FinCEN expands surveillance.</td>
+          <td><b>National Security Asset Management</b><br>DOJ/USMS consolidates seized digital assets; need for institutional-grade SOC-2 custody arises.</td>
+          <td><b>Institutional Federal Mandate</b><br><span class="pill pill-deal">Coinbase Prime USMS $32.5M Contract</span><br>Palantir AIP + Chainalysis integrated into DoD &amp; federal intelligence for on-chain adversary mapping.</td>
+          <td><b>Sovereign Cyber &amp; Blockchain Warfare</b><br>Quantum-resistant encryption mandates; DARPA on-chain forensic tracking of state-sponsored ransomware swarms.</td>
+        </tr>
+        <tr>
+          <td class="matrix-dim">SpaceX &amp; Satellite Network</td>
+          <td><b>Meme Sponsorships</b><br>DOGE-1 space payload announcements; no programmatic payment integration.</td>
+          <td><b>Terrestrial Infrastructure Limits</b><br>Starlink expands consumer maritime/aviation terminals; reliant on traditional credit card processing.</td>
+          <td><b>Global Billing Rail Integration</b><br>Shift4 (FOUR) secures exclusive direct processing contract for SpaceX Starlink global subscriber billing.</td>
+          <td><b>Orbital LEO Node Validation</b><br><span class="pill pill-deal">Starlink Optical Laser Mesh</span><br>LEO constellation provides censorship-resistant satellite blockchain nodes; bypasses terrestrial fiber cuts.</td>
+          <td><b>Interplanetary Settlement Rails</b><br>Off-grid autonomous space economy settlement; latency-tolerant cryptographic ledgers between Earth and orbital stations.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// ==========================================================================
+// GRAPH DATA: Macro Drivers, Thematic Hubs, Companies & ETFs
+// ==========================================================================
+const CATEGORY_COLORS = {
+  macro: "#d97706",
+  crypto_core: "#f59e0b",
+  miners_hpc: "#10b981",
+  fintech_rails: "#2563eb",
+  stablecoins: "#06b6d4",
+  gov_defense: "#64748b",
+  space_nexus: "#8b5cf6",
+  banks_custody: "#0284c7"
+};
+
+const GRAPH_DATA = {
+  nodes: [
+    // --- Macro Drivers ---
+    { id: "FED_RATE", label: "Fed Policy Rate & USD Liquidity", kind: "macro", category: "macro", marketSize: 2200, x: 650, y: 180, desc: "Federal Reserve policy rate and dollar liquidity cycle governing equity discount rates, convertible debt issuance windows, and risk appetite." },
+    { id: "CREDIT_SPREADS", label: "High-Yield Credit Spreads", kind: "macro", category: "macro", marketSize: 450, x: 420, y: 220, desc: "High-yield debt risk premium. When spreads blow out, convertible note issuance windows shut down for MicroStrategy and bitcoin miners." },
+    { id: "DEFENSE_SPENDING", label: "Federal Defense & Forfeiture", kind: "macro", category: "gov_defense", marketSize: 920, x: 1350, y: 180, desc: "US Federal defense, intelligence, and Department of Justice budgets governing blockchain forensics, sanctions compliance, and asset forfeiture custody." },
+    { id: "SPACE_SYSTEMS", label: "LEO Constellations & SpaceX", kind: "macro", category: "space_nexus", marketSize: 280, x: 1580, y: 320, desc: "Low Earth Orbit satellite mega-constellations (Starlink) providing global optical laser mesh, off-grid communications, and orbital node validation." },
+    { id: "AI_DEMAND", label: "Hyperscaler AI Capex ($750B)", kind: "macro", category: "macro", marketSize: 750, x: 980, y: 160, desc: "Record hyperscaler datacenter capex demand driving an urgent landgrab for energized high-voltage substations." },
+    { id: "AI_SEMIS", label: "AI Accelerators & Power Density", kind: "macro", category: "macro", marketSize: 1800, x: 1180, y: 190, desc: "Ultra-dense GPU server racks (100kW+ Blackwell) requiring dedicated high-voltage interconnects and direct liquid cooling." },
+
+    // --- Core Thematic Hubs ---
+    { id: "CRYPTO_BTC", label: "Bitcoin Reserve Asset", kind: "sector", category: "crypto_core", marketSize: 1900, x: 780, y: 380, desc: "Primary digital monetary anchor, ETF inflow sponge, and proposed US Strategic Bitcoin Reserve core reserve asset ($1.9T market cap)." },
+    { id: "CRYPTO_ETH", label: "Ethereum & Smart Contract L1", kind: "sector", category: "crypto_core", marketSize: 420, x: 580, y: 420, desc: "Decentralized programmable settlement layer hosting $120B+ in stablecoins, tokenized RWAs (BUIDL), and Layer-2 rollup velocity." },
+    { id: "CRYPTO_EQUITIES", label: "Institutional Crypto Gateways", kind: "sector", category: "crypto_core", marketSize: 240, x: 920, y: 460, desc: "Publicly listed exchanges, brokers, asset managers, and corporate treasury accumulators providing Wall Street equity beta." },
+    { id: "CRYPTO_MINERS", label: "Miners & HPC Power Conversion", kind: "sector", category: "miners_hpc", marketSize: 55, x: 1150, y: 480, star: "watch", desc: "Bitcoin miners holding energized high-voltage power rights pivoting to 12-year hyperscaler AI colocation contracts." },
+    { id: "STABLECOIN_ISSUERS", label: "Stablecoin Rails & Synthetic Dollars", kind: "sector", category: "stablecoins", marketSize: 250, x: 740, y: 640, star: "watch", desc: "Private and public issuers backing $180B+ circulating digital dollars with short-term US Treasury bills, generating billions in risk-free float." },
+    { id: "FINTECH_PAYMENTS", label: "Fintech, Checkout & Consumer Rails", kind: "sector", category: "fintech_rails", marketSize: 2400, x: 980, y: 680, desc: "Merchant acquirers, payment facilitators, cross-border remittance platforms, and consumer digital banks integrating stablecoin rails." },
+    { id: "SPACEX_NEXUS", label: "SpaceX Starlink Billing & LEO Mesh", kind: "sector", category: "space_nexus", marketSize: 250, x: 1420, y: 520, star: "watch", desc: "Convergence of orbital communications with global merchant acquiring; Shift4 exclusive processing partner; orbital blockchain full nodes." },
+    { id: "GOV_FORENSICS_CUSTODY", label: "US Gov Custody & Intelligence", kind: "sector", category: "gov_defense", marketSize: 85, x: 1280, y: 640, star: "watch", desc: "Exclusive US Marshals Service (USMS) digital asset management, DOJ asset forfeiture, FBI forensic tracing, and OFAC sanctions enforcement." }
+  ],
+
+  companies: [
+    // --- Sector ETFs ---
+    { ticker: "IBIT", name: "iShares Bitcoin Trust", cap: 48.0, isEtf: true, primary: "CRYPTO_BTC",
+      traction: "Largest spot Bitcoin ETF in history; over $48B in AUM accumulated from institutional pensions, RIAs, and hedge funds.", role: "Flagship institutional Bitcoin liquidity wrapper." },
+    { ticker: "ETHA", name: "iShares Ethereum Trust", cap: 12.0, isEtf: true, primary: "CRYPTO_ETH",
+      traction: "Tier-1 institutional access vehicle for spot Ethereum and programmable smart contract exposure.", role: "Institutional spot Ethereum ETF." },
+    { ticker: "WGMI", name: "Valkyrie Bitcoin Miners ETF", cap: 0.45, isEtf: true, primary: "CRYPTO_MINERS",
+      traction: "Pure-play thematic equity ETF tracking listed bitcoin miners, power operators, and HPC conversion pivots.", role: "Bitcoin mining and HPC datacenter ETF." },
+    { ticker: "BLOK", name: "Amplify Transformational Data ETF", cap: 0.85, isEtf: true, primary: "CRYPTO_EQUITIES",
+      traction: "Diversified blockchain equity exposure covering miners, exchanges, hardware vendors, and enterprise titans.", role: "Broad blockchain industry equity ETF." },
+    { ticker: "IPAY", name: "ETFMG Prime Mobile Payments ETF", cap: 0.65, isEtf: true, primary: "FINTECH_PAYMENTS",
+      traction: "Global payments benchmark ETF tracking Visa, Mastercard, PayPal, Block, and Shift4.", role: "Global digital transaction and payments ETF." },
+    { ticker: "FINX", name: "Global X FinTech ETF", cap: 0.38, isEtf: true, primary: "FINTECH_PAYMENTS",
+      traction: "Fintech innovator ETF holding digital banking, AI underwriting, consumer credit, and payment rails.", role: "Broad fintech and digital banking ETF." },
+
+    // --- CRYPTO_EQUITIES (Gateways & Treasuries) ---
+    { ticker: "COIN", name: "Coinbase Global", cap: 68.0, primary: "CRYPTO_EQUITIES", choke: "watch",
+      traction: "USMS FEDERAL MANDATE: Awarded landmark $32.5M contract to manage and liquidate all US DOJ seized digital assets. Base L2 processes 5M+ tx/day.",
+      role: "Dominant US institutional exchange, custodian for 85% of spot BTC ETFs, and prime broker." },
+    { ticker: "MSTR", name: "MicroStrategy", cap: 82.0, primary: "CRYPTO_EQUITIES",
+      traction: "Holds over 420,000 BTC ($40B+ balance sheet value). Executes $42B '21/21 Plan' issuing convertible notes at zero-to-low coupon to accumulate BTC.",
+      role: "Corporate Bitcoin treasury accumulator and convertible debt capital markets flywheel." },
+    { ticker: "HOOD", name: "Robinhood Markets", cap: 34.0, primary: "CRYPTO_EQUITIES",
+      traction: "Acquired Bitstamp for $200M to expand institutional crypto exchange footprint; expanding EU crypto trading and tokenized equities.",
+      role: "Retail gateway for crypto, options, and equity trading with growing institutional arm." },
+    { ticker: "GLXY", name: "Galaxy Digital", cap: 4.8, primary: "CRYPTO_EQUITIES",
+      traction: "Institutional trading desk, asset management, and high-performance mining infrastructure (Helios facility partner).",
+      role: "Full-service digital asset investment bank and asset manager founded by Mike Novogratz." },
+    { ticker: "BKKT", name: "Bakkt Holdings", cap: 0.52, primary: "CRYPTO_EQUITIES",
+      traction: "Regulated institutional custody and crypto rewards infrastructure for enterprise fintech partners.",
+      role: "Regulated digital asset custody and institutional trading infrastructure." },
+    { ticker: "DEFTF", name: "Defiance Technologies", cap: 0.42, primary: "CRYPTO_EQUITIES",
+      traction: "European and North American listed crypto asset ETP sponsor and DeFi infrastructure holdings.",
+      role: "Digital asset management and regulated ETP wrapper sponsor." },
+    { ticker: "WNDR", name: "WonderFi Technologies", cap: 0.31, primary: "CRYPTO_EQUITIES",
+      traction: "Consolidated Canadian regulated exchanges (Bitbuy, Coinsquare) with over $1.5B in platform assets.",
+      role: "Regulated multi-platform digital asset exchange group." },
+    { ticker: "BNXAF", name: "Banxa Holdings", cap: 0.16, primary: "CRYPTO_EQUITIES",
+      traction: "Global fiat on/off-ramp infrastructure processing payments across 180+ countries with local banking rails.",
+      role: "Embedded fiat-to-crypto infrastructure gateway for Web3 applications." },
+
+    // --- CRYPTO_MINERS & HPC Conversion ---
+    { ticker: "CORZ", name: "Core Scientific", cap: 4.5, primary: "CRYPTO_MINERS", choke: "watch",
+      traction: "COREWEAVE MEGADEAL: Signed 12-year, $10B+ contract to supply 500 MW of critical infrastructure for CoreWeave NVIDIA GPU clusters.",
+      role: "Largest US datacenter operator by energized capacity; pioneer in miner-to-AI pivot." },
+    { ticker: "IREN", name: "Iris Energy", cap: 2.6, primary: "CRYPTO_MINERS",
+      traction: "3.0 GW energized power pipeline across Texas and Canada; operational 100% renewable NVIDIA H100 cloud cluster.",
+      role: "Pure-play green datacenter builder bridging Bitcoin mining and hyperscale AI cloud." },
+    { ticker: "CLSK", name: "CleanSpark", cap: 2.9, primary: "CRYPTO_MINERS",
+      traction: "37 EH/s operational hashrate with industry-leading 17.5 J/TH fleet efficiency; expanding Texas megawatt capacity.",
+      role: "Top-tier operational Bitcoin miner with low power cost and high fleet efficiency." },
+    { ticker: "WULF", name: "TeraWulf", cap: 2.1, primary: "CRYPTO_MINERS",
+      traction: "Zero-carbon nuclear and hydro colocation: Lake Mariner 240MW powered shell expansion with Google/Fluidstack AI hosting.",
+      role: "Nuclear and hydro-powered low-cost mining and AI compute infrastructure." },
+    { ticker: "CIFR", name: "Cipher Mining", cap: 1.8, primary: "CRYPTO_MINERS",
+      traction: "Black Pearl 300 MW dedicated high-voltage substation energization; 2.5 GW intertie development portfolio in ERCOT.",
+      role: "Industrial-scale mining and utility interconnect developer." },
+    { ticker: "APLD", name: "Applied Digital", cap: 1.9, primary: "CRYPTO_MINERS",
+      traction: "Macquarie $160M financing + NVIDIA anchor backing; building 400 MW high-density liquid-cooled datacenters.",
+      role: "Next-generation HPC and AI datacenter builder with ultra-dense cooling." },
+    { ticker: "HUT", name: "Hut 8", cap: 1.7, primary: "CRYPTO_MINERS",
+      traction: "1.3 GW energy pipeline across North America; Anchorage Digital treasury custody; Coatue $150M strategic investment for AI.",
+      role: "Diversified energy infrastructure and compute asset manager." },
+    { ticker: "BITF", name: "Bitfarms", cap: 0.95, primary: "CRYPTO_MINERS",
+      traction: "Aggressive expansion into Pennsylvania and Washington state with multi-hundred MW power acquisitions for HPC conversion.",
+      role: "International miner expanding into US high-voltage power markets." },
+    { ticker: "MARA", name: "MARA Holdings", cap: 6.8, primary: "CRYPTO_MINERS",
+      traction: "Largest public Bitcoin miner by hashrate (50+ EH/s); holds 35,000+ BTC in corporate reserve; sovereign energy projects.",
+      role: "Scale-dominant hashrate operator and Bitcoin balance sheet accumulator." },
+    { ticker: "RIOT", name: "Riot Platforms", cap: 3.6, primary: "CRYPTO_MINERS",
+      traction: "Corsicana 1 GW facility in Texas; ERCOT demand-response power curtailment credits generate industry-low net power costs.",
+      role: "Flagship ERCOT megawatt campus developer and power arbitrageur." },
+
+    // --- FINTECH_PAYMENTS & Rails ---
+    { ticker: "FOUR", name: "Shift4 Payments", cap: 7.8, primary: "FINTECH_PAYMENTS", choke: "watch",
+      traction: "SPACEX STRATEGIC NEXUS: Exclusive payment processor for SpaceX Starlink worldwide ($6.6B+ GMV run rate). Jared Isaacman Polaris commander.",
+      role: "Specialized merchant acquirer, Vector POS system, and SpaceX orbital payment gateway." },
+    { ticker: "SOFI", name: "SoFi Technologies", cap: 11.8, primary: "FINTECH_PAYMENTS",
+      traction: "National bank charter with $30B+ in consumer deposits; Galileo and Technisys tech platform powers 150M+ third-party accounts.",
+      role: "Digital banking leader and financial infrastructure provider." },
+    { ticker: "FLYW", name: "Flywire", cap: 2.9, primary: "FINTECH_PAYMENTS",
+      traction: "Processes $25B+ in high-value, complex cross-border payments across global education, healthcare, and luxury travel.",
+      role: "Vertical-specific cross-border payments engine and currency rail." },
+    { ticker: "RELY", name: "Remitly Global", cap: 3.3, primary: "FINTECH_PAYMENTS",
+      traction: "Mobile-first remittance leader processing $50B+ annual volume for immigrant families; pilot integration of stablecoin corridors.",
+      role: "Global consumer remittance and digital disbursement rails." },
+    { ticker: "PGY", name: "Pagaya Technologies", cap: 0.95, primary: "FINTECH_PAYMENTS",
+      traction: "AI credit decisioning network partner for SoFi, Ally, and major fintechs; originated $9B+ in asset-backed consumer loans.",
+      role: "AI-driven real-time credit underwriting and ABS institutional capital network." },
+    { ticker: "PYPL", name: "PayPal Holdings", cap: 74.0, primary: "FINTECH_PAYMENTS",
+      traction: "PYUSD stablecoin deployed on Ethereum and Solana with Zero-fee cross-border Xoom transfers; 400M+ active wallets.",
+      role: "Global consumer wallet and merchant checkout network." },
+    { ticker: "V", name: "Visa Inc", cap: 620.0, primary: "FINTECH_PAYMENTS",
+      traction: "Settling millions in USDC over Solana and Ethereum with Worldpay and Nuvei; Visa Tokenized Asset Platform (VTAP).",
+      role: "Dominant global payment network ($15T+ annual cleared volume)." },
+    { ticker: "MA", name: "Mastercard", cap: 480.0, primary: "FINTECH_PAYMENTS",
+      traction: "Mastercard Multi-Token Network (MTN) connecting commercial bank tokenized deposits and regulated digital assets.",
+      role: "Global card payment rail and tokenized interbank settlement network." },
+
+    // --- STABLECOIN_ISSUERS & Private Titans ---
+    { ticker: "CIRCLE", name: "Circle Internet Financial", cap: 9.2, primary: "STABLECOIN_ISSUERS", choke: "watch",
+      traction: "USDC circulation exceeds $42B with $40B+ backed by short-dated US Treasury Bills managed by BlackRock Circle Reserve Fund (USDXX).",
+      role: "Regulated institutional stablecoin issuer and programmable dollar infrastructure." },
+    { ticker: "STRIPE", name: "Stripe (Bridge Acq)", cap: 70.0, primary: "STABLECOIN_ISSUERS",
+      traction: "ACQUIRED BRIDGE FOR $1.1B: Building the global orchestration layer for stablecoins; launched 'Pay with Crypto' across 150+ countries.",
+      role: "Global payments orchestrator and stablecoin developer API titan." },
+    { ticker: "TETHER", name: "Tether Limited", cap: 125.0, primary: "STABLECOIN_ISSUERS", choke: "watch",
+      traction: "Over $120B in USDT circulation; holds $100B+ in direct US Treasuries, making Tether a top 15 sovereign holder globally.",
+      role: "Dominant global liquidity stablecoin and primary offshore trading pair." },
+    { ticker: "PAXOS", name: "Paxos Trust", cap: 2.6, primary: "STABLECOIN_ISSUERS",
+      traction: "Regulated NYDFS Trust company powering PayPal USD (PYUSD) and tokenized gold (PAXG).",
+      role: "Institutional white-label tokenization and regulated stablecoin issuer." },
+
+    // --- GOV_FORENSICS_CUSTODY & Defense ---
+    { ticker: "CHAINALYSIS", name: "Chainalysis", cap: 8.6, primary: "GOV_FORENSICS_CUSTODY", choke: "watch",
+      traction: "Primary investigative software for FBI, IRS-CI, OFAC, and US Secret Service; tracked and recovered billions in state-sponsored hacks.",
+      role: "Government blockchain analytics, anti-money laundering, and national security threat intelligence." },
+    { ticker: "TRM-LABS", name: "TRM Labs", cap: 1.5, primary: "GOV_FORENSICS_CUSTODY",
+      traction: "Exclusive threat intelligence provider for US Department of Defense, Homeland Security, and Five Eyes intelligence agencies.",
+      role: "National security blockchain forensics and illicit finance detection." },
+    { ticker: "FIREBLOCKS", name: "Fireblocks", cap: 8.0, primary: "GOV_FORENSICS_CUSTODY",
+      traction: "Institutional MPC custody infrastructure securing $6T+ in cumulative transactions for 1,800+ financial institutions; DARPA research partner.",
+      role: "Multi-party computation (MPC) digital asset security and wallet rail." },
+    { ticker: "ANCHORAGE", name: "Anchorage Digital", cap: 3.0, primary: "GOV_FORENSICS_CUSTODY",
+      traction: "First federally chartered digital asset bank (OCC charter); exclusive custody partner for sovereign wealth funds and federal agencies.",
+      role: "Federally chartered digital asset bank and qualified custodian." },
+    { ticker: "PLTR", name: "Palantir Technologies", cap: 142.0, primary: "GOV_FORENSICS_CUSTODY",
+      traction: "Artificial Intelligence Platform (AIP) integrated with federal blockchain telemetry to map state-sponsored cyber adversaries.",
+      role: "Defense and enterprise AI ontology software platform." },
+
+    // --- SPACEX_NEXUS ---
+    { ticker: "SPACEX", name: "SpaceX (Starlink)", cap: 250.0, primary: "SPACEX_NEXUS", choke: "watch",
+      traction: "Operates 6,500+ Starlink satellites with optical inter-satellite laser links; sole global billing rail processed via Shift4 Payments (FOUR).",
+      role: "Global LEO broadband constellation and orbital communication backbone." }
+  ],
+
+  edges: [
+    // --- Macro Rates & Credit Transmission ---
+    { source: "FED_RATE", target: "CRYPTO_EQUITIES", weight: -0.78, rationale: "Higher discount rates compress exchange and broker trading multiples; raises convertible note service costs." },
+    { source: "FED_RATE", target: "CRYPTO_BTC", weight: -0.85, rationale: "Higher risk-free cash yields increase the opportunity cost of holding non-yielding monetary assets." },
+    { source: "FED_RATE", target: "STABLECOIN_ISSUERS", weight: 0.82, rationale: "Higher policy rates directly swell interest income on reserve collateral (Circle/Tether earn 4-5% on $160B+ T-bills)." },
+    { source: "FED_RATE", target: "FINTECH_PAYMENTS", weight: -0.65, rationale: "Fed tightening squeezes discretionary consumer purchasing power and multiple valuation on fintechs." },
+    { source: "CREDIT_SPREADS", target: "CRYPTO_EQUITIES", weight: -0.75, rationale: "HY spread widening shuts down convertible debt issuance windows for MicroStrategy and bitcoin miners." },
+    { source: "CREDIT_SPREADS", target: "CRYPTO_MINERS", weight: -0.80, rationale: "High-yield debt distress freezes infrastructure financing for multi-hundred megawatt substation retrofits." },
+
+    // --- Defense & Federal Contracts Transmission ---
+    { source: "DEFENSE_SPENDING", target: "GOV_FORENSICS_CUSTODY", weight: 0.88, rationale: "Federal agencies expand procurement budgets for on-chain forensic analytics, sanctions tracking, and seizure management." },
+    { source: "DEFENSE_SPENDING", target: "CRYPTO_EQUITIES", weight: 0.62, rationale: "USMS awards landmark $32.5M contract to Coinbase Prime to manage, custody, and execute all DOJ forfeiture transactions." },
+    { source: "GOV_FORENSICS_CUSTODY", target: "CRYPTO_EQUITIES", weight: 0.70, rationale: "Federal custody accreditation and SOC-2 compliance solidify Coinbase's institutional moat against offshore rivals." },
+
+    // --- Space & SpaceX Starlink Nexus ---
+    { source: "SPACE_SYSTEMS", target: "SPACEX_NEXUS", weight: 0.95, rationale: "Starlink constellation expansion directly scales global satellite broadband and direct subscription billing volume." },
+    { source: "SPACE_SYSTEMS", target: "CRYPTO_BTC", weight: 0.68, rationale: "Starlink optical laser mesh provides an off-grid, censorship-resistant orbital relay for full-node Bitcoin block validation." },
+    { source: "SPACEX_NEXUS", target: "FINTECH_PAYMENTS", weight: 0.85, rationale: "Shift4 Payments (FOUR) serves as exclusive payment processor for Starlink global subscriptions ($6.6B+ annual run rate)." },
+
+    // --- AI Power Landgrab & Miner HPC Pivots ---
+    { source: "AI_DEMAND", target: "CRYPTO_MINERS", weight: 0.90, rationale: "210-week transformer grid wall forces hyperscalers to lease energized miner substations (CORZ, IREN, WULF, APLD)." },
+    { source: "AI_SEMIS", target: "CRYPTO_MINERS", weight: 0.74, rationale: "High-density GPU accelerators increase the replacement value of energized high-voltage substations." },
+    { source: "CRYPTO_MINERS", target: "AI_DEMAND", weight: 0.72, rationale: "Turnkey multi-hundred MW energized sites accelerate hyperscaler AI model training deployment." },
+
+    // --- Core Crypto Beta & Flow Contagion ---
+    { source: "CRYPTO_BTC", target: "CRYPTO_EQUITIES", weight: 0.94, rationale: "Coinbase trading fees and MicroStrategy balance sheet Net Asset Value trade at high-beta leverage to Bitcoin price." },
+    { source: "CRYPTO_BTC", target: "CRYPTO_MINERS", weight: 0.86, rationale: "Hashprice and miner gross margins directly correlate with Bitcoin price relative to energy cost." },
+    { source: "CRYPTO_BTC", target: "CRYPTO_ETH", weight: 0.78, rationale: "Bitcoin liquidity cycles drive risk appetite and flow contagion across programmable L1 ecosystems." },
+
+    // --- Stablecoin & Payments Velocity ---
+    { source: "STABLECOIN_ISSUERS", target: "FINTECH_PAYMENTS", weight: 0.85, rationale: "Stripe/Bridge and Shift4 integrate stablecoin checkout rails to bypass traditional 2-3% card interchange fees." },
+    { source: "STABLECOIN_ISSUERS", target: "CRYPTO_ETH", weight: 0.80, rationale: "Ethereum and Layer-2 rollups host the majority of tokenized synthetic dollar velocity and liquidity pools." },
+    { source: "FINTECH_PAYMENTS", target: "STABLECOIN_ISSUERS", weight: 0.76, rationale: "Global merchant volume adoption creates massive structural demand for stablecoin reserve minting." }
+  ],
+
+  eras: {
+    "2020_2021": {
+      name: "DeFi Summer & Corporate Treasuries",
+      badge: "Epoch: 2020–2021 (DeFi Summer · MicroStrategy First Debt · Tesla $1.5B BTC · 0% Fed Rate)",
+      tbills: "$18.5B", miners: "0.15 GW", usms: "Ad-hoc Auctions", spacex: "$0.4B / yr", risk: "210 bps",
+      shock_weights: { "CRYPTO_BTC": 0.45, "CRYPTO_EQUITIES": 0.35, "CRYPTO_MINERS": 0.20, "STABLECOIN_ISSUERS": 0.25, "SPACEX_NEXUS": 0.15 }
+    },
+    "2022_2023": {
+      name: "Contagion, Deleveraging & SAB 121",
+      badge: "Epoch: 2022–2023 (FTX Collapse · SAB 121 Custody Blockade · Fed Hikes to 5.5% · Bear Winter)",
+      tbills: "$65.0B", miners: "0.45 GW", usms: "Court Restitution", spacex: "$1.8B / yr", risk: "680 bps",
+      shock_weights: { "CRYPTO_BTC": -0.65, "CRYPTO_EQUITIES": -0.80, "CRYPTO_MINERS": -0.75, "STABLECOIN_ISSUERS": 0.40, "SPACEX_NEXUS": 0.30 }
+    },
+    "2024_2025": {
+      name: "Institutional ETFs & Halving",
+      badge: "Epoch: 2024–2025 (Spot IBIT/ETHA Approved · 4th Halving · CoreWeave $10B Pivot · Stripe Bridge)",
+      tbills: "$124.0B", miners: "1.85 GW", usms: "$15.0M Mandates", spacex: "$4.2B / yr", risk: "390 bps",
+      shock_weights: { "CRYPTO_BTC": 0.85, "CRYPTO_EQUITIES": 0.80, "CRYPTO_MINERS": 0.65, "STABLECOIN_ISSUERS": 0.75, "SPACEX_NEXUS": 0.60 }
+    },
+    "2026_current": {
+      name: "The Quadruple Convergence",
+      badge: "Epoch: 2026 (Quadruple Convergence · $165B T-Bills · 3.8GW HPC · USMS Coinbase · Starlink)",
+      tbills: "$165.4B", miners: "3.85 GW", usms: "$32.5M Mandate", spacex: "$6.6B / yr", risk: "465 bps",
+      shock_weights: { "CRYPTO_BTC": 1.00, "CRYPTO_EQUITIES": 1.00, "CRYPTO_MINERS": 1.00, "STABLECOIN_ISSUERS": 1.00, "SPACEX_NEXUS": 1.00 }
+    },
+    "2027_horizon": {
+      name: "Sovereign Reserves & Space Rails",
+      badge: "Epoch: 2027+ Horizon (Strategic Bitcoin Reserve · LEO Orbital Blocks · AI Swarm Micropayments)",
+      tbills: "$280.0B", miners: "8.50 GW", usms: "Sovereign Vault", spacex: "$12.0B / yr", risk: "320 bps",
+      shock_weights: { "CRYPTO_BTC": 1.40, "CRYPTO_EQUITIES": 1.30, "CRYPTO_MINERS": 1.25, "STABLECOIN_ISSUERS": 1.35, "SPACEX_NEXUS": 1.50 }
+    }
+  },
+
+  scenarios: {
+    "sovereign_btc_reserve": {
+      label: "US Strategic Bitcoin Reserve Act passed",
+      deltas: { "CRYPTO_BTC": 1.0, "CRYPTO_EQUITIES": 0.95, "MSTR": 1.10, "COIN": 0.90, "CRYPTO_MINERS": 0.85, "FED_RATE": -0.20 }
+    },
+    "miner_hpc_expansion": {
+      label: "Hyperscalers acquire miner power rights ($10B+ leases)",
+      deltas: { "CRYPTO_MINERS": 1.0, "CORZ": 1.15, "IREN": 1.05, "WULF": 1.00, "AI_DEMAND": 0.75, "AI_SEMIS": 0.65, "CRYPTO_BTC": 0.40 }
+    },
+    "stablecoin_clarity_act": {
+      label: "Comprehensive US Stablecoin Act passes",
+      deltas: { "STABLECOIN_ISSUERS": 1.0, "CIRCLE": 1.05, "FINTECH_PAYMENTS": 0.80, "FOUR": 0.75, "SOFI": 0.70, "CRYPTO_ETH": 0.65 }
+    },
+    "fed_rate_hike_shock": {
+      label: "Fed pauses rate cuts / credit spread blowout (+100 bps)",
+      deltas: { "FED_RATE": 1.0, "CREDIT_SPREADS": 1.0, "CRYPTO_EQUITIES": -0.85, "CRYPTO_BTC": -0.75, "MSTR": -1.10, "CRYPTO_MINERS": -0.90, "STABLECOIN_ISSUERS": 0.45 }
+    },
+    "orbital_mesh_activation": {
+      label: "SpaceX Starlink deploys LEO laser mesh for blocks",
+      deltas: { "SPACEX_NEXUS": 1.0, "SPACEX": 1.0, "FOUR": 0.95, "CRYPTO_BTC": 0.70, "SPACE_SYSTEMS": 0.85 }
+    },
+    "us_gov_forfeiture_sale": {
+      label: "USMS auctions 50,000 Silk Road BTC onto spot market",
+      deltas: { "CRYPTO_BTC": -0.60, "CRYPTO_EQUITIES": -0.50, "GOV_FORENSICS_CUSTODY": 0.85, "COIN": 0.40 }
+    },
+    "drv:FED_RATE": {
+      label: "+1σ Fed policy rate shock",
+      deltas: { "FED_RATE": 1.0, "CRYPTO_EQUITIES": -0.78, "CRYPTO_BTC": -0.85, "FINTECH_PAYMENTS": -0.65, "STABLECOIN_ISSUERS": 0.82 }
+    },
+    "drv:DEFENSE_SPENDING": {
+      label: "+1σ Federal defense & intelligence contract surge",
+      deltas: { "DEFENSE_SPENDING": 1.0, "GOV_FORENSICS_CUSTODY": 0.88, "CHAINALYSIS": 0.90, "COIN": 0.62, "PLTR": 0.85 }
+    },
+    "drv:SPACE_SYSTEMS": {
+      label: "+1σ LEO constellation launch cadence & orbital compute",
+      deltas: { "SPACE_SYSTEMS": 1.0, "SPACEX_NEXUS": 0.95, "SPACEX": 0.90, "FOUR": 0.85, "CRYPTO_BTC": 0.68 }
+    },
+    "drv:AI_DEMAND": {
+      label: "+1σ Hyperscaler AI capex demand shock",
+      deltas: { "AI_DEMAND": 1.0, "CRYPTO_MINERS": 0.90, "CORZ": 1.05, "IREN": 0.95, "AI_SEMIS": 0.85 }
+    }
+  }
+};
+
+// ==========================================================================
+// RENDERER & LAYOUT ENGINE (Interactive Draggable Nodes & Orbiting Companies)
+// ==========================================================================
+let currentEra = "2026_current";
+let currentScenario = "";
+let currentView = "orbit";
+
+const byId = {};
+const initialCoords = {};
+
+// 1. Calculate Sector Node Radius proportional to Market Size / TAM
+const maxMarketSize = Math.max(...GRAPH_DATA.nodes.map(n => n.marketSize || 100));
+GRAPH_DATA.nodes.forEach(n => {
+  const norm = Math.max(0.15, (n.marketSize || 100) / maxMarketSize);
+  n.r = Math.round(18 + Math.sqrt(norm) * 28);
+  byId[n.id] = n;
+  initialCoords[n.id] = { x: n.x, y: n.y };
+});
+
+// 2. Compute Orbiting Company & ETF Satellites
+function computeCompanyOrbits() {
+  const coNodes = [];
+  const byPrimary = {};
+
+  GRAPH_DATA.companies.forEach(c => {
+    byPrimary[c.primary] = byPrimary[c.primary] || [];
+    byPrimary[c.primary].push(c);
+  });
+
+  Object.keys(byPrimary).forEach(primId => {
+    const parent = byId[primId];
+    if (!parent) return;
+
+    const list = byPrimary[primId];
+    const n = list.length;
+    const orbitR = parent.r + 55 + Math.min(30, n * 3.5);
+
+    list.forEach((c, idx) => {
+      const angle = (2 * Math.PI * idx / n) - (Math.PI / 2);
+      const x = Math.round(parent.x + orbitR * Math.cos(angle));
+      const y = Math.round(parent.y + orbitR * Math.sin(angle));
+
+      const coRadius = c.isEtf ? 7 : Math.max(6, Math.min(14, Math.round(6 + Math.log10(c.cap + 1) * 3.2)));
+
+      const coNode = {
+        id: c.ticker,
+        ticker: c.ticker,
+        name: c.name,
+        cap: c.cap,
+        isEtf: !!c.isEtf,
+        kind: c.isEtf ? "etf" : "company",
+        primary: c.primary,
+        category: parent.category,
+        x: x,
+        y: y,
+        r: coRadius,
+        role: c.role,
+        traction: c.traction,
+        star: c.choke || null
+      };
+      byId[coNode.id] = coNode;
+      initialCoords[coNode.id] = { x: x, y: y };
+      coNodes.push(coNode);
+    });
+  });
+
+  return coNodes;
+}
+
+const companyNodes = computeCompanyOrbits();
+const allRenderNodes = [...GRAPH_DATA.nodes, ...companyNodes];
+
+// Render SVG Layers
+const memG = document.getElementById("mem");
+const infG = document.getElementById("inf");
+const nodesG = document.getElementById("nodes");
+const chokesG = document.getElementById("chokes-layer");
+
+function renderGraph() {
+  memG.innerHTML = "";
+  infG.innerHTML = "";
+  nodesG.innerHTML = "";
+  chokesG.innerHTML = "";
+
+  // 1. Membership Edges (parent sector to satellite company)
+  companyNodes.forEach(co => {
+    const parent = byId[co.primary];
+    if (!parent) return;
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("class", "mem");
+    line.setAttribute("id", `mem-${co.id}`);
+    line.setAttribute("data-s", parent.id);
+    line.setAttribute("data-t", co.id);
+    line.setAttribute("data-is-etf", co.isEtf ? "true" : "false");
+    line.setAttribute("x1", parent.x);
+    line.setAttribute("y1", parent.y);
+    line.setAttribute("x2", co.x);
+    line.setAttribute("y2", co.y);
+    memG.appendChild(line);
+  });
+
+  // 2. Influence Edges (curved quadratic Bézier)
+  GRAPH_DATA.edges.forEach((e, idx) => {
+    const src = byId[e.source];
+    const tgt = byId[e.target];
+    if (!src || !tgt) return;
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const sign = e.weight >= 0 ? "pos" : "neg";
+    const strokeW = Math.max(1.2, Math.min(4.0, Math.abs(e.weight) * 3.4)).toFixed(1);
+
+    path.setAttribute("class", `edge ${sign}`);
+    path.setAttribute("id", `edge-${src.id}-${tgt.id}`);
+    path.setAttribute("data-s", e.source);
+    path.setAttribute("data-t", e.target);
+    path.setAttribute("data-w", e.weight);
+    path.setAttribute("d", getCurvedEdgePath(src, tgt));
+    path.setAttribute("stroke-width", strokeW);
+    path.setAttribute("stroke-opacity", "0.65");
+    path.setAttribute("marker-end", `url(#c-arr-${sign})`);
+
+    const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+    title.textContent = `${src.label} → ${tgt.label}: ${e.weight > 0 ? "+" : ""}${e.weight.toFixed(2)}\n${e.rationale}`;
+    path.appendChild(title);
+
+    infG.appendChild(path);
+  });
+
+  // 3. Nodes & Satellites
+  allRenderNodes.forEach(n => {
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const isCo = n.kind === "company";
+    const isEtf = n.kind === "etf";
+    const nodeClass = isEtf ? "node co etf" : (isCo ? "node co" : "node");
+
+    g.setAttribute("class", nodeClass);
+    g.setAttribute("id", `node-${n.id}`);
+    g.setAttribute("data-id", n.id);
+    g.setAttribute("data-label", (isCo || isEtf) ? n.name : n.label);
+
+    const color = isEtf ? "#3b82f6" : (CATEGORY_COLORS[n.category] || "#64748b");
+
+    // Circle
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", n.x);
+    circle.setAttribute("cy", n.y);
+    circle.setAttribute("r", n.r);
+    circle.setAttribute("fill", color);
+    circle.setAttribute("data-base", color);
+    g.appendChild(circle);
+
+    // Label
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    if (isCo || isEtf) {
+      text.setAttribute("class", "co-label");
+      text.setAttribute("x", n.x);
+      text.setAttribute("y", (n.y + n.r + 9).toFixed(1));
+      text.setAttribute("text-anchor", "middle");
+      text.textContent = isEtf ? `[${n.ticker}]` : n.ticker;
+    } else {
+      text.setAttribute("class", "label");
+      text.setAttribute("x", n.x);
+      text.setAttribute("y", (n.y - n.r - 5).toFixed(1));
+      text.setAttribute("text-anchor", "middle");
+      text.textContent = n.label;
+    }
+    g.appendChild(text);
+
+    // Interaction
+    g.addEventListener("click", () => {
+      if (hasMoved) return;
+      openDrawer(n);
+    });
+    g.addEventListener("mouseenter", () => highlightConnections(n.id));
+    g.addEventListener("mouseleave", () => unhighlight());
+
+    // Dragging
+    setupNodeDrag(g, n);
+
+    nodesG.appendChild(g);
+
+    // Choke Star
+    if (n.star) {
+      const star = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      star.setAttribute("class", `star ${n.star}`);
+      star.setAttribute("id", `star-${n.id}`);
+      star.setAttribute("data-id", n.id);
+      star.setAttribute("d", getStarD(n));
+      const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+      title.textContent = `★ CRITICAL CHOKE: ${(isCo || isEtf) ? n.name : n.label}`;
+      star.appendChild(title);
+      star.addEventListener("click", (evt) => {
+        evt.stopPropagation();
+        openDrawer(n);
+      });
+      chokesG.appendChild(star);
+    }
+  });
+}
+
+function getCurvedEdgePath(src, tgt) {
+  const dx = tgt.x - src.x;
+  const dy = tgt.y - src.y;
+  const dist = Math.hypot(dx, dy);
+  if (dist === 0) return `M ${src.x} ${src.y}`;
+
+  const nx = -dy / dist;
+  const ny = dx / dist;
+  const curvature = Math.min(45, Math.max(18, dist * 0.12));
+  const mx = (src.x + tgt.x) / 2 + nx * curvature;
+  const my = (src.y + tgt.y) / 2 + ny * curvature;
+
+  return `M ${src.x} ${src.y} Q ${mx} ${my} ${tgt.x} ${tgt.y}`;
+}
+
+function getStarD(n) {
+  const cx = n.x + n.r * 0.72;
+  const cy = n.y - n.r * 0.72;
+  const rOuter = 8.5;
+  const rInner = 3.8;
+  let d = "";
+  for (let i = 0; i < 10; i++) {
+    const angle = (i * Math.PI / 5) - (Math.PI / 2);
+    const r = (i % 2 === 0) ? rOuter : rInner;
+    const x = (cx + r * Math.cos(angle)).toFixed(1);
+    const y = (cy + r * Math.sin(angle)).toFixed(1);
+    d += (i === 0 ? "M " : "L ") + x + "," + y + " ";
+  }
+  return d + "Z";
+}
+
+// ==========================================================================
+// INTERACTIVE DRAGGING & PAN/ZOOM
+// ==========================================================================
+let hasMoved = false;
+let isPanning = false;
+let startPan = { x: 0, y: 0 };
+let currentViewBox = { x: 0, y: 0, w: 2000, h: 1560 };
+
+const svg = document.getElementById("cg");
+
+function updateViewBox() {
+  svg.setAttribute("viewBox", `${currentViewBox.x} ${currentViewBox.y} ${currentViewBox.w} ${currentViewBox.h}`);
+}
+
+svg.addEventListener("wheel", (evt) => {
+  evt.preventDefault();
+  const zoomFactor = evt.deltaY < 0 ? 0.9 : 1.1;
+  const pt = svg.createSVGPoint();
+  pt.x = evt.clientX;
+  pt.y = evt.clientY;
+  const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+  currentViewBox.x = svgP.x - (svgP.x - currentViewBox.x) * zoomFactor;
+  currentViewBox.y = svgP.y - (svgP.y - currentViewBox.y) * zoomFactor;
+  currentViewBox.w *= zoomFactor;
+  currentViewBox.h *= zoomFactor;
+  updateViewBox();
+});
+
+svg.addEventListener("mousedown", (evt) => {
+  if (evt.target.closest(".node")) return;
+  isPanning = true;
+  startPan = { x: evt.clientX, y: evt.clientY };
+});
+
+window.addEventListener("mousemove", (evt) => {
+  if (!isPanning) return;
+  const dx = (evt.clientX - startPan.x) * (currentViewBox.w / svg.clientWidth);
+  const dy = (evt.clientY - startPan.y) * (currentViewBox.h / svg.clientHeight);
+  currentViewBox.x -= dx;
+  currentViewBox.y -= dy;
+  startPan = { x: evt.clientX, y: evt.clientY };
+  updateViewBox();
+});
+
+window.addEventListener("mouseup", () => {
+  isPanning = false;
+});
+
+function setupNodeDrag(el, n) {
+  let isDragging = false;
+  let startX = 0, startY = 0;
+
+  el.addEventListener("mousedown", (evt) => {
+    isDragging = true;
+    hasMoved = false;
+    startX = evt.clientX;
+    startY = evt.clientY;
+    evt.stopPropagation();
+  });
+
+  window.addEventListener("mousemove", (evt) => {
+    if (!isDragging) return;
+    const dx = (evt.clientX - startX) * (currentViewBox.w / svg.clientWidth);
+    const dy = (evt.clientY - startY) * (currentViewBox.h / svg.clientHeight);
+
+    if (Math.hypot(dx, dy) > 3) hasMoved = true;
+
+    n.x += dx;
+    n.y += dy;
+    startX = evt.clientX;
+    startY = evt.clientY;
+
+    // Update node circle & text
+    const circle = el.querySelector("circle");
+    if (circle) { circle.setAttribute("cx", n.x); circle.setAttribute("cy", n.y); }
+    const text = el.querySelector("text");
+    if (text) {
+      text.setAttribute("x", n.x);
+      const isCo = n.kind === "company" || n.kind === "etf";
+      text.setAttribute("y", isCo ? (n.y + n.r + 9).toFixed(1) : (n.y - n.r - 5).toFixed(1));
+    }
+
+    // Update star if exists
+    const star = document.getElementById(`star-${n.id}`);
+    if (star) star.setAttribute("d", getStarD(n));
+
+    // Update connected edges
+    document.querySelectorAll(`path.edge[data-s="${n.id}"], path.edge[data-t="${n.id}"]`).forEach(path => {
+      const s = byId[path.getAttribute("data-s")];
+      const t = byId[path.getAttribute("data-t")];
+      if (s && t) path.setAttribute("d", getCurvedEdgePath(s, t));
+    });
+
+    // Update membership lines
+    document.querySelectorAll(`line.mem[data-s="${n.id}"]`).forEach(l => {
+      l.setAttribute("x1", n.x); l.setAttribute("y1", n.y);
+    });
+    document.querySelectorAll(`line.mem[data-t="${n.id}"]`).forEach(l => {
+      l.setAttribute("x2", n.x); l.setAttribute("y2", n.y);
+    });
+  });
+
+  window.addEventListener("mouseup", () => {
+    isDragging = false;
+  });
+}
+
+// ==========================================================================
+// HIGHLIGHTING & CONNECTIONS
+// ==========================================================================
+function highlightConnections(id) {
+  document.querySelectorAll("path.edge").forEach(p => {
+    if (p.getAttribute("data-s") === id || p.getAttribute("data-t") === id) {
+      p.classList.add("highlight");
+    } else {
+      p.style.strokeOpacity = "0.1";
+    }
+  });
+}
+
+function unhighlight() {
+  document.querySelectorAll("path.edge").forEach(p => {
+    p.classList.remove("highlight");
+    p.style.strokeOpacity = "0.65";
+  });
+}
+
+// ==========================================================================
+// SCENARIO & SHOCK PROPAGATION ENGINE
+// ==========================================================================
+function applyScenario(scenKey) {
+  currentScenario = scenKey;
+  const scen = GRAPH_DATA.scenarios[scenKey];
+  const era = GRAPH_DATA.eras[currentEra];
+  const weights = era ? era.shock_weights : {};
+
+  const deltas = scen ? scen.deltas : {};
+
+  // Compute node shock color scale
+  allRenderNodes.forEach(n => {
+    const el = document.getElementById(`node-${n.id}`);
+    if (!el) return;
+    const circle = el.querySelector("circle");
+
+    let val = deltas[n.id];
+    if (val === undefined && (n.kind === "company" || n.kind === "etf")) {
+      val = deltas[n.primary];
+    }
+    if (val === undefined) val = 0;
+
+    // Apply era scale
+    const mult = weights[n.primary || n.id] || 1.0;
+    val = val * mult;
+
+    if (!scenKey || val === 0) {
+      circle.setAttribute("fill", circle.getAttribute("data-base"));
+      return;
+    }
+
+    if (val > 0) {
+      circle.setAttribute("fill", val > 0.6 ? "#1f7a52" : "#8fd0b2");
+    } else {
+      circle.setAttribute("fill", val < -0.6 ? "#b2333f" : "#e48b96");
+    }
+  });
+
+  updateSidePanel(deltas);
+}
+
+function updateSidePanel(deltas) {
+  const sideRows = document.getElementById("side-rows");
+  sideRows.innerHTML = "";
+
+  const scored = [];
+  GRAPH_DATA.companies.forEach(c => {
+    let score = deltas[c.ticker] !== undefined ? deltas[c.ticker] : (deltas[c.primary] || 0);
+    if (score !== 0) scored.push({ ...c, score: score });
+  });
+
+  scored.sort((a, b) => Math.abs(b.score) - Math.abs(a.score));
+
+  if (scored.length === 0) {
+    sideRows.innerHTML = "<div style='color:#64748b; font-size:11px; padding:6px 0;'>Select a shock scenario from the dropdown above to simulate capital transmission.</div>";
+    return;
+  }
+
+  scored.slice(0, 10).forEach(c => {
+    const row = document.createElement("div");
+    row.className = "side-row";
+    const sign = c.score > 0 ? "+" : "";
+    const cls = c.score > 0 ? "pos" : "neg";
+    row.innerHTML = `
+      <span class="side-ticker">${c.ticker} <span style="font-weight:normal; color:#8896ab;">${c.name.substring(0, 14)}</span></span>
+      <span class="side-score ${cls}">${sign}${c.score.toFixed(2)}σ</span>
+    `;
+    row.addEventListener("click", () => openDrawer(byId[c.ticker]));
+    sideRows.appendChild(row);
+  });
+}
+
+// ==========================================================================
+// RIGHT DRAWER FOR DEEP DIVE
+// ==========================================================================
+const drawer = document.getElementById("drawer");
+const drawerContent = document.getElementById("drawer-content");
+document.getElementById("close-drawer").addEventListener("click", () => drawer.classList.remove("open"));
+
+function openDrawer(n) {
+  if (!n) return;
+  const isCo = n.kind === "company" || n.kind === "etf";
+
+  let html = `
+    <h2>${isCo ? n.name : n.label}</h2>
+    <div class="ticker-pill">${isCo ? n.ticker : n.id}</div>
+    <div style="font-size:11.5px; color:#94a3b8; margin-bottom:12px;">Category: <b style="color:${CATEGORY_COLORS[n.category]}">${n.category.toUpperCase()}</b></div>
+  `;
+
+  if (isCo) {
+    html += `
+      <div style="display:flex; gap:16px; margin-bottom:14px;">
+        <div><div style="font-size:10px; color:#8896ab;">MARKET CAP / VALUATION</div><div style="font-size:15px; font-weight:700; color:#fff;">$${n.cap}B</div></div>
+        <div><div style="font-size:10px; color:#8896ab;">PRIMARY SECTOR HUB</div><div style="font-size:13px; font-weight:600; color:#38bdf8;">${byId[n.primary] ? byId[n.primary].label : n.primary}</div></div>
+      </div>
+      <div class="sec-kicker">Core Architectural Role</div>
+      <div class="desc-box">${n.role}</div>
+
+      <div class="sec-kicker">Institutional Traction &amp; Contracts</div>
+      <div class="desc-box" style="border-left: 3px solid var(--gold);">${n.traction}</div>
+    `;
+
+    if (n.primary === "SPACEX_NEXUS" || n.ticker === "FOUR") {
+      html += `<div class="badge-contract">🛰️ SpaceX Starlink Exclusive Global Billing Gateway</div>`;
+    }
+    if (n.primary === "GOV_FORENSICS_CUSTODY" || n.ticker === "COIN") {
+      html += `<div class="badge-contract" style="color:#34d399; border-color:rgba(52,211,153,0.35); background:rgba(52,211,153,0.1);">🏛️ USMS $32.5M Federal Seized Asset Custody Mandate</div>`;
+    }
+    if (n.primary === "CRYPTO_MINERS" && ["CORZ", "IREN", "WULF", "APLD"].includes(n.ticker)) {
+      html += `<div class="badge-contract" style="color:#f59e0b; border-color:rgba(245,158,11,0.35); background:rgba(245,158,11,0.1);">⚡ 210-Wk Substation Bypass: Hyperscaler AI Colocation Lease</div>`;
+    }
+  } else {
+    html += `
+      <div style="display:flex; gap:16px; margin-bottom:14px;">
+        <div><div style="font-size:10px; color:#8896ab;">TAM / CAPITALIZATION</div><div style="font-size:15px; font-weight:700; color:#fff;">$${n.marketSize}B</div></div>
+      </div>
+      <div class="sec-kicker">Thematic Scope &amp; Bottleneck</div>
+      <div class="desc-box">${n.desc}</div>
+
+      <div class="sec-kicker">Connected Transmission Edges</div>
+      <div style="display:flex; flex-direction:column; gap:6px; margin-top:6px;">
+    `;
+    GRAPH_DATA.edges.filter(e => e.source === n.id || e.target === n.id).forEach(e => {
+      const isSrc = e.source === n.id;
+      const other = byId[isSrc ? e.target : e.source];
+      const sign = e.weight > 0 ? "+" : "";
+      html += `
+        <div style="background:#141a29; border:1px solid #232d44; padding:6px 8px; border-radius:4px; font-size:11px;">
+          <div style="display:flex; justify-content:space-between; font-weight:600;">
+            <span>${isSrc ? "→ Drives" : "← Receives from"} <b>${other ? other.label : (isSrc ? e.target : e.source)}</b></span>
+            <span style="color:${e.weight > 0 ? '#34d399' : '#f87171'}">${sign}${e.weight.toFixed(2)}</span>
+          </div>
+          <div style="color:#8896ab; font-size:10.5px; margin-top:2px;">${e.rationale}</div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  drawerContent.innerHTML = html;
+  drawer.classList.add("open");
+}
+
+// ==========================================================================
+// CHOKE POINTS MODAL
+// ==========================================================================
+const chokeModal = document.getElementById("choke-modal");
+document.getElementById("close-choke").addEventListener("click", () => chokeModal.style.display = "none");
+document.getElementById("chokelist").addEventListener("click", () => {
+  const chokeRows = document.getElementById("choke-rows");
+  chokeRows.innerHTML = `
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="background:#171d2d; padding:10px 12px; border-radius:6px; border:1px solid #2d3748;">
+        <div style="font-weight:700; color:#f43f5e; font-size:12px;">1. Energized Substation Capacity &amp; Interconnects (Miners)</div>
+        <div style="color:#cbd5e1; font-size:11.5px; margin-top:3px;">210-week transformer lead times gate new hyperscaler AI campuses. Bitcoin miners hold operational high-voltage power rights, creating multi-billion dollar colocation lease arbitrage (CORZ, IREN, WULF).</div>
+      </div>
+      <div style="background:#171d2d; padding:10px 12px; border-radius:6px; border:1px solid #2d3748;">
+        <div style="font-weight:700; color:#f43f5e; font-size:12px;">2. Short-Term US Treasury Bill Absorption (Stablecoins)</div>
+        <div style="color:#cbd5e1; font-size:11.5px; margin-top:3px;">Circle and Tether hold over $160B in US Treasuries, making private stablecoin issuers top-15 sovereign lenders to the US government, creating massive political and regulatory leverage.</div>
+      </div>
+      <div style="background:#171d2d; padding:10px 12px; border-radius:6px; border:1px solid #2d3748;">
+        <div style="font-weight:700; color:#f43f5e; font-size:12px;">3. USMS Federal Seizure Custody Accreditation (Coinbase Prime)</div>
+        <div style="color:#cbd5e1; font-size:11.5px; margin-top:3px;">The US Department of Justice mandated Coinbase Prime under a $32.5M multi-year contract to manage all federal criminal asset forfeitures, creating an unassailable institutional regulatory moat.</div>
+      </div>
+      <div style="background:#171d2d; padding:10px 12px; border-radius:6px; border:1px solid #2d3748;">
+        <div style="font-weight:700; color:#f43f5e; font-size:12px;">4. Starlink LEO Optical Laser Mesh &amp; Payments (SpaceX / Shift4)</div>
+        <div style="color:#cbd5e1; font-size:11.5px; margin-top:3px;">SpaceX's orbital laser interlinks provide an off-grid alternative to vulnerable undersea fiber cables, while Shift4 serves as the exclusive processing gateway for billions in satellite revenue.</div>
+      </div>
+    </div>
+  `;
+  chokeModal.style.display = "block";
+});
+
+// ==========================================================================
+// EVOLUTION MATRIX TOGGLE
+// ==========================================================================
+const matrixContainer = document.getElementById("matrix-container");
+document.getElementById("btn-matrix").addEventListener("click", () => {
+  matrixContainer.style.display = "block";
+});
+document.getElementById("close-matrix-btn").addEventListener("click", () => {
+  matrixContainer.style.display = "none";
+});
+
+// ==========================================================================
+// CONTROLS & EVENT LISTENERS
+// ==========================================================================
+document.getElementById("scen").addEventListener("change", (e) => {
+  applyScenario(e.target.value);
+});
+
+document.getElementById("showedges").addEventListener("change", (e) => {
+  infG.style.display = e.target.checked ? "block" : "none";
+});
+
+document.getElementById("showcos").addEventListener("change", (e) => {
+  document.querySelectorAll("g.node.co:not(.etf), line.mem:not([data-is-etf='true'])").forEach(el => {
+    el.style.display = e.target.checked ? "block" : "none";
+  });
+});
+
+document.getElementById("showetfs").addEventListener("change", (e) => {
+  document.querySelectorAll("g.node.etf, line.mem[data-is-etf='true']").forEach(el => {
+    el.style.display = e.target.checked ? "block" : "none";
+  });
+});
+
+document.getElementById("showchokes").addEventListener("change", (e) => {
+  chokesG.style.display = e.target.checked ? "block" : "none";
+});
+
+document.getElementById("reset-positions").addEventListener("click", () => {
+  allRenderNodes.forEach(n => {
+    const init = initialCoords[n.id];
+    if (!init) return;
+    n.x = init.x;
+    n.y = init.y;
+  });
+  renderGraph();
+  if (currentScenario) applyScenario(currentScenario);
+});
+
+document.getElementById("reset-view").addEventListener("click", () => {
+  currentViewBox = { x: 0, y: 0, w: 2000, h: 1560 };
+  updateViewBox();
+});
+
+// Timeline Scrubber Buttons
+document.querySelectorAll(".era-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".era-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentEra = btn.getAttribute("data-era");
+
+    const era = GRAPH_DATA.eras[currentEra];
+    if (era) {
+      document.getElementById("era-badge").textContent = era.badge;
+      document.getElementById("baro-tbills").textContent = era.tbills;
+      document.getElementById("baro-miners").textContent = era.miners;
+      document.getElementById("baro-usms").textContent = era.usms;
+      document.getElementById("baro-spacex").textContent = era.spacex;
+      document.getElementById("baro-risk").textContent = era.risk;
+    }
+
+    if (currentScenario) applyScenario(currentScenario);
+  });
+});
+
+// View Toggles
+document.getElementById("btn-orbit").addEventListener("click", () => {
+  document.querySelectorAll(".view-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("btn-orbit").classList.add("active");
+  currentView = "orbit";
+  document.getElementById("reset-positions").click();
+});
+
+document.getElementById("btn-flow").addEventListener("click", () => {
+  document.querySelectorAll(".view-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("btn-flow").classList.add("active");
+  currentView = "flow";
+  // Align into 3 columns: Drivers -> Core Rails -> Downstream
+  GRAPH_DATA.nodes.forEach(n => {
+    if (n.category === "macro") {
+      n.x = 350;
+    } else if (["crypto_core", "stablecoins"].includes(n.category)) {
+      n.x = 950;
+    } else {
+      n.x = 1550;
+    }
+  });
+  // Recalculate orbits around new positions
+  companyNodes.forEach(c => {
+    const p = byId[c.primary];
+    if (p) {
+      c.x = p.x + (Math.random() - 0.5) * 140;
+      c.y = p.y + (Math.random() - 0.5) * 140;
+    }
+  });
+  renderGraph();
+  if (currentScenario) applyScenario(currentScenario);
+});
+
+// Initial Render
+renderGraph();
+updateSidePanel({});
+</script>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

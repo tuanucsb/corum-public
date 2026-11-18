@@ -1,0 +1,2320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CORUM SECTOR &amp; SUBSECTOR AGENTS: WHAT-IF SCENARIO SIMULATION REPORT · CORUM Research</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --ground: #faf8f3;
+      --paper: #fdfcf9;
+      --line: #e4ded3;
+      --line-soft: #efe9df;
+      --sand: #f1ece2;
+      --ink: #16191d;
+      --muted: #5f656c;
+      --teal: #1d4e5f;
+      --gold: #8a6d1f;
+      --gold-ink: #735a14;
+      --green: #14614a;
+      --red: #9c2f22;
+      --green-bg: #e1efe8;
+      --red-bg: #f6e3df;
+      --amber-bg: #fbf3e0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--ground);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 18px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--teal);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .15s ease;
+    }
+    .back-btn:hover {
+      border-color: var(--teal);
+      background: var(--sand);
+    }
+    .badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--teal);
+      color: #fff;
+    }
+    .stats {
+      margin-left: auto;
+      font-size: 12.5px;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .action-btn {
+      font: inherit;
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .action-btn:hover { border-color: var(--teal); }
+    .content-wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+    .article-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 12px 0 16px;
+      color: var(--ink);
+    }
+    h2 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 24px;
+      font-weight: 500;
+      margin: 36px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--ink);
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 24px 0 10px;
+      color: var(--ink);
+    }
+    h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 18px 0 8px;
+    }
+    p, ul, ol {
+      margin: 0 0 16px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    a {
+      color: var(--teal);
+      text-underline-offset: 3px;
+    }
+    a.ticker-chip {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 1px 6px;
+      margin: 0 2px;
+      background: #eef4f6;
+      border: 1px solid #c8d9df;
+      border-radius: 4px;
+      color: var(--teal);
+      text-decoration: none;
+    }
+    a.ticker-chip:hover {
+      background: var(--teal);
+      color: #fff;
+    }
+    .tablewrap {
+      overflow-x: auto;
+      margin: 20px 0 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      background: var(--sand);
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: top;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: #fbf9f5;
+    }
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      background: var(--sand);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #f4eee2;
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+    }
+    blockquote {
+      margin: 18px 0;
+      padding: 12px 18px;
+      background: var(--amber-bg);
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      font-size: 13.5px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 32px 0;
+    }
+    .article-body img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 6px;
+    }
+    @media (max-width: 768px) {
+      .content-wrap { padding: 20px 16px 60px; }
+      h1 { font-size: 26px; }
+      h2 { font-size: 20px; }
+      .topbar { padding: 8px 14px; }
+      .stats { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="../index.html" target="_top" class="back-btn">← Back to CORUM Reports</a>
+    <span class="badge">Macro &amp; Multi-Agent Systems</span>
+    <span class="stats">21 min read · 4,555 words · March 2020</span>
+    
+    <button onclick="window.print()" class="action-btn">Print / PDF</button>
+  </div>
+  <main class="content-wrap">
+    <article class="article-body">
+      <h1>CORUM SECTOR &amp; SUBSECTOR AGENTS: WHAT-IF SCENARIO SIMULATION REPORT</h1>
+<blockquote>
+<p><strong>Core Architectural Principle</strong>: <em>History is empirical context and base rate, NOT prophecy. The lifecycle stage and structural positioning of each agent change over time, meaning identical macro shocks produce fundamentally divergent forward reaction functions.</em></p>
+</blockquote>
+<ul>
+<li><strong>Coverage</strong>: 12 Major Sectors | 169 Subsectors</li>
+<li><strong>Scenarios Evaluated</strong>: 5 Stress Tests</li>
+<li><strong>Database Location</strong>: <code>db/sector_agents.db</code> (SQLite)</li>
+</ul>
+<hr />
+<h2>1. Executive Summary &amp; Cross-Sector Scenario Matrix</h2>
+<p>The following matrix summarizes the net impact across parent sectors under the four primary stress scenarios:</p>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Sector</th>
+<th style="text-align:left">Subsectors</th>
+<th style="text-align:left">Tariff Escalation Net</th>
+<th style="text-align:left">COVID-Style Shock Net</th>
+<th style="text-align:left">Macro Financial Shock Net</th>
+<th style="text-align:left">AI Supercycle Run-Up Net</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Communications</strong></td>
+<td style="text-align:left">5</td>
+<td style="text-align:left"><code>-0.47</code></td>
+<td style="text-align:left"><code>+0.09</code></td>
+<td style="text-align:left"><code>-0.61</code></td>
+<td style="text-align:left"><code>+0.67</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Consumer</strong></td>
+<td style="text-align:left">17</td>
+<td style="text-align:left"><code>-0.68</code></td>
+<td style="text-align:left"><code>-0.19</code></td>
+<td style="text-align:left"><code>-0.81</code></td>
+<td style="text-align:left"><code>+0.11</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Crypto</strong></td>
+<td style="text-align:left">5</td>
+<td style="text-align:left"><code>-0.49</code></td>
+<td style="text-align:left"><code>+0.83</code></td>
+<td style="text-align:left"><code>-0.96</code></td>
+<td style="text-align:left"><code>+0.40</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Energy</strong></td>
+<td style="text-align:left">12</td>
+<td style="text-align:left"><code>-0.18</code></td>
+<td style="text-align:left"><code>+0.07</code></td>
+<td style="text-align:left"><code>-0.30</code></td>
+<td style="text-align:left"><code>+0.62</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Financials</strong></td>
+<td style="text-align:left">13</td>
+<td style="text-align:left"><code>-0.33</code></td>
+<td style="text-align:left"><code>-0.30</code></td>
+<td style="text-align:left"><code>-0.59</code></td>
+<td style="text-align:left"><code>+0.14</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Healthcare</strong></td>
+<td style="text-align:left">23</td>
+<td style="text-align:left"><code>-0.11</code></td>
+<td style="text-align:left"><code>+0.49</code></td>
+<td style="text-align:left"><code>-0.59</code></td>
+<td style="text-align:left"><code>-0.03</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Industrials</strong></td>
+<td style="text-align:left">29</td>
+<td style="text-align:left"><code>-0.27</code></td>
+<td style="text-align:left"><code>-0.27</code></td>
+<td style="text-align:left"><code>-0.57</code></td>
+<td style="text-align:left"><code>+0.40</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Materials</strong></td>
+<td style="text-align:left">11</td>
+<td style="text-align:left"><code>-0.46</code></td>
+<td style="text-align:left"><code>+0.09</code></td>
+<td style="text-align:left"><code>-0.72</code></td>
+<td style="text-align:left"><code>+0.23</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Real estate</strong></td>
+<td style="text-align:left">8</td>
+<td style="text-align:left"><code>-0.61</code></td>
+<td style="text-align:left"><code>+0.73</code></td>
+<td style="text-align:left"><code>-0.95</code></td>
+<td style="text-align:left"><code>+0.03</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Regions</strong></td>
+<td style="text-align:left">20</td>
+<td style="text-align:left"><code>-0.70</code></td>
+<td style="text-align:left"><code>-0.21</code></td>
+<td style="text-align:left"><code>-0.48</code></td>
+<td style="text-align:left"><code>+0.32</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Technology</strong></td>
+<td style="text-align:left">23</td>
+<td style="text-align:left"><code>-0.37</code></td>
+<td style="text-align:left"><code>+0.68</code></td>
+<td style="text-align:left"><code>-0.58</code></td>
+<td style="text-align:left"><code>+0.80</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Utilities</strong></td>
+<td style="text-align:left">3</td>
+<td style="text-align:left"><code>+0.15</code></td>
+<td style="text-align:left"><code>+0.95</code></td>
+<td style="text-align:left"><code>-0.01</code></td>
+<td style="text-align:left"><code>+0.75</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>2. In-Depth Scenario Deconstructions</h2>
+<h3>Scenario A: Universal &amp; Strategic Tariff Escalation</h3>
+<p><strong>Macro Inputs</strong>: <code>TARIFFS: +1.5</code>, <code>INFLATION: +0.6</code>, <code>GROWTH: -0.4</code>, <code>CHINA_GROWTH: -0.8</code></p>
+<ul>
+<li><strong>The Historical Trap</strong>: In 2018-2019, US retail and industrial assemblers absorbed tariffs with manageable margin erosion because consumer balance sheets were liquid and inflation was sub-2%.</li>
+<li><strong>The Stage-Evolution Reality Today</strong>: After 3 years of 20%+ cumulative post-pandemic inflation, lower/middle-tier consumer balance sheets are exhausted with credit card delinquencies at 15-year highs. Retailers and consumer hardware assemblers have zero margin absorption cushion.</li>
+<li><strong>Winners &amp; Resilient Subsectors</strong>: Domestic Defense contractors, Merchant Nuclear power, Domestic Steel &amp; Critical Minerals (mandated domestic sourcing subsidies), Utilities.</li>
+<li><strong>Vulnerable Subsectors</strong>: Consumer Discretionary &amp; Retail, Auto assemblers reliant on Mexican/Asian supply chains, Technology Hardware assemblers, China-exposed Semis.</li>
+</ul>
+<h3>Scenario B: COVID-19 Style Exogenous Shock</h3>
+<p><strong>Macro Inputs</strong>: <code>GROWTH: -1.5</code>, <code>FED_RATE: -1.2</code>, <code>OIL_PRICE: -1.4</code>, <code>AI_DEMAND: +0.8</code></p>
+<ul>
+<li><strong>The Historical Trap</strong>: In March 2020, asset-light tech and cloud software surged +100% because capital expenditure was minimal and zero-bound interest rates expanded multiples infinitely.</li>
+<li><strong>The Stage-Evolution Reality Today</strong>: Technology is no longer an asset-light software business. Technology today is a heavy industrial capex industry with $700B+ annual hyperscaler commitments in physical gigawatt substations, nuclear power plants, and specialized data centers. A freeze in global mobility and aggregate growth would stress corporate debt refinancing for AI debt.</li>
+<li><strong>Winners</strong>: Cybersecurity, Mission-Critical Cloud Infrastructure, Telecommunications, Managed Healthcare.</li>
+<li><strong>Vulnerable</strong>: Commercial Real Estate, Airlines &amp; Aerospace, Traditional Energy (physical storage exhaustion), Discretionary Retail.</li>
+</ul>
+<h3>Scenario C: Macro Financial Shock (Stagflation &amp; Liquidity Crunch)</h3>
+<p><strong>Macro Inputs</strong>: <code>OIL_PRICE: +1.5</code>, <code>INFLATION: +1.2</code>, <code>FED_RATE: +0.8</code>, <code>GROWTH: -0.7</code></p>
+<ul>
+<li><strong>Transmission Mechanism</strong>: Energy price spike ($120/bbl Hormuz disruption) forces central banks into hawkish defensiveness, spiking discount rates while real economic growth slows.</li>
+<li><strong>Most Fragile Archetype</strong>: High financial leverage + low pricing power (Regional Banks, Non-Datacenter REITs, Leveraged Clean Tech, Subprime Consumer Credit).</li>
+<li><strong>Hedge Positioning</strong>: Long Integrated Oil &amp; Gas, Merchant Power, Defensive Gold / Critical Materials; short high-duration unhedged real estate and speculative unprofitable tech.</li>
+</ul>
+<h3>Scenario D: AI Supercycle Run-Up &amp; Acceleration</h3>
+<p><strong>Macro Inputs</strong>: <code>AI_DEMAND: +1.5</code>, <code>FED_RATE: +0.2</code>, <code>GROWTH: +0.3</code></p>
+<ul>
+<li><strong>The Stage-Evolution Reality</strong>: The subsectors that benefited in Phase 1 (GPUs) are now meeting physical bottleneck realities. The highest operational torque is shifting to <strong>Power &amp; Grid Infrastructure</strong> (Transformers, Switchgear, Merchant Nuclear, Datacenter Colocation, Cooling Systems).</li>
+<li><strong>Vulnerability Alert</strong>: Hardware semis in <code>PEAK_RISK_MANIA</code> stage trade at extreme multiples where even a 5% capex guidance pause triggers severe multiple contraction.</li>
+</ul>
+<hr />
+<h2>3. Subsector Agent Deep Dives by Sector</h2>
+<h3>Sector: Communications (5 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Comm services</strong></td>
+<td style="text-align:left"><code>XLC</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Telecom carriers</strong></td>
+<td style="text-align:left"><code>IYZ</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Entertainment &amp; streaming</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Gaming &amp; esports</strong></td>
+<td style="text-align:left"><code>ESPO</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Social &amp; digital ads</strong></td>
+<td style="text-align:left"><code>SOCL</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Consumer (17 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Retail</strong></td>
+<td style="text-align:left"><code>XRT</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Discretionary (broad)</strong></td>
+<td style="text-align:left"><code>XLY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Consumer staples</strong></td>
+<td style="text-align:left"><code>XLP</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Travel/leisure</strong></td>
+<td style="text-align:left"><code>PEJ</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Autos/EV</strong></td>
+<td style="text-align:left"><code>DRIV</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Casinos &amp; sportsbooks</strong></td>
+<td style="text-align:left"><code>BETZ</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Food &amp; beverage</strong></td>
+<td style="text-align:left"><code>PBJ</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Sharing economy &amp; marketplaces</strong></td>
+<td style="text-align:left"><code>IBUY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Luxury goods</strong></td>
+<td style="text-align:left"><code>LUXE</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Vice &amp; specialized consumer</strong></td>
+<td style="text-align:left"><code>MSOS</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Big-box &amp; warehouse clubs</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Home-improvement retail</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Restaurants</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Off-price &amp; apparel retail</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Auto-parts retail</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Food distributors</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Grain &amp; ag processing</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Crypto (5 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Bitcoin</strong></td>
+<td style="text-align:left"><code>IBIT</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Ethereum</strong></td>
+<td style="text-align:left"><code>ETHA</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Ripple (XRP)</strong></td>
+<td style="text-align:left"><code>XRPR</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Crypto equities</strong></td>
+<td style="text-align:left"><code>WGMI</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Crypto miners</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Energy (12 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Energy (integrated)</strong></td>
+<td style="text-align:left"><code>XLE</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Oil services</strong></td>
+<td style="text-align:left"><code>OIH</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Natural gas</strong></td>
+<td style="text-align:left"><code>FCG</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Midstream</strong></td>
+<td style="text-align:left"><code>AMLP</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Uranium/nuclear</strong></td>
+<td style="text-align:left"><code>URA</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Clean energy/solar</strong></td>
+<td style="text-align:left"><code>TAN</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Oil refiners</strong></td>
+<td style="text-align:left"><code>CRAK</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Nuclear SMRs &amp; junior uranium</strong></td>
+<td style="text-align:left"><code>NUKZ</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Uranium mining</strong></td>
+<td style="text-align:left"><code>URNM</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Nuclear fuel cycle</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>SMRs &amp; advanced reactors</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Hydrogen &amp; fuel cells</strong></td>
+<td style="text-align:left"><code>HYDR</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Financials (13 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Banks (money-center)</strong></td>
+<td style="text-align:left"><code>XLF</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Banks (regional)</strong></td>
+<td style="text-align:left"><code>KRE</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Insurance</strong></td>
+<td style="text-align:left"><code>IAK</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Life insurers</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Reinsurance</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Capital markets</strong></td>
+<td style="text-align:left"><code>IAI</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Private credit &amp; BDCs</strong></td>
+<td style="text-align:left"><code>BIZD</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Private equity &amp; alt managers</strong></td>
+<td style="text-align:left"><code>PSP</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Venture capital &amp; accelerators</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>P&amp;C insurance</strong></td>
+<td style="text-align:left"><code>KBWP</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Structured credit &amp; CLOs</strong></td>
+<td style="text-align:left"><code>JAAA</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Free cash flow yield</strong></td>
+<td style="text-align:left"><code>COWZ</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Insurance brokers</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Healthcare (23 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Healthcare (broad)</strong></td>
+<td style="text-align:left"><code>XLV</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Biotech</strong></td>
+<td style="text-align:left"><code>XBI</code></td>
+<td style="text-align:left">EARLY_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Medical devices</strong></td>
+<td style="text-align:left"><code>IHI</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Pharma</strong></td>
+<td style="text-align:left"><code>XPH</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Health insurers</strong></td>
+<td style="text-align:left"><code>IHF</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Healthcare providers &amp; services</strong></td>
+<td style="text-align:left"><code>XHS</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Telemedicine &amp; digital health</strong></td>
+<td style="text-align:left"><code>HTEC</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Longevity &amp; aging care</strong></td>
+<td style="text-align:left"><code>AGNG</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Weight loss &amp; GLP-1 therapeutics</strong></td>
+<td style="text-align:left"><code>HRTS</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Oncology &amp; clinical biotech</strong></td>
+<td style="text-align:left"><code>ARKG</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Genomics &amp; gene editing</strong></td>
+<td style="text-align:left"><code>GNOM</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Gene editing platforms</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Cell therapy &amp; CAR-T</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">EARLY_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>In-vivo gene therapy</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>RNAi &amp; antisense</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Cell &amp; gene CDMOs</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">EARLY_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Cell &amp; gene tools &amp; reagents</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">EARLY_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Cryogenic cold chain</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Longevity biotech &amp; geroscience</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Metabolic healthspan &amp; muscle-sparing</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Regenerative cell medicine &amp; MSCs</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Late-stage clinical biotech</strong></td>
+<td style="text-align:left"><code>SBIO</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Drug distributors</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Industrials (29 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Warehouse &amp; logistics automation</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Robotics actuators &amp; precision motion</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Industrials (broad)</strong></td>
+<td style="text-align:left"><code>XLI</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Defense</strong></td>
+<td style="text-align:left"><code>ITA</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Grid &amp; electrical equipment</strong></td>
+<td style="text-align:left"><code>GRID</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Solid rocket motors (chokepoint)</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Conventional ammunition</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Guided missiles &amp; interceptors</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Space</strong></td>
+<td style="text-align:left"><code>ARKX</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Satellites &amp; space comms</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Space launch</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Space systems</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Space solar cells &amp; arrays</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Optical inter-satellite links</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">PEAK_RISK_MANIA</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Lunar &amp; orbital infrastructure</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Transports</strong></td>
+<td style="text-align:left"><code>IYT</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Infrastructure</strong></td>
+<td style="text-align:left"><code>PAVE</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Airlines</strong></td>
+<td style="text-align:left"><code>JETS</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Shipping</strong></td>
+<td style="text-align:left"><code>BOAT</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Waste &amp; environmental services</strong></td>
+<td style="text-align:left"><code>EVX</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Nuclear components &amp; naval propulsion</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Drones &amp; defense tech</strong></td>
+<td style="text-align:left"><code>SHLD</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Maritime freight &amp; dry bulk</strong></td>
+<td style="text-align:left"><code>BDRY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Industrial distributors</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>HVAC &amp; building climate</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Staffing &amp; employment</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Couriers &amp; freight logistics</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Uniform &amp; route services</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Specialty contractors (grid &amp; datacenter builders)</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Materials (11 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Materials (broad)</strong></td>
+<td style="text-align:left"><code>XLB</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Metals &amp; mining</strong></td>
+<td style="text-align:left"><code>XME</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Copper miners</strong></td>
+<td style="text-align:left"><code>COPX</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Gold miners</strong></td>
+<td style="text-align:left"><code>GDX</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Silver</strong></td>
+<td style="text-align:left"><code>SLV</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Steel</strong></td>
+<td style="text-align:left"><code>SLX</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Lithium</strong></td>
+<td style="text-align:left"><code>LIT</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Rare earths</strong></td>
+<td style="text-align:left"><code>REMX</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Agriculture</strong></td>
+<td style="text-align:left"><code>DBA</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Energy transition metals</strong></td>
+<td style="text-align:left"><code>SETM</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Timber &amp; forestry</strong></td>
+<td style="text-align:left"><code>WOOD</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Real estate (8 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>REITs (broad)</strong></td>
+<td style="text-align:left"><code>XLRE</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Datacenter REITs</strong></td>
+<td style="text-align:left"><code>DTCR</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Mortgage REITs</strong></td>
+<td style="text-align:left"><code>MORT</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Industrial &amp; logistics REITs</strong></td>
+<td style="text-align:left"><code>INDS</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Office REITs</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Residential REITs</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Homebuilders</strong></td>
+<td style="text-align:left"><code>XHB</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Real-estate services</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">LATE_CYCLE</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Regions (20 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>China</strong></td>
+<td style="text-align:left"><code>FXI</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Japan</strong></td>
+<td style="text-align:left"><code>EWJ</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Korea</strong></td>
+<td style="text-align:left"><code>EWY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Germany</strong></td>
+<td style="text-align:left"><code>EWG</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>India</strong></td>
+<td style="text-align:left"><code>INDA</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Brazil</strong></td>
+<td style="text-align:left"><code>EWZ</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Argentina</strong></td>
+<td style="text-align:left"><code>ARGT</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Colombia</strong></td>
+<td style="text-align:left"><code>COLO</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Mexico</strong></td>
+<td style="text-align:left"><code>EWW</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>UK</strong></td>
+<td style="text-align:left"><code>EWU</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Taiwan</strong></td>
+<td style="text-align:left"><code>EWT</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Vietnam &amp; Frontier markets</strong></td>
+<td style="text-align:left"><code>VNM</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Chile &amp; Peru (Copper &amp; Lithium)</strong></td>
+<td style="text-align:left"><code>ECH</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Poland</strong></td>
+<td style="text-align:left"><code>EPOL</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Saudi Arabia &amp; Gulf</strong></td>
+<td style="text-align:left"><code>KSA</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Australia</strong></td>
+<td style="text-align:left"><code>EWA</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Canada</strong></td>
+<td style="text-align:left"><code>EWC</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Malaysia</strong></td>
+<td style="text-align:left"><code>EWM</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Indonesia</strong></td>
+<td style="text-align:left"><code>EIDO</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Greece</strong></td>
+<td style="text-align:left"><code>GREK</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Technology (23 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>AI semiconductors</strong></td>
+<td style="text-align:left"><code>SMH</code></td>
+<td style="text-align:left">PEAK_RISK_MANIA</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Memory</strong></td>
+<td style="text-align:left"><code>DRAM</code></td>
+<td style="text-align:left">PEAK_RISK_MANIA</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>NAND flash</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Hard-disk drives</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Semicap equipment</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>AI networking &amp; optics</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">PEAK_RISK_MANIA</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Cybersecurity</strong></td>
+<td style="text-align:left"><code>CIBR</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Software</strong></td>
+<td style="text-align:left"><code>IGV</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Megacap platforms</strong></td>
+<td style="text-align:left"><code>MAGS</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Quantum computing</strong></td>
+<td style="text-align:left"><code>QTUM</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Post-quantum cryptography</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Quantum photonics &amp; substrates</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Broad tech</strong></td>
+<td style="text-align:left"><code>XLK</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Fintech/payments</strong></td>
+<td style="text-align:left"><code>IPAY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Robotics/automation</strong></td>
+<td style="text-align:left"><code>BOTZ</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Robotaxi &amp; autonomous mobility</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Humanoids &amp; embodied AI</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">PEAK_RISK_MANIA</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Autonomy sensors &amp; LiDAR</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Disruptive growth (long duration)</strong></td>
+<td style="text-align:left"><code>ARKK</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Earth observation</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Cloud infrastructure</strong></td>
+<td style="text-align:left"><code>SKYY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">LOW</td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+<td style="text-align:left"><code>RIDE</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Neocloud (GPU cloud)</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>FRAGILE</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Payroll &amp; HR software</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">MID_CYCLE</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Sector: Utilities (3 Subsectors)</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Subsector</th>
+<th style="text-align:left">Primary ETF</th>
+<th style="text-align:left">Lifecycle Stage</th>
+<th style="text-align:left">Pricing Power</th>
+<th style="text-align:left">Debt Load</th>
+<th style="text-align:left">Current Call</th>
+<th style="text-align:left">Simulated Tariff Call</th>
+<th style="text-align:left">Simulated AI Surge Call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Utilities</strong></td>
+<td style="text-align:left"><code>XLU</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Water infrastructure</strong></td>
+<td style="text-align:left"><code>PHO</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Merchant nuclear power</strong></td>
+<td style="text-align:left"><code>SPY</code></td>
+<td style="text-align:left">STRUCTURAL_TRANSITION</td>
+<td style="text-align:left">MEDIUM</td>
+<td style="text-align:left">HIGH</td>
+<td style="text-align:left"><code>AVOID</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+<td style="text-align:left"><code>EARLY</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>4. Agent Epistemological Invariant: How Stage Informs the Forward Call</h2>
+<pre><code>  +------------------------------------------------------------------------+
+  |  EMPIRICAL HISTORY (Base Rate)  --&gt;  STAGE AUDIT  --&gt;  FORWARD CALL    |
+  |  2018-19: -19% DD, then +34%          2026: 34% Capex   Call: FRAGILE  |
+  |  2020:    -28% DD, then +68%          AI Debt: $4.1T    Action: COLLAR |
+  +------------------------------------------------------------------------+
+</code></pre>
+<ol>
+<li><strong>Self-History Querying</strong>: When evaluated, each agent queries its historical footprints across <code>tariff_trade_war</code>, <code>covid_exogenous_shock</code>, <code>rate_inflation_shock</code>, and <code>ai_supercycle_runup</code>.</li>
+<li><strong>Auditing the Stage</strong>: The agent evaluates whether its debt, valuation, and supply conditions match the historical precedent. If conditions have evolved from <code>EARLY_CYCLE</code> to <code>PEAK_RISK_MANIA</code>, historical resilience cannot be assumed.</li>
+<li><strong>Dynamic Hedging</strong>: Hedging strategies are tailored specifically to the stage: in early-cycle stages, dips are accumulated; in late-cycle or mania stages, equity exposure is collared or paired with defensive offsets.</li>
+</ol>
+
+    </article>
+  </main>
+  
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

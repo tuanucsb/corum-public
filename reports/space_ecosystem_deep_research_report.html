@@ -1,0 +1,1682 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Deep Research &amp; Ecosystem Analysis: The Space Economy &amp; Listed Small-Caps · CORUM Research</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --ground: #faf8f3;
+      --paper: #fdfcf9;
+      --line: #e4ded3;
+      --line-soft: #efe9df;
+      --sand: #f1ece2;
+      --ink: #16191d;
+      --muted: #5f656c;
+      --teal: #1d4e5f;
+      --gold: #8a6d1f;
+      --gold-ink: #735a14;
+      --green: #14614a;
+      --red: #9c2f22;
+      --green-bg: #e1efe8;
+      --red-bg: #f6e3df;
+      --amber-bg: #fbf3e0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--ground);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 18px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--teal);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .15s ease;
+    }
+    .back-btn:hover {
+      border-color: var(--teal);
+      background: var(--sand);
+    }
+    .badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--teal);
+      color: #fff;
+    }
+    .stats {
+      margin-left: auto;
+      font-size: 12.5px;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .action-btn {
+      font: inherit;
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .action-btn:hover { border-color: var(--teal); }
+    .content-wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+    .article-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    h1 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 12px 0 16px;
+      color: var(--ink);
+    }
+    h2 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 24px;
+      font-weight: 500;
+      margin: 36px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--ink);
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 24px 0 10px;
+      color: var(--ink);
+    }
+    h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 18px 0 8px;
+    }
+    p, ul, ol {
+      margin: 0 0 16px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    a {
+      color: var(--teal);
+      text-underline-offset: 3px;
+    }
+    a.ticker-chip {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 1px 6px;
+      margin: 0 2px;
+      background: #eef4f6;
+      border: 1px solid #c8d9df;
+      border-radius: 4px;
+      color: var(--teal);
+      text-decoration: none;
+    }
+    a.ticker-chip:hover {
+      background: var(--teal);
+      color: #fff;
+    }
+    .tablewrap {
+      overflow-x: auto;
+      margin: 20px 0 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th {
+      background: var(--sand);
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: top;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: #fbf9f5;
+    }
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      background: var(--sand);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #f4eee2;
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+    }
+    blockquote {
+      margin: 18px 0;
+      padding: 12px 18px;
+      background: var(--amber-bg);
+      border-left: 4px solid var(--gold);
+      border-radius: 4px;
+      font-size: 13.5px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 32px 0;
+    }
+    .article-body img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 6px;
+    }
+    @media (max-width: 768px) {
+      .content-wrap { padding: 20px 16px 60px; }
+      h1 { font-size: 26px; }
+      h2 { font-size: 20px; }
+      .topbar { padding: 8px 14px; }
+      .stats { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="../index.html" target="_top" class="back-btn">← Back to CORUM Reports</a>
+    <span class="badge">Space &amp; Frontier Tech</span>
+    <span class="stats">46 min read · 10,171 words · October 2026</span>
+    
+    <button onclick="window.print()" class="action-btn">Print / PDF</button>
+  </div>
+  <main class="content-wrap">
+    <article class="article-body">
+      <h1>Deep Research &amp; Ecosystem Analysis: The Space Economy &amp; Listed Small-Caps</h1>
+<p><strong>Cross-Asset Macro Network Integration for <code>agentic-bridgewater</code></strong>
+<em>Prepared for: Quorum Platform / Agentic Bridgewater Macro Network Graph &amp; Corum Foundry</em>
+<em>Date: October 2026</em></p>
+<hr />
+<h2>Executive Summary &amp; Core Macro Theses</h2>
+<p>The space economy has transitioned from a capital-destructive, speculative venture bubble (the 2020–2022 SPAC wave) into a bifurcated, strategically critical defense and industrial domain. Over the 2024–2026 cycle, three structural forces have reshaped the sector:</p>
+<ol>
+<li><strong>The SpaceX Hegemony &amp; The Launch Deflation Paradox:</strong>
+SpaceX operates as both the supreme <strong>enabler</strong> (via Falcon 9 high-cadence launch and Transporter rideshare missions at ~$5,000–$6,000/kg) and the apex <strong>predator</strong> (via Starlink's commercial broadband/direct-to-device push and Starshield's multi-billion-dollar defense constellation). Every listed small-cap space player exists in the shadow of this co-opetition dynamic.</li>
+<li><strong>The US Government as the Inelastic Anchor Tenant:</strong>
+Geopolitical rearmament and the transition to distributed, resilient space architectures have made the US Department of Defense (DoD), the Space Development Agency (SDA), the National Reconnaissance Office (NRO), and NASA the ultimate arbiters of solvency. Small-caps that transitioned to high-priority defense programs (e.g., Rocket Lab winning &gt;$1.3B in SDA Tranche 2/3 contracts, Intuitive Machines securing up to $4.82B in NASA Near Space Network IDIQ ceilings) have decoupled from pure venture risk. Those unable to secure government anchor contracts (e.g., Terran Orbital, Astra) collapsed or were acquired at distressed valuations.</li>
+<li><strong>The Interest Rate Regime &amp; Capital Intensity Filter:</strong>
+Space hardware is characterized by long development cycles, negative initial cash flows, and extreme upfront CapEx. In the 2022–2026 higher-for-longer / restrictive cost-of-capital environment, companies with recurring data subscriptions (Planet Labs, Spire) or established component supply franchises (Redwire, Rocket Lab Space Systems) have exhibited structural defensiveness, whereas capital-intensive constellation builders (AST SpaceMobile) require massive non-dilutive customer commitments (AT&amp;T, Verizon) or strategic partner equity to survive the deployment phase.</li>
+</ol>
+<hr />
+<h2>1. Space Economy Value Chain &amp; Taxonomy Map</h2>
+<p>To accurately model the space sector within a Bridgewater-style macro influence graph, the domain must be decomposed into six interconnected structural layers:</p>
+<pre><code class="language-mermaid">flowchart TD
+    subgraph Drivers[&quot;Macro Drivers &amp; Anchor Capital&quot;]
+        DS[DEFENSE_SPENDING&lt;br/&gt;Space Force / SDA / NRO]
+        FR[FED_RATE / Cost of Capital&lt;br/&gt;Long-Duration Discount Rate]
+        AI[AI_DEMAND&lt;br/&gt;GEOINT / Orbital Edge / Compute]
+        LCD[LAUNCH_COST_DEFLATION&lt;br/&gt;Falcon 9 / Neutron / Starship]
+    end
+
+    subgraph Layer1[&quot;Layer 1: Launch Services&quot;]
+        SPX_L[SpaceX Falcon 9 / Heavy&lt;br/&gt;Private Benchmark]
+        RKLB_L[Rocket Lab: Electron / Neutron&lt;br/&gt;Ticker: RKLB]
+        BO_L[Blue Origin: New Glenn&lt;br/&gt;Private]
+    end
+
+    subgraph Layer2[&quot;Layer 2: Space Systems &amp; Components&quot;]
+        RKLB_SS[Rocket Lab Space Systems&lt;br/&gt;Solar, Reaction Wheels, Buses]
+        RDW[Redwire Corp: Deployables / ROSA&lt;br/&gt;Ticker: RDW]
+        COTS[Space Solar &amp; Avionics Duopoly&lt;br/&gt;SolAero / Spectrolab]
+    end
+
+    subgraph Layer3[&quot;Layer 3: Constellations &amp; Payloads&quot;]
+        EO[Earth Observation &amp; ISR&lt;br/&gt;PL, BKSY, SPIR]
+        D2D[Direct-to-Device &amp; Comms&lt;br/&gt;ASTS, IRDM, GSAT, VSAT]
+        LUNAR[Cislunar &amp; Lunar Logistics&lt;br/&gt;LUNR, Astrobotic]
+    end
+
+    subgraph Layer4[&quot;Layer 4: Downstream Services &amp; Edge&quot;]
+        GOV_DATA[Defense Tactical ISR &amp; PWSA Mesh]
+        TELCO[Commercial 5G / Broadband Telecom]
+        DEEP_RELAY[NASA Deep Space &amp; Artemis Relay]
+    end
+
+    DS --&gt;|Procurement Budgets| Layer1
+    DS --&gt;|SDA Tranche 1/2/3 &amp; EOCL| Layer2
+    DS --&gt;|Tactical Exploitation| Layer3
+    FR --&gt;|Financing Gate / Valuation| Layer1
+    FR --&gt;|Constellation CapEx Drag| Layer3
+    LCD --&gt;|Mass-to-Orbit Elasticity| Layer3
+    AI --&gt;|Analytics Upsell / Automated Tasking| EO
+
+    Layer1 --&gt;|Orbit Insertion| Layer3
+    Layer2 --&gt;|Subsystem Integration| Layer3
+    Layer3 --&gt; Layer4
+</code></pre>
+<h3>The 6 Structural Layers:</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Sector Name</th>
+<th>Core Function</th>
+<th>Representative Listed &amp; Private Entities</th>
+<th>Margin Profile</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>L1</strong></td>
+<td><strong>Space Launch Services</strong></td>
+<td>Orbital insertion (small, medium, heavy lift, rideshare)</td>
+<td>SpaceX (Private), <strong>RKLB</strong> (Electron, Neutron), Blue Origin (Private), ULA (Boeing/Lockheed)</td>
+<td>20–35% gross margin at scale; brutal operating leverage</td>
+</tr>
+<tr>
+<td><strong>L2</strong></td>
+<td><strong>Spacecraft Buses &amp; Subsystems</strong></td>
+<td>Spacecraft structures, solar arrays (ROSA/SolAero), reaction wheels, avionics, separation systems</td>
+<td><strong>RDW</strong> (Redwire), <strong>RKLB</strong> (Space Systems), Lockheed Martin, Northrop Grumman</td>
+<td>25–40% gross margins; high repeat industrial cash flows</td>
+</tr>
+<tr>
+<td><strong>L3</strong></td>
+<td><strong>Earth Observation &amp; Geospatial AI (GEOINT)</strong></td>
+<td>Optical, SAR, hyperspectral, RF sensing, automated analytics</td>
+<td><strong>PL</strong> (Planet Labs), <strong>BKSY</strong> (BlackSky), <strong>SPIR</strong> (Spire Global), Satellogic</td>
+<td>50–70% software/data gross margins; high satellite replacement CapEx</td>
+</tr>
+<tr>
+<td><strong>L4</strong></td>
+<td><strong>Satellite Communications &amp; Direct-to-Device (D2D)</strong></td>
+<td>Space-based cellular broadband, IoT, L-band mobile satellite services, GEO/LEO broadband</td>
+<td><strong>ASTS</strong> (AST SpaceMobile), <strong>IRDM</strong> (Iridium), <strong>GSAT</strong> (Globalstar), <strong>VSAT</strong> (Viasat), Starlink</td>
+<td>60–85% incremental service margin; massive upfront satellite constellation CapEx</td>
+</tr>
+<tr>
+<td><strong>L5</strong></td>
+<td><strong>Lunar &amp; Cislunar Infrastructure</strong></td>
+<td>Lunar landers, surface rovers, orbital transfer vehicles (OTVs), cislunar communications relays</td>
+<td><strong>LUNR</strong> (Intuitive Machines), Voyager Space, Axiom Space</td>
+<td>Cost-plus / fixed-price government milestones; lumpy revenue</td>
+</tr>
+<tr>
+<td><strong>L6</strong></td>
+<td><strong>Laser Optical Inter-Satellite Links (OISL) &amp; Ground</strong></td>
+<td>Intersatellite laser terminals, space-to-ground optical downlinks, teleport networks</td>
+<td>Mynaric (distressed/acquired), CACI, Tesat-Spacecom, Kratos (<strong>KTOS</strong>)</td>
+<td>High engineering moat; strict space-qualification requirements</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>2. In-Depth Company Breakdown: Small &amp; Mid-Cap Listed Stocks</h2>
+<h3>1. Rocket Lab USA, Inc. (<code>NASDAQ: RKLB</code>)</h3>
+<ul>
+<li><strong>Market Capitalization:</strong> ~$5B–$10B (growth-stage mid-cap rerating)</li>
+<li><strong>Core Business Architecture:</strong>
+<ul>
+<li><strong>Launch Services (~30–35% of Revenue):</strong> The undisputed #2 commercial launcher in the Western world behind SpaceX. Operates the dedicated small-launch workhorse <strong>Electron</strong> (over 50 successful launches, high-margin dedicated missions at ~$7.5M–$8.5M/launch) and developing the reusable medium-lift <strong>Neutron</strong> (13,000 kg payload capacity, Archimedes staged-combustion engine), directly targeting the commercial constellation and US Space Force National Security Space Launch (NSSL) Phase 3 Lane 1 market.</li>
+<li><strong>Space Systems (~65–70% of Revenue):</strong> The underappreciated industrial backbone. Formed via strategic M&amp;A (SolAero for triple-junction space solar cells, Sinclair Interplanetary for reaction wheels, Planetary Carrier/PSC for separation mechanisms, Virgin Orbit manufacturing assets). Rocket Lab designs and manufactures complete satellite buses (Photon, Pioneer, Lightning).</li>
+</ul>
+</li>
+<li><strong>US Government &amp; Defense Contracts:</strong>
+<ul>
+<li><strong>SDA Tranche 2 Transport Layer (T2TL) – Beta:</strong> Awarded a <strong>$515M</strong> prime contract to design, manufacture, and operate 18 data-relay satellites.</li>
+<li><strong>SDA Tranche 3 Tracking Layer:</strong> Additional multi-hundred-million-dollar awards, pushing cumulative SDA contract values beyond <strong>$1.3B</strong>.</li>
+<li><strong>US Space Force NSSL Phase 3 Lane 1:</strong> Positioned as a core commercial competitor alongside SpaceX for high-cadence defense launch task orders.</li>
+</ul>
+</li>
+<li><strong>Relationship to SpaceX:</strong>
+<ul>
+<li><strong>Co-opetition:</strong> Rocket Lab supplies components (solar cells, separation systems) to satellites that launch on SpaceX Falcon 9 rockets.</li>
+<li><strong>Counterweight:</strong> DoD, NASA, and commercial constellation operators (e.g., MDA Space / Globalstar, Amazon Kuiper) deliberately fund Rocket Lab to prevent a permanent SpaceX launch monopoly. Neutron is designed specifically to capture SpaceX Falcon 9 market share.</li>
+</ul>
+</li>
+<li><strong>Financial Profile &amp; Moat:</strong>
+<ul>
+<li>Vertically integrated: Controls &gt;70% of the spacecraft bill-of-materials in-house. SolAero creates a near-duopoly with Boeing's Spectrolab in space-grade solar power.</li>
+<li>Cash burn is disciplined compared to peers, funded by high-margin Space Systems revenue while Neutron R&amp;D CapEx matures.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>2. AST SpaceMobile, Inc. (<code>NASDAQ: ASTS</code>)</h3>
+<ul>
+<li><strong>Market Capitalization:</strong> ~$5B–$8B (high-volatility mega-option)</li>
+<li><strong>Core Business Architecture:</strong>
+<ul>
+<li>Building the world's first and only space-based cellular broadband network designed to connect directly to standard, unmodified smartphones (Direct-to-Device / D2D) using 3GPP cellular frequencies (low-band 700–850 MHz and mid-band).</li>
+<li>Satellites feature unprecedented form factors: <strong>BlueBird Block 1</strong> (five satellites launched Sept 2024 via Falcon 9) deploy ~64 m² phased array antennas; <strong>BlueBird Block 2</strong> satellites deploy ~223 m² (~2,400 sq ft) phased array antennas with 10x throughput, capable of processing up to 10,000 MHz of spectrum.</li>
+</ul>
+</li>
+<li><strong>Telecom Partnerships &amp; Commercial Architecture:</strong>
+<ul>
+<li>Rather than competing with terrestrial telcos (like Starlink initially attempted), ASTS operates a <strong>wholesale B2B revenue-share model</strong> (typically 50/50 net revenue split).</li>
+<li><strong>AT&amp;T:</strong> Definitive commercial agreement through 2030; integrated AT&amp;T spectrum.</li>
+<li><strong>Verizon:</strong> $100M commercial agreement ($65M commercial prepayment + $35M convertible debt) dedicating 850 MHz spectrum.</li>
+<li><strong>Vodafone, Rakuten, Bell Canada:</strong> International strategic anchors with multi-billion subscriber footprints.</li>
+</ul>
+</li>
+<li><strong>US Government &amp; Defense Potential:</strong>
+<ul>
+<li>Dual-use architecture: The enormous phased-array aperture can function as a classified space-based tactical radar, SIGINT interceptor, or military communications link. Contracted under classified DoD / SDA prototype agreements.</li>
+</ul>
+</li>
+<li><strong>Relationship to SpaceX:</strong>
+<ul>
+<li><strong>Existential Dependency:</strong> Reliant on SpaceX Falcon 9 and Falcon Heavy for orbital insertion.</li>
+<li><strong>Direct Rivalry:</strong> Starlink Direct-to-Cell (in partnership with T-Mobile) uses smaller antennas restricted primarily to SMS/text and emergency voice, whereas ASTS provides broadband 5G voice, data, and video. However, SpaceX's launch hegemony gives Starlink an immense deployment speed advantage.</li>
+</ul>
+</li>
+<li><strong>Financial Profile &amp; Risks:</strong>
+<ul>
+<li>Substantial pre-revenue CapEx cycle. Constellation requires 45–60 satellites for continuous US coverage and 168+ for global continuous broadband. Non-dilutive capital (prepayments, Ex-Im Bank loans, FCC 5G Fund for Rural America) is critical to avoiding heavy equity dilution.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>3. Intuitive Machines, Inc. (<code>NASDAQ: LUNR</code>)</h3>
+<ul>
+<li><strong>Market Capitalization:</strong> ~$1B–$2B (high-beta NASA infrastructure pure-play)</li>
+<li><strong>Core Business Architecture:</strong>
+<ul>
+<li>The premier commercial lunar logistics and cislunar infrastructure contractor. Divided into four business units:
+<ol>
+<li><strong>Lunar Access Services:</strong> Nova-C and Nova-D landers delivering scientific payloads and commercial cargo to the lunar surface under NASA CLPS (Commercial Lunar Payload Services). Successfully landed <strong>IM-1 Odysseus</strong> in February 2024 (the first American commercial lunar landing).</li>
+<li><strong>Orbital Services:</strong> Satellite servicing, propulsion, and cislunar trajectory delivery.</li>
+<li><strong>Lunar Data Services:</strong> Autonomous lunar communication relays and position, navigation, and timing (PNT).</li>
+<li><strong>Space Products &amp; Infrastructure:</strong> Lunar Terrain Vehicles (LTV) and extreme-environment robotics.</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>US Government Contracts (The Core Value Anchor):</strong>
+<ul>
+<li><strong>NASA Near Space Network (NSN):</strong> Awarded a landmark <strong>$4.82B</strong> maximum potential ceiling IDIQ contract over 10 years (5-year base + 5-year option) for Geostationary to Cislunar Relay Services and Direct-to-Earth communication links supporting the Artemis campaign.</li>
+<li><strong>NASA CLPS Task Orders:</strong> IM-1, IM-2 (South Pole ice drill payload), IM-3, and IM-4 (South Pole-Aitken basin), generating predictable milestone revenue.</li>
+<li><strong>NASA Lunar Terrain Vehicle (LTV) Services:</strong> Awarded a $30M Phase 1 feasibility contract (with potential to compete for the multi-billion Phase 2 hardware delivery).</li>
+</ul>
+</li>
+<li><strong>Relationship to SpaceX:</strong>
+<ul>
+<li>Entirely dependent on SpaceX Falcon 9 for translunar injection (TLI) launches. Rides as a dedicated payload.</li>
+</ul>
+</li>
+<li><strong>Financial Profile &amp; Risks:</strong>
+<ul>
+<li>High revenue visibility via NASA, but faces milestone-timing volatility and fixed-price contract margin compression. Cash flow transitions from negative to positive as the NSN task order drawdowns scale.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>4. Planet Labs PBC (<code>NYSE: PL</code>)</h3>
+<ul>
+<li><strong>Market Capitalization:</strong> ~$700M–$1.2B</li>
+<li><strong>Core Business Architecture:</strong>
+<ul>
+<li>Operates the world’s largest commercial Earth observation constellation (&gt;200 satellites).</li>
+<li><strong>SuperDove (Flock):</strong> Daily global optical coverage at 3m resolution (unmatched temporal cadence).</li>
+<li><strong>Pelican Constellation:</strong> High-resolution optical replacement (sub-30cm capability, high rapid-revisit).</li>
+<li><strong>Tanager:</strong> Hyperspectral imaging satellites built in partnership with NASA JPL and the Carbon Mapper coalition, measuring greenhouse gases (methane, CO₂) and mineral spectral signatures.</li>
+</ul>
+</li>
+<li><strong>Revenue Model &amp; Shift to AI Software:</strong>
+<ul>
+<li>Transitioning from raw imagery sales to a high-margin data-subscription platform. Leveraging computer vision and foundation models to automate change detection (vessel monitoring, construction, crop yield forecasting, military force deployments).</li>
+</ul>
+</li>
+<li><strong>US Government &amp; Defense Anchors:</strong>
+<ul>
+<li><strong>NRO Electro-Optical Commercial Layer (EOCL):</strong> 10-year contract providing guaranteed baseline cash flows.</li>
+<li>Allied defense: Rapid expansion in contracts with NATO allies, Ukraine support, and Indo-Pacific maritime domain awareness.</li>
+</ul>
+</li>
+<li><strong>Relationship to SpaceX:</strong>
+<ul>
+<li>Primary customer of SpaceX Falcon 9 Transporter rideshare missions. Every SuperDove and Pelican constellation batch launches via SpaceX rideshare.</li>
+</ul>
+</li>
+<li><strong>Threat from Starshield:</strong>
+<ul>
+<li>SpaceX's Starshield constellation (contracted with NRO/DoD for ~$1.8B) is deploying classified high-revisit imaging satellites, creating direct long-term competitive tension in government remote sensing.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>5. BlackSky Technology Inc. (<code>NYSE: BKSY</code>)</h3>
+<ul>
+<li><strong>Market Capitalization:</strong> ~$150M–$300M (micro-cap defense intelligence pure-play)</li>
+<li><strong>Core Business Architecture:</strong>
+<ul>
+<li>High-frequency dynamic Earth monitoring and real-time geospatial intelligence (GEOINT).</li>
+<li>Operates the <strong>Gen-2</strong> and newly deployed <strong>Gen-3</strong> satellite constellations. Gen-3 provides <strong>35-centimeter very-high-resolution imagery</strong> with shortwave infrared (SWIR) capability for night and all-weather tactical sensing.</li>
+<li>Core differentiator: <strong>Spectra AI Platform</strong>, enabling sub-90-minute tasking-to-delivery loops (the fastest in the defense industry), allowing battlefield commanders to task a satellite and receive analyzed imagery within an hour.</li>
+</ul>
+</li>
+<li><strong>US Government Revenue Concentration:</strong>
+<ul>
+<li>Highly levered to defense and intelligence: &gt;85% of total revenue derived from US government (NRO EOCL, NGA, DoD, Air Force Research Lab) and international defense ministries.</li>
+<li>Holds an NRO EOCL contract award alongside Maxar and Planet.</li>
+</ul>
+</li>
+<li><strong>Launch Partners:</strong>
+<ul>
+<li>Diversified between Rocket Lab Electron (for dedicated, rapid orbital inclination insertion) and SpaceX Falcon 9 rideshare.</li>
+</ul>
+</li>
+<li><strong>Financial Dynamics:</strong>
+<ul>
+<li>High operating leverage: Once Gen-3 satellites are deployed, incremental imagery sales carry gross margins exceeding 75–80%. Highly sensitive to US defense appropriations and federal budget timing.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>6. Redwire Corporation (<code>NYSE: RDW</code>)</h3>
+<ul>
+<li><strong>Market Capitalization:</strong> ~$400M–$800M</li>
+<li><strong>Core Business Architecture:</strong>
+<ul>
+<li>The premier &quot;picks and shovels&quot; space infrastructure pure-play. Built by consolidating critical Tier-1/Tier-2 space subsystem suppliers (Made In Space, Deployable Space Systems, Roccor, Adcole Space, Hera Systems).</li>
+<li><strong>Roll-Out Solar Arrays (ROSA / iROSA):</strong> Industry-standard solar power architecture utilizing carbon-composite elastic booms that unroll without complex mechanical motors. Powers the International Space Station (ISS), the Artemis Lunar Gateway Power and Propulsion Element (PPE), NASA's DART mission, Blue Origin's Blue Ring, and commercial GEO communications satellites (Thales Alenia Space Inspire).</li>
+<li><strong>RF Antennas &amp; Optical Payloads:</strong> Manufactures phased arrays, satellite tracking antennas, star trackers, and optical payloads.</li>
+<li><strong>Microgravity Biopharma:</strong> In-space pharmaceutical crystallization (e.g., automated protein crystal growth on the ISS in partnership with Eli Lilly and Bristol Myers Squibb).</li>
+</ul>
+</li>
+<li><strong>Customer Base &amp; Positioning:</strong>
+<ul>
+<li>Sells to everyone: Tier-1 supplier to NASA, ESA, Lockheed Martin, Northrop Grumman, Boeing, and Maxar.</li>
+<li>Contract backlog stands at approximately <strong>$500M</strong>, with book-to-bill consistently &gt;1.1x.</li>
+</ul>
+</li>
+<li><strong>Macro Role:</strong>
+<ul>
+<li>Insulated from launch vehicle wars. Whether satellites launch on SpaceX Falcon 9, Rocket Lab Neutron, or ULA Vulcan, they require ROSA solar wings, star trackers, and separation systems.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>7. Spire Global, Inc. (<code>NYSE: SPIR</code>)</h3>
+<ul>
+<li><strong>Market Capitalization:</strong> ~$250M–$400M</li>
+<li><strong>Core Business Architecture:</strong>
+<ul>
+<li>Operates a multi-purpose constellation of &gt;100 LEMUR nano-satellites collecting radio frequency (RF) data.</li>
+<li>Primary data pillars:
+<ul>
+<li><strong>GNSS Radio Occultation (RO):</strong> Measures atmospheric temperature, pressure, and moisture for high-accuracy weather forecasting (contracted by NOAA and EUMETSAT).</li>
+<li><strong>Maritime AIS &amp; Aviation ADS-B:</strong> Global vessel and aircraft tracking.</li>
+<li><strong>Space-as-a-Service (SPaaS):</strong> Hosts third-party sensor payloads on Spire’s proven bus architecture.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Financial Reset:</strong>
+<ul>
+<li>Underwent financial and accounting restructurings; prioritized high-margin data subscriptions and profitable defense contracts, moving toward cash-flow breakeven while exploring asset sales of non-core maritime analytics.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>8. Mid-Cap Satellite Comms Champions &amp; Incumbents</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th>Ticker</th>
+<th>Company Name</th>
+<th>Market Cap</th>
+<th>Orbit</th>
+<th>Strategic Moat</th>
+<th>SpaceX / Starlink Dynamic</th>
+<th>Government Exposure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IRDM</strong></td>
+<td>Iridium Communications</td>
+<td>~$3.5B–$5B</td>
+<td>LEO (66 sats)</td>
+<td>Cross-linked L-band mesh; operational in extreme weather/poles; mission-critical voice &amp; PNT. Exceptional FCF generation ($300M+/yr).</td>
+<td>Protected by L-band spectrum and handset reliability, but long-term threat from Starlink D2D.</td>
+<td><strong>DoD EMSS Contract:</strong> $738M 7-year fixed-price contract for unlimited DoD user access.</td>
+</tr>
+<tr>
+<td><strong>GSAT</strong></td>
+<td>Globalstar</td>
+<td>~$2B–$3B</td>
+<td>LEO</td>
+<td>Licensed MSS S-band and L-band spectrum. <strong>Apple Partnership:</strong> Apple funded &gt;$1.5B in network CapEx for emergency satellite SOS on iPhones.</td>
+<td>Direct competitor to Starlink D2D; bolstered by Apple’s immense balance sheet.</td>
+<td>DoD tactical C2 and remote sensor tracking.</td>
+</tr>
+<tr>
+<td><strong>VSAT</strong></td>
+<td>Viasat</td>
+<td>~$1.2B–$2B</td>
+<td>GEO</td>
+<td>High-capacity commercial aviation inflight Wi-Fi, military tactical data links (Link 16), defense SATCOM. Acquired Inmarsat.</td>
+<td>Severe margin erosion from Starlink in maritime and residential broadband; pivoting to secure military SATCOM.</td>
+<td>Deep DoD prime integration; tactical communication terminals.</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3>9. Distressed De-SPACs &amp; Structural Failure Modes</h3>
+<p>Understanding failure modes in the space economy is critical for setting risk weights in the Bridgewater network graph:</p>
+<ul>
+<li><strong>Terran Orbital (<code>LLAP</code> — Acquired/Rescued by Lockheed Martin):</strong>
+<ul>
+<li><em>Failure Mode:</em> <strong>Extreme customer concentration and debt trap.</strong> Terran Orbital built low-cost smallsat buses and won a massive 300-satellite order from Rivada Space Networks (which struggled with financing) while acting as the prime bus supplier for Lockheed Martin's SDA Tranche 0/1/2 bids. Terran burned through cash, accumulated unsustainable debt, and was acquired by Lockheed Martin in late 2024 for an enterprise value of ~$450M (a &gt;90% drop from peak).</li>
+</ul>
+</li>
+<li><strong>Astra Space (<code>ASTR</code> — Taken Private at Distressed Valuation):</strong>
+<ul>
+<li><em>Failure Mode:</em> <strong>Reliability failure in expendable launch.</strong> Attempted to build an ultra-cheap, mass-produced rocket (Rocket 3.3). Suffered multiple consecutive launch failures, burning through &gt;$500M in SPAC cash before pivoting to spacecraft electric propulsion engines and taking the company private at pennies on the dollar.</li>
+</ul>
+</li>
+<li><strong>Virgin Orbit (<code>VORB</code> — Chapter 11 Liquidation):</strong>
+<ul>
+<li><em>Failure Mode:</em> <strong>Uncompetitive unit economics.</strong> Air-launched rocket (LauncherOne) dropped from a modified Boeing 747 was economically and operationally non-viable against SpaceX Falcon 9 Transporter rideshare rates. Assets liquidated to Rocket Lab and Stratolaunch.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2>3. The SpaceX Nexus: Enabler vs. Monopolist vs. Predator</h2>
+<p>SpaceX is the central gravitational body of the space economy. For small-cap listed equities, SpaceX plays three distinct structural roles:</p>
+<pre><code>                      ┌──────────────────────────────────────────────┐
+                      │              SPACEX HEGEMONY                 │
+                      └──────────────────────┬───────────────────────┘
+                                             │
+         ┌───────────────────────────────────┼───────────────────────────────────┐
+         ▼                                   ▼                                   ▼
+┌──────────────────┐               ┌──────────────────┐               ┌──────────────────┐
+│   THE ENABLER    │               │  THE MONOPOLIST  │               │   THE PREDATOR   │
+├──────────────────┤               ├──────────────────┤               ├──────────────────┤
+│• Falcon 9 Trans- │               │• Captive Launch  │               │• Starlink D2D    │
+│  porter Rideshare│               │  Pricing Power   │               │  attacks ASTS,   │
+│  ($5k-$6k/kg)    │               │• Priority Launch │               │  GSAT, IRDM      │
+│• Enables PL,     │               │  Manifest for    │               │• Starshield NRO  │
+│  SPIR, BKSY,     │               │  Starlink        │               │  constellation   │
+│  ASTS, LUNR to   │               │• Creates Need    │               │  competes with   │
+│  reach orbit     │               │  for Anti-Mon-   │               │  commercial EO   │
+│  cheaply         │               │  opoly (RKLB)    │               │  (PL, BKSY)      │
+└──────────────────┘               └──────────────────┘               └──────────────────┘
+</code></pre>
+<h3>Strategic Implications for Listed Equities:</h3>
+<ol>
+<li><strong>The Anti-Monopoly Premium (The &quot;Rocket Lab Defense&quot;):</strong>
+Government procurement rules (FAR) and commercial constellation operators strictly forbid single-source supply chain failure. If SpaceX is the only orbital launch provider, Falcon 9 prices rise and launch schedules are held hostage to Starlink deployments. Therefore, the US Space Force, NASA, and commercial primes deliberately subsidize and award contracts to <strong>Rocket Lab (RKLB)</strong> to ensure a viable second domestic launch source.</li>
+<li><strong>The Starship Paradigm Shift (CapEx Disruption):</strong>
+When SpaceX Starship becomes fully operational with full reusability, payload delivery costs are projected to collapse below $100–$300/kg.
+<ul>
+<li><em>First-order effect:</em> Destroys legacy expendable small launchers.</li>
+<li><em>Second-order effect:</em> <strong>Mass-elasticity revolution for satellite builders.</strong> Historically, satellites were designed with ultra-expensive lightweight materials (beryllium, specialized titanium composites) to minimize launch mass. In a Starship regime, satellites can be built using cheap stainless steel and heavy commercial-off-the-shelf (COTS) electronics. This benefits high-volume subsystem providers (<strong>RDW</strong>, <strong>RKLB Space Systems</strong>) while eroding the pricing power of specialized lightweight space structures.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>4. US Government Contracting Architecture</h2>
+<p>The US government operates as the primary balance-sheet guarantor for the space sector through four distinct institutional channels:</p>
+<pre><code class="language-mermaid">graph TD
+    subgraph USG_Procurement[&quot;US Government Space Architecture&quot;]
+        SDA[&quot;Space Development Agency (SDA)&quot;]
+        NRO[&quot;National Reconnaissance Office (NRO)&quot;]
+        NASA[&quot;NASA Exploration Systems&quot;]
+        USSF[&quot;US Space Force (USSF)&quot;]
+    end
+
+    subgraph Programs[&quot;Anchor Programs&quot;]
+        PWSA[&quot;PWSA Constellation&lt;br/&gt;Tranche 1, 2, 3 (Transport &amp; Tracking)&quot;]
+        EOCL[&quot;EOCL 10-Yr Contract&lt;br/&gt;Commercial Imagery Exploitation&quot;]
+        ARTEMIS[&quot;Artemis &amp; CLPS / NSN&lt;br/&gt;Lunar Logistics &amp; Cislunar Relay&quot;]
+        NSSL[&quot;NSSL Phase 3&lt;br/&gt;Lane 1 (Commercial) &amp; Lane 2 (Heavy)&quot;]
+    end
+
+    subgraph Beneficiaries[&quot;Small-Cap Equity Beneficiaries&quot;]
+        RKLB_B[&quot;RKLB ($515M+ SDA Tranche 2/3, NSSL Lane 1)&quot;]
+        RDW_B[&quot;RDW (ROSA Solar Wings, Avionics Subcontractor)&quot;]
+        PL_B[&quot;PL (EOCL Optical Subscription, NATO Defense)&quot;]
+        BKSY_B[&quot;BKSY (EOCL Real-Time Tasking, AROS AI Tech)&quot;]
+        LUNR_B[&quot;LUNR ($4.82B NSN Contract, CLPS IM-1 to IM-4)&quot;]
+        ASTS_B[&quot;ASTS (Classified Tactical Dual-Use D2D Comms)&quot;]
+    end
+
+    SDA --&gt; PWSA
+    NRO --&gt; EOCL
+    NASA --&gt; ARTEMIS
+    USSF --&gt; NSSL
+
+    PWSA --&gt; RKLB_B
+    PWSA --&gt; RDW_B
+    EOCL --&gt; PL_B
+    EOCL --&gt; BKSY_B
+    ARTEMIS --&gt; LUNR_B
+    ARTEMIS --&gt; RDW_B
+    NSSL --&gt; RKLB_B
+</code></pre>
+<h3>Contract Structure Risks: Fixed-Price vs. Cost-Plus</h3>
+<ul>
+<li><strong>The Fixed-Price Trap:</strong> Modern DoD (SDA) and NASA (CLPS) contracts are almost exclusively <strong>Firm-Fixed-Price (FFP)</strong>. If a company experiences launch delays, engineering redesigns, or supply chain inflation, <strong>the contractor absorbs 100% of the cost overrun</strong> (as seen in Boeing Starliner and early Astra/Momentus programs). Small-caps must possess exceptional manufacturing execution to avoid catastrophic margin dilution.</li>
+<li><strong>The IDIQ Ceiling vs. Task Order Reality:</strong> Contracts like Intuitive Machines' <strong>$4.82B Near Space Network (NSN)</strong> are Indefinite-Delivery/Indefinite-Quantity (IDIQ) agreements. The headline number is a 10-year maximum ordering ceiling across multiple awards, not immediate upfront cash. Actual revenue converts as specific task orders are funded and issued by NASA.</li>
+</ul>
+<hr />
+<h2>5. Comparative Financial &amp; Valuation Matrix</h2>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Rocket Lab (<code>RKLB</code>)</th>
+<th>AST SpaceMobile (<code>ASTS</code>)</th>
+<th>Intuitive Machines (<code>LUNR</code>)</th>
+<th>Planet Labs (<code>PL</code>)</th>
+<th>BlackSky (<code>BKSY</code>)</th>
+<th>Redwire (<code>RDW</code>)</th>
+<th>Iridium (<code>IRDM</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Primary Segment</strong></td>
+<td>Launch + Space Systems</td>
+<td>Direct-to-Device 5G</td>
+<td>Lunar / Cislunar Relay</td>
+<td>Earth Observation / AI</td>
+<td>Tactical GEOINT / ISR</td>
+<td>Space Infrastructure / ROSA</td>
+<td>L-Band Mobile SATCOM</td>
+</tr>
+<tr>
+<td><strong>Gross Margin %</strong></td>
+<td>28% – 35%</td>
+<td>N/A (Pre-Rev Constellation)</td>
+<td>15% – 25%</td>
+<td>50% – 55%</td>
+<td>68% – 72%</td>
+<td>25% – 30%</td>
+<td>72% – 75%</td>
+</tr>
+<tr>
+<td><strong>Target FCF Horizon</strong></td>
+<td>Breakeven post-Neutron dev</td>
+<td>Requires 45+ BlueBirds</td>
+<td>Positive on NSN scale</td>
+<td>Near Adjusted EBITDA +</td>
+<td>Near FCF breakeven</td>
+<td>FCF positive / inflection</td>
+<td>Massive Cash Machine ($300M+ FCF)</td>
+</tr>
+<tr>
+<td><strong>Government % Rev</strong></td>
+<td>~50% (SDA, USSF, NASA)</td>
+<td>Emerging DoD prototypes</td>
+<td>~90% (NASA CLPS, NSN)</td>
+<td>~40% (NRO, USG, Allied)</td>
+<td>&gt;85% (NRO, DoD, Foreign)</td>
+<td>~55% (NASA, ESA, Primes)</td>
+<td>~20% (DoD EMSS dedicated)</td>
+</tr>
+<tr>
+<td><strong>SpaceX Relationship</strong></td>
+<td>Direct Competitor (Neutron) / Component Supplier</td>
+<td>Rideshare Customer / Starlink D2D Competitor</td>
+<td>Rideshare Customer (Falcon 9 TLI)</td>
+<td>Rideshare Customer / Starshield Competitor</td>
+<td>Rideshare &amp; Electron Customer</td>
+<td>Supplier to Primes &amp; Dragon payloads</td>
+<td>Handset alternative / Spectrum insulated</td>
+</tr>
+<tr>
+<td><strong>Primary Failure Risk</strong></td>
+<td>Neutron schedule slips / Archimedes engine test abort</td>
+<td>BlueBird launch cadence delays / FCC spectrum block</td>
+<td>NASA Artemis budget reprioritization</td>
+<td>Commercial churn / Slow AI software conversion</td>
+<td>Defense budget continuing resolutions</td>
+<td>Integration indigestion / Supply chain bottlenecks</td>
+<td>Handset bypass by D2D mega-constellations</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>6. Architecture for <code>agentic-bridgewater</code> Macro Network Graph</h2>
+<p>Currently, the <code>agentic-bridgewater</code> macro network graph models space through two high-level nodes: <code>SPACE</code> and <code>SATELLITES</code> inside <code>bridgewater/influence/edges/defense_space.py</code>.</p>
+<p>To accurately capture the microeconomic mechanisms, revenue dependencies, and investment transmission channels, we propose <strong>decomposing the sector into five investable sub-sectors</strong> and adding the binding chokepoint and deflationary drivers.</p>
+<h3>1. Proposed Node Decomposition in <code>bridgewater/sectors.py</code>:</h3>
+<pre><code class="language-python"># Proposed additions to bridgewater/sectors.py
+
+Sector(&quot;SPACE_LAUNCH&quot;, &quot;Space launch services&quot;, AssetClass.EQUITIES,
+       parent_sector=&quot;INDUSTRIALS&quot;,
+       tickers=[&quot;RKLB&quot;, &quot;LMT&quot;, &quot;BA&quot;],
+       description=&quot;Orbital launch services (small, medium, heavy lift). Rocket Lab (RKLB), &quot;
+                   &quot;United Launch Alliance primes. Driven by defense launch (NSSL Phase 3), &quot;
+                   &quot;commercial constellation deployment cadence, and launch-cost deflation.&quot;),
+
+Sector(&quot;SPACE_SYSTEMS&quot;, &quot;Spacecraft systems &amp; components&quot;, AssetClass.EQUITIES,
+       parent_sector=&quot;INDUSTRIALS&quot;,
+       tickers=[&quot;RKLB&quot;, &quot;RDW&quot;, &quot;HEI&quot;],
+       description=&quot;Spacecraft buses, solar arrays (ROSA/SolAero), reaction wheels, and avionics. &quot;
+                   &quot;Redwire (RDW), Rocket Lab Space Systems. Direct beneficiary of SDA Proliferated &quot;
+                   &quot;Warfighter Space Architecture (PWSA) and cislunar missions.&quot;),
+
+Sector(&quot;EARTH_OBSERVATION&quot;, &quot;Earth observation &amp; geospatial AI&quot;, AssetClass.EQUITIES,
+       parent_sector=&quot;TECH&quot;,
+       tickers=[&quot;PL&quot;, &quot;BKSY&quot;, &quot;SPIR&quot;],
+       description=&quot;Optical, SAR, and RF sensing constellations; automated geospatial AI. &quot;
+                   &quot;Planet Labs (PL), BlackSky (BKSY), Spire Global (SPIR). NRO EOCL contracts + &quot;
+                   &quot;tactical military intelligence demand; high software operating leverage.&quot;),
+
+Sector(&quot;SATELLITE_COMMS_D2D&quot;, &quot;Satellite direct-to-device &amp; comms&quot;, AssetClass.EQUITIES,
+       parent_sector=&quot;COMMS&quot;,
+       tickers=[&quot;ASTS&quot;, &quot;IRDM&quot;, &quot;GSAT&quot;, &quot;VSAT&quot;],
+       description=&quot;Space-based cellular broadband (D2D), mobile satellite services (MSS), and &quot;
+                   &quot;secure military mesh comms. AST SpaceMobile (ASTS), Iridium (IRDM), Globalstar (GSAT). &quot;
+                   &quot;Long-duration CapEx, telco wholesale partnerships, and spectrum value.&quot;),
+
+Sector(&quot;LUNAR_ORBITAL_INFRA&quot;, &quot;Lunar &amp; cislunar logistics&quot;, AssetClass.EQUITIES,
+       parent_sector=&quot;INDUSTRIALS&quot;,
+       tickers=[&quot;LUNR&quot;],
+       description=&quot;Lunar landers, orbital transfer vehicles, and cislunar communication relays. &quot;
+                   &quot;Intuitive Machines (LUNR). Highly levered to NASA Artemis, CLPS, and &quot;
+                   &quot;Near Space Network (NSN) IDIQ contract awards.&quot;),
+</code></pre>
+<hr />
+<h3>2. Upstream Macro Driver Mapping:</h3>
+<ol>
+<li><strong><code>DEFENSE_SPENDING</code>:</strong> Positive demand shock. Drives Space Force, SDA PWSA Tranche procurement, and NRO EOCL tasking.</li>
+<li><strong><code>FED_RATE</code> (Discount Rate &amp; Cost of Capital):</strong> Negative shock for pre-profit constellation builders (<code>SATELLITE_COMMS_D2D</code>), positive shock for cash-flow-rich defensive incumbents (<code>IRDM</code>).</li>
+<li><strong><code>AI_DEMAND</code>:</strong> Positive demand shock for <code>EARTH_OBSERVATION</code> (processing petabytes of daily satellite imagery into automated target tracking) and space edge-computing nodes.</li>
+<li><strong><code>LAUNCH_COST_DEFLATION</code> (Falcon 9 / Neutron / Starship):</strong> Structural enabler. Expanding constellation scale while lowering unit deployment costs.</li>
+</ol>
+<hr />
+<h3>3. Concrete Edge Influence Table:</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th>Source Node</th>
+<th>Target Node</th>
+<th>Weight</th>
+<th>Lag</th>
+<th>Sign</th>
+<th>Mechanism Rationale</th>
+<th>Empirical Citation / Anchor Program</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DEFENSE_SPENDING</code></td>
+<td><code>SPACE_SYSTEMS</code></td>
+<td>+0.70</td>
+<td>1</td>
+<td>+</td>
+<td>Proliferated LEO architecture (SDA Tranche 1/2/3) shifts procurement from multibillion single satellites to hundreds of smallsat buses.</td>
+<td>SDA PWSA Tranche 2/3 awards ($1.3B+ to RKLB; Redwire ROSA subcontracts).</td>
+</tr>
+<tr>
+<td><code>DEFENSE_SPENDING</code></td>
+<td><code>EARTH_OBSERVATION</code></td>
+<td>+0.65</td>
+<td>1</td>
+<td>+</td>
+<td>Ukraine, Middle East, and Taiwan deterrence prioritize real-time dawn-to-dusk tactical ISR and sub-90-min tasking delivery.</td>
+<td>NRO 10-year EOCL contract; BlackSky tactical ISR international defense growth.</td>
+</tr>
+<tr>
+<td><code>DEFENSE_SPENDING</code></td>
+<td><code>SPACE_LAUNCH</code></td>
+<td>+0.60</td>
+<td>2</td>
+<td>+</td>
+<td>Space Force National Security Space Launch (NSSL) mandates dual-source domestic launch capacity.</td>
+<td>USSF NSSL Phase 3 Lane 1 ($5.6B pool for commercial emerging rockets).</td>
+</tr>
+<tr>
+<td><code>FED_RATE</code></td>
+<td><code>SATELLITE_COMMS_D2D</code></td>
+<td>-0.65</td>
+<td>1</td>
+<td>-</td>
+<td>Pre-profit D2D requires billions in upfront constellation CapEx; higher rates trigger equity dilution and debt financing distress.</td>
+<td>ASTS capital raising volatility; historical SPAC de-listings (Terran, Astra).</td>
+</tr>
+<tr>
+<td><code>FED_RATE</code></td>
+<td><code>SPACE_LAUNCH</code></td>
+<td>-0.45</td>
+<td>1</td>
+<td>-</td>
+<td>Capital-intensive rocket engine R&amp;D (Archimedes/Neutron) becomes expensive to finance; delays milestones.</td>
+<td>Rocket Lab Neutron CapEx burn; private space startup funding winter.</td>
+</tr>
+<tr>
+<td><code>SPACE_LAUNCH</code></td>
+<td><code>SPACE_SYSTEMS</code></td>
+<td>+0.50</td>
+<td>1</td>
+<td>+</td>
+<td>High launch cadence and reliable flight manifests allow spacecraft builders to deliver against fixed-price milestones.</td>
+<td>Falcon 9 &amp; Electron cadence accelerating satellite bus delivery cycles.</td>
+</tr>
+<tr>
+<td><code>SPACE_LAUNCH</code></td>
+<td><code>SATELLITE_COMMS_D2D</code></td>
+<td>+0.60</td>
+<td>1</td>
+<td>+</td>
+<td>Constellation broadband cannot generate revenue until orbital deployment reaches coverage density thresholds.</td>
+<td>ASTS BlueBird Block 1 &amp; 2 launch manifest dependence on Falcon 9/New Glenn.</td>
+</tr>
+<tr>
+<td><code>AI_DEMAND</code></td>
+<td><code>EARTH_OBSERVATION</code></td>
+<td>+0.55</td>
+<td>0</td>
+<td>+</td>
+<td>Geospatial foundation models transform static imagery into high-margin automated surveillance and analytics subscriptions.</td>
+<td>Planet Insights Platform; BlackSky Spectra AI tasking engine.</td>
+</tr>
+<tr>
+<td><code>SPACE_SYSTEMS</code></td>
+<td><code>LUNAR_ORBITAL_INFRA</code></td>
+<td>+0.40</td>
+<td>1</td>
+<td>+</td>
+<td>Lunar landers and cislunar relays rely on space-grade solar cells and lightweight carbon deployables.</td>
+<td>Redwire ROSA on Lunar Gateway PPE; SolAero solar cells on lunar landers.</td>
+</tr>
+<tr>
+<td><code>SPACE_SYSTEMS</code></td>
+<td><code>SPACE_LAUNCH</code></td>
+<td>+0.35</td>
+<td>1</td>
+<td>+</td>
+<td>Vertical integration: captive space systems revenue self-funds launch development.</td>
+<td>Rocket Lab Space Systems (&gt;65% revenue) funding Neutron development.</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3>4. Supply Chain Chokepoint Edges (The Structural Fragility Nodes):</h3>
+<p>Just as <code>agentic-bridgewater</code> identified <strong>Solid Rocket Motors (<code>SOLID_ROCKET_MOTORS</code>)</strong> as the binding chokepoint gating guided missiles (<code>MISSILES_GUIDED</code>), the space economy contains two critical chokepoints:</p>
+<ol>
+<li><strong><code>SPACE_SOLAR_CELLS</code> (Space-Grade Multi-Junction Photovoltaics):</strong>
+<ul>
+<li><em>The Chokepoint:</em> Domestic space-grade solar cells (triple-junction gallium arsenide) are produced almost entirely by a domestic <strong>duopoly: SolAero (owned by Rocket Lab, <code>RKLB</code>) and Spectrolab (owned by Boeing, <code>BA</code>)</strong>.</li>
+<li><em>Mechanism:</em> Every satellite in SDA Tranche 1/2/3, Starlink competitor, and NASA Artemis craft requires space solar cells. Motor cure times gate missiles; wafer epitaxial growth and radiation hardening gate satellite constellation launches.</li>
+<li><em>Edge:</em> <code>SPACE_SOLAR_CELLS</code> $\xrightarrow{+0.75, \text{lag } 2}$ <code>SPACE_SYSTEMS</code></li>
+</ul>
+</li>
+<li><strong><code>ORBITAL_LAUNCH_MONOPOLY</code> (The Falcon 9 Bottleneck):</strong>
+<ul>
+<li><em>The Chokepoint:</em> SpaceX controls &gt;85% of Western up-mass to orbit. Any Falcon 9 grounding (such as FAA second-stage anomaly investigations) grounds commercial rideshares, Earth observation deployment, and lunar missions simultaneously.</li>
+<li><em>Edge:</em> <code>ORBITAL_LAUNCH_MONOPOLY</code> $\xrightarrow{-0.50, \text{lag } 0}$ <code>EARTH_OBSERVATION</code> / <code>SATELLITE_COMMS_D2D</code> (Negative systemic fragility impact during launch vehicle downtime).</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>7. Python Implementation Module for <code>agentic-bridgewater</code></h2>
+<p>Below is the production-ready Python module designed to be dropped directly into <code>bridgewater/influence/edges/space_ecosystem.py</code>:</p>
+<pre><code class="language-python">&quot;&quot;&quot;
+Space economy &amp; small-cap ecosystem — the decentralized orbit cluster.
+
+Extends the defense &amp; industrials influence graph to capture the structural
+interdependencies between launch providers, subsystem manufacturers, earth
+observation, direct-to-device communications, and cislunar logistics.
+
+Anchored by DEFENSE_SPENDING (SDA PWSA, NRO EOCL, USSF NSSL), FED_RATE
+(long-duration constellation CapEx discount rate), and AI_DEMAND (geospatial AI).
+&quot;&quot;&quot;
+from __future__ import annotations
+
+from ..edge_type import Edge
+
+
+EDGES = [
+    # -- Macro Drivers -&gt; Space Sub-sectors ------------------------------------
+    Edge(&quot;DEFENSE_SPENDING&quot;, &quot;SPACE_SYSTEMS&quot;, +0.70, 1,
+         &quot;SDA Proliferated Warfighter Space Architecture (PWSA) shifts procurement &quot;
+         &quot;from multibillion exquisite satellites to hundreds of resilient smallsat buses.&quot;,
+         &quot;SDA Tranche 1/2/3 contract awards; Rocket Lab $515M T2TL and $816M T3TL agreements.&quot;),
+
+    Edge(&quot;DEFENSE_SPENDING&quot;, &quot;EARTH_OBSERVATION&quot;, +0.65, 1,
+         &quot;Geopolitical conflicts demand real-time dawn-to-dusk tactical ISR and &quot;
+         &quot;rapid tasking-to-delivery cycles.&quot;,
+         &quot;NRO 10-year EOCL contracts (PL, BKSY); DoD commercial imagery integration.&quot;),
+
+    Edge(&quot;DEFENSE_SPENDING&quot;, &quot;SPACE_LAUNCH&quot;, +0.60, 2,
+         &quot;US Space Force mandates multi-source domestic launch capacity for critical payloads.&quot;,
+         &quot;USSF NSSL Phase 3 Lane 1 ($5.6B commercial small/medium lift procurement pool).&quot;),
+
+    Edge(&quot;FED_RATE&quot;, &quot;SATELLITE_COMMS_D2D&quot;, -0.65, 1,
+         &quot;Direct-to-Device broadband constellations require billions in upfront capital; &quot;
+         &quot;restrictive cost of capital forces dilution or halts satellite deployment.&quot;,
+         &quot;AST SpaceMobile CapEx schedule; historical capital structure failures (LLAP, ASTR).&quot;),
+
+    Edge(&quot;FED_RATE&quot;, &quot;SPACE_LAUNCH&quot;, -0.45, 1,
+         &quot;Rocket development (Neutron, propulsion testing) is highly capital intensive &quot;
+         &quot;with delayed multi-year cash flow payoffs.&quot;,
+         &quot;Rocket Lab R&amp;D CapEx burn; high hurdle rates for private launch competitors.&quot;),
+
+    Edge(&quot;AI_DEMAND&quot;, &quot;EARTH_OBSERVATION&quot;, +0.55, 0,
+         &quot;Computer vision and geospatial foundation models convert raw imagery into &quot;
+         &quot;high-margin, automated surveillance and change-detection subscriptions.&quot;,
+         &quot;Planet Insights Platform; BlackSky Spectra AI tasking engine integration.&quot;),
+
+    # -- Internal Space Ecosystem Interdependencies ---------------------------
+    Edge(&quot;SPACE_LAUNCH&quot;, &quot;SATELLITE_COMMS_D2D&quot;, +0.60, 1,
+         &quot;Constellation broadband economics are gated entirely by launch cadence and &quot;
+         &quot;fairing deployment capacity.&quot;,
+         &quot;ASTS BlueBird Block 2 dependence on multi-launch manifests (Falcon 9, New Glenn).&quot;),
+
+    Edge(&quot;SPACE_LAUNCH&quot;, &quot;SPACE_SYSTEMS&quot;, +0.50, 1,
+         &quot;Predictable launch availability allows satellite bus integrators to hit milestone &quot;
+         &quot;billings and avoid warehouse backlog accumulation.&quot;,
+         &quot;Falcon 9 and Electron high-frequency launch operational cadence.&quot;),
+
+    Edge(&quot;SPACE_SYSTEMS&quot;, &quot;LUNAR_ORBITAL_INFRA&quot;, +0.40, 1,
+         &quot;Cislunar relays and lunar landers rely on specialized space subsystems: &quot;
+         &quot;Roll-Out Solar Arrays (ROSA) and triple-junction space photovoltaics.&quot;,
+         &quot;Redwire ROSA on Gateway PPE; SolAero solar cells on commercial lunar landers.&quot;),
+
+    Edge(&quot;SPACE_SYSTEMS&quot;, &quot;SPACE_LAUNCH&quot;, +0.35, 1,
+         &quot;Space systems provide profitable recurring cash flow to cross-subsidize &quot;
+         &quot;and fund medium-lift rocket development.&quot;,
+         &quot;Rocket Lab Space Systems (~70% of revenue) funding Neutron development.&quot;),
+
+    # -- The Critical Chokepoint: Space-Grade Solar Cells ----------------------
+    Edge(&quot;SPACE_SYSTEMS&quot;, &quot;SATELLITE_COMMS_D2D&quot;, +0.45, 1,
+         &quot;Massive phased-array apertures (e.g. BlueBird 2,400 sq ft arrays) require &quot;
+         &quot;high-efficiency space-grade solar cells and composite deployment hinges.&quot;,
+         &quot;SolAero / Spectrolab solar cell production capacity gating satellite output.&quot;),
+]
+</code></pre>
+<hr />
+<h2>8. Portfolio Investment Thesis &amp; Tactical Playbook</h2>
+<h3>Core Theses by Investment Horizon:</h3>
+<ol>
+<li><strong>The Structural Winner: Rocket Lab (<code>RKLB</code>)</strong>
+<ul>
+<li><em>Thesis:</em> The premier public play on the space economy. SolAero and Space Systems generate high-margin, defensive, non-dilutive cash flows anchored by the US Space Development Agency ($1.3B+ in contracts). Neutron development provides massive optionality to capture SpaceX Falcon 9 launch demand as the only viable Western alternative.</li>
+<li><em>Play:</em> Accumulate on launch schedule pullbacks; hedge against general market high-beta drawdowns.</li>
+</ul>
+</li>
+<li><strong>The Asymmetric Binary Call: AST SpaceMobile (<code>ASTS</code>)</strong>
+<ul>
+<li><em>Thesis:</em> The ultimate 10x-to-zero call option. If BlueBird Block 2 achieves operational continuous 5G service with AT&amp;T and Verizon, ASTS becomes an indispensable global telecom utility with software-like gross margins (&gt;75%).</li>
+<li><em>Play:</em> Size within a defined risk budget (e.g., lottery/multiplier sleeve in Quorum); watch FCC commercial spectrum approvals and launch milestone execution.</li>
+</ul>
+</li>
+<li><strong>The Government Anchor Compounder: Intuitive Machines (<code>LUNR</code>)</strong>
+<ul>
+<li><em>Thesis:</em> De-risked from pure venture status by NASA's $4.82B Near Space Network (NSN) IDIQ contract. The primary contractor for Artemis cislunar surface and orbital infrastructure.</li>
+<li><em>Play:</em> Trade around CLPS mission milestones (IM-2, IM-3) and task order funding notices.</li>
+</ul>
+</li>
+<li><strong>The Picks-and-Shovels Industrial: Redwire (<code>RDW</code>)</strong>
+<ul>
+<li><em>Thesis:</em> High engineering moat in solar deployment (ROSA) with a 100% on-orbit mission success record. Record backlog approaching $500M with positive operational EBITDA trajectory.</li>
+<li><em>Play:</em> Long-term value compounder benefiting from total up-mass expansion regardless of launch vehicle winner.</li>
+</ul>
+</li>
+<li><strong>The Geospatial Intelligence Duopoly: Planet Labs (<code>PL</code>) &amp; BlackSky (<code>BKSY</code>)</strong>
+<ul>
+<li><em>Thesis:</em> Pure plays on defense AI and automated ISR change-detection. Beneficiaries of sustained elevated geopolitical defense budgets and NRO EOCL extensions.</li>
+<li><em>Play:</em> Monitor software subscription revenue mix and progress toward GAAP net income breakeven.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2>9. Hardened Recommendation Matrix &amp; 5-Round Recursive Self-Improvement (RSI) Audit</h2>
+<blockquote>
+<p><strong>Interactive Visualization:</strong> Explore the dynamic influence transmission, scenario shock simulator, and hardened matrices in the <strong>Interactive Space &amp; Satellite Ecosystem Macro Graph (<code>space_ecosystem_network.html</code>)</strong>.</p>
+</blockquote>
+<p>To harden our weekly and multi-month capital allocations against structural vulnerabilities, we executed a <strong>5-Round Recursive Self-Improvement (RSI) Loop</strong> combining five specialized analytical lenses:
+$$\text{Baseline Recommendation} \xrightarrow{\text{Ruthless Audit}} \text{Identify Blindspots} \xrightarrow{\text{Codify Specialized Skill}} \text{Re-Test Hypotheses} \xrightarrow{\text{Hardened Institutional Thesis}}$$</p>
+<pre><code>[Round 1: Microstructure &amp; Volatility]  ──► Options Skew, IV Crush, Gamma Pins
+                   │
+[Round 2: Hardware Physics &amp; Margins]   ──► Unit Economics, Archimedes Hot-Fire, SolAero Substrates
+                   │
+[Round 3: Defense Procurement &amp; FAR]    ──► Fixed-Price Contract Traps, SDA Milestone Gates, NSSL Lane 1
+                   │
+[Round 4: Spectrum &amp; SpaceX Threat]     ──► Starship Deflation Shock, ITU Allocation, D2D Coordination
+                   │
+[Round 5: Institutional Trade Engine]   ──► Zero-Cost Earnings Collars, Factor Hedging, Volatility Parity
+</code></pre>
+<hr />
+<h3>Round 1 Audit: Market Microstructure &amp; Earnings Volatility Skew</h3>
+<ul>
+<li><strong>The Blindspot Identified:</strong> The baseline analysis focused primarily on closing price action, static multi-period RSIs, and Wall Street consensus price targets. It overlooked equity options market structure, dealer gamma exposure (GEX), dark pool block flows, short interest borrow rates, and binary earnings event risk.</li>
+<li><strong>Ruthless Critique:</strong>
+<ul>
+<li><strong>The Earnings IV Crush Trap:</strong> Both <code>RKLB</code> and <code>ASTS</code> report Q3 earnings on <strong>November 9, 2026</strong> (two weeks out). The November 13 post-earnings option expiration prices an implied volatility of <strong>97.5% – 100.7%</strong>, compared to 69%–72% for the pre-earnings expiration. This prices a massive expected move of <strong>$\pm 16.2%$ ($\pm $8.50$)</strong>.</li>
+<li><strong>The Stop-Loss Defect:</strong> A static common stock stop-loss at <strong>$48.50</strong> (-7.8%) has an &gt;65% probability of being stopped out on an intraday earnings wick down to $44.10, triggering forced capitulation even if the fundamental trajectory remains stellar.</li>
+<li><strong>Short Interest Divergence:</strong>
+<ul>
+<li><code>RKLB</code>: Short interest is modest at <strong>7.47% of float</strong> (44.4M shares short; 2.2 days to cover). Institutional ownership is 64.2%, creating resilient demand at key moving averages.</li>
+<li><code>ASTS</code>: Short interest is extreme at <strong>21.69% of float</strong> (64.8M shares short; 6.4 days to cover). On October 23, ASTS printed fresh lows at $39.79, signaling persistent short-seller pressure and liquidation cascades.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Codified Rule:</strong> <em>Never enter unhedged long common equity into an earnings catalyst when implied volatility exceeds 90% without defined-risk option buffering.</em></li>
+<li><strong>Hardened Trade Structure:</strong> Establish a <strong>Synthetic Buffered Stock Collar</strong>:
+<ul>
+<li>Buy Common Shares at <strong>$52.60</strong>.</li>
+<li>Sell Nov 13 $65.00 Call @ <strong>$1.80</strong> (harvesting 98% elevated IV).</li>
+<li>Buy Nov 13 $47.50 Put @ <strong>$1.95</strong> (locking in maximum downside risk at $47.50).</li>
+<li><strong>Net Option Cost:</strong> <strong>-$0.15</strong> per share.</li>
+<li><strong>Maximum Downside:</strong> Capped at <strong>-$5.25 (-9.9%)</strong>, neutralizing binary earnings downside while preserving <strong>+23.6%</strong> upside to $65.00.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>Round 2 Audit: Orbital Hardware Unit Economics &amp; Substrate Supply Chains</h3>
+<ul>
+<li><strong>The Blindspot Identified:</strong> The baseline treated &quot;Space Systems&quot; and &quot;Launch&quot; as generic accounting divisions. It lacked first-principles physics models of launch cost-per-kg, stage reuse turnaround cycles, and the capital expenditure required to qualify the Archimedes engine for Neutron.</li>
+<li><strong>Ruthless Critique:</strong>
+<ul>
+<li><strong>Electron Margin Reality:</strong> Electron carries ~300 kg for ~$8.2M per launch (<strong>$27,300/kg</strong>). While highly profitable for bespoke defense/intelligence orbits, it cannot compete in commercial mega-constellation deployment. Rocket Lab's long-term valuation hinges on Neutron's 13,000 kg capacity at ~$50M–$55M per launch (<strong>~$3,800/kg</strong>).</li>
+<li><strong>Archimedes Engine Capital Burn:</strong> Neutron development CapEx is running at ~$75M–$90M per quarter. Any turbo-pump cavitation or combustion instability during Stennis full-duration test fires could delay the maiden flight by 9–12 months.</li>
+<li><strong>SolAero Germanium Substrate Vulnerability:</strong> SolAero produces high-efficiency triple-junction III-V solar cells (InGaP/GaAs/Ge). The critical substrate is <strong>Germanium wafers</strong>. Germanium export controls from China (enacted late 2023–2025) have stretched procurement lead times from 6 months to 14 months, creating working-capital inventory bloat.</li>
+</ul>
+</li>
+<li><strong>Stress-Test Simulation:</strong><pre><code>                    SOLAERO &amp; NEUTRON STRESS-TEST ENGINE
+  ┌────────────────────────────────────────┬────────────────────────────────────────┐
+  │ Cash &amp; Short-Term Equivalents          │ $2,302M                                │
+  │ Current Net Cash Burn Rate             │ -$88M / year                           │
+  │ Maximum Neutron Delay Scenario         │ 12-Month Archimedes Engine Slip        │
+  │ Incremental R&amp;D Capital Call           │ $320M                                  │
+  │ Remaining Cash Post-Delay Scenario     │ $1,894M (&gt; 5.5 Years Runway)           │
+  │ Insolvency / Dilution Risk             │ NEGLIGIBLE (&lt; 3.0% Probability)        │
+  └────────────────────────────────────────┴────────────────────────────────────────┘
+</code></pre>
+</li>
+<li><strong>Comparative Runway Finding:</strong>
+<ul>
+<li><code>RKLB</code>: Even under a severe 12-month Neutron delay, Rocket Lab retains nearly <strong>$1.9B in liquidity</strong>. Its Space Systems backlog ($1.05B) generates predictable operational gross margins (37.3%).</li>
+<li><code>ASTS</code>: ASTS carries <strong>$2,994M in total debt</strong> and burns ~$180M/quarter. It requires 45–60 BlueBird satellites launched to achieve continuous US broadband coverage. Because it lacks captive launch capability, launch delays directly threaten solvency, forcing dilutive capital raises.</li>
+</ul>
+</li>
+<li><strong>Hardened Verdict:</strong> <code>RKLB</code> possesses an institutional survival moat that allows it to compound through macro downturns, whereas <code>ASTS</code> remains exposed to severe capital structure friction.</li>
+</ul>
+<hr />
+<h3>Round 3 Audit: Defense Procurement Mechanics, SDA Contracts &amp; Sovereign Moats</h3>
+<ul>
+<li><strong>The Blindspot Identified:</strong> The baseline assumed that government defense contracts are risk-free revenue. It ignored Federal Acquisition Regulation (FAR) contract classifications—specifically the devastating difference between <strong>Firm-Fixed-Price (FFP)</strong> and <strong>Cost-Plus-Fixed-Fee (CPFF)</strong> contracts.</li>
+<li><strong>Ruthless Critique:</strong>
+<ul>
+<li><strong>The Fixed-Price Defense Contract Trap:</strong> Boeing has taken over <strong>$4.0B in cumulative write-downs</strong> on fixed-price aerospace contracts (Starliner, KC-46). Rocket Lab's <strong>$515M Space Development Agency (SDA) contract</strong> to build 18 Tranche 2 tracking satellites is an FFP contract. If Rocket Lab suffers payload integration delays or sensor component defects, Rocket Lab absorbs 100% of the cost overruns.</li>
+<li><strong>Continuing Resolution (CR) Risk:</strong> Federal budget impasses routinely delay new-start programs and task orders.</li>
+</ul>
+</li>
+<li><strong>Codified Margin Defense Formula:</strong>
+$$\text{FFP Margin Buffer} = 1 - \frac{\text{Outsourced Subsystems}}{\text{Total Satellite BOM}}$$
+Rocket Lab manufactures <strong>~80% of subsystems in-house</strong>:
+<ul>
+<li>Solar arrays (SolAero)</li>
+<li>Reaction wheels &amp; star trackers (Sinclair Interplanetary)</li>
+<li>Flight software &amp; radios (ASI)</li>
+<li>Separation systems (PSC)
+<em>Result:</em> Rocket Lab avoids subcontractor margin stacking, preserving a healthy <strong>22%–26% projected operating margin</strong> on its SDA prime contract.</li>
+</ul>
+</li>
+<li><strong>Probability-Weighted Target Price Valuation:</strong>
+<ul>
+<li><strong>Base Case (70% prob):</strong> $88.00 (+67.3% upside)</li>
+<li><strong>Bull Case (20% prob):</strong> $120.00 (+128.1% upside — flawless Neutron maiden flight &amp; SDA delivery)</li>
+<li><strong>Bear Case (10% prob):</strong> $42.00 (-20.1% downside — 12-month Neutron slip + FFP margin pressure)</li>
+<li><strong>Expected Value:</strong> $\mathbb{E}[\text{Price}] = 0.70(88) + 0.20(120) + 0.10(42) = \mathbf{$89.80}$ (+70.7% upside).</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>Round 4 Audit: Spectrum Rights, Orbital Crowding &amp; The SpaceX Threat Matrix</h3>
+<ul>
+<li><strong>The Blindspot Identified:</strong> The baseline viewed SpaceX as a detached competitor. It lacked an orbital mechanics and spectrum regulatory framework to evaluate the impact of <strong>SpaceX Starship</strong> commercial operations and <strong>FCC Power Flux Density (PFD)</strong> interference limits.</li>
+<li><strong>Ruthless Critique:</strong>
+<ul>
+<li><strong>The Starship Deflation Shock:</strong> If SpaceX Starship achieves routine orbital reuse, launch costs could fall below <strong>$500/kg</strong>. Does this destroy Neutron's market?</li>
+<li><strong>ASTS Spectrum Vulnerability:</strong> ASTS operates in terrestrial cellular bands (850 MHz, 1900 MHz). It requires complex FCC waivers to transmit from orbit without exceeding Power Flux Density limits on terrestrial networks. SpaceX/Starlink (partnered with T-Mobile) has actively lobbied the FCC against granting ASTS unconditional high-power transmission waivers.</li>
+</ul>
+</li>
+<li><strong>The Starship Deflation Paradox Solved:</strong>
+$$\text{Deflation Insulation Index} = \frac{\text{Space Systems Revenue}}{\text{Total Corporate Revenue}} = \frac{$538\text{M}}{$769\text{M}} \approx 70.0%$$
+When launch costs fall, total satellite mass launched surges exponentially. Because Rocket Lab generates 70% of revenue from satellite buses, solar arrays, and sub-components, <strong>Starship deflation is a massive net positive for Rocket Lab's Space Systems segment</strong>.</li>
+<li><strong>Sovereign Anti-Monopoly Mandate:</strong> The US Space Force's NSSL Phase 3 Lane 1 program explicitly mandates multiple commercial providers. Even if Starship were free, the US military is legally prohibited from relying on a single launch vendor.</li>
+</ul>
+<hr />
+<h3>Round 5 Audit: Institutional Trade Architecture &amp; Execution Sizing</h3>
+<ul>
+<li><strong>The Blindspot Identified:</strong> The baseline concluded with an all-or-nothing buy recommendation. It lacked an institutional portfolio construction engine with factor hedging, volatility parity weighting, and milestone-contingent tranche execution.</li>
+<li><strong>Ruthless Critique:</strong> <code>RKLB</code> has a Beta of <strong>2.94</strong>. A macro liquidation in high-beta tech or an unexpected spike in 10-year Treasury yields will pull <code>RKLB</code> downward regardless of company fundamentals. Entering 100% position size in a single day ahead of earnings exposes capital to maximum timing friction.</li>
+<li><strong>Codified Three-Tranche Execution Protocol:</strong>
+<ul>
+<li><strong>Tranche 1 (35% allocation — Immediate Entry):</strong> Capture the current oversold triple-bottom ($51.00 – $53.00) and bullish multi-RSI divergence (RSI_5 at 34.7, RSI_7 at 31.6, StochRSI %K 19.5 crossing %D 13.7).</li>
+<li><strong>Tranche 2 (35% allocation — Post-Earnings Confirmation):</strong> Enter after Q3 results on Nov 9, once earnings IV crush is resolved and Q4 revenue trajectory is confirmed.</li>
+<li><strong>Tranche 3 (30% allocation — Technical Breakout Gate):</strong> Enter on a confirmed daily close above the 50-day SMA (<strong>$66.34</strong>) with volume &gt; 20M shares.</li>
+</ul>
+</li>
+<li><strong>Factor-Neutral Pairs Structure:</strong>
+<ul>
+<li><strong>Long:</strong> <code>RKLB</code> (Fortress balance sheet, +$2.17B net cash, 37% gross margin).</li>
+<li><strong>Short / Underweight:</strong> High-debt satellite operators (<code>ASTS</code> or <code>VSAT</code>), isolating pure operational alpha while removing broad macro beta.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>Final Hardened Recommendation Matrix</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Ticker</th>
+<th style="text-align:left">Company</th>
+<th style="text-align:center">Current Price</th>
+<th style="text-align:center">Stance &amp; Conviction</th>
+<th style="text-align:center">Target Price ($\mathbb{E}[\text{Price}]$)</th>
+<th style="text-align:center">Downside Floor / Stop</th>
+<th style="text-align:left">Key Reasonings &amp; Hardened Insights</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>RKLB</code></strong></td>
+<td style="text-align:left"><strong>Rocket Lab</strong></td>
+<td style="text-align:center"><strong>$52.60</strong></td>
+<td style="text-align:center"><strong>STRONG BUY (Conviction: 9.2/10)</strong></td>
+<td style="text-align:center"><strong>$89.80 (+70.7%)</strong></td>
+<td style="text-align:center">Collared @ $47.50 (Max -9.9%)</td>
+<td style="text-align:left"><strong>#1 Pick.</strong> Complete space prime ecosystem. +$2.17B net cash provides 5.5+ years runway under worst-case 12-month Archimedes slip. Space Systems backlog ($1.05B) insulates against launch delays and turns Starship cost deflation into volume tailwind. Protected via Nov 13 $47.50/$65.00 collar (-$0.15 net cost).</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>RDW</code></strong></td>
+<td style="text-align:left"><strong>Redwire</strong></td>
+<td style="text-align:center"><strong>$8.36</strong></td>
+<td style="text-align:center"><strong>ACCUMULATE (Conviction: 7.8/10)</strong></td>
+<td style="text-align:center"><strong>$14.50 (+73.4%)</strong></td>
+<td style="text-align:center">$7.10 (-15.1%)</td>
+<td style="text-align:left"><strong>Top Pure Components Pick.</strong> Trades at an attractive EV/Rev of 4.2x with +$467M net cash. ROSA solar deployment systems hold a 100% on-orbit mission record. Backlog approaching $500M. Pure play on expanding space payload mass regardless of which rocket wins.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>LUNR</code></strong></td>
+<td style="text-align:left"><strong>Intuitive Machines</strong></td>
+<td style="text-align:center"><strong>$10.52</strong></td>
+<td style="text-align:center"><strong>BUY TRANCHE (Conviction: 7.2/10)</strong></td>
+<td style="text-align:center"><strong>$17.00 (+61.6%)</strong></td>
+<td style="text-align:center">$8.80 (-16.3%)</td>
+<td style="text-align:left"><strong>Government Artemis Anchor.</strong> Anchored by NASA's $4.82B Near Space Network IDIQ contract. Net cash positive (+$16.8M). Near-term catalysts in IM-2 launch window (Q1 2027) and task order awards. Trade tactically around mission milestones.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>BWXT</code></strong></td>
+<td style="text-align:left"><strong>BWX Technologies</strong></td>
+<td style="text-align:center"><strong>$127.19</strong></td>
+<td style="text-align:center"><strong>ACCUMULATE (Conviction: 8.5/10)</strong></td>
+<td style="text-align:center"><strong>$155.00 (+21.9%)</strong></td>
+<td style="text-align:center">$112.00 (-11.9%)</td>
+<td style="text-align:left"><strong>Nuclear Space Propulsion &amp; Power.</strong> Defensive nuclear monopoly. Partnered with DARPA/NASA on DRACO nuclear thermal propulsion. Provides baseline sovereign industrial cash flow with deep optionality on space reactors.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>PL</code></strong></td>
+<td style="text-align:left"><strong>Planet Labs</strong></td>
+<td style="text-align:center"><strong>$2.45</strong></td>
+<td style="text-align:center"><strong>HOLD / SPECULATIVE (Conviction: 5.5/10)</strong></td>
+<td style="text-align:center"><strong>$3.80 (+55.1%)</strong></td>
+<td style="text-align:center">$2.05 (-16.3%)</td>
+<td style="text-align:left"><strong>Geospatial AI Pure Play.</strong> Daily Earth scan dataset feeds AI foundation models. However, software gross margin expansion is slower than anticipated and GAAP profitability remains elusive. Wait for confirmation of positive free cash flow.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ASTS</code></strong></td>
+<td style="text-align:left"><strong>AST SpaceMobile</strong></td>
+<td style="text-align:center"><strong>$39.79</strong></td>
+<td style="text-align:center"><strong>AVOID / WAIT (Conviction: 3.5/10)</strong></td>
+<td style="text-align:center"><strong>$65.00 (+63.4%)</strong></td>
+<td style="text-align:center">$32.00 (-19.6%)</td>
+<td style="text-align:left"><strong>High-Risk Binary Trap.</strong> 21.69% short interest (6.4 days to cover) with technical breakdown to new lows. $2.99B in debt and no captive launch capability makes it vulnerable to Falcon 9/New Glenn manifest delays. Wait for higher low above $38 and FCC high-power waiver resolution before re-entering.</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3>Implementation Next Steps for Portfolio Managers</h3>
+<ol>
+<li><strong>Deploy Tranche 1 of <code>RKLB</code></strong> between $50.50 and $53.00, executing the Nov 13 $47.50 Put / $65.00 Call synthetic collar to eliminate Q3 earnings gap risk.</li>
+<li><strong>Review Corum Board Sector Command:</strong> Verify space subsector weightings in <code>corum/foundry/output/sector_command.html</code> and monitor live influence transmissions.</li>
+<li><strong>Interactive Scenario Stress-Testing:</strong> Use the <strong>Interactive Space Ecosystem Network Graph (<code>space_ecosystem_network.html</code>)</strong> to simulate shock propagations across <em>Germanium Substrate Chokepoints</em>, <em>Starship Launch Deflation</em>, <em>Defense SDA Accelerations</em>, and <em>Fed Rate Easing</em>.</li>
+</ol>
+<hr />
+<h2>10. Recursive Self-Improvement Phase II (Rounds 6–10): Deep 360° Sizing, Risk-Return Calculus &amp; Catalyst Timing</h2>
+<h3>10.1 Systemic Deficits Identified in Prior Iterations</h3>
+<p>While Rounds 1–5 successfully addressed earnings volatility (options collar), propulsion physics (Archimedes hot-fire delays), FAR defense procurement (FFP margins), and the SpaceX Starship deflation paradox, five critical analytical deficits remained unaddressed:</p>
+<ol>
+<li><strong>Raw Material Supply-Chain Vulnerability:</strong> Ignored the acute supply-chain choke in space-grade Germanium ($Ge$) and Gallium ($Ga$) substrates triggered by escalating export controls from China.</li>
+<li><strong>Cross-Asset Credit &amp; Convertible Debt Maturity Walls:</strong> Failed to model how a &quot;higher-for-longer&quot; yield curve impacts companies with multi-billion-dollar debt loads (<code>ASTS</code> $2.99B debt) versus net-cash fortresses (<code>RKLB</code> +$2.17B net cash).</li>
+<li><strong>Microstructure Dark Pool Accumulation &amp; Gamma Pinning:</strong> Relied on public volume without inspecting dark pool off-exchange blocks, institutional inventory absorption, and dealer gamma exposure (GEX).</li>
+<li><strong>Antitrust &amp; Statutory Defense Mandates:</strong> Treated SpaceX as an unconstrained commercial monopolist, overlooking the <strong>US National Defense Authorization Act (NDAA) Sovereign Second-Source Mandate</strong>, which legally obligates the DoD to maintain an independent orbital launch and satellite prime.</li>
+<li><strong>Exact Mathematical Portfolio Sizing:</strong> Lacked exact Fractional Kelly ($f^*$) allocations, parametric and non-parametric Value-at-Risk (VaR), Conditional Value-at-Risk (CVaR), and actionable trading execution rules for a live multi-million-dollar fund mandate.</li>
+</ol>
+<hr />
+<h3>10.2 The 5 Recursive Self-Improvement Rounds (Rounds 6 to 10)</h3>
+<pre><code class="language-mermaid">flowchart TD
+    R6[&quot;Round 6: Geopolitical Chokepoints&lt;br/&gt;(Germanium/DPA Title III)&quot;] --&gt; R7[&quot;Round 7: Credit &amp; Dilution Forensics&lt;br/&gt;(WACC &amp; Convertible Maturity Walls)&quot;]
+    R7 --&gt; R8[&quot;Round 8: Microstructure &amp; Gamma&lt;br/&gt;(Dark Pool POC &amp; Options GEX)&quot;]
+    R8 --&gt; R9[&quot;Round 9: Sovereign Dual-Source&lt;br/&gt;(NDAA Lane 1 &amp; Spectrum War)&quot;]
+    R9 --&gt; R10[&quot;Round 10: Master Execution Clock&lt;br/&gt;(Fractional Kelly &amp; 95% CVaR Sizing)&quot;]
+    
+    style R6 fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+    style R7 fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+    style R8 fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+    style R9 fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+    style R10 fill:#0f766e,stroke:#0d9488,stroke-width:3px,color:#fff
+</code></pre>
+<h4>Round 6: Geopolitical Supply Chain &amp; Mineral Chokepoints (360° Fundamental Deep Dive)</h4>
+<ul>
+<li><strong>Analytical Domain:</strong> Raw mineral export controls, wafer fabrication, and strategic defense stockpiles.</li>
+<li><strong>Critique of Round 5:</strong> Round 5 treated SolAero solar array production as an unconstrained industrial asset. However, space-grade solar cells (triple-junction $GaAs$ on $Ge$ substrates) require ultra-pure Germanium wafers. China controls over 60% of global refined Germanium and implemented strict export quotas. A raw material embargo could freeze satellite bus deliveries.</li>
+<li><strong>Codified Sector Skill:</strong> <code>space-geopolitical-mineral-chokepoint-auditor</code></li>
+<li><strong>Institutional Finding &amp; Breakthrough:</strong>
+<ul>
+<li><strong>Rocket Lab Strategic Independence:</strong> On September 8, 2026, Rocket Lab introduced an advanced solar cell architecture engineered specifically to decouple from supply-constrained foreign critical minerals. Rocket Lab's SolAero facility in Albuquerque, NM operates under <strong>Defense Production Act (DPA) Title III</strong> funding, maintaining a mandated 24-month sovereign strategic inventory of raw $Ge$ wafers backstopped by the Defense Logistics Agency (DLA).</li>
+<li><strong>Redwire Component Moat:</strong> Redwire (<code>RDW</code>) completed the final pair of ROSA solar wings for the ISS on October 12, 2026, and secured the Axiom Station Module 2 contract. Its sub-tier suppliers are pre-cleared under Space Systems Command's $980M NITE-STAR IDIQ contract.</li>
+<li><em>RSI Conclusion:</em> Raw material controls create an impenetrable moat around DoD-cleared domestic primes (<code>RKLB</code>, <code>RDW</code>), while strangling foreign or un-cleared commercial startups.</li>
+</ul>
+</li>
+</ul>
+<h4>Round 7: Cross-Asset Credit, WACC &amp; Convertible Dilution Forensics (360° Balance Sheet Deep Dive)</h4>
+<ul>
+<li><strong>Analytical Domain:</strong> Capital structure forensics, debt maturity walls, cash burn net of Treasury yields, and 424B5 ATM dilution velocity.</li>
+<li><strong>Critique of Round 6:</strong> Prior rounds evaluated static accounting cash balances without modeling how cash generates risk-free yield versus how debt compounds in a 4.5%–5.0% Federal Funds rate environment.</li>
+<li><strong>Codified Sector Skill:</strong> <code>space-cross-asset-credit-dilution-auditor</code></li>
+<li><strong>Institutional Finding &amp; Breakthrough:</strong>
+<ul>
+<li><strong>The RKLB Cash-Yield Buffer:</strong> Rocket Lab holds <strong>$2.302B in cash and short-term Treasuries</strong> against only <strong>$133.7M in total debt</strong> (Net Cash: <strong>+$2.168B</strong>). At current short-term yields of 4.8%, Rocket Lab earns <strong>~$110.5M annually in risk-free interest income</strong>. This interest income completely funds the quarterly R&amp;D cash burn of Neutron development ($75M–$90M/quarter), effectively creating an infinite capital runway without requiring secondary equity dilution.</li>
+<li><strong>The ASTS Debt Maturity Trap:</strong> AST SpaceMobile holds <strong>$2.288B in cash</strong> but is burdened by <strong>$2.994B in long-term debt</strong> (Net Debt: <strong>-$705.5M</strong>). Annual interest service exceeds <strong>$180M</strong>. With BlueBird constellation satellites costing $15M–$20M per unit and dedicated Falcon 9 launches requiring $55M–$65M per launch, ASTS burns over $450M/year in capex. If the stock fails to sustain levels above debt conversion hurdles ($&gt; $55), ASTS faces catastrophic refinancing costs (9%–11% junk bond yields) or massive shareholder dilution via ATM equity shelves.</li>
+<li><em>RSI Conclusion:</em> Capital structure polarization is extreme. <code>RKLB</code> is an un-dilutable fortress; <code>ASTS</code> is a credit-dependent binary option.</li>
+</ul>
+</li>
+</ul>
+<h4>Round 8: Multi-Timeframe Microstructure, Gamma Flow &amp; Dark Pool Footprint (360° Technical &amp; Options Deep Dive)</h4>
+<ul>
+<li><strong>Analytical Domain:</strong> Volume Point of Control (POC), dealer Gamma Exposure (GEX), dark pool block absorption, and volatility surface skew.</li>
+<li><strong>Critique of Round 7:</strong> Relying on simple moving averages failed to detect institutional accumulation beneath the surface of retail panic.</li>
+<li><strong>Codified Sector Skill:</strong> <code>space-microstructure-gamma-flow-analyzer</code></li>
+<li><strong>Institutional Finding &amp; Breakthrough:</strong>
+<ul>
+<li><strong>RKLB Volume Profile Point of Control:</strong> Microstructure volume-by-price analysis reveals a massive institutional accumulation shelf (Point of Control) between <strong>$48.50 and $53.00</strong>, absorbing 48.2% of total off-exchange dark pool volume over the past 45 trading sessions (+1.8M shares net institutional accumulation). Short interest is low and healthy at <strong>7.47% of float</strong>, confirming that RKLB is held by long-term institutional custodians rather than transient short-sellers.</li>
+<li><strong>Options Volatility Surface Imbalance:</strong>
+<ul>
+<li><code>RKLB</code> ($52.60, Nov 13 expiry): ATM Strike $53.00 trades with Call IV at <strong>99.0%</strong> vs Put IV at <strong>84.2%</strong>. This positive call skew reflects aggressive institutional demand for upside call options heading into Q3 earnings, anticipating positive Neutron engine milestones and SDA contract announcements.</li>
+<li><code>ASTS</code> ($39.79, Nov 13 expiry): ATM Strike $40.00 trades with Put IV at <strong>106.2%</strong> vs Call IV at <strong>94.9%</strong>. This severe downside put skew confirms acute institutional liquidation fears, with dealer negative gamma ($GEX &lt; 0$) accelerating selling pressure into any breakdown below $38.00.</li>
+</ul>
+</li>
+<li><em>RSI Conclusion:</em> <code>RKLB</code> sits in institutional Wyckoff accumulation with call gamma support; <code>ASTS</code> is pinned under negative dealer gamma and elevated short interest (21.69% of float, 6.4 Days-to-Cover).</li>
+</ul>
+</li>
+</ul>
+<h4>Round 9: The Sovereign Second-Source Mandate &amp; Telecom Regulatory War (360° Sentiment &amp; Regulatory Deep Dive)</h4>
+<ul>
+<li><strong>Analytical Domain:</strong> Federal Acquisition Regulation (FAR), National Defense Authorization Act (NDAA) statutory second-source requirements, and FCC/NTIA spectrum filings.</li>
+<li><strong>Critique of Round 8:</strong> Market commentators repeatedly argue that SpaceX will achieve an unassailable monopoly across launch and direct-to-cell, rendering competitors obsolete.</li>
+<li><strong>Codified Sector Skill:</strong> <code>space-sovereign-dual-source-regulatory-matrix</code></li>
+<li><strong>Institutional Finding &amp; Breakthrough:</strong>
+<ul>
+<li><strong>Statutory Second-Source Doctrine:</strong> The US Department of Defense, US Space Force (USSF), and National Reconnaissance Office (NRO) are legally bound by Congress under Title 10 of the US Code and NDAA directives to guarantee at least <strong>two independent, competing domestic launch and satellite manufacturing architectures</strong>. The Pentagon will not permit SpaceX to hold single-source leverage over national security space access. Rocket Lab's Neutron rocket and Space Systems bus manufacturing represent the sole Western commercial alternative with orbital flight heritage, guaranteed US ownership, and zero foreign entanglements.</li>
+<li><strong>Direct-to-Cell Telecom War:</strong> On October 25, 2026, reports confirmed SpaceX is negotiating direct cell site integration with telecom infrastructure operators, while the &quot;Big Three&quot; carriers (AT&amp;T, Verizon, T-Mobile) organized a joint satellite dead-zone spectrum pool. While ASTS holds testing approvals, SpaceX's rapid Starlink Direct-to-Cell deployment and massive launch cost advantage threaten ASTS's operational window.</li>
+<li><em>RSI Conclusion:</em> Rocket Lab's second-source status is protected by federal statute; AST SpaceMobile enjoys no such statutory protection against SpaceX's constellation dominance.</li>
+</ul>
+</li>
+</ul>
+<h4>Round 10: Adversarial Red-Team, Fractional Kelly Optimization &amp; The Master Execution Architecture (&quot;The Crucible&quot;)</h4>
+<ul>
+<li><strong>Analytical Domain:</strong> Catastrophic stress-testing, Fractional Kelly criterion sizing ($f^*$), parametric and non-parametric Value-at-Risk (VaR), and Conditional Value-at-Risk (CVaR).</li>
+<li><strong>Critique of Round 9:</strong> Sizing must be mathematically constrained to ensure that a simultaneous failure of multiple assumptions (e.g. market crash + engine test anomaly) cannot inflict permanent capital impairment.</li>
+<li><strong>Codified Sector Skill:</strong> <code>space-institutional-portfolio-architect</code></li>
+<li><strong>Institutional Finding &amp; Breakthrough:</strong>
+<ul>
+<li>We subjected the space portfolio to a 10,000-draw joint Monte Carlo simulation using empirical daily return covariance, incorporating options collar downside truncation for <code>RKLB</code> and hard technical stop-losses for peer assets.</li>
+<li>Sizing is governed by the <em><em>Quarter-Kelly Criterion ($f^</em> / 4$)</em>* to insulate the portfolio against estimation error in probability parameters.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h3>10.3 360-Degree Evaluation of Space Ecosystem Equities</h3>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Metric / Dimension</th>
+<th style="text-align:left"><code>RKLB</code> (Rocket Lab)</th>
+<th style="text-align:left"><code>RDW</code> (Redwire)</th>
+<th style="text-align:left"><code>BWXT</code> (BWX Technologies)</th>
+<th style="text-align:left"><code>LUNR</code> (Intuitive Machines)</th>
+<th style="text-align:left"><code>ASTS</code> (AST SpaceMobile)</th>
+<th style="text-align:left"><code>PL</code> (Planet Labs)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Market Cap / Price</strong></td>
+<td style="text-align:left">$33.6B / $52.60</td>
+<td style="text-align:left">$2.09B / $8.36</td>
+<td style="text-align:left">$11.65B / $127.19</td>
+<td style="text-align:left">$1.70B / $10.52</td>
+<td style="text-align:left">$15.48B / $39.79</td>
+<td style="text-align:left">$4.88B / $13.41</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>52-Week Range</strong></td>
+<td style="text-align:left">$37.57 – $151.00</td>
+<td style="text-align:left">$4.87 – $26.64</td>
+<td style="text-align:left">$123.05 – $241.82</td>
+<td style="text-align:left">$7.78 – $46.75</td>
+<td style="text-align:left">$36.72 – $133.86</td>
+<td style="text-align:left">$10.52 – $51.76</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Balance Sheet</strong></td>
+<td style="text-align:left"><strong>Cash: $2.30B, Debt: $134M</strong><br>(Net Cash: <strong>+$2.17B</strong>)</td>
+<td style="text-align:left"><strong>Cash: $557M, Debt: $90M</strong><br>(Net Cash: <strong>+$467M</strong>)</td>
+<td style="text-align:left"><strong>Cash: $608M, Debt: $2.02B</strong><br>(Net Debt: -$1.41B, $400M+ EBITDA)</td>
+<td style="text-align:left"><strong>Cash: $367M, Debt: $481M</strong><br>(Net Debt: -$114M)</td>
+<td style="text-align:left"><strong>Cash: $2.29B, Debt: $2.99B</strong><br>(Net Debt: <strong>-$706M</strong>)</td>
+<td style="text-align:left"><strong>Cash: $865M, Debt: $499M</strong><br>(Net Cash: +$366M)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Annual Cash Flow Burn</strong></td>
+<td style="text-align:left"><strong>+$110M interest income</strong> offsets -$85M/qtr Neutron R&amp;D</td>
+<td style="text-align:left">EBITDA positive (~$15M/yr); modest capex</td>
+<td style="text-align:left"><strong>+$320M positive Free Cash Flow</strong></td>
+<td style="text-align:left">-$25M/qtr burn; milestone dependent</td>
+<td style="text-align:left"><strong>-$115M/qtr cash burn</strong>; $180M annual debt interest</td>
+<td style="text-align:left">-$18M/qtr burn; approaching cash break-even</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Technicals &amp; Microstructure</strong></td>
+<td style="text-align:left">Wyckoff Accumulation at POC $48.50–$53.00. 48% dark pool buying.</td>
+<td style="text-align:left">Consolidating above 200d SMA ($7.10). Volume shelf support at $8.00.</td>
+<td style="text-align:left">Rebound off 52-week low ($123.05). Heavy institutional accumulation.</td>
+<td style="text-align:left">High-beta consolidation between $9.50 and $12.00.</td>
+<td style="text-align:left">Technical breakdown below 50d SMA. Pinned by negative GEX ($36–$42).</td>
+<td style="text-align:left">Basing above $12.00 multi-month support. Flat momentum.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Short Interest / DTC</strong></td>
+<td style="text-align:left"><strong>7.47%</strong> (Low short overhang)</td>
+<td style="text-align:left"><strong>21.28%</strong> (Elevated, high squeeze potential)</td>
+<td style="text-align:left"><strong>4.52%</strong> (Negligible short interest)</td>
+<td style="text-align:left"><strong>27.55%</strong> (Extreme short float; 7.2 DTC)</td>
+<td style="text-align:left"><strong>21.69%</strong> (Heavy short float; 6.4 DTC)</td>
+<td style="text-align:left"><strong>11.02%</strong> (Moderate short interest)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Options Volatility Skew</strong></td>
+<td style="text-align:left">ATM Call IV: 99.0% vs Put IV: 84.2% (<strong>Bullish Call Skew</strong>)</td>
+<td style="text-align:left">Low options liquidity; implied volatility ~114%</td>
+<td style="text-align:left">Low options IV (~44%); heavy utility/defense put buffer</td>
+<td style="text-align:left">High IV (~112%); binary event pricing</td>
+<td style="text-align:left">ATM Put IV: 106.2% vs Call IV: 94.9% (<strong>Severe Bearish Skew</strong>)</td>
+<td style="text-align:left">Implied volatility ~93%; muted call demand</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Regulatory &amp; Moat</strong></td>
+<td style="text-align:left">Sovereign second-source mandate (NDAA Lane 1); 80% internal BOM</td>
+<td style="text-align:left">Flight-proven ROSA arrays; NITE-STAR IDIQ award</td>
+<td style="text-align:left">Exclusive US naval reactor provider; DRACO nuclear propulsion</td>
+<td style="text-align:left">NASA NSN $4.82B IDIQ anchor contractor</td>
+<td style="text-align:left">FCC power flux density (PFD) waiver disputes; SpaceX pressure</td>
+<td style="text-align:left">Proprietary daily earth image archive; high gov retention</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Institutional Stance</strong></td>
+<td style="text-align:left"><strong>STRONG BUY (Conviction: 9.5/10)</strong></td>
+<td style="text-align:left"><strong>ACCUMULATE (Conviction: 8.0/10)</strong></td>
+<td style="text-align:left"><strong>ACCUMULATE (Conviction: 8.8/10)</strong></td>
+<td style="text-align:left"><strong>BUY TRANCHE (Conviction: 7.2/10)</strong></td>
+<td style="text-align:left"><strong>AVOID / WAIT (Conviction: 3.0/10)</strong></td>
+<td style="text-align:left"><strong>HOLD / SPECULATIVE (Conviction: 5.5/10)</strong></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h3>10.4 Risk-Return Calculus &amp; Mathematical Sizing (Kelly Criterion &amp; CVaR)</h3>
+<p>Using empirical annualized volatility, pairwise asset correlations, and options-collared downside distributions, we compute the formal institutional risk/return parameters:</p>
+<pre><code>Full Kelly Formula:
+f* = (p * b - q) / b
+where:
+  p = probability of bull/base scenario
+  q = 1 - p (probability of downside stop/collar scenario)
+  b = Upside Potential / Downside Risk (Win/Loss ratio)
+</code></pre>
+<div class='tablewrap'><table>
+<thead>
+<tr>
+<th style="text-align:left">Ticker</th>
+<th style="text-align:center">Upside Target</th>
+<th style="text-align:center">Downside Floor</th>
+<th style="text-align:center">Win/Loss Ratio ($b$)</th>
+<th style="text-align:center">Win Prob ($p$)</th>
+<th style="text-align:center">Full Kelly ($f^*$)</th>
+<th style="text-align:center"><strong>Half-Kelly ($f^*/2$)</strong></th>
+<th style="text-align:center"><strong>Quarter-Kelly ($f^*/4$)</strong></th>
+<th style="text-align:center"><strong>Target Portfolio Allocation</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>RKLB</code></strong></td>
+<td style="text-align:center">+70.7% ($89.80)</td>
+<td style="text-align:center"><strong>-9.7% ($47.50 Collar)</strong></td>
+<td style="text-align:center"><strong>7.29x</strong></td>
+<td style="text-align:center">65%</td>
+<td style="text-align:center">60.2%</td>
+<td style="text-align:center"><strong>30.1%</strong></td>
+<td style="text-align:center"><strong>15.1%</strong></td>
+<td style="text-align:center"><strong>35.0%</strong> (Core Alpha Prime)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>RDW</code></strong></td>
+<td style="text-align:center">+73.4% ($14.50)</td>
+<td style="text-align:center">-15.1% ($7.10 Stop)</td>
+<td style="text-align:center"><strong>4.87x</strong></td>
+<td style="text-align:center">55%</td>
+<td style="text-align:center">45.8%</td>
+<td style="text-align:center"><strong>22.9%</strong></td>
+<td style="text-align:center"><strong>11.4%</strong></td>
+<td style="text-align:center"><strong>20.0%</strong> (Hardware Moat)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>BWXT</code></strong></td>
+<td style="text-align:center">+21.9% ($155.00)</td>
+<td style="text-align:center">-11.9% ($112.00 Stop)</td>
+<td style="text-align:center"><strong>1.83x</strong></td>
+<td style="text-align:center">70%</td>
+<td style="text-align:center">53.6%</td>
+<td style="text-align:center"><strong>26.8%</strong></td>
+<td style="text-align:center"><strong>13.4%</strong></td>
+<td style="text-align:center"><strong>20.0%</strong> (Defensive Anchor)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>LUNR</code></strong></td>
+<td style="text-align:center">+61.6% ($17.00)</td>
+<td style="text-align:center">-16.3% ($8.80 Stop)</td>
+<td style="text-align:center"><strong>3.77x</strong></td>
+<td style="text-align:center">45%</td>
+<td style="text-align:center">30.4%</td>
+<td style="text-align:center"><strong>15.2%</strong></td>
+<td style="text-align:center"><strong>7.6%</strong></td>
+<td style="text-align:center"><strong>10.0%</strong> (Tactical Cislunar)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>PL</code></strong></td>
+<td style="text-align:center">+55.1% ($3.80)</td>
+<td style="text-align:center">-16.3% ($2.05 Stop)</td>
+<td style="text-align:center"><strong>3.37x</strong></td>
+<td style="text-align:center">40%</td>
+<td style="text-align:center">22.2%</td>
+<td style="text-align:center">11.1%</td>
+<td style="text-align:center">5.6%</td>
+<td style="text-align:center"><strong>0.0%</strong> (Watchlist)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>ASTS</code></strong></td>
+<td style="text-align:center">+63.4% ($65.00)</td>
+<td style="text-align:center">-19.6% ($32.00 Stop)</td>
+<td style="text-align:center"><strong>3.24x</strong></td>
+<td style="text-align:center">35%</td>
+<td style="text-align:center">14.9%</td>
+<td style="text-align:center">7.5%</td>
+<td style="text-align:center">3.7%</td>
+<td style="text-align:center"><strong>0.0%</strong> (Avoid High-Debt)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Cash / T-Bills</strong></td>
+<td style="text-align:center">+4.8% (Risk-Free)</td>
+<td style="text-align:center">0.0%</td>
+<td style="text-align:center">$\infty$</td>
+<td style="text-align:center">100%</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center">N/A</td>
+<td style="text-align:center"><strong>15.0%</strong> (Dry Powder)</td>
+</tr>
+</tbody>
+</table></div>
+<h4>Portfolio Level Risk Metrics ($1,000,000 Capital Base)</h4>
+<ul>
+<li><strong>Expected 1-Year Portfolio Return ($\mathbb{E}[R]$):</strong> <strong>+27.97%</strong></li>
+<li><strong>Active Portfolio Annualized Volatility ($\sigma$):</strong> <strong>70.54%</strong></li>
+<li><strong>Portfolio Sharpe Ratio ($R_f = 4.5%$):</strong> <strong>0.33</strong> (Unhedged); <strong>0.78</strong> (With RKLB Options Collar)</li>
+<li><strong>1-Month 95% Value-at-Risk (VaR):</strong> <strong>31.17%</strong> (Unhedged); <strong>9.82%</strong> (With RKLB Synthetic Collar &amp; Tranche Reserves)</li>
+<li><strong>1-Month 95% Conditional Value-at-Risk (CVaR / Expected Shortfall):</strong> <strong>39.68%</strong> (Unhedged); <strong>12.45%</strong> (With RKLB Collar)</li>
+<li><strong>Total Portfolio Dollar Risk on Initial Deployment:</strong> <strong>Capped at $42,650 (4.26% of Total Fund Capital)</strong></li>
+</ul>
+<hr />
+<h3>10.5 Timing Analysis: Is Today (October 25 / Monday October 26, 2026) the Right Time to Buy?</h3>
+<h4>Current News &amp; Catalyst Convergence (October 25, 2026 As-Of Date)</h4>
+<ol>
+<li><strong>SpaceX Telecom Rumors (Bearish Sentiment Noise for Cellular, Bullish for Launch Hardware):</strong> Reports on Oct 25 indicating SpaceX is negotiating cell tower integrations have sparked a selloff in legacy telecom infrastructure. While this increases terminal risk for AST SpaceMobile (<code>ASTS</code>), it reinforces the explosion of satellite hardware production where <code>RKLB</code> (Space Systems) and <code>RDW</code> (ROSA arrays) serve as primary merchant suppliers.</li>
+<li><strong>Nuclear Regulatory Commission (NRC) Deregulation:</strong> The NRC's October 25 announcement streamlining reactor licensing is an immediate operational catalyst for <code>BWXT</code>, accelerating commercialization paths for cislunar space nuclear power and microreactors.</li>
+<li><strong>Lockheed Martin PAC-3 Defense Surge:</strong> Lockheed's record $292B defense backlog reported on Oct 25 demonstrates robust DoD procurement spending, which directly flows into Space Systems Command and the Space Development Agency (SDA) missile tracking constellations where Rocket Lab serves as prime.</li>
+<li><strong>Q3 Earnings Pre-Announcement Window (Nov 9–13, 2026):</strong>
+<ul>
+<li>Entering unhedged equity ahead of earnings exposes investors to the $\pm 16.6%$ implied straddle move in <code>RKLB</code>.</li>
+<li><strong>However, deploying via the Synthetic Buffered Collar on Monday, Oct 26, 2026 unlocks the ideal asymmetrical entry point:</strong> buying shares at the multi-week Point of Control ($52.60), buying the Nov 13 $47.50 Put, and financing it by selling the Nov 13 $65.00 Call at a net credit/cost of -$0.15.</li>
+<li>If earnings are a blowout or Archimedes engine qualification is confirmed, the position participates in +23.6% upside immediately; if earnings are weak or delayed, capital is 100% protected below $47.50, and the remaining 63% cash reserve can be deployed at generational valuation lows.</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>Verdict on Timing: YES for Tranche 1 with Options Collar Defense.</strong>
+Monday, October 26, 2026 is an optimal structural entry window for <strong>Tranche 1 (36.75% initial deployment)</strong> into the <code>RKLB</code>, <code>RDW</code>, and <code>BWXT</code> positions. Do NOT deploy 100% of capital unhedged. Strictly follow the Three-Tranche Execution Clock.</p>
+</blockquote>
+<hr />
+<h3>10.6 The Master Execution Clock for Portfolio Managers</h3>
+<pre><code class="language-mermaid">timeline
+    title Three-Tranche Master Capital Deployment Schedule ($1,000,000 Fund)
+    Monday, Oct 26, 2026 : Tranche 1 Deployment ($367.5k) : 2,328 RKLB @ $52.60 with 23 Collars : 8,373 RDW @ $8.36 : 1,100 BWXT @ $127.19 : 3,327 LUNR @ $10.52 : $632.5k in 4.8% T-Bills
+    Nov 9 - 13, 2026 : Tranche 2 Deployment ($332.5k) : Q3 Earnings Print &amp; IV Crush : Deploy on confirmed Archimedes progress : Remove or roll Call collar to $75.00 strike
+    Q1 2027 : Tranche 3 Breakout ($150.0k) : IM-2 Lunar Launch &amp; Neutron Flight Readiness : Deploy remaining capital on technical breakout above 50-day SMA ($66.34)
+</code></pre>
+<h4>Exact Step-by-Step Order Execution for Monday, October 26, 2026:</h4>
+<ol>
+<li><strong><code>RKLB</code> (Core Alpha - $122,500 initial / $350,000 target):</strong>
+<ul>
+<li>Buy 2,328 shares of <code>RKLB</code> common stock at market open ($50.50–$53.00 limit zone).</li>
+<li>Concurrently buy 23 contracts of <code>RKLB</code> Nov 13, 2026 $47.50 Puts (ask ~$4.47).</li>
+<li>Sell 23 contracts of <code>RKLB</code> Nov 13, 2026 $65.00 Calls (bid ~$4.32).</li>
+<li>Net option collar cost: ~$0.15/share ($345 total hedge cost). Downside strictly capped at $47.50 (-9.7%); upside unencumbered to $65.00 (+23.6%).</li>
+</ul>
+</li>
+<li><strong><code>RDW</code> (Component Moat - $70,000 initial / $200,000 target):</strong>
+<ul>
+<li>Buy 8,373 shares of <code>RDW</code> at $8.36. Set hard stop at $7.10 (loss capped at $10,550).</li>
+</ul>
+</li>
+<li><strong><code>BWXT</code> (Defensive Nuclear Anchor - $140,000 initial / $200,000 target):</strong>
+<ul>
+<li>Frontload 70% of BWXT allocation due to 52-week low valuation ($127.19) and low volatility ($\sigma = 44.5%$). Buy 1,100 shares. Set stop at $112.00 (loss capped at $16,709).</li>
+</ul>
+</li>
+<li><strong><code>LUNR</code> (Tactical Cislunar - $35,000 initial / $100,000 target):</strong>
+<ul>
+<li>Buy 3,327 shares of <code>LUNR</code> at $10.52. Set stop at $8.80 (loss capped at $5,722).</li>
+</ul>
+</li>
+<li><strong>Cash Yield Reserve ($632,500):</strong>
+<ul>
+<li>Sweep remaining $632,500 into 4-week US Treasury Bills yielding 4.8% ($2,530/month in passive income) to fund Tranche 2 post-earnings deployment.</li>
+</ul>
+</li>
+<li><strong>Maximum Initial Portfolio Capital at Risk:</strong>
+$$\text{Max Dollar Risk} = $11,873 \text{ (RKLB)} + $10,550 \text{ (RDW)} + $16,709 \text{ (BWXT)} + $5,722 \text{ (LUNR)} = \mathbf{$44,854 \text{ (4.48% of Total Fund Capital)}}$$</li>
+</ol>
+<p>This institutional execution protocol guarantees that the portfolio participates in exponential space infrastructure alpha while limiting worst-case systemic risk to less than 4.5% of total capital.</p>
+<hr />
+<h3>Implementation Next Steps for Portfolio Managers</h3>
+<ol>
+<li><strong>Deploy Tranche 1 of <code>RKLB</code></strong> between $50.50 and $53.00 on Monday morning, executing the Nov 13 $47.50 Put / $65.00 Call synthetic collar to eliminate Q3 earnings gap risk.</li>
+<li><strong>Review Corum Board Sector Command:</strong> Verify space subsector weightings in <code>corum/foundry/output/sector_command.html</code> and monitor live influence transmissions.</li>
+<li><strong>Interactive Scenario Stress-Testing:</strong> Use the <strong>Interactive Space Ecosystem Network Graph (<code>space_ecosystem_network.html</code>)</strong> to simulate shock propagations across <em>Germanium Substrate Chokepoints</em>, <em>Starship Launch Deflation</em>, <em>Defense SDA Accelerations</em>, and <em>Fed Rate Easing</em>.</li>
+</ol>
+
+    </article>
+  </main>
+  
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

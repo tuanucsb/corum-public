@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neurodegenerative Diseases & Neurotech Macro Ecosystem Network</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --surface: #111827;
+    --card: #1f2937;
+    --card-hover: #374151;
+    --border: #374151;
+    --border-light: #4b5563;
+    --text: #f9fafb;
+    --text-muted: #9ca3af;
+    --text-dim: #6b7280;
+    --pos: #10b981;
+    --pos-bg: rgba(16, 185, 129, 0.15);
+    --neg: #ef4444;
+    --neg-bg: rgba(239, 68, 68, 0.15);
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --cyan: #06b6d4;
+    --amber: #f59e0b;
+    --rose: #f43f5e;
+    --emerald: #10b981;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+  }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background: var(--accent);
+    color: white;
+    text-transform: uppercase;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .header-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover {
+    background: var(--card-hover);
+    border-color: var(--border-light);
+  }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent-light);
+    color: white;
+  }
+  .btn-primary:hover {
+    background: var(--accent-light);
+  }
+
+  /* Main Layout */
+  .container {
+    display: flex;
+    height: calc(100vh - 73px);
+    position: relative;
+  }
+  #sidebar {
+    width: 380px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 20;
+    overflow-y: auto;
+  }
+  .sidebar-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  /* Filter Pills */
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .filter-pill {
+    font-size: 11px;
+    padding: 5px 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-pill:hover, .filter-pill.active {
+    background: var(--card-hover);
+    color: var(--text);
+    border-color: var(--accent-light);
+  }
+  .filter-pill.active {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--accent);
+    color: var(--accent-light);
+    font-weight: 600;
+  }
+
+  /* Macro Shock Barometers */
+  .macro-shock-box {
+    margin-bottom: 12px;
+  }
+  .macro-shock-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .macro-shock-slider {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  /* Graph Canvas Area */
+  #graph-container {
+    flex: 1;
+    position: relative;
+    background: radial-gradient(circle at center, #171f30 0%, #0b0f19 100%);
+    overflow: hidden;
+  }
+  svg#network-svg {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+  }
+  svg#network-svg:active {
+    cursor: grabbing;
+  }
+
+  /* Node and Link styling */
+  .link {
+    stroke-opacity: 0.6;
+    transition: stroke-opacity 0.2s, stroke-width 0.2s;
+  }
+  .link.pos { stroke: var(--emerald); }
+  .link.neg { stroke: var(--neg); stroke-dasharray: 4, 3; }
+  .link.highlighted { stroke-opacity: 1; stroke-width: 3px; }
+  .link.dimmed { stroke-opacity: 0.08; }
+
+  .node {
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .node circle {
+    stroke-width: 2px;
+    transition: all 0.2s;
+  }
+  .node:hover circle {
+    filter: drop-shadow(0 0 10px var(--accent-light));
+  }
+  .node.dimmed {
+    opacity: 0.15;
+  }
+  .node-text {
+    font-size: 11px;
+    font-weight: 600;
+    fill: var(--text);
+    pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  }
+  .node-subtext {
+    font-size: 9px;
+    fill: var(--text-dim);
+    pointer-events: none;
+  }
+
+  /* Legend */
+  .legend-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  /* Detail Card Drawer */
+  #detail-card {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 380px;
+    background: rgba(17, 24, 39, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    display: none;
+    z-index: 30;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+  .close-detail {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    cursor: pointer;
+  }
+  .detail-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .detail-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .detail-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .detail-metric {
+    background: var(--card);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .metric-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .metric-val {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 2px;
+  }
+  .detail-block {
+    margin-top: 14px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+  .detail-block strong {
+    color: var(--text);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+  .tag-pill {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin-right: 4px;
+    margin-top: 4px;
+    color: var(--text-muted);
+  }
+
+  /* Callout banners */
+  .cross-domain-callout {
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    margin-top: 14px;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .cross-domain-callout b {
+    color: var(--accent-light);
+  }
+
+  /* 5-Round RSI Modal Styles */
+  .modal-box {
+    background: #111827; border: 1px solid #374151; border-radius: 12px;
+    max-width: 1280px; width: 100%; max-height: 90vh; display: flex;
+    flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+    overflow: hidden;
+  }
+  .modal-header {
+    padding: 16px 22px; background: #1f2937; border-bottom: 1px solid #374151;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+  }
+  .modal-header h2 { font-size: 17px; font-weight: 700; color: #f9fafb; display: flex; align-items: center; gap: 10px; }
+  .modal-tabs { display: flex; gap: 8px; padding: 10px 22px; background: #0f172a; border-bottom: 1px solid #374151; flex-wrap: wrap; }
+  .modal-tab {
+    background: #1f2937; color: #cbd5e1; border: 1px solid #374151;
+    padding: 6px 13px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .modal-tab.active { background: #10b981; border-color: #059669; color: #06281e; font-weight: 700; }
+  .modal-body { padding: 20px 22px; overflow-y: auto; font-size: 12.5px; line-height: 1.55; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  .rsi-table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 11.5px; }
+  .rsi-table th, .rsi-table td {
+    border: 1px solid #374151; padding: 8px 10px; text-align: left; vertical-align: top;
+  }
+  .rsi-table th { background: #1f2937; color: #a7f3d0; font-weight: 700; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.04em; }
+  .rsi-table tr:nth-child(even) { background: rgba(31, 41, 55, 0.45); }
+  .rsi-table tr:hover { background: rgba(99, 102, 241, 0.14); }
+  .tier-badge {
+    display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+  }
+  .tier-1 { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.45); }
+  .tier-2 { background: rgba(99, 102, 241, 0.2); color: #c7d2fe; border: 1px solid rgba(99, 102, 241, 0.45); }
+  .tier-3 { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.45); }
+  .hat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-top: 10px; }
+  .hat-card { background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 12px 14px; }
+  .hat-card h4 { font-size: 13px; color: #6ee7b7; margin-bottom: 6px; }
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .kpi-box { background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 10px 12px; }
+  .kpi-box .lbl { font-size: 10px; text-transform: uppercase; color: #9ca3af; letter-spacing: 0.04em; }
+  .kpi-box .val { font-size: 18px; font-weight: 800; color: #10b981; font-family: monospace; margin-top: 2px; }
+  .kpi-box .sub { font-size: 10.5px; color: #cbd5e1; }
+</style>
+<!-- Load D3.js -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>
+      Neurodegenerative Macro Network Graph
+      <span class="badge">Topic X + 5-Round RSI</span>
+    </h1>
+    <p>Alzheimer's, Parkinson's, ALS, Blood-Brain Barrier Transcytosis &amp; Cross-Domain Convergence (SpaceX / DoD / VA)</p>
+  </div>
+  <div class="header-right">
+    <button class="btn" onclick="toggleMatrixModal(true)" style="background:linear-gradient(135deg, #059669 0%, #10b981 100%); border-color:#059669; color:#fff; font-weight:700;">
+      🎯 Hardened Matrix (5-Round RSI)
+    </button>
+    <a href="parkinsons_disease_network.html" target="_blank" class="btn" style="border-color:#059669; color:#a7f3d0;">
+      🧬 Parkinson's &amp; Longevity Graph ↗
+    </a>
+    
+      📊 Weekly 5-Round RSI Report ↗
+    
+    <button class="btn" id="btn-reset-view">Reset Zoom</button>
+    <a href="neurodegenerative_diseases_ecosystem_deep_research_report.html" target="_blank" class="btn btn-primary">
+      Read Institutional Report ↗
+    </a>
+  </div>
+</header>
+
+<div class="container">
+  <!-- Sidebar Controls & Insights -->
+  <div id="sidebar">
+    <div class="sidebar-section" style="background: rgba(16, 185, 129, 0.06); border-bottom: 1px solid rgba(16, 185, 129, 0.35);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <div class="section-title" style="color:#6ee7b7; margin-bottom:0;">🎯 Hardened 5-Round RSI Matrix</div>
+        <span style="font-size:10px; background:#065f46; color:#a7f3d0; padding:2px 6px; border-radius:4px; font-weight:700;">SORTINO 6.09</span>
+      </div>
+      <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px; line-height:1.4;">
+        Week of Oct 26–30, 2026 (`Skill v1.0 &rarr; v5.0`): <strong>+7.52% 4W E[Ret]</strong>, <strong>89.6% Win Prob</strong>, <strong>-2.46% VaR95</strong>. Click any SMID pick to highlight its node:
+      </p>
+      <div style="display:flex; flex-direction:column; gap:5px;">
+        <div onclick="focusGraphNode('SUPN')" style="background:var(--card); border:1px solid #10b981; border-radius:6px; padding:6px 8px; cursor:pointer; font-size:11px;">
+          <div style="display:flex; justify-content:space-between;"><strong style="color:#34d399;">#1 SUPN (24% Wt | 91.8)</strong><span style="color:#34d399;">$40.70 (+7.4% 1W)</span></div>
+          <div style="font-size:10px; color:#9ca3af;">Buy $39.60–$40.90 | Stop $36.33 | 1–4W $45.99 | 12M $60.50</div>
+        </div>
+        <div onclick="focusGraphNode('ACAD')" style="background:var(--card); border:1px solid #10b981; border-radius:6px; padding:6px 8px; cursor:pointer; font-size:11px;">
+          <div style="display:flex; justify-content:space-between;"><strong style="color:#34d399;">#2 ACAD (18% Wt | 91.3)</strong><span style="color:#34d399;">$19.73 (+3.2% 1W)</span></div>
+          <div style="font-size:10px; color:#9ca3af;">Buy $19.20–$19.85 | Stop $17.65 | 1–4W $22.29 | 12M $30.53</div>
+        </div>
+        <div onclick="focusGraphNode('PRTA')" style="background:var(--card); border:1px solid #818cf8; border-radius:6px; padding:6px 8px; cursor:pointer; font-size:11px;">
+          <div style="display:flex; justify-content:space-between;"><strong style="color:#818cf8;">#3 PRTA (13% Wt | 88.7)</strong><span style="color:#c7d2fe;">$8.20 (66.8% Cash/Cap)</span></div>
+          <div style="font-size:10px; color:#9ca3af;">Buy $7.95–$8.25 | Stop $7.49 | 1–4W $9.27 | 12M $21.40 (+161%)</div>
+        </div>
+        <div onclick="focusGraphNode('DNLI')" style="background:var(--card); border:1px solid #22d3ee; border-radius:6px; padding:6px 8px; cursor:pointer; font-size:11px;">
+          <div style="display:flex; justify-content:space-between;"><strong style="color:#22d3ee;">#4 DNLI (18% Wt | 86.1)</strong><span style="color:#67e8f9;">$18.41 (+4.5% 1W)</span></div>
+          <div style="font-size:10px; color:#9ca3af;">Buy $17.90–$18.55 | Stop $16.65 | 1–4W $21.11 | 12M $35.75</div>
+        </div>
+        <div onclick="focusGraphNode('PRAX')" style="background:var(--card); border:1px solid #f59e0b; border-radius:6px; padding:6px 8px; cursor:pointer; font-size:11px;">
+          <div style="display:flex; justify-content:space-between;"><strong style="color:#fbbf24;">#5 PRAX (8%) &bull; #6 QURE (5%) &bull; #7 COYA (10%) &bull; #10 ACIU (4%)</strong></div>
+          <div style="font-size:10px; color:#9ca3af;">Vetoes: ANVS (2.6m cash), GANX (8.4m cash), VYGR (falling knife), RHHBY/BIIB (overbought)</div>
+        </div>
+      </div>
+      <button onclick="toggleMatrixModal(true)" class="btn btn-primary" style="width:100%; margin-top:8px; justify-content:center; background:linear-gradient(135deg, #065f46 0%, #047857 100%); border-color:#10b981; font-weight:700;">
+        🔍 Open Full 5-Round RSI Matrix &amp; 5-Hat Reasonings
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="section-title">Ecosystem Sub-Domains</div>
+      <div class="filter-group" id="filter-container">
+        <button class="filter-pill active" data-filter="ALL">All Nodes (46)</button>
+        <button class="filter-pill" data-filter="MACRO">Macro Drivers (4)</button>
+        <button class="filter-pill" data-filter="ALZHEIMERS">Alzheimer's (9)</button>
+        <button class="filter-pill" data-filter="PARKINSONS">Parkinson's (6)</button>
+        <button class="filter-pill" data-filter="STEM_CELLS">Stem Cells & MSCs (5)</button>
+        <button class="filter-pill" data-filter="CELL_ENG">Cell Eng & Tregs (3)</button>
+        <button class="filter-pill" data-filter="IMMUNOTHERAPY">Immuno & Vaccines (3)</button>
+        <button class="filter-pill" data-filter="DIAGNOSTICS">Biomarkers & Tests (5)</button>
+        <button class="filter-pill" data-filter="DELIVERY">BBB Delivery Tech (4)</button>
+        <button class="filter-pill" data-filter="BCI">BCI & Neurotech (5)</button>
+        <button class="filter-pill" data-filter="SPACEX">SpaceX & Microgravity (4)</button>
+        <button class="filter-pill" data-filter="GOV">US Gov / Defense (4)</button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="section-title">Bridgewater Macro Shocks</div>
+      <div class="macro-shock-box">
+        <div class="macro-shock-header">
+          <span>Healthcare Policy (CMS / CED)</span>
+          <span id="policy-shock-val">+0.00</span>
+        </div>
+        <input type="range" class="macro-shock-slider" id="slider-policy" min="-1" max="1" step="0.1" value="0">
+      </div>
+
+      <div class="macro-shock-box">
+        <div class="macro-shock-header">
+          <span>Federal Reserve Rate Shock</span>
+          <span id="rate-shock-val">+0.00</span>
+        </div>
+        <input type="range" class="macro-shock-slider" id="slider-rate" min="-1" max="1" step="0.1" value="0">
+      </div>
+
+      <div class="macro-shock-box">
+        <div class="macro-shock-header">
+          <span>Defense / ARPA-H Spending</span>
+          <span id="defense-shock-val">+0.00</span>
+        </div>
+        <input type="range" class="macro-shock-slider" id="slider-defense" min="-1" max="1" step="0.1" value="0">
+      </div>
+
+      <div class="macro-shock-box">
+        <div class="macro-shock-header">
+          <span>AI Protein Design Demand</span>
+          <span id="ai-shock-val">+0.00</span>
+        </div>
+        <input type="range" class="macro-shock-slider" id="slider-ai" min="-1" max="1" step="0.1" value="0">
+      </div>
+
+      <button class="btn" style="width: 100%; margin-top: 6px;" id="btn-reset-shocks">Reset Macro Shocks</button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="section-title">Institutional Macro Theses</div>
+      <div class="cross-domain-callout">
+        <b>1. The BBB Transcytosis Chokepoint:</b> 99.9% of large molecules fail to cross the intact blood-brain barrier. TfR1 and CD98 "trojan horse" platforms (Denali, AbbVie/Aliada) unlock 10x-30x brain exposure, driving M&A valuations.
+      </div>
+      <div class="cross-domain-callout" style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3);">
+        <b style="color: #fbbf24;">2. SpaceX & ISS Protein Crystallization:</b> Microgravity on SpaceX Dragon flights enabled atomic-resolution crystallization of the 286 kDa LRRK2 kinase with the Michael J. Fox Foundation, guiding current Parkinson's drug pipelines.
+      </div>
+      <div class="cross-domain-callout" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
+        <b style="color: #34d399;">3. DoD & VA Sovereign Buying Power:</b> The VA recognizes ALS as a 100% presumptive service-connected disability (38 CFR § 3.318), guaranteeing lifelong drug reimbursement, while DoD CDMRP finances blast TBI/tauopathy research.
+      </div>
+      <div class="cross-domain-callout" style="background: rgba(236, 72, 153, 0.1); border-color: rgba(236, 72, 153, 0.3);">
+        <b style="color: #f472b6;">4. Stem Cells & Treg Immunology:</b> Autologous iPSC dopamine neurons (Aspen ANPD001) replace dead basal ganglia circuits without immunosuppression, while Treg biologics (Coya COYA 302) halt motor neuron death in ALS.
+      </div>
+    </div>
+  </div>
+
+  <!-- Network Canvas -->
+  <div id="graph-container">
+    <svg id="network-svg"></svg>
+
+    <!-- Legend -->
+    <div class="legend-overlay">
+      <div style="font-weight: 700; color: var(--text); margin-bottom: 2px;">Node Clusters</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #e4e8ee;"></div>Macro Economic Drivers</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #3b82f6;"></div>Alzheimer's Therapeutics</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #8b5cf6;"></div>Parkinson's & Movement</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #ec4899;"></div>Stem Cells & MSCs</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #a855f7;"></div>Cell Engineering & Tregs</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #f97316;"></div>Neuro-Immuno & Vaccines</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #10b981;"></div>Biomarkers & Diagnostics</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #f59e0b;"></div>BBB Delivery & AAV</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #06b6d4;"></div>BCI & Bioelectronic Tech</div>
+      <div class="legend-item"><div class="legend-dot" style="background: #f43f5e;"></div>SpaceX & Defense Links</div>
+    </div>
+
+    <!-- Detail Card Drawer -->
+    <div id="detail-card">
+      <button class="close-detail" id="btn-close-detail">&times;</button>
+      <div class="detail-badge" id="card-cluster-badge" style="background: var(--blue);">Sub-Sector</div>
+      <div class="detail-title" id="card-title">Denali Therapeutics</div>
+      <div class="detail-subtitle" id="card-subtitle">NASDAQ: DNLI | Market Cap: $3.2B</div>
+
+      <div class="detail-grid">
+        <div class="detail-metric">
+          <div class="metric-label">Stage</div>
+          <div class="metric-val" id="card-stage">Phase 2/3</div>
+        </div>
+        <div class="detail-metric">
+          <div class="metric-label">Cash Runway</div>
+          <div class="metric-val" id="card-runway">>2.5 Years</div>
+        </div>
+        <div class="detail-metric">
+          <div class="metric-label">Macro Beta</div>
+          <div class="metric-val" id="card-beta">High Growth</div>
+        </div>
+        <div class="detail-metric">
+          <div class="metric-label">Impact Shock</div>
+          <div class="metric-val" id="card-shock">0.00%</div>
+        </div>
+      </div>
+
+      <div class="detail-block">
+        <strong>Mechanism of Action / Core Platform</strong>
+        <p id="card-moa">Transport Vehicle (TV) engineered Fc binding low-affinity human TfR1 to cross the intact blood-brain barrier via receptor-mediated transcytosis.</p>
+      </div>
+
+      <div class="detail-block">
+        <strong>Key Catalysts & Milestones (2026-2027)</strong>
+        <p id="card-catalysts">Phase 2/3 DNL310 readout in MPS II; Phase 2b LIGHTHOUSE LRRK2 data with Biogen.</p>
+      </div>
+
+      <div class="detail-block">
+        <strong>Downside Risks & Vulnerabilities</strong>
+        <p id="card-risks">Safety findings in non-human primates for high-dose TfR1 binding; clinical trial partner dependency.</p>
+      </div>
+
+      <div class="detail-block">
+        <strong>Cross-Domain Linkages</strong>
+        <p id="card-cross-domain">Leverages LRRK2 microgravity crystal structures from SpaceX ISS National Lab flights.</p>
+      </div>
+
+      <div class="detail-block" style="margin-top: 16px;">
+        <strong>Related Tickers & Entities</strong>
+        <div id="card-tags">
+          <span class="tag-pill">DNLI</span>
+          <span class="tag-pill">TfR1</span>
+          <span class="tag-pill">BIIB</span>
+          <span class="tag-pill">SpaceX LRRK2</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- DATA DEFINITION: Nodes and Directed Edges ---
+const graphData = {
+  nodes: [
+    // Macro Drivers
+    { id: "HEALTHCARE_POLICY", label: "Healthcare Policy", group: "MACRO", type: "macro", color: "#e4e8ee", r: 24, desc: "CMS Coverage with Evidence Development (CED), Medicare Part B pricing, PET scan coverage." },
+    { id: "FED_RATE", label: "Federal Reserve Rate", group: "MACRO", type: "macro", color: "#e4e8ee", r: 24, desc: "Cost of equity capital and discount rates for long-duration biotech DCF models." },
+    { id: "DEFENSE_SPENDING", label: "Defense & VA Budgets", group: "MACRO", type: "macro", color: "#e4e8ee", r: 22, desc: "DoD CDMRP PRARP/PRP trauma research and VA statutory 100% ALS presumptive coverage." },
+    { id: "AI_DEMAND", label: "AI Protein Design", group: "MACRO", type: "macro", color: "#e4e8ee", r: 22, desc: "Computational structural biology (AlphaFold, ESM) optimizing low-affinity BBB binders." },
+
+    // Core Sub-Sectors
+    { id: "BIOTECH_CELL_THERAPY", label: "Cell Therapy & Stem Cells", group: "STEM_CELLS", type: "subsector", color: "#ec4899", r: 27, desc: "Pluripotent stem cell dopaminergic replacement (iPSC/ESC) and medicinal signaling cells (MSCs)." },
+    { id: "NEURO_ALZHEIMERS_THERAPEUTICS", label: "Alzheimer's Therapeutics", group: "ALZHEIMERS", type: "subsector", color: "#3b82f6", r: 28, desc: "Disease-modifying anti-amyloid, anti-tau, microglial TREM2 agonism, and neuroinflammation biopharma." },
+    { id: "NEURO_PARKINSONS_MOVEMENT", label: "Parkinson's & Movement", group: "PARKINSONS", type: "subsector", color: "#8b5cf6", r: 26, desc: "Alpha-synuclein targeted therapeutics, GCase stabilizers, and LRRK2 kinase inhibitors." },
+    { id: "NEURO_BIOMARKERS_DIAGNOSTICS", label: "Biomarkers & Diagnostics", group: "DIAGNOSTICS", type: "subsector", color: "#10b981", r: 26, desc: "High-sensitivity plasma p-tau217/NfL digital immunoassays (Simoa) and amyloid/tau PET." },
+    { id: "NEURO_BBB_DELIVERY_TECH", label: "BBB Delivery Tech", group: "DELIVERY", type: "subsector", color: "#f59e0b", r: 26, desc: "Receptor-mediated transcytosis (TfR1, CD98) and neurotropic capsids bypassing the BBB." },
+    { id: "NEURO_BCI_NEUROTECH", label: "BCI & Neurotechnology", group: "BCI", type: "subsector", color: "#06b6d4", r: 24, desc: "Invasive/endovascular neural prostheses, closed-loop DBS, and gamma sensory devices." },
+
+    // Companies & Strategic Entities (Hardened 5-Round RSI Scores & Trade Plans)
+    { id: "DNLI", label: "Denali (DNLI)", group: "DELIVERY", type: "company", color: "#f59e0b", r: 21, cap: "$2.91B ($18.41)", stage: "Phase 2b / BLA (#4 Pick | 18% Wt)", runway: "22.0 mos ($710.5M Cash)", moa: "Engineered Fc TfR1 Transport Vehicle (TV) crossing the BBB via RMT + BIIB122 LRRK2 inhibitor (#1 OpenTargets PD gene 0.8790).", catalysts: "Score 86.1/100 | Wilder-14=39.9 (+9.6 5d), Connors=27.5 (Type A Higher-Low) | Buy $17.90-$18.55 | Stop $16.65 | 1-4W $21.11 | 12-24M $35.75.", risks: "High dose TfR1 reticulocyte binding; cash burn ahead of DNL310 launch.", cross: "Leverages microgravity ISS LRRK2 crystallography; 10.2% Short Interest." },
+    { id: "VOYG", label: "Voyager (VOYG)", group: "DELIVERY", type: "company", color: "#f59e0b", r: 16, cap: "$420M", stage: "Phase 1", runway: ">2.0 yrs", moa: "TRACER directed-evolution AAV capsids with 50x-100x CNS tropism.", catalysts: "Phase 1 VY-TAU01 tau mAb data; Neurocrine GBA1 gene therapy partner opt-ins.", risks: "AAV immune response; partner termination.", cross: "Computational capsid optimization." },
+    { id: "QTRX", label: "Quanterix (QTRX)", group: "DIAGNOSTICS", type: "company", color: "#10b981", r: 18, cap: "$133M ($2.86)", stage: "Commercial (Bench #8 | Score 79.8)", runway: "54.8 mos ($125M Cash | 85.7% Net Cash/Cap)", moa: "Single Molecule Array (Simoa) sub-femtomolar digital immunoassay (p-tau217, NfL, α-synuclein).", catalysts: "Score 79.8/100 | Cutler-14=15.8, Wilder-14=36.0 | Buy $2.75-$2.88 | Stop $2.60 | 1-4W $3.36 | 12-24M $6.33.", risks: "Competition from Roche/Abbott centralized analyzers.", cross: "Trades at 85.7% net cash to market cap; used by 100% of major pharma AD/PD trials." },
+    { id: "LLY", label: "Eli Lilly (LLY)", group: "ALZHEIMERS", type: "company", color: "#3b82f6", r: 22, cap: "$850B+", stage: "Commercial", runway: "Self-funding", moa: "Kisunla (donanemab): anti-pyroglutamate Aβ mAb with finite dosing.", catalysts: "Medicare real-world uptake; SubQ autoinjector trials.", risks: "ARIA-E rate (24%) requiring heavy 3T MRI monitoring.", cross: "CMS reimbursement registry compliance." },
+    { id: "BIIB", label: "Biogen (BIIB)", group: "ALZHEIMERS", type: "company", color: "#3b82f6", r: 20, cap: "$28B", stage: "Commercial", runway: "Self-funding", moa: "Leqembi (lecanemab, Eisai partner): protofibril Aβ mAb; Qalsody (SOD1 ALS).", catalysts: "Subcutaneous Leqembi approval; LRRK2 Phase 2b LUMA readout with DNLI.", risks: "Slow infusion center onboarding; ongoing CED mandates.", cross: "VA national formulary procurement." },
+    { id: "ABOS", label: "Acumen (ABOS)", group: "ALZHEIMERS", type: "company", color: "#3b82f6", r: 15, cap: "$210M", stage: "Phase 2", runway: ">2 yrs", moa: "Sabirnetug (ACU193): selective toxic soluble Aβ oligomer mAb.", catalysts: "Phase 2 ALTITUDE-AD subcutaneous and IV topline.", risks: "Phase 2 cognitive endpoint miss; financing conditions.", cross: "Designed for low ARIA-E rates." },
+    { id: "CGTX", label: "Cognition (CGTX)", group: "ALZHEIMERS", type: "company", color: "#3b82f6", r: 14, cap: "$110M", stage: "Phase 2", runway: "1.5 yrs", moa: "CT1812: Sigma-2 receptor antagonist displacing Aβ/α-syn oligomers.", catalysts: "Phase 2 SHIMMER topline in Dementia with Lewy Bodies.", risks: "Small trial size variance; capital constraints.", cross: "Awarded >$100M in non-dilutive NIH/NIA grants." },
+    { id: "PMN", label: "ProMIS (PMN)", group: "ALZHEIMERS", type: "company", color: "#3b82f6", r: 12, cap: "$45M", stage: "Phase 1b", runway: "1.0 yr", moa: "PMN310: conformation-specific soluble Aβ oligomer mAb with 0% ARIA-E.", catalysts: "Phase 1b multiple-ascending dose biomarker results.", risks: "Micro-cap dilution; licensing partner necessity.", cross: "Epitope-guided biophysics." },
+    { id: "INMB", label: "INmune Bio (INMB)", group: "ALZHEIMERS", type: "company", color: "#3b82f6", r: 13, cap: "$140M", stage: "Phase 2", runway: "1.2 yrs", moa: "XPro1595: dominant-negative soluble TNF neutralizer halting microglial neuroinflammation.", catalysts: "Phase 2 MINt-AD 6-month cognitive & MRI free-water readout.", risks: "Manufacturing scale-up; regulatory trial design.", cross: "Targeting innate immune neuroinflammation." },
+    { id: "GANX", label: "Gain Therapeutics (GANX)", group: "PARKINSONS", type: "company", color: "#8b5cf6", r: 12, cap: "$55M", stage: "Phase 1b", runway: "1.2 yrs", moa: "GT-02287: brain-penetrant allosteric GCase stabilizer purging α-synuclein.", catalysts: "Phase 1b Parkinson's patient biomarker proof-of-concept.", risks: "Early stage pipeline; financial runway.", cross: "Michael J. Fox Foundation grant recipient." },
+    { id: "PRTA", label: "Prothena (PRTA)", group: "PARKINSONS", type: "company", color: "#8b5cf6", r: 20, cap: "$441M ($8.20)", stage: "Phase 3 (#3 Pick | 13% Wt)", runway: "34.5 mos ($288M Cash | 66.8% Net Cash/Cap)", moa: "Prasinezumab (partnered with Roche): anti-alpha-synuclein antibody (SNCA 0.8706 score) in Phase 3 PARAISO.", catalysts: "Score 88.7/100 | Wilder-14=44.2, Connors=39.5 (Type B Cash-Floor Coil) | 18.8% Short Interest | Buy $7.95-$8.25 | Stop $7.49 | 1-4W $9.27 | 12-24M $21.40.", risks: "Phase 3 timeline duration; historic PRX012 ARIA overhang.", cross: "Roche funds global Phase 3 PARAISO; 66.8% of market cap backed by net cash." },
+    { id: "SUPN", label: "Supernus (SUPN)", group: "PARKINSONS", type: "company", color: "#8b5cf6", r: 22, cap: "$2.29B ($40.70)", stage: "Commercial (#1 Pick | 24% Wt)", runway: "232+ mos ($372M Cash | FCF+)", moa: "ONAPGO (SPN-830 continuous SubQ apomorphine pump) & Gocovri ($830M rev, +18.9% YoY).", catalysts: "Score 91.8/100 | Wilder-14=44.5 (+17.4 5d), Connors=27.8 (Type A Higher-Low, 56% win) | Buy $39.60-$40.90 | Stop $36.33 | 1-4W $45.99 | 12-24M $60.50.", risks: "Legacy generic erosion offset by ONAPGO launch ramp.", cross: "#1 Round-5 RSI Anchor; zero dilution risk; Medicare Part D $2,000 OOP cap tailwind." },
+    { id: "ACAD", label: "Acadia (ACAD)", group: "PARKINSONS", type: "company", color: "#8b5cf6", r: 21, cap: "$3.36B ($19.73)", stage: "Commercial (#2 Pick | 18% Wt)", runway: "218+ mos ($956.5M Cash | $1.14B Rev)", moa: "Nuplazid (pimavanserin 5-HT2A inverse agonist for PD Psychosis) & Daybue (trofinetide for Rett syndrome).", catalysts: "Score 91.3/100 | Wilder-14=36.4 (+9.4 5d), Connors=26.5, VW-RSI14=26.3 | Buy $19.20-$19.85 | Stop $17.65 | 1-4W $22.29 | 12-24M $30.53.", risks: "Patent lifecycle management on Nuplazid; CNS pipeline execution.", cross: "#2 Round-5 RSI Anchor; $956.5M cash fortress & 23.2% profit margin." },
+    { id: "PRAX", label: "Praxis (PRAX)", group: "PARKINSONS", type: "company", color: "#8b5cf6", r: 19, cap: "$7.04B ($252.96)", stage: "Phase 3 (#5 Pick | 8% Wt)", runway: "29.3 mos ($758.6M Cash)", moa: "Ulixacaltamide (PRAX-944 T-type calcium channel blocker) in Phase 3 Essential3 for Essential Tremor & PD motor pathways.", catalysts: "Score 84.5/100 | Wilder-14=38.0 (+10.6 5d), Cutler-14=34.6, Connors=33.4 (57.0% win) | 15.0% Short Interest | Buy $246.00-$254.50 | Stop $227.51 | 1-4W $294.24 | 12-24M $650.00.", risks: "High beta (1.7x); pivotal Phase 3 Essential3 binary readout risk.", cross: "Strongest 2Y historical RSI<30 bounce win rate (57.0%) among SMID movement peers." },
+    { id: "QURE", label: "uniQure (QURE)", group: "DELIVERY", type: "company", color: "#f59e0b", r: 17, cap: "$1.40B ($22.43)", stage: "Phase 1/2 (#6 Pick | 5% Wt)", runway: "85.1 mos ($810.3M Cash)", moa: "AMT-130 (AAV5 microRNA silencing HTT in Huntington's) & AAV CNS gene therapy platform.", catalysts: "Score 83.9/100 | Wilder-14=28.1, VW-RSI14=4.6 (institutional exhaustion) | 11.4% Short Interest | Buy $21.80-$22.55 | Stop $20.03 | 1-4W $25.35 | 12-24M $61.43.", risks: "FDA CBER accelerated approval pathway alignment for AMT-130.", cross: "$810.3M cash fortress provides 7+ years of non-dilutive CNS gene therapy runway." },
+    { id: "DYN", label: "Dyne (DYN)", group: "DELIVERY", type: "company", color: "#f59e0b", r: 16, cap: "$2.82B ($15.62)", stage: "Phase 1/2 (Bench #9 | Score 79.5)", runway: "20.7 mos ($692.8M Cash)", moa: "FORCE Platform: TfR1-targeted Fab antibody oligonucleotide conjugates (DYNE-101 DM1, DYNE-251 DMD).", catalysts: "Score 79.5/100 | Wilder-14=39.8, Cutler-14=36.7 (56.9% 2Y win rate) | 13.7% Short Interest | Buy $15.10-$15.70 | Stop $13.90 | 1-4W $17.65 | 12-24M $39.29.", risks: "High R&D burn ($401M/yr); competitive DM1/DMD landscape.", cross: "Validates receptor-mediated TfR1 delivery alongside Denali." },
+    { id: "MDT", label: "Medtronic (MDT)", group: "BCI", type: "company", color: "#06b6d4", r: 20, cap: "$110B", stage: "Commercial", runway: "Self-funding", moa: "Percept PC Deep Brain Stimulation (DBS) with BrainSense sensing.", catalysts: "Closed-loop adaptive DBS clinical expansion in PD.", risks: "Invasive neurosurgical adoption friction.", cross: "VA hospital supplier and DoD health provider." },
+
+    // Stem Cells, Cell Engineering & Immunotherapy Frontiers
+    { id: "ASPEN_CELL", label: "Aspen Neuro", group: "STEM_CELLS", type: "private", color: "#ec4899", r: 18, cap: "Private (>$220M)", stage: "Phase 1/2a (ASPIRO)", runway: "Venture-backed", moa: "ANPD001: Autologous iPSC-derived dopaminergic neuron precursors requiring zero immunosuppression.", catalysts: "ASPIRO trial 1-year graft survival and motor outcome readouts.", risks: "Complex autologous cell manufacturing scale and high per-patient COGS.", cross: "Pioneered ML whole-genome sequencing for iPSC karyotype safety." },
+    { id: "BLUEROCK_CELL", label: "BlueRock / Bayer", group: "STEM_CELLS", type: "company", color: "#ec4899", r: 19, cap: "Bayer Sub ($1B+)", stage: "Phase 1b Complete", runway: "Bayer Balance Sheet", moa: "Bemdaneprocel (BRT-DA01): Allogeneic ESC-derived dopaminergic neurons showing sustained putamen PET engraftment.", catalysts: "Phase 2/3 exPDite-2 registration study launch.", risks: "Requires 1 year of systemic immunosuppression; off-target dyskinesia.", cross: "Acquired by Bayer for up to $1B to anchor cell therapy franchise." },
+    { id: "BCLI_MSC", label: "BrainStorm (BCLI)", group: "STEM_CELLS", type: "company", color: "#ec4899", r: 13, cap: "$25M", stage: "Phase 3b Prep", runway: "1.0 yr", moa: "NurOwn (MSC-NTF): Autologous bone marrow MSCs secreting high neurotrophic titers (GDNF, BDNF) intrathecally.", catalysts: "Phase 3b confirmatory ALS trial under FDA Special Protocol Assessment.", risks: "Prior Phase 3 primary endpoint miss in total population; financing.", cross: "Profound CSF biomarker normalization (statistically significant drop in NfL and MCP-1)." },
+    { id: "LGVN_MSC", label: "Longeveron (LGVN)", group: "STEM_CELLS", type: "company", color: "#ec4899", r: 13, cap: "$32M", stage: "Phase 2a", runway: "1.5 yrs", moa: "Lomecel-B: Allogeneic young-donor medicinal signaling cells (MSCs) repairing the neurovascular unit.", catalysts: "Phase 2b CLEAR MIND expansion trial in mild Alzheimer's.", risks: "Micro-cap clinical trial funding and small study sample sizes.", cross: "Statistically significant slowing of cognitive loss and brain volume preservation on MRI." },
+    { id: "COYA_TREG", label: "Coya Ther (COYA)", group: "CELL_ENG", type: "company", color: "#a855f7", r: 19, cap: "$84M ($3.94)", stage: "Phase 2 (#7 Pick | 10% Wt)", runway: "32.1 mos ($38.9M Cash | 46.7% Net Cash/Cap)", moa: "COYA 302: SubQ dual biologic (low-dose IL-2 + CTLA4-Ig) expanding suppressive Tregs while quelling microglial neuroinflammation.", catalysts: "Score 81.3/100 | RSI-5=13.3, Connors=18.0, Cutler-14=20.3, StochRSI=4.5 (59.0% 2Y win rate) | Buy $3.86-$3.96 + $4.05 stop-limit | Stop $3.77 | 1-4W $4.73 | 12-24M $15.21.", risks: "Micro-cap liquidity; clinical trial execution with Dr. Reddy's.", cross: "Deepest oversold coil in neuro-biotech; 46.7% net cash to market cap floor." },
+    { id: "SANA_HIP", label: "Sana Biotech (SANA)", group: "CELL_ENG", type: "company", color: "#a855f7", r: 17, cap: "$750M", stage: "Phase 1", runway: ">2.0 yrs", moa: "Hypoimmunogenic (HIP) platform: B2M/CIITA knockout + CD47 overexpression for universal donor stem cells.", catalysts: "Preclinical & clinical translation of off-the-shelf CNS dopaminergic cells.", risks: "Platform gene editing off-target safety; multi-asset cash burn.", cross: "Solves the allogeneic immunosuppression bottleneck for CNS therapies." },
+    { id: "ALEC_TREM2", label: "Alector (ALEC)", group: "IMMUNOTHERAPY", type: "company", color: "#f97316", r: 16, cap: "$420M", stage: "Phase 2", runway: ">2.5 yrs", moa: "AL002: Recombinant humanized IgG1 mAb agonist of microglial TREM2/DAP12 signaling (partnered with AbbVie).", catalysts: "Phase 2 INVOKE-2 topline clinical readout in early Alzheimer's.", risks: "Risk of failing to replicate Phase 1 biomarker gains in large cognitive trial.", cross: "50/50 cost and profit share with AbbVie." },
+    { id: "VIGL_TREM2", label: "Vigil Neuro (VIGL)", group: "IMMUNOTHERAPY", type: "company", color: "#f97316", r: 15, cap: "$135M", stage: "Phase 1b / 2", runway: "1.8 yrs", moa: "VG-3927 (first-in-class oral small-molecule TREM2 agonist) & Iluzanebart (VGL101 mAb for ALSP).", catalysts: "Phase 1b VG-3927 clinical data in AD; Phase 2 IGNITE readout in ALSP.", risks: "Small-molecule CNS selectivity and off-target kinase safety.", cross: "Oral small molecule bypasses the 0.1% BBB antibody transcytosis limit." },
+    { id: "ACIU_VAX", label: "AC Immune (ACIU)", group: "IMMUNOTHERAPY", type: "company", color: "#f97316", r: 18, cap: "$247M ($2.42)", stage: "Phase 2 (#10 Pick | 4% Wt)", runway: "21.9 mos ($137.4M Cash | 42.8% Net Cash/Cap)", moa: "SupraAntigen active liposomal vaccines (ACI-7104.056 VacSYn α-Syn, ACI-24.060 Aβ, ACI-35.030 Tau) eliciting polyclonal avidity.", catalysts: "Score 75.9/100 | Connors=26.2, Cutler-14=30.7 (57.7% 2Y win rate) | Buy $2.34-$2.44 | Stop $2.26 | 1-4W $2.73 | 12-24M $8.64.", risks: "Active vaccine antibody titer durability; clinical efficacy milestones.", cross: "Partnered with Takeda & J&J; 42.8% net cash to market cap floor." },
+    { id: "SANFORD_ISS", label: "Sanford Stem Cell", group: "SPACEX", type: "crossdomain", color: "#f43f5e", r: 18, cap: "Academic / NASA", stage: "Active LEO Flights", runway: "Grant-funded", moa: "3D iPSC cerebral organoids flown on SpaceX Dragon (Axiom-2/3, CRS-29) modeling accelerated neurosenescence & LINE-1 retrotransposons.", catalysts: "Orbital drug screening for anti-tau and reverse transcriptase inhibitors.", risks: "Spaceflight payload recovery and orbital scheduling delays.", cross: "Led by Dr. Alysson Muotri (UC San Diego) with SpaceX launch integration." },
+
+    // Cross-Domain Entities: SpaceX & US Gov / Defense
+    { id: "SPACEX_ISS", label: "SpaceX / ISS Lab", group: "SPACEX", type: "crossdomain", color: "#f43f5e", r: 20, cap: "Private / Sovereign", stage: "Active Operations", runway: "N/A", moa: "Microgravity protein crystallization (LRRK2 with MJFF) & accelerated aging models.", catalysts: "Dragon CRS missions; Axiom/Polaris Dawn SANS research.", risks: "Launch cadence delays; recovery payload logistics.", cross: "Flies MJFF and NIH neuro experiments to LEO." },
+    { id: "VARDA", label: "Varda Space", group: "SPACEX", type: "crossdomain", color: "#f43f5e", r: 15, cap: "Private ($500M+)", stage: "Operational", runway: "Venture-backed", moa: "Automated microgravity capsule formulation of metastable pharmaceutical polymorphs.", catalysts: "Orbital pharma reentry capsule manufacturing runs.", risks: "Orbital de-orbit and landing permit execution.", cross: "SpaceX Transporter rideshare customer." },
+    { id: "DOD_CDMRP", label: "DoD CDMRP (PRARP/PRP)", group: "GOV", type: "crossdomain", color: "#f43f5e", r: 18, cap: "US Sovereign", stage: "Ongoing Granting", runway: "Congressional", moa: "Peer Reviewed Alzheimer's/Parkinson's Programs funding military TBI, blast wave, and burn pit neurotrauma.", catalysts: "Annual congressional appropriations cycle ($40M+).", risks: "Federal budget sequester or appropriation shifts.", cross: "Non-dilutive grant awards to biotechs (CGTX, INMB)." },
+    { id: "VA_HEALTH", label: "VA Healthcare System", group: "GOV", type: "crossdomain", color: "#f43f5e", r: 20, cap: "US Sovereign ($300B+)", stage: "Procurement / Care", runway: "Federal", moa: "Largest US neuro provider; statutory 100% presumptive disability for ALS (38 CFR § 3.318).", catalysts: "PADRECC research; Million Veteran Program genomic bank.", risks: "Federal pricing caps under VA FSS formulary.", cross: "Top buyer of FDA approved ALS & PD therapies." },
+    { id: "ARPA_H", label: "ARPA-H & DARPA", group: "GOV", type: "crossdomain", color: "#f43f5e", r: 18, cap: "US Sovereign ($2.5B+)", stage: "Moonshot R&D", runway: "Federal", moa: "PRINT & POET programs funding artificial glymphatic clearance and non-invasive BCI.", catalysts: "Multi-million dollar contract awards for brain health.", risks: "Extreme technical failure rates in moonshot programs.", cross: "Spun out neural decoding technology to commercial BCIs." },
+
+    // Private Unicorns
+    { id: "NEURALINK", label: "Neuralink", group: "BCI", type: "private", color: "#06b6d4", r: 19, cap: "Private ($7B+)", stage: "Clinical (PRIME)", runway: "Venture ($650M+)", moa: "N1 1024-channel intracortical BCI implant restoring motor control in ALS.", catalysts: "Expansion of human PRIME trials; speech synthesis decode.", risks: "Invasive craniotomy surgical safety; thread erosion.", cross: "Founded by Elon Musk; links to SpaceX aerospace eng." },
+    { id: "SYNCHRON", label: "Synchron", group: "BCI", type: "private", color: "#06b6d4", r: 16, cap: "Private ($600M+)", stage: "Clinical (COMMAND)", runway: "Venture ($145M+)", moa: "Stentrode endovascular neuroprosthesis delivered via jugular vein for ALS paralysis.", catalysts: "Pivotal IDE trial initiation; Apple/Google BCI integrations.", risks: "Electrode signal drift; long-term stent endothelization.", cross: "Funded by Gates Frontier & Bezos Expeditions." },
+    { id: "COGNITO", label: "Cognito Therapeutics", group: "BCI", type: "private", color: "#06b6d4", r: 16, cap: "Private ($400M+)", stage: "Pivotal Phase 3", runway: "Venture ($100M+)", moa: "Spectris non-invasive 40Hz auditory/visual sensory stimulation activating microglial clearance.", catalysts: "Topline Phase 3 HOPE trial in early Alzheimer's.", risks: "Sham compliance in home setting; FDA De Novo review.", cross: "Spun out of MIT Tsai/Boyden labs." },
+    { id: "C2N_DIAG", label: "C2N Diagnostics", group: "DIAGNOSTICS", type: "private", color: "#10b981", r: 17, cap: "Private", stage: "Commercial LDT", runway: "Profitable", moa: "PrecivityAD2 mass-spectrometry %p-tau217/Aβ42 blood test (>90% accuracy vs PET).", catalysts: "Broad Medicare MAC coverage; FDA IVD clearance filing.", risks: "Centralized hospital automated immunoassay displacement.", cross: "Premier blood test utilized in international trials." }
+  ],
+  links: [
+    // Macro to Sub-sectors
+    { source: "HEALTHCARE_POLICY", target: "NEURO_ALZHEIMERS_THERAPEUTICS", weight: 0.85, sign: "pos", desc: "CMS Coverage with Evidence Development (CED) rules dictate commercial access." },
+    { source: "HEALTHCARE_POLICY", target: "NEURO_BIOMARKERS_DIAGNOSTICS", weight: 0.80, sign: "pos", desc: "Medicare MAC local coverage determinations unlock blood biomarker test reimbursement." },
+    { source: "FED_RATE", target: "NEURO_ALZHEIMERS_THERAPEUTICS", weight: -0.65, sign: "neg", desc: "Higher discount rates severely compress long-duration biotech DCF valuations." },
+    { source: "FED_RATE", target: "NEURO_PARKINSONS_MOVEMENT", weight: -0.60, sign: "neg", desc: "Tighter credit conditions increase cost of capital for Phase 2/3 trials." },
+    { source: "DEFENSE_SPENDING", target: "NEURO_BCI_NEUROTECH", weight: 0.65, sign: "pos", desc: "DARPA BTO programs and VA healthcare fund neural interfaces and assistive tech." },
+    { source: "DEFENSE_SPENDING", target: "NEURO_ALZHEIMERS_THERAPEUTICS", weight: 0.25, sign: "pos", desc: "DoD CDMRP PRARP funds blast TBI-induced tauopathy and neurodegeneration research." },
+    { source: "AI_DEMAND", target: "NEURO_BBB_DELIVERY_TECH", weight: 0.75, sign: "pos", desc: "Generative structural models accelerate design of low-affinity TfR1/CD98 transcytosis binders." },
+
+    // Cross-subsector
+    { source: "NEURO_BIOMARKERS_DIAGNOSTICS", target: "NEURO_ALZHEIMERS_THERAPEUTICS", weight: 0.75, sign: "pos", desc: "Blood p-tau217 tests lower clinical trial screen failure rates by 60% and expand patient pool." },
+    { source: "NEURO_BBB_DELIVERY_TECH", target: "NEURO_ALZHEIMERS_THERAPEUTICS", weight: 0.70, sign: "pos", desc: "BBB crossing platforms increase brain penetration 10-30x, enabling subcutaneous dosing." },
+    { source: "NEURO_BBB_DELIVERY_TECH", target: "NEURO_PARKINSONS_MOVEMENT", weight: 0.65, sign: "pos", desc: "Engineered capsids enable AAV and enzyme replacement delivery to deep basal ganglia." },
+    { source: "NEURO_BCI_NEUROTECH", target: "NEURO_PARKINSONS_MOVEMENT", weight: 0.50, sign: "pos", desc: "Closed-loop Deep Brain Stimulation hardware directly controls refractory motor fluctuations." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "NEURO_BIOMARKERS_DIAGNOSTICS", weight: 0.60, sign: "pos", desc: "Therapy approval mandates recurring biomarker surveillance (plaque clearance rules)." },
+
+    // Stem Cells & Cell Therapy Cross-Sector Links
+    { source: "BIOTECH_CELL_THERAPY", target: "NEURO_PARKINSONS_MOVEMENT", weight: 0.70, sign: "pos", desc: "Pluripotent stem cell-derived dopaminergic neurons replace lost nigrostriatal circuitry." },
+    { source: "BIOTECH_CELL_THERAPY", target: "NEURO_ALZHEIMERS_THERAPEUTICS", weight: 0.55, sign: "pos", desc: "MSCs and engineered Treg cell therapies suppress chronic neuroinflammation and repair the BBB." },
+    { source: "BIOTECH_CELL_THERAPY", target: "ASPEN_CELL", weight: 0.90, sign: "pos", desc: "Aspen is the global leader in patient-derived autologous iPSC dopaminergic replacement." },
+    { source: "BIOTECH_CELL_THERAPY", target: "BLUEROCK_CELL", weight: 0.90, sign: "pos", desc: "BlueRock validated 18-month human dopamine neuron engraftment on PET imaging." },
+    { source: "BIOTECH_CELL_THERAPY", target: "BCLI_MSC", weight: 0.80, sign: "pos", desc: "BrainStorm uses intrathecal MSC-NTF secreting neuroprotective growth factors in ALS." },
+    { source: "BIOTECH_CELL_THERAPY", target: "LGVN_MSC", weight: 0.80, sign: "pos", desc: "Longeveron Lomecel-B demonstrated MRI brain volume preservation in mild Alzheimer's." },
+    { source: "BIOTECH_CELL_THERAPY", target: "SANA_HIP", weight: 0.85, sign: "pos", desc: "Sana engineers hypoimmunogenic universal donor stem cells evading T-cell and NK-cell lysis." },
+
+    // Cell Engineering & Immunotherapy Links
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "COYA_TREG", weight: 0.80, sign: "pos", desc: "Coya's COYA 302 expands suppressive Tregs to halt neurodegenerative decline." },
+    { source: "NEURO_PARKINSONS_MOVEMENT", target: "COYA_TREG", weight: 0.70, sign: "pos", desc: "Treg biologics quell microglial neuroinflammation in Parkinson's and ALS." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "ALEC_TREM2", weight: 0.85, sign: "pos", desc: "Alector's AL002 agonist mAb activates TREM2/DAP12 microglial plaque compaction." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "VIGL_TREM2", weight: 0.85, sign: "pos", desc: "Vigil is pioneering brain-penetrant oral small-molecule TREM2 agonism (VG-3927)." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "ACIU_VAX", weight: 0.85, sign: "pos", desc: "AC Immune's active vaccines generate sustained polyclonal antibodies with 0% ARIA-E." },
+
+    // SpaceX / Microgravity Organoid Links
+    { source: "SPACEX_ISS", target: "SANFORD_ISS", weight: 0.95, sign: "pos", desc: "SpaceX Dragon transports UC San Diego 3D human brain organoids to the ISS." },
+    { source: "SANFORD_ISS", target: "NEURO_ALZHEIMERS_THERAPEUTICS", weight: 0.75, sign: "pos", desc: "Microgravity accelerates tau hyperphosphorylation and neurosenescence within 30-45 days." },
+    { source: "SANFORD_ISS", target: "ASPEN_CELL", weight: 0.60, sign: "pos", desc: "Stem cell organoid biology directly informs terrestrial iPSC differentiation fidelity." },
+
+    // Sub-sector to Companies
+    { source: "NEURO_BBB_DELIVERY_TECH", target: "DNLI", weight: 0.90, sign: "pos", desc: "Denali is the premier pioneer of TfR1 Transport Vehicle technology." },
+    { source: "NEURO_BBB_DELIVERY_TECH", target: "VOYG", weight: 0.85, sign: "pos", desc: "Voyager's TRACER platform engineers AAV capsids with enhanced brain tropism." },
+    { source: "NEURO_BIOMARKERS_DIAGNOSTICS", target: "QTRX", weight: 0.95, sign: "pos", desc: "Quanterix Simoa is the undisputed standard instrumentation for blood p-tau217/NfL." },
+    { source: "NEURO_BIOMARKERS_DIAGNOSTICS", target: "C2N_DIAG", weight: 0.90, sign: "pos", desc: "C2N PrecivityAD2 leads clinical mass-spec blood testing accuracy." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "LLY", weight: 0.95, sign: "pos", desc: "Eli Lilly's Kisunla represents the premier finite-dosing anti-amyloid blockbuster." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "BIIB", weight: 0.90, sign: "pos", desc: "Biogen co-commercializes Leqembi and Qalsody for SOD1-ALS." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "ABOS", weight: 0.75, sign: "pos", desc: "Acumen focuses exclusively on toxic soluble amyloid-beta oligomer neutralization." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "CGTX", weight: 0.70, sign: "pos", desc: "Cognition's CT1812 allosterically protects synapses from oligomer damage." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "PMN", weight: 0.65, sign: "pos", desc: "ProMIS develops conformation-selective mAbs avoiding vascular plaque ARIA." },
+    { source: "NEURO_ALZHEIMERS_THERAPEUTICS", target: "INMB", weight: 0.65, sign: "pos", desc: "INmune Bio selectively neutralizes neurotoxic soluble TNF." },
+    { source: "NEURO_PARKINSONS_MOVEMENT", target: "GANX", weight: 0.70, sign: "pos", desc: "Gain Therapeutics stabilizes misfolded GCase in GBA1-Parkinson's." },
+    { source: "NEURO_PARKINSONS_MOVEMENT", target: "PRTA", weight: 0.90, sign: "pos", desc: "Prothena (#3 RSI Pick, 88.7) partners with Roche on Phase 3 PARAISO prasinezumab targeting α-synuclein." },
+    { source: "NEURO_PARKINSONS_MOVEMENT", target: "SUPN", weight: 0.95, sign: "pos", desc: "Supernus (#1 RSI Pick, 91.8) anchors the portfolio with ONAPGO & Gocovri ($830M rev, 232+m cash)." },
+    { source: "NEURO_PARKINSONS_MOVEMENT", target: "ACAD", weight: 0.92, sign: "pos", desc: "Acadia (#2 RSI Pick, 91.3) commercializes Nuplazid for PD Psychosis & Daybue ($1.14B rev, $956M cash)." },
+    { source: "NEURO_PARKINSONS_MOVEMENT", target: "PRAX", weight: 0.85, sign: "pos", desc: "Praxis (#5 RSI Pick, 84.5) advances Phase 3 Essential3 ulixacaltamide in movement disorders." },
+    { source: "NEURO_BBB_DELIVERY_TECH", target: "QURE", weight: 0.82, sign: "pos", desc: "uniQure (#6 RSI Pick, 83.9) develops AAV5 CNS gene therapies (AMT-130) backed by $810M cash (85.1m runway)." },
+    { source: "NEURO_BBB_DELIVERY_TECH", target: "DYN", weight: 0.80, sign: "pos", desc: "Dyne (Bench #9, 79.5) engineers TfR1 FORCE antibody-oligonucleotide conjugates." },
+    { source: "NEURO_PARKINSONS_MOVEMENT", target: "ACIU_VAX", weight: 0.80, sign: "pos", desc: "AC Immune (#10 RSI Pick, 75.9) advances Phase 2 VacSYn active α-synuclein vaccine." },
+    { source: "NEURO_BCI_NEUROTECH", target: "MDT", weight: 0.85, sign: "pos", desc: "Medtronic leads commercial DBS neurostimulator hardware." },
+    { source: "NEURO_BCI_NEUROTECH", target: "NEURALINK", weight: 0.90, sign: "pos", desc: "Neuralink develops 1024-channel cortical implants for ALS paralysis." },
+    { source: "NEURO_BCI_NEUROTECH", target: "SYNCHRON", weight: 0.85, sign: "pos", desc: "Synchron implants endovascular motor BCIs via jugular catheter." },
+    { source: "NEURO_BCI_NEUROTECH", target: "COGNITO", weight: 0.80, sign: "pos", desc: "Cognito develops non-invasive 40Hz sensory stimulation for microglial activation." },
+
+    // Cross-Domain SpaceX & US Gov Edges
+    { source: "SPACEX_ISS", target: "DNLI", weight: 0.60, sign: "pos", desc: "Microgravity crystallization of LRRK2 on SpaceX flights guided small-molecule design." },
+    { source: "SPACEX_ISS", target: "NEURO_ALZHEIMERS_THERAPEUTICS", weight: 0.50, sign: "pos", desc: "ISS 3D cerebral organoids serve as accelerated senescence and tauopathy models." },
+    { source: "SPACEX_ISS", target: "VARDA", weight: 0.85, sign: "pos", desc: "Varda orbital pharma manufacturing capsules fly on SpaceX Falcon 9 rideshares." },
+    { source: "DOD_CDMRP", target: "CGTX", weight: 0.65, sign: "pos", desc: "DoD PRARP and NIH grants fund non-dilutive clinical trials for CT1812." },
+    { source: "DOD_CDMRP", target: "INMB", weight: 0.60, sign: "pos", desc: "DoD trauma funding supports research on neuroinflammation in blast injuries." },
+    { source: "VA_HEALTH", target: "BIIB", weight: 0.75, sign: "pos", desc: "VA statutory 100% coverage makes it the primary institutional buyer of ALS drugs (Qalsody)." },
+    { source: "VA_HEALTH", target: "NEURO_BCI_NEUROTECH", weight: 0.70, sign: "pos", desc: "Veterans Health Administration purchases assistive communication neurotech for paralyzed veterans." },
+    { source: "ARPA_H", target: "SYNCHRON", weight: 0.65, sign: "pos", desc: "ARPA-H and DARPA research grants advance minimally invasive vascular neural interfaces." },
+    { source: "ARPA_H", target: "NEURO_BBB_DELIVERY_TECH", weight: 0.70, sign: "pos", desc: "ARPA-H PRINT initiative finances non-invasive technologies to open the BBB and enhance glymphatic flow." }
+  ]
+};
+
+// --- SIMULATION & RENDERING LOGIC ---
+const width = window.innerWidth - 380;
+const height = window.innerHeight - 73;
+
+const svg = d3.select("#network-svg")
+  .attr("viewBox", [0, 0, width, height]);
+
+const g = svg.append("g");
+
+// Zoom behavior
+const zoom = d3.zoom()
+  .scaleExtent([0.3, 3])
+  .on("zoom", (event) => {
+    g.attr("transform", event.transform);
+  });
+
+svg.call(zoom);
+
+d3.select("#btn-reset-view").on("click", () => {
+  svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+});
+
+// Create force simulation
+const simulation = d3.forceSimulation(graphData.nodes)
+  .force("link", d3.forceLink(graphData.links).id(d => d.id).distance(d => {
+    if (d.source.type === "macro" || d.target.type === "macro") return 140;
+    if (d.source.type === "subsector" && d.target.type === "company") return 80;
+    return 100;
+  }))
+  .force("charge", d3.forceManyBody().strength(d => d.type === "macro" ? -450 : (d.type === "subsector" ? -300 : -160)))
+  .force("center", d3.forceCenter(width / 2, height / 2))
+  .force("collision", d3.forceCollide().radius(d => d.r + 15));
+
+// Arrow markers
+svg.append("defs").selectAll("marker")
+  .data(["pos", "neg"])
+  .join("marker")
+  .attr("id", d => `arrow-${d}`)
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 22)
+  .attr("refY", 0)
+  .attr("markerWidth", 6)
+  .attr("markerHeight", 6)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("fill", d => d === "pos" ? "#10b981" : "#ef4444")
+  .attr("d", "M0,-5L10,0L0,5");
+
+// Render Links
+const link = g.append("g")
+  .attr("class", "links")
+  .selectAll("line")
+  .data(graphData.links)
+  .join("line")
+  .attr("class", d => `link ${d.sign}`)
+  .attr("stroke-width", d => Math.max(1, Math.abs(d.weight) * 3))
+  .attr("marker-end", d => `url(#arrow-${d.sign})`);
+
+// Render Nodes
+const node = g.append("g")
+  .attr("class", "nodes")
+  .selectAll("g")
+  .data(graphData.nodes)
+  .join("g")
+  .attr("class", "node")
+  .call(d3.drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended));
+
+node.append("circle")
+  .attr("r", d => d.r)
+  .attr("fill", d => d.color)
+  .attr("stroke", d => d3.rgb(d.color).brighter(0.5))
+  .attr("stroke-opacity", 0.8);
+
+node.append("text")
+  .attr("class", "node-text")
+  .attr("dy", d => d.r + 14)
+  .attr("text-anchor", "middle")
+  .text(d => d.label);
+
+// Drag functions
+function dragstarted(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+function dragged(event, d) {
+  d.fx = event.x;
+  d.fy = event.y;
+}
+function dragended(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+// Tick simulation
+simulation.on("tick", () => {
+  link
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
+
+  node
+    .attr("transform", d => `translate(${d.x},${d.y})`);
+});
+
+// --- INTERACTIVE FILTERING & SELECTION ---
+const detailCard = d3.select("#detail-card");
+
+d3.select("#btn-close-detail").on("click", () => {
+  detailCard.style("display", "none");
+  resetHighlight();
+});
+
+function showDetailCard(d) {
+  detailCard.style("display", "block");
+  d3.select("#card-cluster-badge")
+    .text(d.group)
+    .style("background", d.color);
+  d3.select("#card-title").text(d.label);
+  d3.select("#card-subtitle").text(d.desc || (d.cap ? `Valuation: ${d.cap}` : "Ecosystem Entity"));
+
+  d3.select("#card-stage").text(d.stage || "Established");
+  d3.select("#card-runway").text(d.runway || "Sovereign/Commercial");
+  d3.select("#card-beta").text(d.type.toUpperCase());
+  d3.select("#card-shock").text((d.currentImpact ? (d.currentImpact > 0 ? "+" : "") + (d.currentImpact * 100).toFixed(1) + "%" : "0.0%"));
+
+  d3.select("#card-moa").text(d.moa || d.desc || "Strategic macro transmission node in neurodegenerative disease network.");
+  d3.select("#card-catalysts").text(d.catalysts || "Ongoing regulatory, clinical trial, and fiscal milestones.");
+  d3.select("#card-risks").text(d.risks || "Macroeconomic policy shifts, funding delays, and clinical execution barriers.");
+  d3.select("#card-cross-domain").text(d.cross || "Connects to cross-asset macro drivers and sovereign contracting.");
+
+  const tagContainer = d3.select("#card-tags");
+  tagContainer.html("");
+  [d.group, d.type, ...(d.id ? [d.id] : [])].forEach(tag => {
+    tagContainer.append("span").attr("class", "tag-pill").text(tag);
+  });
+}
+
+function highlightConnected(selectedNode) {
+  const connectedNodeIds = new Set([selectedNode.id]);
+  const connectedLinks = new Set();
+
+  graphData.links.forEach(l => {
+    if (l.source.id === selectedNode.id || l.target.id === selectedNode.id) {
+      connectedNodeIds.add(l.source.id);
+      connectedNodeIds.add(l.target.id);
+      connectedLinks.add(l);
+    }
+  });
+
+  node.classed("dimmed", d => !connectedNodeIds.has(d.id));
+  link.classed("dimmed", l => !connectedLinks.has(l));
+  link.classed("highlighted", l => connectedLinks.has(l));
+}
+
+function resetHighlight() {
+  node.classed("dimmed", false);
+  link.classed("dimmed", false);
+  link.classed("highlighted", false);
+}
+
+node.on("click", (event, d) => {
+  event.stopPropagation();
+  showDetailCard(d);
+  highlightConnected(d);
+});
+
+svg.on("click", () => {
+  detailCard.style("display", "none");
+  resetHighlight();
+});
+
+// Domain Filter Buttons
+d3.selectAll(".filter-pill").on("click", function() {
+  d3.selectAll(".filter-pill").classed("active", false);
+  d3.select(this).classed("active", true);
+
+  const filter = d3.select(this).attr("data-filter");
+  if (filter === "ALL") {
+    node.style("display", "block");
+    link.style("display", "block");
+  } else {
+    node.style("display", d => (d.group === filter || d.type === filter.toLowerCase() ? "block" : "none"));
+    link.style("display", l => (l.source.group === filter || l.target.group === filter ? "block" : "none"));
+  }
+});
+
+// --- MACRO SHOCK SIMULATION ---
+function updateShocks() {
+  const policy = parseFloat(d3.select("#slider-policy").property("value"));
+  const rate = parseFloat(d3.select("#slider-rate").property("value"));
+  const defense = parseFloat(d3.select("#slider-defense").property("value"));
+  const ai = parseFloat(d3.select("#slider-ai").property("value"));
+
+  d3.select("#policy-shock-val").text((policy >= 0 ? "+" : "") + policy.toFixed(2));
+  d3.select("#rate-shock-val").text((rate >= 0 ? "+" : "") + rate.toFixed(2));
+  d3.select("#defense-shock-val").text((defense >= 0 ? "+" : "") + defense.toFixed(2));
+  d3.select("#ai-shock-val").text((ai >= 0 ? "+" : "") + ai.toFixed(2));
+
+  // Compute 1-hop impact on nodes
+  graphData.nodes.forEach(n => {
+    let impact = 0;
+    if (n.id === "NEURO_ALZHEIMERS_THERAPEUTICS") {
+      impact = policy * 0.85 + rate * (-0.65) + defense * 0.25;
+    } else if (n.id === "NEURO_BIOMARKERS_DIAGNOSTICS") {
+      impact = policy * 0.80 + rate * (-0.35);
+    } else if (n.id === "NEURO_PARKINSONS_MOVEMENT") {
+      impact = policy * 0.70 + rate * (-0.60);
+    } else if (n.id === "NEURO_BBB_DELIVERY_TECH") {
+      impact = ai * 0.75 + rate * (-0.50);
+    } else if (n.id === "NEURO_BCI_NEUROTECH") {
+      impact = defense * 0.65 + rate * (-0.45);
+    } else if (n.group === "ALZHEIMERS") {
+      impact = (policy * 0.85 + rate * (-0.65)) * 0.9;
+    } else if (n.group === "PARKINSONS") {
+      impact = (policy * 0.70 + rate * (-0.60)) * 0.85;
+    } else if (n.group === "DELIVERY") {
+      impact = (ai * 0.75 + rate * (-0.50)) * 0.9;
+    } else if (n.group === "DIAGNOSTICS") {
+      impact = (policy * 0.80 + rate * (-0.35)) * 0.85;
+    } else if (n.group === "BCI") {
+      impact = (defense * 0.65 + rate * (-0.45)) * 0.85;
+    }
+    n.currentImpact = impact;
+  });
+
+  // Visually resize or glow impacted nodes
+  node.select("circle")
+    .transition().duration(200)
+    .attr("r", d => {
+      const baseR = d.r;
+      if (d.currentImpact) {
+        return Math.max(8, baseR * (1 + d.currentImpact * 0.3));
+      }
+      return baseR;
+    })
+    .attr("stroke", d => {
+      if (d.currentImpact > 0.05) return "#10b981";
+      if (d.currentImpact < -0.05) return "#ef4444";
+      return d3.rgb(d.color).brighter(0.5);
+    })
+    .attr("stroke-width", d => Math.abs(d.currentImpact || 0) > 0.1 ? 3 : 2);
+}
+
+d3.selectAll(".macro-shock-slider").on("input", updateShocks);
+
+d3.select("#btn-reset-shocks").on("click", () => {
+  d3.select("#slider-policy").property("value", 0);
+  d3.select("#slider-rate").property("value", 0);
+  d3.select("#slider-defense").property("value", 0);
+  d3.select("#slider-ai").property("value", 0);
+  updateShocks();
+});
+
+function toggleMatrixModal() {
+  const modal = document.getElementById('matrix-modal');
+  if (modal) modal.classList.toggle('open');
+}
+
+function switchMatrixTab(tabId, btnEl) {
+  document.querySelectorAll('.matrix-tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.matrix-tab-btn').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById(tabId);
+  if (target) target.classList.add('active');
+  if (btnEl) btnEl.classList.add('active');
+}
+
+function focusGraphNode(nodeId) {
+  const target = graphData.nodes.find(n => n.id === nodeId);
+  if (!target) return;
+  selectNode(target);
+  const scale = 1.35;
+  const tx = width / 2 - target.x * scale;
+  const ty = height / 2 - target.y * scale;
+  svg.transition().duration(650).call(
+    zoom.transform,
+    d3.zoomIdentity.translate(tx, ty).scale(scale)
+  );
+}
+</script>
+
+<!-- Interactive 5-Round RSI Recommendation Matrix Modal -->
+<div class="matrix-modal-overlay" id="matrix-modal" onclick="if(event.target===this)toggleMatrixModal()">
+  <div class="matrix-modal-card">
+    <div class="matrix-modal-header">
+      <div>
+        <div style="font-size:18px;font-weight:800;color:#f8fafc;display:flex;align-items:center;gap:10px;">
+          <span>🧬 Final Hardened 5-Round RSI Recommendation Matrix &amp; Multi-Hat Reasonings</span>
+          <span style="background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.4);padding:2px 8px;border-radius:99px;font-size:11px;">Skill v5.0 Verified</span>
+          <span style="background:rgba(56,189,248,0.18);color:#38bdf8;border:1px solid rgba(56,189,248,0.35);padding:2px 8px;border-radius:99px;font-size:11px;">Week of Oct 26–30, 2026</span>
+        </div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">
+          Powered by <code style="color:#38bdf8;">neuro-biotech-rsi-trader</code> • 10,000-Path Correlated Student-t Monte Carlo: <strong>E[4W Return] +7.52%</strong> | <strong>Win Prob 89.6%</strong> | <strong>VaR95 -2.46%</strong> | <strong>Sortino 6.09</strong>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        📄 Full Weekly Report
+        <a href="parkinsons_disease_network.html" style="font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;background:rgba(139,92,246,0.16);color:#c084fc;border:1px solid rgba(139,92,246,0.35);text-decoration:none;">🕸️ PD &amp; Longevity MacroGraph</a>
+        <button class="matrix-close-btn" onclick="toggleMatrixModal()">✕ Close [ESC]</button>
+      </div>
+    </div>
+
+    <div class="matrix-tabs">
+      <button class="matrix-tab-btn active" onclick="switchMatrixTab('tab-hardened-matrix', this)">1. Final Hardened Matrix (Top 10 SMID)</button>
+      <button class="matrix-tab-btn" onclick="switchMatrixTab('tab-rsi-evolution', this)">2. 5-Round RSI Self-Improvement Loop</button>
+      <button class="matrix-tab-btn" onclick="switchMatrixTab('tab-expert-hats', this)">3. Five-Hat Reasoning Deep Dive</button>
+      <button class="matrix-tab-btn" onclick="switchMatrixTab('tab-multi-rsi', this)">4. 6-Model Technical RSI Suite</button>
+    </div>
+
+    <!-- TAB 1: FINAL HARDENED MATRIX -->
+    <div id="tab-hardened-matrix" class="matrix-tab-content active">
+      <div class="rsi-round-banner">
+        <div class="rsi-round-step"><span>Round 1 (v1.0 Naive)</span><strong>Sortino 2.72</strong><div style="font-size:10px;color:#94a3b8;">VaR95 -6.93% | Win 79.1%</div></div>
+        <div class="rsi-round-step"><span>Round 2 (v2.0 Cash Floor)</span><strong>Sortino 5.48</strong><div style="font-size:10px;color:#94a3b8;">VaR95 -3.25% | Win 88.3%</div></div>
+        <div class="rsi-round-step"><span>Round 3 (v3.0 Regime Split)</span><strong>Sortino 4.06</strong><div style="font-size:10px;color:#94a3b8;">Type A vs B Calibration</div></div>
+        <div class="rsi-round-step"><span>Round 4 (v4.0 Bio+Squeeze)</span><strong>Sortino 4.63</strong><div style="font-size:10px;color:#94a3b8;">OpenTargets + SI Bonus</div></div>
+        <div class="rsi-round-step final"><span>Round 5 (v5.0 Final Barbell)</span><strong>Sortino 6.09 ★</strong><div style="font-size:10px;color:#34d399;">E[Ret] +7.52% | VaR95 -2.46%</div></div>
+      </div>
+
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Rank &amp; Ticker</th>
+            <th>Alloc Wt</th>
+            <th>R5 Score</th>
+            <th>Price (1W)</th>
+            <th>Regime &amp; RSI Suite</th>
+            <th>Cash Runway &amp; Net Cash/Cap</th>
+            <th>Buy Zone (Oct 26–30)</th>
+            <th>Hard Stop</th>
+            <th>1–4W Target</th>
+            <th>12–24M Target</th>
+            <th>Core Multi-Hat Thesis &amp; Catalyst</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr onclick="toggleMatrixModal();focusGraphNode('SUPN')" style="cursor:pointer;">
+            <td><span class="alloc-pill">RANK #1</span> <strong style="color:#f8fafc;">SUPN</strong><br/><span style="font-size:10px;color:#94a3b8;">Supernus ($2.29B)</span></td>
+            <td><strong style="color:#34d399;font-size:14px;">24%</strong><br/><span style="font-size:9px;color:#94a3b8;">Core Anchor</span></td>
+            <td><strong style="color:#38bdf8;">91.8</strong></td>
+            <td><strong>$40.70</strong><br/><span style="color:#34d399;font-size:10px;">+7.4% 1W</span></td>
+            <td><span style="color:#34d399;font-weight:700;">Type A Higher-Low</span><br/><span style="font-size:10px;color:#94a3b8;">W14: 44.5 (+17.4 5d) | CRSI: 27.8 | Win: 56.0%</span></td>
+            <td><strong style="color:#34d399;">232+ mos</strong><br/><span style="font-size:10px;color:#94a3b8;">$372M Cash | FCF+</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$39.60 – $40.90</td>
+            <td style="color:#f87171;font-weight:700;">$36.33<br/><span style="font-size:9px;">(-10.7%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$45.99<br/><span style="font-size:9px;">(+13.0%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$60.50<br/><span style="font-size:9px;">(+48.6%)</span></td>
+            <td><strong>ONAPGO</strong> (SPN-830 continuous SubQ apomorphine pump) launch + <strong>Gocovri</strong> ($830M rev, +18.9% YoY). Zero dilution risk; $2,000 Medicare Part D OOP cap tailwind.</td>
+          </tr>
+          <tr onclick="toggleMatrixModal();focusGraphNode('ACAD')" style="cursor:pointer;">
+            <td><span class="alloc-pill">RANK #2</span> <strong style="color:#f8fafc;">ACAD</strong><br/><span style="font-size:10px;color:#94a3b8;">Acadia ($3.36B)</span></td>
+            <td><strong style="color:#34d399;font-size:14px;">18%</strong><br/><span style="font-size:9px;color:#94a3b8;">Core Anchor</span></td>
+            <td><strong style="color:#38bdf8;">91.3</strong></td>
+            <td><strong>$19.73</strong><br/><span style="color:#34d399;font-size:10px;">+3.2% 1W</span></td>
+            <td><span style="color:#34d399;font-weight:700;">Type A Higher-Low</span><br/><span style="font-size:10px;color:#94a3b8;">W14: 36.4 (+9.4 5d) | CRSI: 26.5 | VW: 26.3</span></td>
+            <td><strong style="color:#34d399;">218+ mos</strong><br/><span style="font-size:10px;color:#94a3b8;">$956.5M Cash | $1.14B Rev</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$19.20 – $19.85</td>
+            <td style="color:#f87171;font-weight:700;">$17.65<br/><span style="font-size:9px;">(-10.5%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$22.29<br/><span style="font-size:9px;">(+13.0%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$30.53<br/><span style="font-size:9px;">(+54.7%)</span></td>
+            <td>Commercial monopoly in PD Psychosis (<strong>Nuplazid</strong>) + Rett (<strong>Daybue</strong>); $956.5M cash &amp; 23.2% profit margin; VW-RSI 26.3 confirms institutional accumulation.</td>
+          </tr>
+          <tr onclick="toggleMatrixModal();focusGraphNode('PRTA')" style="cursor:pointer;">
+            <td><span class="alloc-pill">RANK #3</span> <strong style="color:#f8fafc;">PRTA</strong><br/><span style="font-size:10px;color:#94a3b8;">Prothena ($441M)</span></td>
+            <td><strong style="color:#38bdf8;font-size:14px;">13%</strong><br/><span style="font-size:9px;color:#94a3b8;">Pivotal Swing</span></td>
+            <td><strong style="color:#38bdf8;">88.7</strong></td>
+            <td><strong>$8.20</strong><br/><span style="color:#f87171;font-size:10px;">-1.8% 1W</span></td>
+            <td><span style="color:#38bdf8;font-weight:700;">Type B Cash-Floor</span><br/><span style="font-size:10px;color:#94a3b8;">W14: 44.2 (+1.1 5d) | CRSI: 39.5 | SI: 18.8%</span></td>
+            <td><strong style="color:#34d399;">34.5 mos</strong><br/><span style="font-size:10px;color:#34d399;">$288M Cash (66.8% Cap)</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$7.95 – $8.25</td>
+            <td style="color:#f87171;font-weight:700;">$7.49<br/><span style="font-size:9px;">(-8.7%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$9.27<br/><span style="font-size:9px;">(+13.0%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$21.40<br/><span style="font-size:9px;">(+161.0%)</span></td>
+            <td><strong>SNCA</strong> (#2 PD gene 0.8706) Phase 3 <strong>PARAISO</strong> (Prasinezumab) funded by Roche. Trades at 66.8% Net Cash/Cap ($147M EV) with <strong>18.8% Short Interest</strong> coil.</td>
+          </tr>
+          <tr onclick="toggleMatrixModal();focusGraphNode('DNLI')" style="cursor:pointer;">
+            <td><span class="alloc-pill">RANK #4</span> <strong style="color:#f8fafc;">DNLI</strong><br/><span style="font-size:10px;color:#94a3b8;">Denali ($2.91B)</span></td>
+            <td><strong style="color:#38bdf8;font-size:14px;">18%</strong><br/><span style="font-size:9px;color:#94a3b8;">Pivotal Swing</span></td>
+            <td><strong style="color:#38bdf8;">86.1</strong></td>
+            <td><strong>$18.41</strong><br/><span style="color:#34d399;font-size:10px;">+4.5% 1W</span></td>
+            <td><span style="color:#34d399;font-weight:700;">Type A Higher-Low</span><br/><span style="font-size:10px;color:#94a3b8;">W14: 39.9 (+9.6 5d) | CRSI: 27.5 | SI: 10.2%</span></td>
+            <td><strong style="color:#38bdf8;">22.0 mos</strong><br/><span style="font-size:10px;color:#94a3b8;">$710.5M Cash (22.3% Cap)</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$17.90 – $18.55</td>
+            <td style="color:#f87171;font-weight:700;">$16.65<br/><span style="font-size:9px;">(-9.6%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$21.11<br/><span style="font-size:9px;">(+14.7%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$35.75<br/><span style="font-size:9px;">(+94.2%)</span></td>
+            <td><strong>LRRK2</strong> (#1 OpenTargets PD gene 0.8790) Phase 2b <strong>LUMA</strong> (BIIB122 w/ Biogen) + <strong>TfR1 Transport Vehicle</strong> (10–30x BBB CNS entry) + DNL310 BLA decision.</td>
+          </tr>
+          <tr onclick="toggleMatrixModal();focusGraphNode('PRAX')" style="cursor:pointer;">
+            <td><span class="alloc-pill">RANK #5</span> <strong style="color:#f8fafc;">PRAX</strong><br/><span style="font-size:10px;color:#94a3b8;">Praxis ($7.04B)</span></td>
+            <td><strong style="color:#38bdf8;font-size:14px;">8%</strong><br/><span style="font-size:9px;color:#94a3b8;">Pivotal Swing</span></td>
+            <td><strong style="color:#38bdf8;">84.5</strong></td>
+            <td><strong>$252.96</strong><br/><span style="color:#34d399;font-size:10px;">+4.6% 1W</span></td>
+            <td><span style="color:#34d399;font-weight:700;">Type A Higher-Low</span><br/><span style="font-size:10px;color:#94a3b8;">W14: 38.0 (+10.6 5d) | Cut14: 34.6 | Win: 57.0%</span></td>
+            <td><strong style="color:#34d399;">29.3 mos</strong><br/><span style="font-size:10px;color:#94a3b8;">$758.6M Cash | SI: 15.0%</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$246.00 – $254.50</td>
+            <td style="color:#f87171;font-weight:700;">$227.51<br/><span style="font-size:9px;">(-10.1%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$294.24<br/><span style="font-size:9px;">(+16.3%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$650.00<br/><span style="font-size:9px;">(+157.0%)</span></td>
+            <td>Phase 3 <strong>Essential3</strong> (Ulixacaltamide T-type Ca2+ blocker in Essential Tremor); <strong>15.0% Short Interest</strong> + 57.0% historical 2Y RSI&lt;30 bounce win rate.</td>
+          </tr>
+          <tr onclick="toggleMatrixModal();focusGraphNode('QURE')" style="cursor:pointer;">
+            <td><span class="alloc-pill">RANK #6</span> <strong style="color:#f8fafc;">QURE</strong><br/><span style="font-size:10px;color:#94a3b8;">uniQure ($1.40B)</span></td>
+            <td><strong style="color:#38bdf8;font-size:14px;">5%</strong><br/><span style="font-size:9px;color:#94a3b8;">Pivotal Swing</span></td>
+            <td><strong style="color:#38bdf8;">83.9</strong></td>
+            <td><strong>$22.43</strong><br/><span style="color:#34d399;font-size:10px;">+2.6% 1W</span></td>
+            <td><span style="color:#f59e0b;font-weight:700;">Deep VW Exhaustion</span><br/><span style="font-size:10px;color:#94a3b8;">W14: 28.1 (-0.7 5d) | VW-RSI14: 4.6 | SI: 11.4%</span></td>
+            <td><strong style="color:#34d399;">85.1 mos</strong><br/><span style="font-size:10px;color:#34d399;">$810.3M Cash (49.7% Cap)</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$21.80 – $22.55</td>
+            <td style="color:#f87171;font-weight:700;">$20.03<br/><span style="font-size:9px;">(-10.7%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$25.35<br/><span style="font-size:9px;">(+13.0%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$61.43<br/><span style="font-size:9px;">(+173.9%)</span></td>
+            <td><strong>AMT-130</strong> Huntington's AAV gene therapy FDA BLA dialogue; extreme institutional volume exhaustion (VW-RSI14 = 4.6) backed by $810.3M cash (85.1m runway).</td>
+          </tr>
+          <tr onclick="toggleMatrixModal();focusGraphNode('COYA_TREG')" style="cursor:pointer;">
+            <td><span class="alloc-pill">RANK #7</span> <strong style="color:#f8fafc;">COYA</strong><br/><span style="font-size:10px;color:#94a3b8;">Coya Ther ($84M)</span></td>
+            <td><strong style="color:#f472b6;font-size:14px;">10%</strong><br/><span style="font-size:9px;color:#94a3b8;">2-Tranche Coil</span></td>
+            <td><strong style="color:#38bdf8;">81.3</strong></td>
+            <td><strong>$3.94</strong><br/><span style="color:#f87171;font-size:10px;">-3.2% 1W</span></td>
+            <td><span style="color:#f472b6;font-weight:700;">Type B Extreme Coil</span><br/><span style="font-size:10px;color:#94a3b8;">RSI5: 13.3 | CRSI: 18.0 | Cut14: 20.3 | Win: 59.0%</span></td>
+            <td><strong style="color:#34d399;">32.1 mos</strong><br/><span style="font-size:10px;color:#34d399;">$38.9M Cash (46.7% Cap)</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$3.86–$3.96 (5%)<br/>+ $4.05 Stop (5%)</td>
+            <td style="color:#f87171;font-weight:700;">$3.77<br/><span style="font-size:9px;">(-4.3%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$4.73<br/><span style="font-size:9px;">(+20.1%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$15.21<br/><span style="font-size:9px;">(+286.0%)</span></td>
+            <td><strong>COYA 302</strong> (IL-2 + CTLA4-Ig Treg expansion w/ Dr. Reddy's). Deepest oversold coil in sector (CRSI 18.0, 59.0% 2Y win rate) backed by 46.7% Net Cash/Cap.</td>
+          </tr>
+          <tr onclick="toggleMatrixModal();focusGraphNode('QTRX')" style="cursor:pointer;">
+            <td><span class="alloc-pill" style="background:rgba(148,163,184,0.2);color:#cbd5e1;">BENCH #8</span> <strong style="color:#f8fafc;">QTRX</strong><br/><span style="font-size:10px;color:#94a3b8;">Quanterix ($133M)</span></td>
+            <td><strong style="color:#94a3b8;font-size:12px;">Reserve</strong><br/><span style="font-size:9px;color:#94a3b8;">Diagnostic Value</span></td>
+            <td><strong style="color:#38bdf8;">79.8</strong></td>
+            <td><strong>$2.86</strong><br/><span style="color:#f87171;font-size:10px;">-2.1% 1W</span></td>
+            <td><span style="color:#38bdf8;font-weight:700;">Type B Cash-Floor</span><br/><span style="font-size:10px;color:#94a3b8;">Cut14: 15.8 | W14: 36.0 | CRSI: 29.7</span></td>
+            <td><strong style="color:#34d399;">54.8 mos</strong><br/><span style="font-size:10px;color:#34d399;">$125M Cash (85.7% Cap)</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$2.75 – $2.88</td>
+            <td style="color:#f87171;font-weight:700;">$2.60<br/><span style="font-size:9px;">(-9.1%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$3.36<br/><span style="font-size:9px;">(+17.5%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$6.33<br/><span style="font-size:9px;">(+121.3%)</span></td>
+            <td>Simoa ultrasensitive p-Tau217/NfL/αSyn diagnostics ($126.9M rev); trades at <strong>85.7% Net Cash to Market Cap</strong> (near-zero enterprise value).</td>
+          </tr>
+          <tr onclick="toggleMatrixModal();focusGraphNode('DYN')" style="cursor:pointer;">
+            <td><span class="alloc-pill" style="background:rgba(148,163,184,0.2);color:#cbd5e1;">BENCH #9</span> <strong style="color:#f8fafc;">DYN</strong><br/><span style="font-size:10px;color:#94a3b8;">Dyne ($2.82B)</span></td>
+            <td><strong style="color:#94a3b8;font-size:12px;">Reserve</strong><br/><span style="font-size:9px;color:#94a3b8;">TfR1 Peer</span></td>
+            <td><strong style="color:#38bdf8;">79.5</strong></td>
+            <td><strong>$15.62</strong><br/><span style="color:#34d399;font-size:10px;">+1.4% 1W</span></td>
+            <td><span style="color:#34d399;font-weight:700;">Type A Higher-Low</span><br/><span style="font-size:10px;color:#94a3b8;">W14: 39.8 | Cut14: 36.7 | Win: 56.9%</span></td>
+            <td><strong style="color:#38bdf8;">20.7 mos</strong><br/><span style="font-size:10px;color:#94a3b8;">$692.8M Cash | SI: 13.7%</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$15.10 – $15.70</td>
+            <td style="color:#f87171;font-weight:700;">$13.90<br/><span style="font-size:9px;">(-11.0%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$17.65<br/><span style="font-size:9px;">(+13.0%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$39.29<br/><span style="font-size:9px;">(+151.5%)</span></td>
+            <td><strong>FORCE TfR1</strong> antibody-oligonucleotide conjugate platform (DM1/DMD); 56.9% 2Y RSI&lt;30 win rate and 13.7% Short Interest.</td>
+          </tr>
+          <tr onclick="toggleMatrixModal();focusGraphNode('ACIU_VAX')" style="cursor:pointer;">
+            <td><span class="alloc-pill">RANK #10</span> <strong style="color:#f8fafc;">ACIU</strong><br/><span style="font-size:10px;color:#94a3b8;">AC Immune ($247M)</span></td>
+            <td><strong style="color:#f472b6;font-size:14px;">4%</strong><br/><span style="font-size:9px;color:#94a3b8;">Vaccine Call</span></td>
+            <td><strong style="color:#38bdf8;">75.9</strong></td>
+            <td><strong>$2.42</strong><br/><span style="color:#f87171;font-size:10px;">-3.6% 1W</span></td>
+            <td><span style="color:#f472b6;font-weight:700;">Type B Cash-Floor</span><br/><span style="font-size:10px;color:#94a3b8;">CRSI: 26.2 | Cut14: 30.7 | Win: 57.7%</span></td>
+            <td><strong style="color:#34d399;">21.9 mos</strong><br/><span style="font-size:10px;color:#34d399;">$137.4M Cash (42.8% Cap)</span></td>
+            <td style="color:#38bdf8;font-weight:700;">$2.34 – $2.44</td>
+            <td style="color:#f87171;font-weight:700;">$2.26<br/><span style="font-size:9px;">(-6.6%)</span></td>
+            <td style="color:#34d399;font-weight:700;">$2.73<br/><span style="font-size:9px;">(+12.8%)</span></td>
+            <td style="color:#c084fc;font-weight:700;">$8.64<br/><span style="font-size:9px;">(+257.0%)</span></td>
+            <td>Phase 2 <strong>VacSYn</strong> (ACI-7104.056 active α-synuclein vaccine) + Takeda ($2.1B) &amp; J&amp;J partnerships; 57.7% 2Y RSI bounce win rate &amp; 42.8% Net Cash/Cap.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TAB 2: 5-ROUND RSI EVOLUTION -->
+    <div id="tab-rsi-evolution" class="matrix-tab-content">
+      <div style="font-size:13px;color:#e2e8f0;margin-bottom:12px;">
+        <strong>5-Round Recursive Self-Improvement (RSI) Verification Loop:</strong> Across 5 iterative rounds of skill engineering, red-team adversarial critique, and 10,000-path correlated Student-t Monte Carlo simulation, portfolio Sortino improved by <strong>+123.9%</strong> (from <code>2.72</code> to <code>6.09</code>) while 95% Value-at-Risk was cut by nearly two-thirds (from <code>-6.93%</code> to <code>-2.46%</code>).
+      </div>
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>RSI Round &amp; Skill Version</th>
+            <th>Red-Team Critique Fixed</th>
+            <th>Mathematical / Algorithmic Upgrade</th>
+            <th>Top Ranked Picks</th>
+            <th>E[4W Return]</th>
+            <th>4W Win Prob</th>
+            <th>95% VaR</th>
+            <th>Sharpe</th>
+            <th>Sortino</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Round 1 (`v1.0`)</strong><br/><span style="font-size:10px;color:#94a3b8;">Naive Wilder-14</span></td>
+            <td>Bought micro-cap dilution traps (`GANX`, `ANVS`, `INKT`) &amp; slow-bleed value traps (`REV14=61.1`).</td>
+            <td>Baseline Wilder-14 oversold ranking (`100 - Wilder14`) without cash-burn or volume filters.</td>
+            <td>`COYA`, `ACIU`, `QTRX`, `QURE`, `ACAD`</td>
+            <td>+7.00%</td>
+            <td>79.1%</td>
+            <td style="color:#f87171;">-6.93%</td>
+            <td>0.82</td>
+            <td>2.72</td>
+          </tr>
+          <tr>
+            <td><strong>Round 2 (`v2.0`)</strong><br/><span style="font-size:10px;color:#94a3b8;">6-RSI + Runway Gate</span></td>
+            <td>Eliminated sub-12m runway dilution bombs (`GANX` 4.3m, `ANVS` 7.5m, `INKT` 9.0m, `ATHE` 11.4m).</td>
+            <td>Added 6-Model RSI Ensemble (Cutler-14, Connors-3-2-100, StochRSI, VW-RSI) + <code>Runway_Gate(18m)</code> + Net-Cash/Cap Floor.</td>
+            <td>`SUPN`, `ACAD`, `PRTA`, `QURE`, `COYA`</td>
+            <td>+7.58%</td>
+            <td>88.3%</td>
+            <td style="color:#38bdf8;">-3.25%</td>
+            <td>1.21</td>
+            <td>5.48</td>
+          </tr>
+          <tr>
+            <td><strong>Round 3 (`v3.0`)</strong><br/><span style="font-size:10px;color:#94a3b8;">Regime Bifurcation</span></td>
+            <td>Separated active turnarounds (`5d ΔRSI &gt; +5`) from passive knives (`QURE` `VW-RSI=4.6`).</td>
+            <td>Split signals into <strong>Type A Higher-Low Inflection</strong> (`SUPN`, `ACAD`, `DNLI`, `PRAX`) vs <strong>Type B Cash-Floor Coil</strong> (`COYA`, `PRTA`, `QTRX`).</td>
+            <td>`SUPN`, `ACAD`, `DNLI`, `PRAX`, `COYA`</td>
+            <td>+6.70%</td>
+            <td>85.8%</td>
+            <td style="color:#38bdf8;">-4.03%</td>
+            <td>1.07</td>
+            <td>4.06</td>
+          </tr>
+          <tr>
+            <td><strong>Round 4 (`v4.0`)</strong><br/><span style="font-size:10px;color:#94a3b8;">Bio-Target + Squeeze</span></td>
+            <td>Penalized unstratified CNS trials; rewarded human genetics &amp; short-squeeze fuel (`SI &gt; 10%`).</td>
+            <td>Integrated OpenTargets `MONDO_0005180` scores (`LRRK2=0.8790`, `SNCA=0.8706`) + BBB multiplier (`1.20x`) + Short-Interest Torque.</td>
+            <td>`SUPN`, `ACAD`, `PRTA`, `DNLI`, `PRAX`</td>
+            <td>+7.22%</td>
+            <td>86.9%</td>
+            <td style="color:#38bdf8;">-3.50%</td>
+            <td>1.13</td>
+            <td>4.63</td>
+          </tr>
+          <tr style="background:rgba(16,185,129,0.08);">
+            <td><strong style="color:#34d399;">Round 5 (`v5.0` ★)</strong><br/><span style="font-size:10px;color:#34d399;">CVaR Barbell + ATR Stops</span></td>
+            <td>Eliminated correlation clustering &amp; fixed-stop whipsaws; split micro-cap entry into 2 tranches.</td>
+            <td>42% Commercial Anchor (`SUPN`, `ACAD`) + 44% Pivotal Swing (`DNLI`, `PRTA`, `PRAX`, `QURE`) + 14% 2-Tranche Coils (`COYA`, `ACIU`).</td>
+            <td><strong>`SUPN`, `ACAD`, `PRTA`, `DNLI`, `PRAX`, `QURE`, `COYA`, `ACIU`</strong></td>
+            <td style="color:#34d399;font-weight:800;">+7.52%</td>
+            <td style="color:#34d399;font-weight:800;">89.6%</td>
+            <td style="color:#34d399;font-weight:800;">-2.46%</td>
+            <td style="color:#34d399;font-weight:800;">1.28</td>
+            <td style="color:#34d399;font-weight:800;">6.09 ★</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TAB 3: FIVE-HAT REASONING DEEP DIVE -->
+    <div id="tab-expert-hats" class="matrix-tab-content">
+      <div class="hat-grid">
+        <div class="hat-card">
+          <h4>🎩 Hat 1: Translational Neurobiologist &amp; Geneticist</h4>
+          <p>• <strong>Genetic Validation First:</strong> Prioritizes OpenTargets top-ranked human genetic targets: <code>LRRK2</code> (0.8790, <code>DNLI</code>/Biogen Phase 2b LUMA) and <code>SNCA</code> (0.8706, <code>PRTA</code>/Roche Phase 3 PARAISO &amp; <code>ACIU</code> Phase 2 VacSYn).<br/>
+          • <strong>BBB Transport Multiplier (1.20x):</strong> Rewards <code>DNLI</code>'s engineered Fc TfR1 Transport Vehicle (10–30x CNS distribution) and <code>DYN</code>'s FORCE platform over un-shuttled systemic mAbs.<br/>
+          • <strong>SAA Biomarker Stratification:</strong> Requires CSF α-Synuclein Seed Amplification Assay (SAA) or plasma p-Tau217/NfL (<code>QTRX</code>) enrichment to eliminate the ~20% misdiagnosis rate in clinical trials.</p>
+        </div>
+        <div class="hat-card">
+          <h4>🎩 Hat 2: Biotech Forensic CFO &amp; Runway Auditor</h4>
+          <p>• <strong>Hard 18-Month Dilution Gate:</strong> Automatically flags and caps sub-12-month cash traps (<code>GANX</code> 4.3m, <code>ANVS</code> 7.5m, <code>INKT</code> 9.0m, <code>ATHE</code> 11.4m) that face binary ATM/warrant dilution.<br/>
+          • <strong>Self-Funding Cash Anchors (42% Weight):</strong> Anchors the weekly book in <code>SUPN</code> ($372M cash, 232+m runway, $830M rev) and <code>ACAD</code> ($956.5M cash, 218+m runway, $1.14B rev).<br/>
+          • <strong>Net-Cash-to-Market-Cap Arbitrage:</strong> Exploits deep balance-sheet floors in <code>QTRX</code> (85.7% Net Cash/Cap), <code>PRTA</code> (66.8% Net Cash/Cap), <code>QURE</code> (49.7% Net Cash/Cap), <code>COYA</code> (46.7%), and <code>ACIU</code> (42.8%).</p>
+        </div>
+        <div class="hat-card">
+          <h4>🎩 Hat 3: CMT / Quantitative Multi-Timeframe RSI Trader</h4>
+          <p>• <strong>6-Model RSI Ensemble:</strong> Combines Wilder-14, Fast Wilder-5, Cutler-14 (SMA-based to remove Wilder memory drag after biotech gaps), Connors RSI(3,2,100), StochRSI-14, and Volume-Weighted RSI-14.<br/>
+          • <strong>Type A Higher-Low Inflection:</strong> Buys <code>SUPN</code> (W14 44.5, +17.4 5d, CRSI 27.8), <code>ACAD</code> (W14 36.4, +9.4 5d, VW-RSI 26.3), <code>DNLI</code> (W14 39.9, +9.6 5d), and <code>PRAX</code> (W14 38.0, +10.6 5d) as momentum turns upward.<br/>
+          • <strong>Type B Cash-Floor Coil:</strong> Uses 2-tranche entry on <code>COYA</code> (RSI-5 13.3, CRSI 18.0, 59.0% 2Y win rate) — 50% at $3.86–$3.96 and 50% on a stop-limit above $4.05.</p>
+        </div>
+        <div class="hat-card">
+          <h4>🎩 Hat 4: FDA Regulatory &amp; Big Pharma M&amp;A Strategist</h4>
+          <p>• <strong>Medicare Part D $2,000 OOP Cap Tailwinds:</strong> Directly accelerates script abandonment recovery and patient adherence for <code>SUPN</code> (ONAPGO + Gocovri) and <code>ACAD</code> (Nuplazid).<br/>
+          • <strong>Big Pharma Co-Development Shield:</strong> <code>PRTA</code> is fully carried in Phase 3 PARAISO by Roche; <code>DNLI</code> splits Phase 2b LUMA with Biogen; <code>ACIU</code> holds $2.1B+ milestones with Takeda and J&amp;J.<br/>
+          • <strong>CBER Surrogate Endpoint Tailwinds:</strong> <code>QURE</code> (AMT-130) and <code>DNLI</code> (DNL310 heparan sulfate BLA) benefit from FDA biomarker-driven accelerated pathways.</p>
+        </div>
+      </div>
+      <div class="hat-card" style="margin-top:12px;border-color:rgba(16,185,129,0.4);">
+        <h4 style="color:#34d399;">🎩 Hat 5: Institutional Portfolio CRO &amp; Short-Squeeze Architect (Barbell Construction)</h4>
+        <p>• <strong>Short-Interest Squeeze Torque:</strong> Targets oversold SMID names where short sellers are trapped against massive cash floors and upcoming catalysts: <code>PRTA</code> (18.8% SI), <code>PRAX</code> (15.0% SI), <code>DYN</code> (13.7% SI), <code>QURE</code> (11.4% SI), and <code>DNLI</code> (10.2% SI).<br/>
+        • <strong>ATR-Normalized Stop Discipline:</strong> Every position has an exact <code>1.8 × ATR14</code> hard stop loss (ranging from <code>$36.33</code> on <code>SUPN</code> to <code>$3.77</code> on <code>COYA</code>), capping portfolio 95% Value-at-Risk at <strong>-2.46%</strong> across 10,000 Student-t Monte Carlo paths.</p>
+      </div>
+    </div>
+
+    <!-- TAB 4: 6-MODEL TECHNICAL RSI SUITE -->
+    <div id="tab-multi-rsi" class="matrix-tab-content">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Wilder RSI-14</th>
+            <th>5d ΔRSI Slope</th>
+            <th>Fast RSI-5</th>
+            <th>Cutler RSI-14 (SMA)</th>
+            <th>Connors RSI(3,2,100)</th>
+            <th>StochRSI-14</th>
+            <th>Vol-Weighted RSI-14</th>
+            <th>2Y RSI&lt;30 Win Rate</th>
+            <th>ATR-14 (Stop Dist)</th>
+            <th>Short Interest %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>SUPN</strong></td><td>44.5</td><td style="color:#34d399;font-weight:700;">+17.4</td><td>57.3</td><td>40.5</td><td style="color:#34d399;font-weight:700;">27.8</td><td>61.1</td><td>50.1</td><td style="color:#34d399;">56.0% (+2.9% avg)</td><td>$2.43 ($36.33)</td><td>5.3%</td></tr>
+          <tr><td><strong>ACAD</strong></td><td>36.4</td><td style="color:#34d399;font-weight:700;">+9.4</td><td>37.4</td><td>34.9</td><td style="color:#34d399;font-weight:700;">26.5</td><td>36.6</td><td style="color:#34d399;font-weight:700;">26.3</td><td>52.6% (+1.4% avg)</td><td>$1.16 ($17.65)</td><td>5.2%</td></tr>
+          <tr><td><strong>PRTA</strong></td><td>44.2</td><td style="color:#38bdf8;">+1.1</td><td>37.6</td><td>46.1</td><td>39.5</td><td>24.5</td><td>35.4</td><td>52.5% (+1.8% avg)</td><td>$0.39 ($7.49)</td><td style="color:#f472b6;font-weight:700;">18.8%</td></tr>
+          <tr><td><strong>DNLI</strong></td><td>39.9</td><td style="color:#34d399;font-weight:700;">+9.6</td><td>42.8</td><td>39.2</td><td style="color:#34d399;font-weight:700;">27.5</td><td>49.3</td><td>45.3</td><td>51.0% (+1.2% avg)</td><td>$0.98 ($16.65)</td><td style="color:#38bdf8;font-weight:700;">10.2%</td></tr>
+          <tr><td><strong>PRAX</strong></td><td>38.0</td><td style="color:#34d399;font-weight:700;">+10.6</td><td>44.7</td><td style="color:#34d399;font-weight:700;">34.6</td><td style="color:#34d399;font-weight:700;">33.4</td><td>63.2</td><td>42.4</td><td style="color:#34d399;font-weight:700;">57.0% (+5.8% avg)</td><td>$14.14 ($227.51)</td><td style="color:#f472b6;font-weight:700;">15.0%</td></tr>
+          <tr><td><strong>QURE</strong></td><td style="color:#34d399;font-weight:700;">28.1</td><td style="color:#94a3b8;">-0.7</td><td>33.8</td><td style="color:#34d399;font-weight:700;">22.1</td><td>38.2</td><td>44.0</td><td style="color:#34d399;font-weight:800;">4.6</td><td>53.1% (+3.1% avg)</td><td>$1.33 ($20.03)</td><td style="color:#38bdf8;font-weight:700;">11.4%</td></tr>
+          <tr><td><strong>COYA</strong></td><td style="color:#34d399;font-weight:700;">25.9</td><td style="color:#f87171;">-6.1</td><td style="color:#34d399;font-weight:800;">13.3</td><td style="color:#34d399;font-weight:800;">20.3</td><td style="color:#34d399;font-weight:800;">18.0</td><td style="color:#34d399;font-weight:800;">4.5</td><td>30.2</td><td style="color:#34d399;font-weight:800;">59.0% (+4.2% avg)</td><td>$0.09 ($3.77)</td><td>3.1%</td></tr>
+          <tr><td><strong>QTRX</strong></td><td>36.0</td><td style="color:#94a3b8;">-1.2</td><td>31.2</td><td style="color:#34d399;font-weight:800;">15.8</td><td style="color:#34d399;font-weight:700;">29.7</td><td>18.4</td><td>28.9</td><td>54.2% (+2.4% avg)</td><td>$0.14 ($2.60)</td><td>6.8%</td></tr>
+          <tr><td><strong>DYN</strong></td><td>39.8</td><td style="color:#34d399;">+3.8</td><td>41.2</td><td>36.7</td><td>35.1</td><td>42.0</td><td>38.5</td><td style="color:#34d399;font-weight:700;">56.9% (+3.9% avg)</td><td>$0.96 ($13.90)</td><td style="color:#f472b6;font-weight:700;">13.7%</td></tr>
+          <tr><td><strong>ACIU</strong></td><td>37.4</td><td style="color:#f87171;">-3.4</td><td>28.9</td><td style="color:#34d399;font-weight:700;">30.7</td><td style="color:#34d399;font-weight:700;">26.2</td><td>22.1</td><td>33.8</td><td style="color:#34d399;font-weight:700;">57.7% (+3.5% avg)</td><td>$0.09 ($2.26)</td><td>2.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

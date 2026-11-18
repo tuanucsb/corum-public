@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Legal, RegTech & Healthcare Policy — Interactive Macro Network Graph & 5-Round RSI Matrix</title>
+<style>
+  :root {
+    --bg: #0b0f17;
+    --panel: #111827;
+    --panel-alt: #172033;
+    --border: #24324b;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --teal: #14b8a6;
+    --cyan: #38bdf8;
+    --amber: #f59e0b;
+    --emerald: #10b981;
+    --rose: #f43f5e;
+    --violet: #a855f7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    padding-bottom: 60px;
+  }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11, 15, 23, 0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .topbar-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .badge-pill {
+    background: rgba(20, 184, 166, 0.16);
+    border: 1px solid rgba(20, 184, 166, 0.45);
+    color: #2dd4bf;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .nav-btn:hover, .nav-btn.primary {
+    background: rgba(20, 184, 166, 0.18);
+    border-color: var(--teal);
+    color: #5eead4;
+  }
+  .container {
+    max-width: 1560px;
+    margin: 0 auto;
+    padding: 24px 28px;
+  }
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .kpi-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #f8fafc;
+  }
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--teal);
+    margin-top: 4px;
+  }
+  .grid-main {
+    display: grid;
+    grid-template-columns: 1fr 410px;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 1150px) {
+    .grid-main { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: rgba(23, 32, 51, 0.55);
+  }
+  .card-header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f3f4f6;
+  }
+  .scenario-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #0e1523;
+  }
+  .scen-btn {
+    background: #172236;
+    border: 1px solid #2b3b59;
+    color: #cbd5e1;
+    padding: 6px 11px;
+    border-radius: 7px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .scen-btn.active, .scen-btn:hover {
+    background: rgba(20, 184, 166, 0.22);
+    border-color: var(--teal);
+    color: #5eead4;
+  }
+  #networkCanvas {
+    width: 100%;
+    height: 620px;
+    display: block;
+    background: radial-gradient(circle at 50% 45%, #131d31 0%, #0b0f17 75%);
+    cursor: grab;
+  }
+  .legend-bar {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 10px 18px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .inspector-body {
+    padding: 18px;
+    max-height: 680px;
+    overflow-y: auto;
+  }
+  .node-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .prop-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .prop-row {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 28px 0 14px;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rounds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .round-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--teal);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .round-card h3 {
+    font-size: 13.5px;
+    color: #5eead4;
+    margin-bottom: 6px;
+  }
+  .round-card p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .formula-box {
+    font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    font-size: 11px;
+    background: #0b0f17;
+    border: 1px solid var(--border);
+    padding: 7px 9px;
+    border-radius: 6px;
+    color: #93c5fd;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #0e1523;
+    align-items: center;
+  }
+  .filter-input {
+    background: #172236;
+    border: 1px solid #2b3b59;
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    min-width: 240px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th, td {
+    padding: 10px 11px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  th {
+    background: #141d2f;
+    color: #94a3b8;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+  tr:hover td {
+    background: rgba(20, 184, 166, 0.06);
+  }
+  .act-badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 10.5px;
+    display: inline-block;
+  }
+  .act-strong { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+  .act-buy { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+  .act-accum { background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+  .act-hold { background: rgba(148, 163, 184, 0.16); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.35); }
+  .act-avoid { background: rgba(244, 63, 94, 0.16); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">
+    <span class="badge-pill">⚖️ CORUM Institutional MacroGraph · Topic X</span>
+    <h1 style="font-size:17px;font-weight:800;">AI Legal, RegTech &amp; Healthcare Policy Ecosystem (`AILegalSystemAgent`)</h1>
+  </div>
+  <div class="nav-links">
+    <a class="nav-btn primary" href="#hardened-ai-legal-recommendation-matrix">🎯 5-Round RSI Recommendation Matrix (38 Equities)</a>
+    <a class="nav-btn" href="#healthcare-policy-legal-war">🏥 Healthcare Policy &amp; Gov Agency Map</a>
+    <a class="nav-btn" href="ai_legal_ecosystem_deep_research_report.html">📄 Read Full Institutional Deep Research Report</a>
+    <a class="nav-btn" href="../index.html" target="_top">⬅ Back to CORUM Board</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-label">Public Universe &amp; Sub-Sectors</div>
+      <div class="kpi-val">38 Equities · 5 Layers</div>
+      <div class="kpi-sub">AI_LEGAL + 5 Sub-Sector Nodes + 20 E1 Edges</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Tier-1 Core Compounders (Buy Now)</div>
+      <div class="kpi-val">MSFT · CLBT · VEEV · PLTR</div>
+      <div class="kpi-sub">+ NOW &amp; WAY (66.0% Core Sleeve Allocation)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Healthcare Policy &amp; Gov Mandate Pick</div>
+      <div class="kpi-val">WAY (#6) &amp; TYL (#9)</div>
+      <div class="kpi-sub">CMS-0057-F Prior-Auth AI Appeals &amp; Odyssey Courts</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Citator Duopoly (Buy on RSI Pullback)</div>
+      <div class="kpi-val">RELX (#15) · TRI (#16)</div>
+      <div class="kpi-sub">Shepard's &amp; KeyCite +15-25% Agentic ACV Uplift</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Round 5 Structural Traps Avoided</div>
+      <div class="kpi-val">CTEV · CLVT · LZ · LAW · OTEX</div>
+      <div class="kpi-sub">PE Debt Roll-Ups, 23% SBC Dilution &amp; LLM Disruption</div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE MACRO NETWORK GRAPH & SHOCK SIMULATOR -->
+  <div class="grid-main">
+    <div class="card">
+      <div class="card-header">
+        <h2>☊ Interactive AI Legal, Government Agency &amp; Healthcare Policy Causal Network Graph</h2>
+        <span style="font-size:12px;color:var(--muted);">Click any node to inspect causal edges, tickers &amp; shock propagation</span>
+      </div>
+      <div class="scenario-bar">
+        <button class="scen-btn active" onclick="runScenario('baseline', this)">Baseline Equilibrium</button>
+        <button class="scen-btn" onclick="runScenario('AI_LEG_R1', this)">⚡ AI_LEG_R1: AmLaw 200 Agentic Citator Supercycle</button>
+        <button class="scen-btn" onclick="runScenario('AI_LEG_R2', this)">⚠️ AI_LEG_R2: Frontier LLM &amp; Word Copilot CLM Squeeze</button>
+        <button class="scen-btn" onclick="runScenario('AI_LEG_R3', this)">🔍 AI_LEG_R3: Corporate Default &amp; Cyber eDiscovery Boom</button>
+        <button class="scen-btn" onclick="runScenario('AI_LEG_R5', this)">🏥 AI_LEG_R5: CMS-0057-F, NSA IDR &amp; DOJ FCA Healthcare Wave</button>
+      </div>
+      <canvas id="networkCanvas" width="1020" height="620"></canvas>
+      <div class="legend-bar">
+        <div class="legend-item"><span class="dot" style="background:#14b8a6;"></span> AI Legal Roll-Up &amp; 5 Sub-Sector Nodes</div>
+        <div class="legend-item"><span class="dot" style="background:#f59e0b;"></span> Government &amp; Judicial Enforcement Agencies</div>
+        <div class="legend-item"><span class="dot" style="background:#f43f5e;"></span> Healthcare Policy &amp; Medical-Legal Catalysts</div>
+        <div class="legend-item"><span class="dot" style="background:#38bdf8;"></span> Macro Drivers (AI Demand, Rates, Credit, Tariffs)</div>
+        <div class="legend-item"><span class="dot" style="background:#a855f7;"></span> Private Legal AI Unicorns (Harvey, Clio, Ironclad, EvenUp)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>🔬 Node &amp; Causal Shock Inspector</h2>
+        <span id="activeScenarioBadge" class="badge-pill">Baseline</span>
+      </div>
+      <div class="inspector-body" id="inspectorPanel">
+      </div>
+    </div>
+  </div>
+
+  <!-- HEALTHCARE POLICY & GOV AGENCY ARCHITECTURE -->
+  <div id="healthcare-policy-legal-war" class="section-title">
+    🏛️ Government Agencies &amp; The Healthcare Policy / Medical-Legal Ecosystem
+  </div>
+  <div class="rounds-grid">
+    <div class="round-card" style="border-top-color:#f43f5e;">
+      <h3>🏥 CMS-0057-F Prior Authorization &amp; Payer Denial Appeals</h3>
+      <p>Mandates HL7 FHIR Prior Auth APIs, 72-hr urgent / 7-day standard turnaround, and explicit legal/clinical denial reasons across Medicare Advantage, Medicaid, and Exchange plans.</p>
+      <div class="formula-box">Winners: WAY (AltitudeAI), HURN, EXLS, PLTR | Exposed Target: UNH (Optum/naviHealth scrutiny)</div>
+    </div>
+    <div class="round-card" style="border-top-color:#f59e0b;">
+      <h3>⚖️ No Surprises Act (NSA) Federal IDR Arbitration Surge</h3>
+      <p>Over 1.3M+ out-of-network payment disputes/year filed in the Federal IDR portal (&gt;10x initial CMS projections), with providers winning ~77-80% of determinations using AI-compiled dossiers.</p>
+      <div class="formula-box">Provider Appeal Winners: WAY, HURN | Distressed MDL Antitrust Target: CTEV (6.8x Debt/EBITDA)</div>
+    </div>
+    <div class="round-card" style="border-top-color:#38bdf8;">
+      <h3>🛡️ DOJ Civil Fraud / HHS-OIG False Claims Act ($2.9B+) &amp; HSR Antitrust</h3>
+      <p>Record 979 qui tam whistleblower suits and $2.9B+ FCA recoveries (led by Medicare Advantage RADV/upcoding &amp; Stark Law) plus expanded 100+ hr FTC/DOJ HSR merger filings.</p>
+      <div class="formula-box">Winners: FCN (FTI), CRAI (Charles River), HURN, CLBT (Forensics), PLTR, DFIN (Venue VDR)</div>
+    </div>
+    <div class="round-card" style="border-top-color:#10b981;">
+      <h3>🏛️ Federal/State Courts (FRCP 11, 26, 37 &amp; FRE 702/901) + SEC/FDA</h3>
+      <p>FRCP Rule 11 sanctions against LLM hallucinations protect Shepard's/KeyCite; FRE 901/702 mandates cryptographic forensics; FDA 21 CFR Part 11 &amp; SEC TSR enforce validated clouds.</p>
+      <div class="formula-box">Winners: TYL (Odyssey Courts), CLBT (Inseyets), RELX, TRI, VEEV (Vault RIM/MLR), BR, WK</div>
+    </div>
+  </div>
+
+  <!-- 5-ROUND RECURSIVE SELF-IMPROVEMENT ENGINE CARDS -->
+  <div class="section-title">
+    🔄 5-Round Recursive Self-Improvement (RSI) Loop: Critic → Sector Sub-Skills → Upgrade
+  </div>
+  <div class="rounds-grid" id="subSkillsContainer"></div>
+
+  <!-- HARDENED 38-STOCK RECOMMENDATION MATRIX -->
+  <div id="hardened-ai-legal-recommendation-matrix" class="section-title">
+    🎯 Final Hardened AI Legal Recommendation Matrix (38 Public Equities · 5-Round RSI Telemetry)
+  </div>
+  <div class="card">
+    <div class="filter-bar">
+      <input type="text" id="searchInput" class="filter-input" placeholder="Search ticker, company, sub-sector, role (e.g. WAY, CLBT, Citator, CMS)..." oninput="renderTable()" />
+      <button class="scen-btn active" onclick="setLayerFilter('ALL', this)">All 38 Equities</button>
+      <button class="scen-btn" onclick="setLayerFilter('BUY_ONLY', this)">⭐ Top Conviction Buys (11 Portfolio Picks)</button>
+      <button class="scen-btn" onclick="setLayerFilter('AI_LEGAL_RESEARCH_MONOPOLIES', this)">L1: Citators &amp; Research (8)</button>
+      <button class="scen-btn" onclick="setLayerFilter('AI_LEGAL_CLM_ENTERPRISE', this)">L2: CLM &amp; Enterprise (8)</button>
+      <button class="scen-btn" onclick="setLayerFilter('AI_LEGAL_EDISCOVERY_LITIGATION', this)">L3: eDiscovery &amp; Courts (8)</button>
+      <button class="scen-btn" onclick="setLayerFilter('AI_LEGAL_IP_PATENT_ENTITY', this)">L4: IP, SMB &amp; Advisory (6)</button>
+      <button class="scen-btn" onclick="setLayerFilter('AI_LEGAL_REGTECH_HEALTH_POLICY', this)">L5: RegTech &amp; Healthcare Policy (8)</button>
+      <button class="scen-btn" onclick="setLayerFilter('AVOID', this)">🚨 Structural Traps / Avoid</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>R5 Rank</th>
+            <th>Ticker</th>
+            <th>Company &amp; Ecosystem Role</th>
+            <th>Sub-Sector</th>
+            <th>R0 (Rank)</th>
+            <th>R1 (SBC/Debt)</th>
+            <th>R2 (Citator/SoR)</th>
+            <th>R3 (Agentic/Hedge)</th>
+            <th>R4 (Gov/Health)</th>
+            <th>R5 Final</th>
+            <th>Price</th>
+            <th>RSI-14</th>
+            <th>Weinstein Stage</th>
+            <th>Buy Zone</th>
+            <th>Stop-Loss</th>
+            <th>12M Target</th>
+            <th>R:R</th>
+            <th>5-Hat Scores (Moat/CFO/Pol/Tech/CRO)</th>
+            <th>Port Wt</th>
+            <th>Hardened Action</th>
+          </tr>
+        </thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const EQUITIES = [{"ticker": "MSFT", "price": 524.51, "sma20": 526.7, "sma50": 508.35, "sma200": 435.37, "rsi14": 52.6, "atr14": 11.04, "atr_pct": 2.1, "ret_1w": -0.86, "ret_1m": 5.34, "ret_3m": 35.05, "ret_1y": 1.0, "high_52w": 551.15, "low_52w": 348.54, "pct_off_high": -4.83, "weinstein_stage": "Stage 2 (Markup)", "name": "Microsoft Corporation", "layer": "L2: CLM, Document AI & Enterprise Legal Workflow", "subsector_node": "AI_LEGAL_CLM_ENTERPRISE", "role": "Microsoft 365 Word Copilot (Primary Legal Drafting Surface), Purview eDiscovery Premium & Azure OpenAI Legal Cloud", "sbc_pct_rev": 4.4, "rev_growth_pct": 15.2, "fcf_margin_pct": 30.2, "net_debt_ebitda": -0.3, "citator_sor_score": 9.5, "llm_commoditization_vuln": 1.1, "agentic_uplift_score": 9.3, "ediscovery_gb_deflation_risk": 0.2, "litigation_counter_cyclical": 8.2, "gov_mandate_score": 9.4, "hc_policy_exposure": 8.7, "devils_advocate_risk": 2.0, "devils_advocate_note": "Massive $80B+ AI CapEx cycle weighs on near-term D&A margins, and FTC/EU antitrust scrutiny limits large legal-tech M&A.", "catalyst": "Microsoft Purview eDiscovery E5 upsell & Word Copilot deeply integrated with Harvey, Lexis+ AI, and CoCounsel", "r0_score": 72.7, "true_fcf_margin_pct": 25.8, "sbc_adj_rule_of_x": 56.2, "r1_delta": 8.8, "r1_score": 81.5, "r2_delta": 8.4, "r2_score": 89.9, "r3_delta": 4.7, "r3_score": 94.6, "r4_delta": 6.8, "r4_score": 97.0, "r5_delta": 5.0, "r5_score": 95.4, "buy_zone": "$515.68 - $527.27", "stop_loss": 495.81, "target_12m": 627.83, "reward_risk": 3.6, "upside_12m_pct": 19.7, "downside_risk_pct": 5.5, "hat_legal_moat": 9.2, "hat_cfo_forensic": 10.0, "hat_health_gov_policy": 9.2, "hat_quant_technical": 8.9, "hat_cro_redteam": 7.7, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 91.6, "rank_r5": 1, "action": "STRONG BUY (Tier-1 Core Compounder)", "portfolio_weight_pct": 13.0, "rank_r0": 7, "rank_change_r0_to_r5": 6}, {"ticker": "CLBT", "price": 12.1, "sma20": 11.29, "sma50": 11.39, "sma200": 13.55, "rsi14": 59.8, "atr14": 0.39, "atr_pct": 3.21, "ret_1w": 9.7, "ret_1m": 6.42, "ret_3m": -17.35, "ret_1y": -35.16, "high_52w": 19.98, "low_52w": 9.58, "pct_off_high": -39.44, "weinstein_stage": "Stage 1 (Basing / Early Recovery)", "name": "Cellebrite DI Ltd.", "layer": "L3: eDiscovery, Digital Forensics, Court Tech & Litigation Analytics", "subsector_node": "AI_LEGAL_EDISCOVERY_LITIGATION", "role": "Inseyets Digital Forensics, Guardian Chain-of-Custody Evidence & Pathfinder AI Investigation", "sbc_pct_rev": 7.8, "rev_growth_pct": 23.5, "fcf_margin_pct": 28.0, "net_debt_ebitda": -3.2, "citator_sor_score": 9.3, "llm_commoditization_vuln": 1.2, "agentic_uplift_score": 9.2, "ediscovery_gb_deflation_risk": 0.4, "litigation_counter_cyclical": 9.2, "gov_mandate_score": 9.6, "hc_policy_exposure": 7.0, "devils_advocate_risk": 2.4, "devils_advocate_note": "DOGE federal procurement timing delays can shift quarterly federal bookings, though FedRAMP High sponsorship and state/local/enterprise demand remain robust.", "catalyst": "FedRAMP High authorization for Cellebrite Federal Cloud & Inseyets AI upgrade cycle", "r0_score": 80.0, "true_fcf_margin_pct": 20.2, "sbc_adj_rule_of_x": 67.2, "r1_delta": 11.2, "r1_score": 91.2, "r2_delta": 9.4, "r2_score": 95.0, "r3_delta": 5.6, "r3_score": 95.5, "r4_delta": 4.7, "r4_score": 97.0, "r5_delta": 2.9, "r5_score": 94.5, "buy_zone": "$11.79 - $12.20", "stop_loss": 11.09, "target_12m": 15.67, "reward_risk": 3.53, "upside_12m_pct": 29.5, "downside_risk_pct": 8.3, "hat_legal_moat": 9.0, "hat_cfo_forensic": 10.0, "hat_health_gov_policy": 8.7, "hat_quant_technical": 8.4, "hat_cro_redteam": 7.2, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 90.7, "rank_r5": 2, "action": "STRONG BUY (Tier-1 Core Compounder)", "portfolio_weight_pct": 12.0, "rank_r0": 3, "rank_change_r0_to_r5": 1}, {"ticker": "VEEV", "price": 323.04, "sma20": 297.47, "sma50": 276.93, "sma200": 207.17, "rsi14": 76.2, "atr14": 9.7, "atr_pct": 3.0, "ret_1w": 4.09, "ret_1m": 17.54, "ret_3m": 66.12, "ret_1y": 10.25, "high_52w": 325.99, "low_52w": 148.05, "pct_off_high": -0.9, "weinstein_stage": "Stage 2 (Markup)", "name": "Veeva Systems Inc.", "layer": "L5: RegTech, SEC/Capital Markets Compliance & Healthcare Policy Legal Tech", "subsector_node": "AI_LEGAL_REGTECH_HEALTH_POLICY", "role": "Veeva Vault RIM (FDA/EMA Regulatory Submissions), Vault PromoMats (Medical-Legal-Regulatory Review) & Vault Quality", "sbc_pct_rev": 14.8, "rev_growth_pct": 14.6, "fcf_margin_pct": 39.5, "net_debt_ebitda": -5.2, "citator_sor_score": 9.6, "llm_commoditization_vuln": 1.1, "agentic_uplift_score": 9.1, "ediscovery_gb_deflation_risk": 0.1, "litigation_counter_cyclical": 8.5, "gov_mandate_score": 9.7, "hc_policy_exposure": 9.8, "devils_advocate_risk": 2.0, "devils_advocate_note": "CRM platform migration off Salesforce to native Vault CRM through 2025-2029 requires execution, though R&D/Regulatory Vault (RIM/PromoMats) is growing 18%+.", "catalyst": "Veeva Vault AI for Medical-Legal-Regulatory (MLR) ad review & Vault RIM FDA submission automation", "r0_score": 75.3, "true_fcf_margin_pct": 24.7, "sbc_adj_rule_of_x": 53.9, "r1_delta": 8.3, "r1_score": 83.6, "r2_delta": 9.9, "r2_score": 93.5, "r3_delta": 4.9, "r3_score": 95.5, "r4_delta": 9.1, "r4_score": 97.0, "r5_delta": 2.6, "r5_score": 94.3, "buy_zone": "$308.49 - $320.13", "stop_loss": 291.03, "target_12m": 396.29, "reward_risk": 3.52, "upside_12m_pct": 22.7, "downside_risk_pct": 9.9, "hat_legal_moat": 9.3, "hat_cfo_forensic": 10.0, "hat_health_gov_policy": 9.7, "hat_quant_technical": 7.8, "hat_cro_redteam": 7.7, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 90.5, "rank_r5": 3, "action": "STRONG BUY (Tier-1 Core Compounder)", "portfolio_weight_pct": 11.0, "rank_r0": 6, "rank_change_r0_to_r5": 3}, {"ticker": "PLTR", "price": 196.75, "sma20": 195.51, "sma50": 184.75, "sma200": 153.15, "rsi14": 54.4, "atr14": 8.96, "atr_pct": 4.56, "ret_1w": 5.76, "ret_1m": 2.16, "ret_3m": 49.59, "ret_1y": 6.56, "high_52w": 212.94, "low_52w": 106.37, "pct_off_high": -7.6, "weinstein_stage": "Stage 2 (Markup)", "name": "Palantir Technologies Inc.", "layer": "L3: eDiscovery, Digital Forensics, Court Tech & Litigation Analytics", "subsector_node": "AI_LEGAL_EDISCOVERY_LITIGATION", "role": "Palantir AIP & Foundry Ontology for Complex Multi-District Litigation (MDL), DOJ/SEC Enforcement & Healthcare Fraud", "sbc_pct_rev": 18.2, "rev_growth_pct": 28.5, "fcf_margin_pct": 38.0, "net_debt_ebitda": -4.5, "citator_sor_score": 9.1, "llm_commoditization_vuln": 1.2, "agentic_uplift_score": 9.7, "ediscovery_gb_deflation_risk": 0.1, "litigation_counter_cyclical": 8.8, "gov_mandate_score": 9.7, "hc_policy_exposure": 9.2, "devils_advocate_risk": 3.4, "devils_advocate_note": "Extreme valuation multiple (>25x EV/Sales) creates high beta to any momentum rotation despite exceptional Rule of 66+ fundamentals.", "catalyst": "AIP Bootcamps for AmLaw 50 mass-tort/antitrust litigation & hospital prior-authorization legal appeals", "r0_score": 86.0, "true_fcf_margin_pct": 19.8, "sbc_adj_rule_of_x": 76.8, "r1_delta": 13.3, "r1_score": 92.0, "r2_delta": 7.4, "r2_score": 95.0, "r3_delta": 6.8, "r3_score": 95.5, "r4_delta": 8.2, "r4_score": 97.0, "r5_delta": 2.0, "r5_score": 94.1, "buy_zone": "$189.58 - $198.99", "stop_loss": 173.45, "target_12m": 278.47, "reward_risk": 3.51, "upside_12m_pct": 41.5, "downside_risk_pct": 11.8, "hat_legal_moat": 8.8, "hat_cfo_forensic": 10.0, "hat_health_gov_policy": 9.5, "hat_quant_technical": 8.9, "hat_cro_redteam": 6.1, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 90.3, "rank_r5": 4, "action": "STRONG BUY (Tier-1 Core Compounder)", "portfolio_weight_pct": 10.5, "rank_r0": 1, "rank_change_r0_to_r5": -3}, {"ticker": "NOW", "price": 158.96, "sma20": 141.68, "sma50": 137.49, "sma200": 115.11, "rsi14": 70.0, "atr14": 6.21, "atr_pct": 3.91, "ret_1w": 11.97, "ret_1m": 15.37, "ret_3m": 50.59, "ret_1y": -14.55, "high_52w": 192.97, "low_52w": 81.24, "pct_off_high": -17.62, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "ServiceNow, Inc.", "layer": "L2: CLM, Document AI & Enterprise Legal Workflow", "subsector_node": "AI_LEGAL_CLM_ENTERPRISE", "role": "Legal Service Delivery (LSD), Integrated Risk Management (IRM), EU AI Act Governance & Now Assist Legal", "sbc_pct_rev": 15.8, "rev_growth_pct": 22.4, "fcf_margin_pct": 31.5, "net_debt_ebitda": -1.8, "citator_sor_score": 8.9, "llm_commoditization_vuln": 1.4, "agentic_uplift_score": 9.6, "ediscovery_gb_deflation_risk": 0.1, "litigation_counter_cyclical": 8.0, "gov_mandate_score": 9.1, "hc_policy_exposure": 8.1, "devils_advocate_risk": 2.5, "devils_advocate_note": "DOGE federal agency IT contract reviews created short-term volatility, but Federal agency automation mandates ultimately require ServiceNow workflows.", "catalyst": "Now Assist for Legal Service Delivery (LSD) & Integrated Risk Management (IRM) agentic orchestration", "r0_score": 81.0, "true_fcf_margin_pct": 15.7, "sbc_adj_rule_of_x": 60.5, "r1_delta": 9.7, "r1_score": 90.7, "r2_delta": 4.3, "r2_score": 95.0, "r3_delta": 5.3, "r3_score": 95.5, "r4_delta": 5.2, "r4_score": 97.0, "r5_delta": -2.3, "r5_score": 92.1, "buy_zone": "$149.65 - $157.10", "stop_loss": 138.47, "target_12m": 203.54, "reward_risk": 3.36, "upside_12m_pct": 28.0, "downside_risk_pct": 12.9, "hat_legal_moat": 8.6, "hat_cfo_forensic": 10.0, "hat_health_gov_policy": 8.8, "hat_quant_technical": 6.1, "hat_cro_redteam": 7.1, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 88.4, "rank_r5": 5, "action": "STRONG BUY (Tier-1 Core Compounder)", "portfolio_weight_pct": 10.0, "rank_r0": 2, "rank_change_r0_to_r5": -3}, {"ticker": "WAY", "price": 28.85, "sma20": 26.85, "sma50": 25.8, "sma200": 23.98, "rsi14": 65.5, "atr14": 1.03, "atr_pct": 3.58, "ret_1w": 5.45, "ret_1m": 17.09, "ret_3m": 24.76, "ret_1y": -25.97, "high_52w": 40.35, "low_52w": 17.26, "pct_off_high": -28.5, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Waystar Holding Corp.", "layer": "L5: RegTech, SEC/Capital Markets Compliance & Healthcare Policy Legal Tech", "subsector_node": "AI_LEGAL_REGTECH_HEALTH_POLICY", "role": "AltitudeAI Healthcare Claim Denial Legal Appeals, CMS-0057-F Prior Authorization & Payer Rule Compliance", "sbc_pct_rev": 6.8, "rev_growth_pct": 14.8, "fcf_margin_pct": 21.5, "net_debt_ebitda": 2.4, "citator_sor_score": 9.1, "llm_commoditization_vuln": 1.4, "agentic_uplift_score": 9.4, "ediscovery_gb_deflation_risk": 0.1, "litigation_counter_cyclical": 9.1, "gov_mandate_score": 9.5, "hc_policy_exposure": 9.9, "devils_advocate_risk": 2.2, "devils_advocate_note": "PE sponsor (EQT/CPPIB/Bain) secondary share lockup supply is absorbed as net leverage drops toward 2.0x.", "catalyst": "Waystar AltitudeAI autonomous clinical-legal denial appeal letters & CMS-0057-F prior-auth API mandate", "r0_score": 66.9, "true_fcf_margin_pct": 14.7, "sbc_adj_rule_of_x": 44.3, "r1_delta": 4.1, "r1_score": 71.0, "r2_delta": 8.8, "r2_score": 79.8, "r3_delta": 6.5, "r3_score": 86.3, "r4_delta": 8.8, "r4_score": 95.1, "r5_delta": -0.4, "r5_score": 92.1, "buy_zone": "$27.30 - $28.54", "stop_loss": 25.45, "target_12m": 36.23, "reward_risk": 3.36, "upside_12m_pct": 25.6, "downside_risk_pct": 11.8, "hat_legal_moat": 8.8, "hat_cfo_forensic": 6.6, "hat_health_gov_policy": 9.6, "hat_quant_technical": 6.7, "hat_cro_redteam": 7.5, "survivability_5yr_pct": 85.6, "growth_prob_3yr_pct": 88.4, "rank_r5": 6, "action": "STRONG BUY (Tier-1 Core Compounder)", "portfolio_weight_pct": 9.5, "rank_r0": 13, "rank_change_r0_to_r5": 7}, {"ticker": "AXON", "price": 420.37, "sma20": 411.8, "sma50": 482.59, "sma200": 483.87, "rsi14": 46.6, "atr14": 17.96, "atr_pct": 4.27, "ret_1w": 7.71, "ret_1m": -5.53, "ret_3m": -20.0, "ret_1y": -42.88, "high_52w": 764.02, "low_52w": 339.01, "pct_off_high": -44.98, "weinstein_stage": "Stage 4 (Decline)", "name": "Axon Enterprise, Inc.", "layer": "L3: eDiscovery, Digital Forensics, Court Tech & Litigation Analytics", "subsector_node": "AI_LEGAL_EDISCOVERY_LITIGATION", "role": "Axon Evidence.com (Prosecutor/Defense Brady/Giglio Discovery), Draft One AI Police Reports & Justice AI", "sbc_pct_rev": 16.5, "rev_growth_pct": 31.8, "fcf_margin_pct": 19.5, "net_debt_ebitda": -0.8, "citator_sor_score": 9.4, "llm_commoditization_vuln": 1.1, "agentic_uplift_score": 9.8, "ediscovery_gb_deflation_risk": 0.2, "litigation_counter_cyclical": 9.0, "gov_mandate_score": 9.6, "hc_policy_exposure": 7.2, "devils_advocate_risk": 2.7, "devils_advocate_note": "Defense bar challenges to AI-drafted police reports under FRE 702/Sixth Amendment Confrontation Clause require strict human-in-the-loop audit trails; valuation is rich.", "catalyst": "Axon AI Era Plan ($199/mo bundle) + Axon Justice prosecutor discovery & auto-transcription rollout", "r0_score": 78.1, "true_fcf_margin_pct": 3.0, "sbc_adj_rule_of_x": 66.6, "r1_delta": 11.1, "r1_score": 89.2, "r2_delta": 8.7, "r2_score": 95.0, "r3_delta": 7.1, "r3_score": 95.5, "r4_delta": 5.0, "r4_score": 97.0, "r5_delta": -8.4, "r5_score": 88.6, "buy_zone": "$406.00 - $424.86", "stop_loss": 373.67, "target_12m": 565.81, "reward_risk": 3.11, "upside_12m_pct": 34.6, "downside_risk_pct": 11.1, "hat_legal_moat": 9.1, "hat_cfo_forensic": 10.0, "hat_health_gov_policy": 8.8, "hat_quant_technical": 3.6, "hat_cro_redteam": 6.9, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 85.1, "rank_r5": 7, "action": "HOLD / NEUTRAL WATCH", "portfolio_weight_pct": 0.0, "rank_r0": 4, "rank_change_r0_to_r5": -3}, {"ticker": "FICO", "price": 815.31, "sma20": 727.72, "sma50": 912.23, "sma200": 1146.08, "rsi14": 51.5, "atr14": 36.44, "atr_pct": 4.47, "ret_1w": 5.72, "ret_1m": -4.81, "ret_3m": -36.33, "ret_1y": -51.09, "high_52w": 1858.91, "low_52w": 586.05, "pct_off_high": -56.14, "weinstein_stage": "Stage 4 (Decline)", "name": "Fair Isaac Corporation", "layer": "L5: RegTech, SEC/Capital Markets Compliance & Healthcare Policy Legal Tech", "subsector_node": "AI_LEGAL_REGTECH_HEALTH_POLICY", "role": "FICO Scores (ECOA/FCRA Adverse Action Legal Standard) & FICO Falcon AML/Fraud RegTech Decisioning", "sbc_pct_rev": 7.5, "rev_growth_pct": 15.8, "fcf_margin_pct": 35.5, "net_debt_ebitda": 2.4, "citator_sor_score": 9.7, "llm_commoditization_vuln": 1.0, "agentic_uplift_score": 8.9, "ediscovery_gb_deflation_risk": 0.1, "litigation_counter_cyclical": 8.4, "gov_mandate_score": 9.3, "hc_policy_exposure": 6.4, "devils_advocate_risk": 2.7, "devils_advocate_note": "FHFA VantageScore 4.0 bi-merge transitions and CFPB rhetoric on credit bureau fees create periodic regulatory headlines, but FICO retains insurmountable pricing power.", "catalyst": "2026 Mortgage/Auto FICO Score special pricing tier increases & FICO Platform explainable AI RegTech", "r0_score": 76.6, "true_fcf_margin_pct": 28.0, "sbc_adj_rule_of_x": 59.6, "r1_delta": 7.5, "r1_score": 84.1, "r2_delta": 9.4, "r2_score": 93.5, "r3_delta": 4.2, "r3_score": 95.5, "r4_delta": 3.7, "r4_score": 97.0, "r5_delta": -8.4, "r5_score": 88.6, "buy_zone": "$786.16 - $824.42", "stop_loss": 720.57, "target_12m": 1110.36, "reward_risk": 3.11, "upside_12m_pct": 36.2, "downside_risk_pct": 11.6, "hat_legal_moat": 9.4, "hat_cfo_forensic": 8.8, "hat_health_gov_policy": 8.3, "hat_quant_technical": 3.6, "hat_cro_redteam": 6.9, "survivability_5yr_pct": 85.6, "growth_prob_3yr_pct": 85.1, "rank_r5": 8, "action": "HOLD / NEUTRAL WATCH", "portfolio_weight_pct": 0.0, "rank_r0": 5, "rank_change_r0_to_r5": -3}, {"ticker": "TYL", "price": 390.14, "sma20": 346.06, "sma50": 347.41, "sma200": 337.99, "rsi14": 73.2, "atr14": 11.04, "atr_pct": 2.83, "ret_1w": 8.11, "ret_1m": 19.36, "ret_3m": 23.51, "ret_1y": -23.3, "high_52w": 518.37, "low_52w": 270.71, "pct_off_high": -24.74, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Tyler Technologies, Inc.", "layer": "L3: eDiscovery, Digital Forensics, Court Tech & Litigation Analytics", "subsector_node": "AI_LEGAL_EDISCOVERY_LITIGATION", "role": "Odyssey Court Case Management & eFiling Monopoly (15,000+ Public Jurisdictions / 40%+ US Population)", "sbc_pct_rev": 5.4, "rev_growth_pct": 9.8, "fcf_margin_pct": 25.5, "net_debt_ebitda": 0.8, "citator_sor_score": 9.7, "llm_commoditization_vuln": 1.0, "agentic_uplift_score": 8.9, "ediscovery_gb_deflation_risk": 0.1, "litigation_counter_cyclical": 9.1, "gov_mandate_score": 9.8, "hc_policy_exposure": 7.4, "devils_advocate_risk": 1.9, "devils_advocate_note": "Premium valuation (~45x forward P/E) reflects near-zero churn (98% retention) and multi-year on-prem to AWS SaaS flip.", "catalyst": "On-premise court clients flipping to Tyler Cloud at 2.0x ARR multiplier + AI automated court clerk redaction", "r0_score": 64.1, "true_fcf_margin_pct": 20.1, "sbc_adj_rule_of_x": 39.7, "r1_delta": 3.1, "r1_score": 67.2, "r2_delta": 10.6, "r2_score": 77.8, "r3_delta": 5.3, "r3_score": 83.1, "r4_delta": 5.7, "r4_score": 88.8, "r5_delta": -1.0, "r5_score": 87.8, "buy_zone": "$373.58 - $386.83", "stop_loss": 353.71, "target_12m": 461.18, "reward_risk": 3.06, "upside_12m_pct": 18.2, "downside_risk_pct": 9.3, "hat_legal_moat": 9.4, "hat_cfo_forensic": 9.0, "hat_health_gov_policy": 9.0, "hat_quant_technical": 6.1, "hat_cro_redteam": 7.8, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 84.3, "rank_r5": 9, "action": "BUY (Tier-2 Tactical / Policy Winner)", "portfolio_weight_pct": 8.5, "rank_r0": 15, "rank_change_r0_to_r5": 6}, {"ticker": "MCO", "price": 483.45, "sma20": 465.45, "sma50": 477.83, "sma200": 466.65, "rsi14": 56.6, "atr14": 12.71, "atr_pct": 2.63, "ret_1w": -0.33, "ret_1m": 3.44, "ret_3m": -0.31, "ret_1y": -0.65, "high_52w": 543.25, "low_52w": 399.61, "pct_off_high": -11.01, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Moody's Corporation", "layer": "L1: Legal Research, Citators & Regulatory Monopolies", "subsector_node": "AI_LEGAL_RESEARCH_MONOPOLIES", "role": "Moody's Orbis (485M+ Corporate Entities), KYC/AML/Sanctions Legal Graph & Research Assistant AI", "sbc_pct_rev": 2.8, "rev_growth_pct": 11.2, "fcf_margin_pct": 32.0, "net_debt_ebitda": 2.1, "citator_sor_score": 9.1, "llm_commoditization_vuln": 1.3, "agentic_uplift_score": 8.5, "ediscovery_gb_deflation_risk": 0.2, "litigation_counter_cyclical": 7.8, "gov_mandate_score": 8.8, "hc_policy_exposure": 5.2, "devils_advocate_risk": 2.4, "devils_advocate_note": "Premium P/E multiple (~36x) leaves modest room for high-yield bond issuance slowdowns.", "catalyst": "Moody's Research Assistant AI & Orbis Beneficial Ownership / OFAC sanctions compliance automation", "r0_score": 69.6, "true_fcf_margin_pct": 29.2, "sbc_adj_rule_of_x": 51.6, "r1_delta": 5.8, "r1_score": 75.4, "r2_delta": 7.4, "r2_score": 82.8, "r3_delta": 2.2, "r3_score": 85.0, "r4_delta": 2.6, "r4_score": 87.6, "r5_delta": -0.9, "r5_score": 86.7, "buy_zone": "$473.28 - $486.63", "stop_loss": 450.4, "target_12m": 581.89, "reward_risk": 2.98, "upside_12m_pct": 20.4, "downside_risk_pct": 6.8, "hat_legal_moat": 8.8, "hat_cfo_forensic": 7.6, "hat_health_gov_policy": 7.5, "hat_quant_technical": 6.7, "hat_cro_redteam": 7.2, "survivability_5yr_pct": 87.4, "growth_prob_3yr_pct": 83.2, "rank_r5": 10, "action": "BUY (Tier-2 Tactical / Policy Winner)", "portfolio_weight_pct": 8.0, "rank_r0": 10, "rank_change_r0_to_r5": 0}, {"ticker": "SPGI", "price": 450.31, "sma20": 412.39, "sma50": 417.97, "sma200": 417.12, "rsi14": 71.9, "atr14": 9.29, "atr_pct": 2.06, "ret_1w": 4.81, "ret_1m": 11.67, "ret_3m": 2.61, "ret_1y": -1.89, "high_52w": 518.88, "low_52w": 358.55, "pct_off_high": -13.22, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "S&P Global Inc.", "layer": "L1: Legal Research, Citators & Regulatory Monopolies", "subsector_node": "AI_LEGAL_RESEARCH_MONOPOLIES", "role": "Capital IQ Pro Legal/M&A Precedent Clauses, Credit Ratings Covenants & Kensho AI", "sbc_pct_rev": 2.4, "rev_growth_pct": 10.5, "fcf_margin_pct": 33.8, "net_debt_ebitda": 1.9, "citator_sor_score": 9.2, "llm_commoditization_vuln": 1.2, "agentic_uplift_score": 8.6, "ediscovery_gb_deflation_risk": 0.2, "litigation_counter_cyclical": 7.6, "gov_mandate_score": 8.7, "hc_policy_exposure": 5.5, "devils_advocate_risk": 2.3, "devils_advocate_note": "Ratings issuance is sensitive to sudden credit spread widening, though Market Intelligence & Kensho AI provide recurring legal/covenant data stability.", "catalyst": "Kensho LLM credit-indenture covenant extraction & M&A regulatory precedent analyzer", "r0_score": 70.0, "true_fcf_margin_pct": 31.4, "sbc_adj_rule_of_x": 52.4, "r1_delta": 5.9, "r1_score": 75.9, "r2_delta": 7.5, "r2_score": 83.4, "r3_delta": 2.1, "r3_score": 85.5, "r4_delta": 2.4, "r4_score": 87.9, "r5_delta": -1.8, "r5_score": 86.1, "buy_zone": "$436.38 - $447.52", "stop_loss": 419.66, "target_12m": 507.39, "reward_risk": 2.94, "upside_12m_pct": 12.7, "downside_risk_pct": 6.8, "hat_legal_moat": 8.9, "hat_cfo_forensic": 7.8, "hat_health_gov_policy": 7.6, "hat_quant_technical": 6.1, "hat_cro_redteam": 7.4, "survivability_5yr_pct": 88.0, "growth_prob_3yr_pct": 82.7, "rank_r5": 11, "action": "BUY (Tier-2 Tactical / Policy Winner)", "portfolio_weight_pct": 6.5, "rank_r0": 9, "rank_change_r0_to_r5": -2}, {"ticker": "NICE", "price": 121.18, "sma20": 114.48, "sma50": 108.86, "sma200": 105.09, "rsi14": 63.7, "atr14": 4.75, "atr_pct": 3.92, "ret_1w": 8.03, "ret_1m": 6.64, "ret_3m": 27.54, "ret_1y": -8.41, "high_52w": 138.58, "low_52w": 83.1, "pct_off_high": -12.56, "weinstein_stage": "Stage 2 (Markup)", "name": "NICE Ltd.", "layer": "L3: eDiscovery, Digital Forensics, Court Tech & Litigation Analytics", "subsector_node": "AI_LEGAL_EDISCOVERY_LITIGATION", "role": "NICE Justice (Prosecutor Digital Evidence Discovery), Evidencentral & Actimize Financial Crime RegTech", "sbc_pct_rev": 6.4, "rev_growth_pct": 14.5, "fcf_margin_pct": 26.2, "net_debt_ebitda": -1.5, "citator_sor_score": 8.4, "llm_commoditization_vuln": 2.5, "agentic_uplift_score": 8.4, "ediscovery_gb_deflation_risk": 0.8, "litigation_counter_cyclical": 8.3, "gov_mandate_score": 8.6, "hc_policy_exposure": 7.1, "devils_advocate_risk": 2.9, "devils_advocate_note": "CCaaS market sentiment fears GenAI voice bots reducing agent seats, causing NICE to trade at a compressed ~14x P/E despite 14.5% growth and net cash.", "catalyst": "NICE Justice prosecutorial AI evidence redaction & Actimize GenAI financial crime investigation", "r0_score": 69.5, "true_fcf_margin_pct": 19.8, "sbc_adj_rule_of_x": 48.8, "r1_delta": 7.1, "r1_score": 76.6, "r2_delta": 1.3, "r2_score": 77.9, "r3_delta": 1.5, "r3_score": 79.4, "r4_delta": 2.6, "r4_score": 82.1, "r5_delta": 3.1, "r5_score": 85.2, "buy_zone": "$117.38 - $122.37", "stop_loss": 108.83, "target_12m": 156.64, "reward_risk": 2.87, "upside_12m_pct": 29.3, "downside_risk_pct": 10.2, "hat_legal_moat": 7.8, "hat_cfo_forensic": 10.0, "hat_health_gov_policy": 8.1, "hat_quant_technical": 8.9, "hat_cro_redteam": 6.7, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 81.8, "rank_r5": 12, "action": "BUY (Tier-2 Tactical / Policy Winner)", "portfolio_weight_pct": 6.0, "rank_r0": 11, "rank_change_r0_to_r5": -1}, {"ticker": "INTU", "price": 343.39, "sma20": 305.65, "sma50": 319.99, "sma200": 364.61, "rsi14": 64.3, "atr14": 12.61, "atr_pct": 3.67, "ret_1w": 5.61, "ret_1m": 24.49, "ret_3m": 13.52, "ret_1y": -49.02, "high_52w": 679.59, "low_52w": 250.56, "pct_off_high": -49.47, "weinstein_stage": "Stage 1 (Basing / Early Recovery)", "name": "Intuit Inc.", "layer": "L4: IP/Patent Lifecycle, Entity Management, SMB Legal & Dispute Advisory", "subsector_node": "AI_LEGAL_IP_PATENT_ENTITY", "role": "TurboTax / ProConnect Tax Code Legal Engine, QuickBooks Payroll Statutory Compliance & Intuit Assist AI", "sbc_pct_rev": 11.4, "rev_growth_pct": 12.8, "fcf_margin_pct": 27.5, "net_debt_ebitda": 0.4, "citator_sor_score": 9.0, "llm_commoditization_vuln": 2.1, "agentic_uplift_score": 8.9, "ediscovery_gb_deflation_risk": 0.1, "litigation_counter_cyclical": 7.5, "gov_mandate_score": 9.0, "hc_policy_exposure": 6.2, "devils_advocate_risk": 2.6, "devils_advocate_note": "IRS Direct File political headlines have largely faded under current administration, leaving Intuit's assisted tax and QuickBooks Enterprise engines dominant.", "catalyst": "Intuit Assist agentic tax/payroll compliance & QuickBooks Enterprise Suite mid-market expansion", "r0_score": 68.5, "true_fcf_margin_pct": 16.1, "sbc_adj_rule_of_x": 41.7, "r1_delta": 3.6, "r1_score": 72.1, "r2_delta": 4.3, "r2_score": 76.4, "r3_delta": 2.9, "r3_score": 79.3, "r4_delta": 3.1, "r4_score": 82.4, "r5_delta": 2.5, "r5_score": 84.9, "buy_zone": "$333.30 - $346.54", "stop_loss": 310.6, "target_12m": 436.84, "reward_risk": 2.85, "upside_12m_pct": 27.2, "downside_risk_pct": 9.5, "hat_legal_moat": 8.5, "hat_cfo_forensic": 9.3, "hat_health_gov_policy": 8.0, "hat_quant_technical": 8.4, "hat_cro_redteam": 7.0, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 81.5, "rank_r5": 13, "action": "BUY (Tier-2 Tactical / Policy Winner)", "portfolio_weight_pct": 5.0, "rank_r0": 12, "rank_change_r0_to_r5": -1}, {"ticker": "HURN", "price": 138.0, "sma20": 136.62, "sma50": 133.86, "sma200": 128.34, "rsi14": 52.5, "atr14": 3.04, "atr_pct": 2.2, "ret_1w": 1.1, "ret_1m": 3.4, "ret_3m": 7.8, "ret_1y": 14.5, "high_52w": 149.04, "low_52w": 107.64, "pct_off_high": -7.4, "weinstein_stage": "Stage 2 (Markup)", "name": "Huron Consulting Group Inc.", "layer": "L4: IP/Patent Lifecycle, Entity Management, SMB Legal & Dispute Advisory", "subsector_node": "AI_LEGAL_IP_PATENT_ENTITY", "role": "Healthcare Hospital Revenue Cycle Appeals, CMS/340B/OIG Regulatory Compliance & Research University Grant Compliance", "sbc_pct_rev": 2.9, "rev_growth_pct": 11.4, "fcf_margin_pct": 13.5, "net_debt_ebitda": 1.5, "citator_sor_score": 8.5, "llm_commoditization_vuln": 1.8, "agentic_uplift_score": 8.7, "ediscovery_gb_deflation_risk": 0.2, "litigation_counter_cyclical": 9.1, "gov_mandate_score": 9.1, "hc_policy_exposure": 9.7, "devils_advocate_risk": 2.1, "devils_advocate_note": "NIH grant indirect-cost cap proposals create headline noise for Education segment (~30% of rev), though this actually increases university demand for Huron restructuring.", "catalyst": "Hospital payer claim-denial legal appeal automation & health system financial turnaround backlog", "r0_score": 58.3, "true_fcf_margin_pct": 10.6, "sbc_adj_rule_of_x": 33.4, "r1_delta": 1.7, "r1_score": 60.0, "r2_delta": 6.5, "r2_score": 66.5, "r3_delta": 4.6, "r3_score": 71.1, "r4_delta": 7.7, "r4_score": 78.8, "r5_delta": 4.8, "r5_score": 83.6, "buy_zone": "$135.57 - $138.76", "stop_loss": 130.1, "target_12m": 159.78, "reward_risk": 2.76, "upside_12m_pct": 15.8, "downside_risk_pct": 5.7, "hat_legal_moat": 8.1, "hat_cfo_forensic": 5.1, "hat_health_gov_policy": 9.3, "hat_quant_technical": 8.9, "hat_cro_redteam": 7.6, "survivability_5yr_pct": 88.0, "growth_prob_3yr_pct": 80.3, "rank_r5": 14, "action": "BUY (Tier-2 Tactical / Policy Winner)", "portfolio_weight_pct": 0.0, "rank_r0": 25, "rank_change_r0_to_r5": 11}, {"ticker": "RELX", "price": 40.54, "sma20": 36.34, "sma50": 35.41, "sma200": 34.1, "rsi14": 79.8, "atr14": 0.87, "atr_pct": 2.15, "ret_1w": 3.79, "ret_1m": 20.98, "ret_3m": 14.61, "ret_1y": -10.55, "high_52w": 45.72, "low_52w": 26.83, "pct_off_high": -11.33, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "RELX PLC (LexisNexis Legal & Professional)", "layer": "L1: Legal Research, Citators & Regulatory Monopolies", "subsector_node": "AI_LEGAL_RESEARCH_MONOPOLIES", "role": "Lexis+ AI & Prot\u00e9g\u00e9 Agentic Legal Workspace / Shepard's Citator Monopoly / Matthew Bender", "sbc_pct_rev": 1.2, "rev_growth_pct": 8.4, "fcf_margin_pct": 27.5, "net_debt_ebitda": 1.8, "citator_sor_score": 9.8, "llm_commoditization_vuln": 1.0, "agentic_uplift_score": 9.4, "ediscovery_gb_deflation_risk": 0.5, "litigation_counter_cyclical": 8.8, "gov_mandate_score": 8.9, "hc_policy_exposure": 7.4, "devils_advocate_risk": 2.0, "devils_advocate_note": "AmLaw 200 associate headcount flattening is offset by +20% tier migration to Lexis+ AI Prot\u00e9g\u00e9 and strategic distribution partnership with Harvey AI.", "catalyst": "Lexis+ AI Prot\u00e9g\u00e9 private-vault rollout across AmLaw 100 & Harvey joint enterprise workflows", "r0_score": 63.9, "true_fcf_margin_pct": 26.3, "sbc_adj_rule_of_x": 43.1, "r1_delta": 3.9, "r1_score": 67.8, "r2_delta": 10.9, "r2_score": 78.7, "r3_delta": 5.2, "r3_score": 83.9, "r4_delta": 3.8, "r4_score": 87.7, "r5_delta": -4.2, "r5_score": 83.5, "buy_zone": "$39.23 - $40.28", "stop_loss": 37.66, "target_12m": 45.5, "reward_risk": 2.75, "upside_12m_pct": 12.2, "downside_risk_pct": 7.1, "hat_legal_moat": 9.6, "hat_cfo_forensic": 6.5, "hat_health_gov_policy": 8.4, "hat_quant_technical": 4.8, "hat_cro_redteam": 7.7, "survivability_5yr_pct": 88.0, "growth_prob_3yr_pct": 80.2, "rank_r5": 15, "action": "BUY (Tier-2 Tactical / Policy Winner)", "portfolio_weight_pct": 0.0, "rank_r0": 16, "rank_change_r0_to_r5": 1}, {"ticker": "TRI", "price": 123.17, "sma20": 105.08, "sma50": 103.28, "sma200": 95.26, "rsi14": 79.0, "atr14": 3.69, "atr_pct": 3.0, "ret_1w": 12.99, "ret_1m": 22.78, "ret_3m": 26.82, "ret_1y": -21.06, "high_52w": 157.66, "low_52w": 75.78, "pct_off_high": -21.87, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Thomson Reuters Corporation", "layer": "L1: Legal Research, Citators & Regulatory Monopolies", "subsector_node": "AI_LEGAL_RESEARCH_MONOPOLIES", "role": "Westlaw Precision + CoCounsel (Casetext) + Practical Law + HighQ + CLEAR Gov Investigations", "sbc_pct_rev": 1.5, "rev_growth_pct": 7.8, "fcf_margin_pct": 25.8, "net_debt_ebitda": 0.9, "citator_sor_score": 9.9, "llm_commoditization_vuln": 1.0, "agentic_uplift_score": 9.5, "ediscovery_gb_deflation_risk": 0.8, "litigation_counter_cyclical": 9.0, "gov_mandate_score": 9.3, "hc_policy_exposure": 6.5, "devils_advocate_risk": 2.1, "devils_advocate_note": "High valuation multiple (~34x FCF) requires sustained 8%+ Legal Professionals organic growth; protected by $8B+ M&A firepower and net-debt/EBITDA < 1.0x.", "catalyst": "CoCounsel 2.0 multi-agent brief/transactional drafting & Microsoft 365 Word Copilot legal plugin monetization", "r0_score": 62.2, "true_fcf_margin_pct": 24.3, "sbc_adj_rule_of_x": 39.9, "r1_delta": 3.2, "r1_score": 65.4, "r2_delta": 11.4, "r2_score": 76.8, "r3_delta": 5.2, "r3_score": 82.0, "r4_delta": 3.7, "r4_score": 85.7, "r5_delta": -4.4, "r5_score": 81.3, "buy_zone": "$117.64 - $122.06", "stop_loss": 111.0, "target_12m": 142.8, "reward_risk": 2.59, "upside_12m_pct": 15.9, "downside_risk_pct": 9.9, "hat_legal_moat": 9.7, "hat_cfo_forensic": 9.0, "hat_health_gov_policy": 8.3, "hat_quant_technical": 4.8, "hat_cro_redteam": 7.6, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 78.0, "rank_r5": 16, "action": "BUY (Tier-2 Tactical / Policy Winner)", "portfolio_weight_pct": 0.0, "rank_r0": 19, "rank_change_r0_to_r5": 3}, {"ticker": "ADBE", "price": 263.82, "sma20": 244.07, "sma50": 255.78, "sma200": 252.24, "rsi14": 59.8, "atr14": 8.9, "atr_pct": 3.37, "ret_1w": 7.59, "ret_1m": 10.42, "ret_3m": 10.97, "ret_1y": -25.37, "high_52w": 363.7, "low_52w": 190.12, "pct_off_high": -27.46, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Adobe Inc.", "layer": "L2: CLM, Document AI & Enterprise Legal Workflow", "subsector_node": "AI_LEGAL_CLM_ENTERPRISE", "role": "Adobe Acrobat PDF Legal Standard (Bates Stamping/Redaction), Acrobat Sign & Acrobat AI Assistant", "sbc_pct_rev": 8.6, "rev_growth_pct": 10.8, "fcf_margin_pct": 37.5, "net_debt_ebitda": -0.2, "citator_sor_score": 8.7, "llm_commoditization_vuln": 2.9, "agentic_uplift_score": 8.5, "ediscovery_gb_deflation_risk": 0.3, "litigation_counter_cyclical": 7.4, "gov_mandate_score": 8.2, "hc_policy_exposure": 6.8, "devils_advocate_risk": 2.8, "devils_advocate_note": "Creative Cloud AI competition (Midjourney/Sora) clouds investor sentiment even as Document Cloud (Acrobat AI) outperforms.", "catalyst": "Acrobat AI Assistant multi-document contract comparison & legal redaction monetization", "r0_score": 71.3, "true_fcf_margin_pct": 28.9, "sbc_adj_rule_of_x": 50.5, "r1_delta": 7.5, "r1_score": 78.8, "r2_delta": 1.0, "r2_score": 79.8, "r3_delta": 1.4, "r3_score": 81.2, "r4_delta": 1.3, "r4_score": 82.5, "r5_delta": -1.7, "r5_score": 80.8, "buy_zone": "$256.70 - $266.05", "stop_loss": 240.68, "target_12m": 322.99, "reward_risk": 2.56, "upside_12m_pct": 22.4, "downside_risk_pct": 8.8, "hat_legal_moat": 8.0, "hat_cfo_forensic": 10.0, "hat_health_gov_policy": 7.7, "hat_quant_technical": 6.7, "hat_cro_redteam": 6.8, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 77.6, "rank_r5": 17, "action": "BUY (Tier-2 Tactical / Policy Winner)", "portfolio_weight_pct": 0.0, "rank_r0": 8, "rank_change_r0_to_r5": -9}, {"ticker": "EXLS", "price": 42.3, "sma20": 37.65, "sma50": 36.79, "sma200": 32.72, "rsi14": 76.9, "atr14": 1.12, "atr_pct": 2.65, "ret_1w": 7.03, "ret_1m": 20.31, "ret_3m": 48.11, "ret_1y": 2.64, "high_52w": 43.88, "low_52w": 24.85, "pct_off_high": -3.6, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "ExlService Holdings, Inc.", "layer": "L3: eDiscovery, Digital Forensics, Court Tech & Litigation Analytics", "subsector_node": "AI_LEGAL_EDISCOVERY_LITIGATION", "role": "Insurance Subrogation/Claims Litigation AI, Medical-Legal Record Summarization & Payer Utilization Review", "sbc_pct_rev": 3.8, "rev_growth_pct": 14.2, "fcf_margin_pct": 15.8, "net_debt_ebitda": 0.4, "citator_sor_score": 8.3, "llm_commoditization_vuln": 2.2, "agentic_uplift_score": 8.8, "ediscovery_gb_deflation_risk": 0.4, "litigation_counter_cyclical": 8.7, "gov_mandate_score": 8.1, "hc_policy_exposure": 9.3, "devils_advocate_risk": 2.2, "devils_advocate_note": "Often misclassified as traditional IT BPO, whereas >55% of revenue is high-margin data/AI analytics embedded in insurance litigation & healthcare.", "catalyst": "EXL.AI Insurance Subrogation/Litigation prediction models & CMS-0057-F payer clinical-legal appeals engine", "r0_score": 62.7, "true_fcf_margin_pct": 12.0, "sbc_adj_rule_of_x": 40.4, "r1_delta": 3.3, "r1_score": 66.0, "r2_delta": 5.1, "r2_score": 71.1, "r3_delta": 3.9, "r3_score": 74.9, "r4_delta": 4.9, "r4_score": 79.8, "r5_delta": -1.6, "r5_score": 78.2, "buy_zone": "$40.62 - $41.96", "stop_loss": 38.6, "target_12m": 47.67, "reward_risk": 2.37, "upside_12m_pct": 12.7, "downside_risk_pct": 8.7, "hat_legal_moat": 7.8, "hat_cfo_forensic": 9.1, "hat_health_gov_policy": 8.5, "hat_quant_technical": 6.1, "hat_cro_redteam": 7.5, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 75.1, "rank_r5": 18, "action": "ACCUMULATE ON PULLBACK", "portfolio_weight_pct": 0.0, "rank_r0": 18, "rank_change_r0_to_r5": 0}, {"ticker": "BR", "price": 183.28, "sma20": 168.34, "sma50": 170.75, "sma200": 165.34, "rsi14": 69.2, "atr14": 3.94, "atr_pct": 2.15, "ret_1w": 4.67, "ret_1m": 12.68, "ret_3m": 20.7, "ret_1y": -19.3, "high_52w": 230.01, "low_52w": 133.01, "pct_off_high": -20.32, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Broadridge Financial Solutions, Inc.", "layer": "L5: RegTech, SEC/Capital Markets Compliance & Healthcare Policy Legal Tech", "subsector_node": "AI_LEGAL_REGTECH_HEALTH_POLICY", "role": "SEC Rule 14a-8 Proxy Voting Monopoly (80%+ North American Shares), Securities Class Action Claims & OpsGPT", "sbc_pct_rev": 1.6, "rev_growth_pct": 7.5, "fcf_margin_pct": 17.5, "net_debt_ebitda": 2.0, "citator_sor_score": 9.7, "llm_commoditization_vuln": 0.9, "agentic_uplift_score": 8.5, "ediscovery_gb_deflation_risk": 0.1, "litigation_counter_cyclical": 9.0, "gov_mandate_score": 9.8, "hc_policy_exposure": 5.8, "devils_advocate_risk": 1.8, "devils_advocate_note": "Low-beta compounder; minor sensitivity to equity trading volumes and event-driven mutual fund proxy mailings.", "catalyst": "SEC Tailored Shareholder Reports, Universal Proxy governance & Global Securities Class Action AI claims engine", "r0_score": 56.7, "true_fcf_margin_pct": 15.9, "sbc_adj_rule_of_x": 30.9, "r1_delta": 1.2, "r1_score": 57.9, "r2_delta": 10.2, "r2_score": 68.1, "r3_delta": 4.2, "r3_score": 72.3, "r4_delta": 4.8, "r4_score": 77.1, "r5_delta": 0.4, "r5_score": 77.5, "buy_zone": "$177.37 - $182.10", "stop_loss": 170.28, "target_12m": 201.7, "reward_risk": 2.32, "upside_12m_pct": 10.1, "downside_risk_pct": 7.1, "hat_legal_moat": 9.5, "hat_cfo_forensic": 4.7, "hat_health_gov_policy": 8.4, "hat_quant_technical": 6.7, "hat_cro_redteam": 7.9, "survivability_5yr_pct": 88.0, "growth_prob_3yr_pct": 74.4, "rank_r5": 19, "action": "ACCUMULATE ON PULLBACK", "portfolio_weight_pct": 0.0, "rank_r0": 27, "rank_change_r0_to_r5": 8}, {"ticker": "FCN", "price": 157.24, "sma20": 142.04, "sma50": 145.56, "sma200": 160.06, "rsi14": 68.4, "atr14": 4.25, "atr_pct": 2.7, "ret_1w": 5.86, "ret_1m": 20.54, "ret_3m": -2.87, "ret_1y": -0.37, "high_52w": 189.3, "low_52w": 129.12, "pct_off_high": -16.94, "weinstein_stage": "Stage 1 (Basing / Early Recovery)", "name": "FTI Consulting, Inc.", "layer": "L4: IP/Patent Lifecycle, Entity Management, SMB Legal & Dispute Advisory", "subsector_node": "AI_LEGAL_IP_PATENT_ENTITY", "role": "Chapter 11 Restructuring, Forensic Litigation & E-Discovery (FTI Technology), Antitrust & Healthcare Dispute Advisory", "sbc_pct_rev": 2.4, "rev_growth_pct": 8.5, "fcf_margin_pct": 11.8, "net_debt_ebitda": -0.6, "citator_sor_score": 8.8, "llm_commoditization_vuln": 1.5, "agentic_uplift_score": 8.6, "ediscovery_gb_deflation_risk": 1.2, "litigation_counter_cyclical": 9.8, "gov_mandate_score": 9.2, "hc_policy_exposure": 8.7, "devils_advocate_risk": 2.1, "devils_advocate_note": "Senior Managing Director (SMD) hiring Poach/Retention cycles can temporarily compress quarterly EBITDA margins before new cohorts ramp.", "catalyst": "Rising corporate Chapter 11 restructurings, DOJ Antitrust/FCA investigations & FTI Technology IQ.AI rollout", "r0_score": 54.2, "true_fcf_margin_pct": 9.4, "sbc_adj_rule_of_x": 26.4, "r1_delta": 2.2, "r1_score": 56.4, "r2_delta": 7.4, "r2_score": 63.8, "r3_delta": 3.4, "r3_score": 67.2, "r4_delta": 6.4, "r4_score": 73.6, "r5_delta": 3.6, "r5_score": 77.2, "buy_zone": "$150.87 - $155.97", "stop_loss": 143.22, "target_12m": 176.88, "reward_risk": 2.3, "upside_12m_pct": 12.5, "downside_risk_pct": 8.9, "hat_legal_moat": 8.4, "hat_cfo_forensic": 7.1, "hat_health_gov_policy": 9.0, "hat_quant_technical": 8.4, "hat_cro_redteam": 7.6, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 74.1, "rank_r5": 20, "action": "ACCUMULATE ON PULLBACK", "portfolio_weight_pct": 0.0, "rank_r0": 29, "rank_change_r0_to_r5": 9}, {"ticker": "WK", "price": 85.8, "sma20": 73.96, "sma50": 73.95, "sma200": 62.96, "rsi14": 73.7, "atr14": 3.35, "atr_pct": 3.9, "ret_1w": 13.93, "ret_1m": 20.03, "ret_3m": 53.9, "ret_1y": -3.8, "high_52w": 97.1, "low_52w": 43.34, "pct_off_high": -11.63, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Workiva Inc.", "layer": "L2: CLM, Document AI & Enterprise Legal Workflow", "subsector_node": "AI_LEGAL_CLM_ENTERPRISE", "role": "SEC EDGAR 10-K/10-Q/S-1 Legal Disclosure System of Record, SOX/GRC Audit & CSRD Statutory Reporting", "sbc_pct_rev": 19.2, "rev_growth_pct": 16.8, "fcf_margin_pct": 12.5, "net_debt_ebitda": -0.5, "citator_sor_score": 8.9, "llm_commoditization_vuln": 1.8, "agentic_uplift_score": 8.6, "ediscovery_gb_deflation_risk": 0.2, "litigation_counter_cyclical": 7.8, "gov_mandate_score": 9.4, "hc_policy_exposure": 6.8, "devils_advocate_risk": 3.1, "devils_advocate_note": "High SBC (~19.2% of revenue) and political debates over ESG/CSRD timelines create headline volatility, though core SEC/SOX GRC NRR is 110%+.", "catalyst": "Workiva GenAI statutory disclosure drafting & multi-solution GRC/SEC expansion", "r0_score": 63.4, "true_fcf_margin_pct": -6.7, "sbc_adj_rule_of_x": 26.9, "r1_delta": 2.3, "r1_score": 65.7, "r2_delta": 7.1, "r2_score": 72.8, "r3_delta": 2.4, "r3_score": 75.2, "r4_delta": 4.0, "r4_score": 79.2, "r5_delta": -3.5, "r5_score": 75.7, "buy_zone": "$80.77 - $84.80", "stop_loss": 74.74, "target_12m": 100.41, "reward_risk": 2.19, "upside_12m_pct": 17.0, "downside_risk_pct": 12.9, "hat_legal_moat": 8.5, "hat_cfo_forensic": 7.2, "hat_health_gov_policy": 8.5, "hat_quant_technical": 6.1, "hat_cro_redteam": 6.4, "survivability_5yr_pct": 83.0, "growth_prob_3yr_pct": 72.7, "rank_r5": 21, "action": "ACCUMULATE ON PULLBACK", "portfolio_weight_pct": 0.0, "rank_r0": 17, "rank_change_r0_to_r5": -4}, {"ticker": "WTKWY", "price": 98.76, "sma20": 85.46, "sma50": 81.85, "sma200": 76.66, "rsi14": 82.8, "atr14": 2.2, "atr_pct": 2.22, "ret_1w": 7.62, "ret_1m": 25.99, "ret_3m": 30.85, "ret_1y": -22.33, "high_52w": 128.92, "low_52w": 62.32, "pct_off_high": -23.39, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Wolters Kluwer N.V.", "layer": "L1: Legal Research, Citators & Regulatory Monopolies", "subsector_node": "AI_LEGAL_RESEARCH_MONOPOLIES", "role": "VitalLaw + Legisway + ELM Solutions + CT Corporation (Entity/BOI) + UpToDate Clinical-Legal", "sbc_pct_rev": 1.1, "rev_growth_pct": 7.2, "fcf_margin_pct": 24.2, "net_debt_ebitda": 1.4, "citator_sor_score": 9.1, "llm_commoditization_vuln": 1.6, "agentic_uplift_score": 8.5, "ediscovery_gb_deflation_risk": 0.5, "litigation_counter_cyclical": 8.4, "gov_mandate_score": 8.9, "hc_policy_exposure": 9.1, "devils_advocate_risk": 2.2, "devils_advocate_note": "ADR liquidity in US is lower than Euronext Amsterdam primary listing (WKL.AS); European FX translation sensitivity.", "catalyst": "VitalLaw Expert AI & ELM Solutions AI legal invoice/outside-counsel bill review automation", "r0_score": 60.6, "true_fcf_margin_pct": 23.1, "sbc_adj_rule_of_x": 37.5, "r1_delta": 2.6, "r1_score": 63.2, "r2_delta": 8.2, "r2_score": 71.4, "r3_delta": 2.5, "r3_score": 73.9, "r4_delta": 6.3, "r4_score": 80.2, "r5_delta": -4.6, "r5_score": 75.6, "buy_zone": "$95.46 - $98.10", "stop_loss": 91.5, "target_12m": 108.32, "reward_risk": 2.19, "upside_12m_pct": 9.7, "downside_risk_pct": 7.4, "hat_legal_moat": 8.7, "hat_cfo_forensic": 8.7, "hat_health_gov_policy": 9.0, "hat_quant_technical": 4.8, "hat_cro_redteam": 7.5, "survivability_5yr_pct": 88.0, "growth_prob_3yr_pct": 72.6, "rank_r5": 22, "action": "ACCUMULATE ON PULLBACK", "portfolio_weight_pct": 0.0, "rank_r0": 22, "rank_change_r0_to_r5": 0}, {"ticker": "CRAI", "price": 200.14, "sma20": 177.2, "sma50": 171.72, "sma200": 165.65, "rsi14": 78.3, "atr14": 6.04, "atr_pct": 3.02, "ret_1w": 12.38, "ret_1m": 23.11, "ret_3m": 15.62, "ret_1y": 7.77, "high_52w": 224.94, "low_52w": 131.23, "pct_off_high": -11.02, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "CRA International, Inc. (Charles River Associates)", "layer": "L4: IP/Patent Lifecycle, Entity Management, SMB Legal & Dispute Advisory", "subsector_node": "AI_LEGAL_IP_PATENT_ENTITY", "role": "Premier Antitrust/Merger Econometric Litigation, IP/Patent Damages Testimony & Life Sciences Regulatory Disputes", "sbc_pct_rev": 1.8, "rev_growth_pct": 10.6, "fcf_margin_pct": 12.4, "net_debt_ebitda": 0.3, "citator_sor_score": 8.9, "llm_commoditization_vuln": 1.4, "agentic_uplift_score": 8.5, "ediscovery_gb_deflation_risk": 0.3, "litigation_counter_cyclical": 9.5, "gov_mandate_score": 9.3, "hc_policy_exposure": 8.8, "devils_advocate_risk": 1.9, "devils_advocate_note": "Small-cap liquidity ($1.3B-$1.5B market cap) and episodic timing of mega-antitrust trials.", "catalyst": "DOJ/FTC tech & healthcare antitrust litigation wave + Hatch-Waxman/IRA life sciences economic disputes", "r0_score": 56.8, "true_fcf_margin_pct": 10.6, "sbc_adj_rule_of_x": 31.8, "r1_delta": 1.4, "r1_score": 58.2, "r2_delta": 7.8, "r2_score": 66.0, "r3_delta": 4.5, "r3_score": 70.5, "r4_delta": 6.7, "r4_score": 77.2, "r5_delta": -4.0, "r5_score": 73.2, "buy_zone": "$191.08 - $198.33", "stop_loss": 180.21, "target_12m": 223.92, "reward_risk": 2.01, "upside_12m_pct": 11.9, "downside_risk_pct": 10.0, "hat_legal_moat": 8.6, "hat_cfo_forensic": 7.9, "hat_health_gov_policy": 9.1, "hat_quant_technical": 4.8, "hat_cro_redteam": 7.8, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 70.3, "rank_r5": 23, "action": "ACCUMULATE ON PULLBACK", "portfolio_weight_pct": 0.0, "rank_r0": 26, "rank_change_r0_to_r5": 3}, {"ticker": "FDS", "price": 331.32, "sma20": 290.55, "sma50": 289.22, "sma200": 248.23, "rsi14": 72.4, "atr14": 10.72, "atr_pct": 3.24, "ret_1w": 9.83, "ret_1m": 22.15, "ret_3m": 25.07, "ret_1y": 18.21, "high_52w": 339.83, "low_52w": 182.47, "pct_off_high": -2.5, "weinstein_stage": "Stage 2 (Markup)", "name": "FactSet Research Systems Inc.", "layer": "L1: Legal Research, Citators & Regulatory Monopolies", "subsector_node": "AI_LEGAL_RESEARCH_MONOPOLIES", "role": "FactSet Mercury AI, SEC Filing Redline/Transcript Legal Search & M&A Deal Terms", "sbc_pct_rev": 3.1, "rev_growth_pct": 5.6, "fcf_margin_pct": 28.4, "net_debt_ebitda": 1.5, "citator_sor_score": 8.2, "llm_commoditization_vuln": 2.6, "agentic_uplift_score": 7.8, "ediscovery_gb_deflation_risk": 0.3, "litigation_counter_cyclical": 7.2, "gov_mandate_score": 7.6, "hc_policy_exposure": 4.8, "devils_advocate_risk": 2.9, "devils_advocate_note": "Buy-side & investment banking seat headcount pressure limits ASV acceleration to ~5-6%.", "catalyst": "FactSet Mercury AI agentic SEC filing & indenture comparison rollout", "r0_score": 61.5, "true_fcf_margin_pct": 25.3, "sbc_adj_rule_of_x": 36.5, "r1_delta": 2.4, "r1_score": 63.9, "r2_delta": 0.4, "r2_score": 64.3, "r3_delta": -0.6, "r3_score": 63.7, "r4_delta": 0.0, "r4_score": 63.7, "r5_delta": 0.7, "r5_score": 64.4, "buy_zone": "$315.24 - $328.10", "stop_loss": 295.94, "target_12m": 357.32, "reward_risk": 1.39, "upside_12m_pct": 7.8, "downside_risk_pct": 10.7, "hat_legal_moat": 7.5, "hat_cfo_forensic": 5.5, "hat_health_gov_policy": 6.6, "hat_quant_technical": 7.8, "hat_cro_redteam": 6.7, "survivability_5yr_pct": 88.0, "growth_prob_3yr_pct": 61.8, "rank_r5": 24, "action": "HOLD / NEUTRAL WATCH", "portfolio_weight_pct": 0.0, "rank_r0": 20, "rank_change_r0_to_r5": -4}, {"ticker": "SSNC", "price": 82.96, "sma20": 81.55, "sma50": 81.35, "sma200": 73.95, "rsi14": 52.1, "atr14": 2.11, "atr_pct": 2.55, "ret_1w": -1.32, "ret_1m": 5.68, "ret_3m": 10.96, "ret_1y": -0.55, "high_52w": 89.81, "low_52w": 61.18, "pct_off_high": -7.63, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "SS&C Technologies Holdings, Inc.", "layer": "L5: RegTech, SEC/Capital Markets Compliance & Healthcare Policy Legal Tech", "subsector_node": "AI_LEGAL_REGTECH_HEALTH_POLICY", "role": "Intralinks M&A Legal VDR, Blue Prism Legal/Healthcare RPA, Fund Admin RegTech & DomaniRx Claims Platform", "sbc_pct_rev": 3.2, "rev_growth_pct": 6.8, "fcf_margin_pct": 22.8, "net_debt_ebitda": 2.9, "citator_sor_score": 8.5, "llm_commoditization_vuln": 2.3, "agentic_uplift_score": 8.2, "ediscovery_gb_deflation_risk": 0.4, "litigation_counter_cyclical": 7.8, "gov_mandate_score": 8.6, "hc_policy_exposure": 8.4, "devils_advocate_risk": 2.6, "devils_advocate_note": "Net debt/EBITDA of ~2.9x requires disciplined capital allocation, though 22.8% FCF margin supports steady de-leveraging and buybacks.", "catalyst": "Intralinks AI M&A contract analysis + DomaniRx transparent PBM claims adjudication rollout", "r0_score": 59.3, "true_fcf_margin_pct": 19.6, "sbc_adj_rule_of_x": 33.2, "r1_delta": -3.3, "r1_score": 56.0, "r2_delta": 2.2, "r2_score": 58.2, "r3_delta": 1.1, "r3_score": 59.3, "r4_delta": 4.6, "r4_score": 63.9, "r5_delta": -1.3, "r5_score": 62.6, "buy_zone": "$81.27 - $83.49", "stop_loss": 77.47, "target_12m": 89.86, "reward_risk": 1.26, "upside_12m_pct": 8.3, "downside_risk_pct": 6.6, "hat_legal_moat": 7.9, "hat_cfo_forensic": 5.1, "hat_health_gov_policy": 8.5, "hat_quant_technical": 6.7, "hat_cro_redteam": 7.0, "survivability_5yr_pct": 82.6, "growth_prob_3yr_pct": 60.1, "rank_r5": 25, "action": "HOLD / NEUTRAL WATCH", "portfolio_weight_pct": 0.0, "rank_r0": 23, "rank_change_r0_to_r5": -2}, {"ticker": "CSGP", "price": 33.92, "sma20": 29.98, "sma50": 30.52, "sma200": 37.44, "rsi14": 65.1, "atr14": 1.29, "atr_pct": 3.79, "ret_1w": 4.98, "ret_1m": 21.75, "ret_3m": 16.28, "ret_1y": -56.45, "high_52w": 79.08, "low_52w": 25.89, "pct_off_high": -57.11, "weinstein_stage": "Stage 1 (Basing / Early Recovery)", "name": "CoStar Group, Inc.", "layer": "L1: Legal Research, Citators & Regulatory Monopolies", "subsector_node": "AI_LEGAL_RESEARCH_MONOPOLIES", "role": "Commercial Real Estate Lease/Title/Zoning Legal Data Monopoly (Litigation-Enforced IP Moat)", "sbc_pct_rev": 4.2, "rev_growth_pct": 11.0, "fcf_margin_pct": 14.5, "net_debt_ebitda": -1.2, "citator_sor_score": 8.4, "llm_commoditization_vuln": 2.0, "agentic_uplift_score": 7.4, "ediscovery_gb_deflation_risk": 0.2, "litigation_counter_cyclical": 7.5, "gov_mandate_score": 7.2, "hc_policy_exposure": 5.0, "devils_advocate_risk": 4.2, "devils_advocate_note": "Heavy Homes.com marketing investment depresses near-term EBITDA margins despite pristine net-cash balance sheet.", "catalyst": "Proprietary commercial lease abstraction AI & aggressive copyright/CFAA litigation enforcement against scrapers", "r0_score": 58.5, "true_fcf_margin_pct": 10.3, "sbc_adj_rule_of_x": 32.3, "r1_delta": 3.5, "r1_score": 62.0, "r2_delta": 2.8, "r2_score": 64.8, "r3_delta": -0.9, "r3_score": 63.9, "r4_delta": -0.9, "r4_score": 63.0, "r5_delta": -0.8, "r5_score": 62.2, "buy_zone": "$31.99 - $33.53", "stop_loss": 29.67, "target_12m": 36.56, "reward_risk": 1.23, "upside_12m_pct": 7.8, "downside_risk_pct": 12.5, "hat_legal_moat": 7.9, "hat_cfo_forensic": 7.9, "hat_health_gov_policy": 6.4, "hat_quant_technical": 8.4, "hat_cro_redteam": 5.2, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 59.7, "rank_r5": 26, "action": "HOLD / NEUTRAL WATCH", "portfolio_weight_pct": 0.0, "rank_r0": 24, "rank_change_r0_to_r5": -2}, {"ticker": "DFIN", "price": 55.52, "sma20": 50.12, "sma50": 49.12, "sma200": 47.19, "rsi14": 71.7, "atr14": 1.75, "atr_pct": 3.16, "ret_1w": 7.16, "ret_1m": 12.8, "ret_3m": 10.49, "ret_1y": 3.52, "high_52w": 56.33, "low_52w": 36.11, "pct_off_high": -1.44, "weinstein_stage": "Stage 2 (Markup)", "name": "Donnelley Financial Solutions, Inc.", "layer": "L5: RegTech, SEC/Capital Markets Compliance & Healthcare Policy Legal Tech", "subsector_node": "AI_LEGAL_REGTECH_HEALTH_POLICY", "role": "Venue Virtual Data Room (M&A Legal Due Diligence), ActiveDisclosure (SEC EDGAR) & Arc Suite (1940 Act Investment Mgmt)", "sbc_pct_rev": 3.4, "rev_growth_pct": 4.8, "fcf_margin_pct": 18.5, "net_debt_ebitda": 0.5, "citator_sor_score": 8.4, "llm_commoditization_vuln": 2.2, "agentic_uplift_score": 8.4, "ediscovery_gb_deflation_risk": 0.4, "litigation_counter_cyclical": 7.6, "gov_mandate_score": 9.2, "hc_policy_exposure": 6.0, "devils_advocate_risk": 2.4, "devils_advocate_note": "Headline revenue looks optically low (~4.8%) because secular decline in legacy paper printing masks 12-15% high-margin SaaS compliance growth.", "catalyst": "SEC Tailored Shareholder Reports (TSR) recurring SaaS mandate & Venue VDR AI M&A redaction", "r0_score": 49.5, "true_fcf_margin_pct": 15.1, "sbc_adj_rule_of_x": 24.7, "r1_delta": -0.2, "r1_score": 49.3, "r2_delta": 5.2, "r2_score": 54.5, "r3_delta": 1.2, "r3_score": 55.7, "r4_delta": 3.5, "r4_score": 59.2, "r5_delta": 1.7, "r5_score": 60.9, "buy_zone": "$52.90 - $55.00", "stop_loss": 49.75, "target_12m": 58.72, "reward_risk": 1.14, "upside_12m_pct": 5.8, "downside_risk_pct": 10.4, "hat_legal_moat": 7.9, "hat_cfo_forensic": 6.9, "hat_health_gov_policy": 8.1, "hat_quant_technical": 7.8, "hat_cro_redteam": 7.2, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 58.5, "rank_r5": 27, "action": "HOLD / NEUTRAL WATCH", "portfolio_weight_pct": 0.0, "rank_r0": 32, "rank_change_r0_to_r5": 5}, {"ticker": "DOCU", "price": 85.27, "sma20": 73.42, "sma50": 68.63, "sma200": 54.18, "rsi14": 76.9, "atr14": 2.9, "atr_pct": 3.4, "ret_1w": 14.23, "ret_1m": 23.6, "ret_3m": 61.16, "ret_1y": 19.28, "high_52w": 85.39, "low_52w": 40.16, "pct_off_high": -0.13, "weinstein_stage": "Stage 2 (Markup)", "name": "DocuSign, Inc.", "layer": "L2: CLM, Document AI & Enterprise Legal Workflow", "subsector_node": "AI_LEGAL_CLM_ENTERPRISE", "role": "Intelligent Agreement Management (IAM) + Lexion AI CLM Acquisition + eSignature Standard", "sbc_pct_rev": 19.8, "rev_growth_pct": 7.4, "fcf_margin_pct": 31.0, "net_debt_ebitda": -1.1, "citator_sor_score": 7.5, "llm_commoditization_vuln": 4.5, "agentic_uplift_score": 8.1, "ediscovery_gb_deflation_risk": 0.5, "litigation_counter_cyclical": 6.5, "gov_mandate_score": 7.8, "hc_policy_exposure": 7.2, "devils_advocate_risk": 3.5, "devils_advocate_note": "SBC at ~19.8% of revenue dilutes GAAP earnings, and core eSignature is mature (~6-7% growth); upside depends on IAM + Lexion CLM upsell cycle.", "catalyst": "DocuSign IAM (Intelligent Agreement Management) + Lexion AI agentic contract review enterprise adoption", "r0_score": 65.0, "true_fcf_margin_pct": 11.2, "sbc_adj_rule_of_x": 26.0, "r1_delta": 2.1, "r1_score": 67.1, "r2_delta": -7.5, "r2_score": 59.6, "r3_delta": -1.3, "r3_score": 58.3, "r4_delta": 1.0, "r4_score": 59.3, "r5_delta": -0.6, "r5_score": 58.7, "buy_zone": "$80.92 - $84.40", "stop_loss": 75.7, "target_12m": 90.32, "reward_risk": 1.1, "upside_12m_pct": 5.9, "downside_risk_pct": 11.2, "hat_legal_moat": 6.4, "hat_cfo_forensic": 7.1, "hat_health_gov_policy": 7.6, "hat_quant_technical": 7.8, "hat_cro_redteam": 6.0, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 56.4, "rank_r5": 28, "action": "HOLD / NEUTRAL WATCH", "portfolio_weight_pct": 0.0, "rank_r0": 14, "rank_change_r0_to_r5": -14}, {"ticker": "BOX", "price": 43.18, "sma20": 37.36, "sma50": 35.24, "sma200": 28.37, "rsi14": 86.1, "atr14": 1.08, "atr_pct": 2.5, "ret_1w": 9.15, "ret_1m": 33.6, "ret_3m": 43.22, "ret_1y": 30.26, "high_52w": 43.22, "low_52w": 21.34, "pct_off_high": -0.09, "weinstein_stage": "Stage 2 (Markup)", "name": "Box, Inc.", "layer": "L2: CLM, Document AI & Enterprise Legal Workflow", "subsector_node": "AI_LEGAL_CLM_ENTERPRISE", "role": "Enterprise Content Cloud, FedRAMP High Legal Vault, Information Governance & Box AI Contract Metadata", "sbc_pct_rev": 18.5, "rev_growth_pct": 6.5, "fcf_margin_pct": 26.5, "net_debt_ebitda": 0.6, "citator_sor_score": 7.8, "llm_commoditization_vuln": 3.8, "agentic_uplift_score": 8.0, "ediscovery_gb_deflation_risk": 0.8, "litigation_counter_cyclical": 7.2, "gov_mandate_score": 8.4, "hc_policy_exposure": 7.5, "devils_advocate_risk": 3.3, "devils_advocate_note": "SharePoint/OneDrive bundling by Microsoft remains a constant seat-expansion headwind despite Box's superior LLM-agnostic security governance.", "catalyst": "Box Enterprise Advanced tier (Box AI + Crooze CLM + Legal Hold automation)", "r0_score": 61.3, "true_fcf_margin_pct": 8.0, "sbc_adj_rule_of_x": 21.0, "r1_delta": -1.0, "r1_score": 60.3, "r2_delta": -4.5, "r2_score": 55.8, "r3_delta": -1.1, "r3_score": 54.7, "r4_delta": 2.8, "r4_score": 57.5, "r5_delta": -3.1, "r5_score": 54.4, "buy_zone": "$41.56 - $42.86", "stop_loss": 39.62, "target_12m": 45.06, "reward_risk": 1.1, "upside_12m_pct": 4.4, "downside_risk_pct": 8.2, "hat_legal_moat": 6.8, "hat_cfo_forensic": 6.4, "hat_health_gov_policy": 8.1, "hat_quant_technical": 6.5, "hat_cro_redteam": 6.2, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 52.2, "rank_r5": 29, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 21, "rank_change_r0_to_r5": -8}, {"ticker": "UNH", "price": 418.09, "sma20": 389.21, "sma50": 387.6, "sma200": 357.72, "rsi14": 66.1, "atr14": 13.08, "atr_pct": 3.13, "ret_1w": 4.15, "ret_1m": 11.49, "ret_3m": 0.72, "ret_1y": 18.41, "high_52w": 458.79, "low_52w": 252.96, "pct_off_high": -8.87, "weinstein_stage": "Stage 2 (Markup)", "name": "UnitedHealth Group Incorporated", "layer": "L5: RegTech, SEC/Capital Markets Compliance & Healthcare Policy Legal Tech", "subsector_node": "AI_LEGAL_REGTECH_HEALTH_POLICY", "role": "Optum Insight Payment Integrity, Change Healthcare Claims Clearinghouse & Algorithmic Medical Necessity Rules", "sbc_pct_rev": 0.4, "rev_growth_pct": 8.2, "fcf_margin_pct": 6.2, "net_debt_ebitda": 1.6, "citator_sor_score": 8.6, "llm_commoditization_vuln": 1.5, "agentic_uplift_score": 7.8, "ediscovery_gb_deflation_risk": 0.2, "litigation_counter_cyclical": 6.5, "gov_mandate_score": 7.8, "hc_policy_exposure": 9.8, "devils_advocate_risk": 5.6, "devils_advocate_note": "Active target of DOJ civil/antitrust scrutiny, Senate investigations into AI post-acute denial algorithms (naviHealth class action), and CMS V28 MLR pressure.", "catalyst": "Optum Insight AI coding/payment integrity recovery & Medicare Advantage margin stabilization", "r0_score": 50.5, "true_fcf_margin_pct": 5.8, "sbc_adj_rule_of_x": 22.2, "r1_delta": -0.7, "r1_score": 49.8, "r2_delta": 3.4, "r2_score": 53.2, "r3_delta": -1.5, "r3_score": 51.8, "r4_delta": -5.6, "r4_score": 46.2, "r5_delta": -2.6, "r5_score": 43.6, "buy_zone": "$398.47 - $414.17", "stop_loss": 374.93, "target_12m": 440.85, "reward_risk": 1.1, "upside_12m_pct": 5.4, "downside_risk_pct": 10.3, "hat_legal_moat": 8.2, "hat_cfo_forensic": 3.5, "hat_health_gov_policy": 6.5, "hat_quant_technical": 8.9, "hat_cro_redteam": 3.6, "survivability_5yr_pct": 88.0, "growth_prob_3yr_pct": 41.9, "rank_r5": 30, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 31, "rank_change_r0_to_r5": 1}, {"ticker": "G", "price": 40.83, "sma20": 35.66, "sma50": 35.66, "sma200": 35.41, "rsi14": 72.0, "atr14": 1.37, "atr_pct": 3.36, "ret_1w": 9.58, "ret_1m": 22.36, "ret_3m": 27.57, "ret_1y": 5.07, "high_52w": 47.86, "low_52w": 26.71, "pct_off_high": -14.69, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Genpact Limited", "layer": "L1: Legal Research, Citators & Regulatory Monopolies", "subsector_node": "AI_LEGAL_RESEARCH_MONOPOLIES", "role": "Enterprise Legal Process Outsourcing (LPO), Contract/KYC Operations & Healthcare Payer Appeals BPO", "sbc_pct_rev": 2.1, "rev_growth_pct": 6.4, "fcf_margin_pct": 12.8, "net_debt_ebitda": 1.3, "citator_sor_score": 6.2, "llm_commoditization_vuln": 4.8, "agentic_uplift_score": 7.1, "ediscovery_gb_deflation_risk": 1.5, "litigation_counter_cyclical": 7.0, "gov_mandate_score": 6.8, "hc_policy_exposure": 7.6, "devils_advocate_risk": 3.8, "devils_advocate_note": "Legacy FTE-based Legal Process Outsourcing (LPO) revenue must cannibalize itself into outcome-based GenAI pricing.", "catalyst": "Genpact Cora AI contract & regulatory compliance managed services", "r0_score": 52.7, "true_fcf_margin_pct": 10.7, "sbc_adj_rule_of_x": 23.5, "r1_delta": -0.4, "r1_score": 52.3, "r2_delta": -12.4, "r2_score": 39.9, "r3_delta": -5.0, "r3_score": 34.9, "r4_delta": -0.6, "r4_score": 34.3, "r5_delta": -5.0, "r5_score": 29.3, "buy_zone": "$38.77 - $40.42", "stop_loss": 36.3, "target_12m": 43.21, "reward_risk": 1.1, "upside_12m_pct": 5.8, "downside_risk_pct": 11.1, "hat_legal_moat": 5.0, "hat_cfo_forensic": 6.7, "hat_health_gov_policy": 7.1, "hat_quant_technical": 6.1, "hat_cro_redteam": 5.6, "survivability_5yr_pct": 88.0, "growth_prob_3yr_pct": 28.1, "rank_r5": 31, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 30, "rank_change_r0_to_r5": -1}, {"ticker": "DBX", "price": 37.83, "sma20": 34.93, "sma50": 34.96, "sma200": 28.76, "rsi14": 66.1, "atr14": 1.05, "atr_pct": 2.79, "ret_1w": 6.35, "ret_1m": 15.83, "ret_3m": 23.87, "ret_1y": 28.85, "high_52w": 38.17, "low_52w": 21.69, "pct_off_high": -0.89, "weinstein_stage": "Stage 2 (Markup)", "name": "Dropbox, Inc.", "layer": "L2: CLM, Document AI & Enterprise Legal Workflow", "subsector_node": "AI_LEGAL_CLM_ENTERPRISE", "role": "Dropbox Sign (HelloSign), DocSend Virtual Data Rooms, FormSwift Legal Templates & Dash AI", "sbc_pct_rev": 13.5, "rev_growth_pct": 1.8, "fcf_margin_pct": 33.2, "net_debt_ebitda": 1.8, "citator_sor_score": 5.8, "llm_commoditization_vuln": 6.2, "agentic_uplift_score": 6.4, "ediscovery_gb_deflation_risk": 1.0, "litigation_counter_cyclical": 5.5, "gov_mandate_score": 5.4, "hc_policy_exposure": 4.5, "devils_advocate_risk": 4.6, "devils_advocate_note": "Near-zero top-line revenue growth (~1.8%) and paying user churn offset aggressive share buybacks.", "catalyst": "Dropbox Dash AI universal search & DocSend M&A data-room analytics", "r0_score": 55.5, "true_fcf_margin_pct": 19.7, "sbc_adj_rule_of_x": 23.3, "r1_delta": -0.5, "r1_score": 55.0, "r2_delta": -17.9, "r2_score": 37.1, "r3_delta": -7.9, "r3_score": 29.2, "r4_delta": -4.8, "r4_score": 24.4, "r5_delta": -0.5, "r5_score": 23.9, "buy_zone": "$36.25 - $37.52", "stop_loss": 34.36, "target_12m": 39.67, "reward_risk": 1.1, "upside_12m_pct": 4.9, "downside_risk_pct": 9.2, "hat_legal_moat": 4.2, "hat_cfo_forensic": 3.7, "hat_health_gov_policy": 5.1, "hat_quant_technical": 8.9, "hat_cro_redteam": 4.7, "survivability_5yr_pct": 88.0, "growth_prob_3yr_pct": 25.0, "rank_r5": 32, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 28, "rank_change_r0_to_r5": -4}, {"ticker": "VRNT", "price": 21.2, "sma20": 20.99, "sma50": 20.56, "sma200": 19.72, "rsi14": 52.5, "atr14": 0.47, "atr_pct": 2.2, "ret_1w": 1.1, "ret_1m": 3.4, "ret_3m": 7.8, "ret_1y": 14.5, "high_52w": 22.9, "low_52w": 16.54, "pct_off_high": -7.4, "weinstein_stage": "Stage 2 (Markup)", "name": "Verint Systems Inc.", "layer": "L3: eDiscovery, Digital Forensics, Court Tech & Litigation Analytics", "subsector_node": "AI_LEGAL_EDISCOVERY_LITIGATION", "role": "Compliant Voice/Video/Chat Recording, SEC/FINRA/MiFID II Legal Archiving & Compliance Bots", "sbc_pct_rev": 8.2, "rev_growth_pct": 2.5, "fcf_margin_pct": 15.0, "net_debt_ebitda": 2.2, "citator_sor_score": 6.8, "llm_commoditization_vuln": 4.9, "agentic_uplift_score": 6.8, "ediscovery_gb_deflation_risk": 2.5, "litigation_counter_cyclical": 6.5, "gov_mandate_score": 7.4, "hc_policy_exposure": 6.5, "devils_advocate_risk": 4.7, "devils_advocate_note": "Sluggish top-line growth (~2.5%) and lumpy on-prem to cloud conversion create execution misses.", "catalyst": "Verint Financial Compliance AI voice transcription for SEC/CFTC off-channel communications", "r0_score": 44.9, "true_fcf_margin_pct": 6.8, "sbc_adj_rule_of_x": 11.8, "r1_delta": -3.0, "r1_score": 41.9, "r2_delta": -10.9, "r2_score": 31.0, "r3_delta": -8.5, "r3_score": 22.5, "r4_delta": -0.4, "r4_score": 22.1, "r5_delta": -0.7, "r5_score": 21.4, "buy_zone": "$20.82 - $21.32", "stop_loss": 19.97, "target_12m": 22.55, "reward_risk": 1.1, "upside_12m_pct": 6.4, "downside_risk_pct": 5.8, "hat_legal_moat": 5.6, "hat_cfo_forensic": 2.1, "hat_health_gov_policy": 7.1, "hat_quant_technical": 8.9, "hat_cro_redteam": 4.6, "survivability_5yr_pct": 86.8, "growth_prob_3yr_pct": 25.0, "rank_r5": 33, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 34, "rank_change_r0_to_r5": 1}, {"ticker": "OTEX", "price": 27.95, "sma20": 24.36, "sma50": 23.94, "sma200": 23.59, "rsi14": 80.3, "atr14": 0.82, "atr_pct": 2.92, "ret_1w": 9.61, "ret_1m": 23.35, "ret_3m": 19.68, "ret_1y": -25.93, "high_52w": 38.18, "low_52w": 19.54, "pct_off_high": -26.79, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "Open Text Corporation", "layer": "L2: CLM, Document AI & Enterprise Legal Workflow", "subsector_node": "AI_LEGAL_CLM_ENTERPRISE", "role": "eDOCS Legal DMS, Axcelera/Recommind eDiscovery, Documentum Regulated Content & Aviator Legal AI", "sbc_pct_rev": 2.6, "rev_growth_pct": 1.2, "fcf_margin_pct": 16.5, "net_debt_ebitda": 3.7, "citator_sor_score": 7.6, "llm_commoditization_vuln": 4.2, "agentic_uplift_score": 6.9, "ediscovery_gb_deflation_risk": 3.5, "litigation_counter_cyclical": 7.4, "gov_mandate_score": 7.8, "hc_policy_exposure": 7.7, "devils_advocate_risk": 4.8, "devils_advocate_note": "3.7x Net Debt/EBITDA leverage and organic growth sluggishness (~1%) make OTEX a classic PE-style debt roll-up value trap despite low P/E.", "catalyst": "OpenText Content Aviator AI & AMC divestiture debt paydown", "r0_score": 44.5, "true_fcf_margin_pct": 13.9, "sbc_adj_rule_of_x": 16.3, "r1_delta": -15.5, "r1_score": 29.0, "r2_delta": -6.3, "r2_score": 22.7, "r3_delta": -8.9, "r3_score": 15.0, "r4_delta": 1.8, "r4_score": 16.8, "r5_delta": -10.1, "r5_score": 12.0, "buy_zone": "$26.72 - $27.70", "stop_loss": 25.24, "target_12m": 29.38, "reward_risk": 1.1, "upside_12m_pct": 5.1, "downside_risk_pct": 9.7, "hat_legal_moat": 6.5, "hat_cfo_forensic": 2.7, "hat_health_gov_policy": 7.8, "hat_quant_technical": 4.8, "hat_cro_redteam": 4.5, "survivability_5yr_pct": 77.8, "growth_prob_3yr_pct": 25.0, "rank_r5": 34, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 35, "rank_change_r0_to_r5": 1}, {"ticker": "LAW", "price": 5.07, "sma20": 4.43, "sma50": 4.32, "sma200": 4.27, "rsi14": 72.2, "atr14": 0.19, "atr_pct": 3.75, "ret_1w": 14.19, "ret_1m": 19.29, "ret_3m": 31.01, "ret_1y": -28.99, "high_52w": 9.11, "low_52w": 2.45, "pct_off_high": -44.35, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "CS Disco, Inc.", "layer": "L3: eDiscovery, Digital Forensics, Court Tech & Litigation Analytics", "subsector_node": "AI_LEGAL_EDISCOVERY_LITIGATION", "role": "Cloud-Native eDiscovery, Cecilia GenAI Deposition/Document Q&A & Case Builder", "sbc_pct_rev": 23.4, "rev_growth_pct": 5.2, "fcf_margin_pct": -8.5, "net_debt_ebitda": -2.5, "citator_sor_score": 6.4, "llm_commoditization_vuln": 5.8, "agentic_uplift_score": 7.2, "ediscovery_gb_deflation_risk": 7.5, "litigation_counter_cyclical": 8.0, "gov_mandate_score": 6.5, "hc_policy_exposure": 5.5, "devils_advocate_risk": 6.2, "devils_advocate_note": "Cecilia AI creates a classic innovator's dilemma: faster AI document review reduces the months data sits in high-margin per-GB cloud hosting, while SBC exceeds 23% of revenue.", "catalyst": "Cecilia AI auto-review monetization & enterprise law-firm subscription shift", "r0_score": 43.5, "true_fcf_margin_pct": -31.9, "sbc_adj_rule_of_x": -21.5, "r1_delta": -8.3, "r1_score": 35.2, "r2_delta": -14.8, "r2_score": 20.4, "r3_delta": -15.2, "r3_score": 15.0, "r4_delta": -2.4, "r4_score": 14.0, "r5_delta": -10.0, "r5_score": 12.0, "buy_zone": "$4.79 - $5.01", "stop_loss": 4.45, "target_12m": 5.4, "reward_risk": 1.11, "upside_12m_pct": 6.5, "downside_risk_pct": 12.2, "hat_legal_moat": 5.0, "hat_cfo_forensic": 1.5, "hat_health_gov_policy": 6.2, "hat_quant_technical": 6.1, "hat_cro_redteam": 2.9, "survivability_5yr_pct": 83.0, "growth_prob_3yr_pct": 25.0, "rank_r5": 35, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 36, "rank_change_r0_to_r5": 1}, {"ticker": "LZ", "price": 6.99, "sma20": 6.06, "sma50": 6.0, "sma200": 6.63, "rsi14": 69.7, "atr14": 0.24, "atr_pct": 3.39, "ret_1w": 15.35, "ret_1m": 23.72, "ret_3m": -7.54, "ret_1y": -32.59, "high_52w": 12.4, "low_52w": 5.22, "pct_off_high": -43.63, "weinstein_stage": "Stage 3 (Distribution / Chop)", "name": "LegalZoom.com, Inc.", "layer": "L4: IP/Patent Lifecycle, Entity Management, SMB Legal & Dispute Advisory", "subsector_node": "AI_LEGAL_IP_PATENT_ENTITY", "role": "SMB LLC/Corp Formation, Trademark Filing, Registered Agent Subscriptions & Arizona ABS Law Firm", "sbc_pct_rev": 13.8, "rev_growth_pct": 2.4, "fcf_margin_pct": 18.2, "net_debt_ebitda": -1.4, "citator_sor_score": 6.1, "llm_commoditization_vuln": 7.4, "agentic_uplift_score": 6.2, "ediscovery_gb_deflation_risk": 0.5, "litigation_counter_cyclical": 4.8, "gov_mandate_score": 6.5, "hc_policy_exposure": 3.5, "devils_advocate_risk": 5.8, "devils_advocate_note": "Direct-to-consumer SMB legal templates face acute zero-shot LLM commoditization and high Google paid-search CAC; FinCEN BOI litigation injunctions hurt compliance upsell.", "catalyst": "Registered agent recurring subscription stabilization & AI legal document assistant", "r0_score": 46.8, "true_fcf_margin_pct": 4.4, "sbc_adj_rule_of_x": 9.2, "r1_delta": -1.6, "r1_score": 45.2, "r2_delta": -20.5, "r2_score": 24.7, "r3_delta": -8.4, "r3_score": 16.3, "r4_delta": -2.4, "r4_score": 14.0, "r5_delta": -9.2, "r5_score": 12.0, "buy_zone": "$6.63 - $6.92", "stop_loss": 6.2, "target_12m": 7.42, "reward_risk": 1.1, "upside_12m_pct": 6.2, "downside_risk_pct": 11.3, "hat_legal_moat": 4.2, "hat_cfo_forensic": 4.7, "hat_health_gov_policy": 5.5, "hat_quant_technical": 6.1, "hat_cro_redteam": 3.3, "survivability_5yr_pct": 93.0, "growth_prob_3yr_pct": 25.0, "rank_r5": 36, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 33, "rank_change_r0_to_r5": -3}, {"ticker": "CLVT", "price": 1.87, "sma20": 1.66, "sma50": 1.84, "sma200": 2.26, "rsi14": 60.8, "atr14": 0.09, "atr_pct": 4.97, "ret_1w": 5.65, "ret_1m": 1.63, "ret_3m": -12.21, "ret_1y": -48.77, "high_52w": 3.87, "low_52w": 1.42, "pct_off_high": -51.68, "weinstein_stage": "Stage 1 (Basing / Early Recovery)", "name": "Clarivate Plc", "layer": "L4: IP/Patent Lifecycle, Entity Management, SMB Legal & Dispute Advisory", "subsector_node": "AI_LEGAL_IP_PATENT_ENTITY", "role": "Derwent World Patents Index, CPA Global Patent Annuity Renewals, CompuMark Trademarks & Cortellis FDA Reg Intelligence", "sbc_pct_rev": 3.5, "rev_growth_pct": -1.8, "fcf_margin_pct": 14.0, "net_debt_ebitda": 4.4, "citator_sor_score": 7.8, "llm_commoditization_vuln": 4.5, "agentic_uplift_score": 6.1, "ediscovery_gb_deflation_risk": 1.0, "litigation_counter_cyclical": 6.4, "gov_mandate_score": 7.5, "hc_policy_exposure": 7.6, "devils_advocate_risk": 6.8, "devils_advocate_note": "Classic PE roll-up debt trap: 4.4x Net Debt/EBITDA, negative organic revenue growth (-1.8%), and multi-billion-dollar goodwill write-downs.", "catalyst": "Value Creation Plan portfolio divestitures to de-lever balance sheet", "r0_score": 41.7, "true_fcf_margin_pct": 10.5, "sbc_adj_rule_of_x": 6.9, "r1_delta": -19.3, "r1_score": 22.4, "r2_delta": -6.6, "r2_score": 16.0, "r3_delta": -7.3, "r3_score": 15.0, "r4_delta": 1.0, "r4_score": 16.0, "r5_delta": -6.3, "r5_score": 12.0, "buy_zone": "$1.80 - $1.89", "stop_loss": 1.64, "target_12m": 2.12, "reward_risk": 1.09, "upside_12m_pct": 13.4, "downside_risk_pct": 12.3, "hat_legal_moat": 6.7, "hat_cfo_forensic": 1.5, "hat_health_gov_policy": 7.5, "hat_quant_technical": 8.4, "hat_cro_redteam": 2.2, "survivability_5yr_pct": 73.6, "growth_prob_3yr_pct": 25.0, "rank_r5": 37, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 37, "rank_change_r0_to_r5": 0}, {"ticker": "CTEV", "price": 23.5, "sma20": 23.27, "sma50": 30.31, "sma200": 25.87, "rsi14": 40.5, "atr14": 1.3, "atr_pct": 5.54, "ret_1w": 6.24, "ret_1m": 0.6, "ret_3m": 7.7, "ret_1y": -66.28, "high_52w": 73.68, "low_52w": 11.5, "pct_off_high": -68.11, "weinstein_stage": "Stage 4 (Decline)", "name": "Claritev Corporation (formerly MultiPlan)", "layer": "L5: RegTech, SEC/Capital Markets Compliance & Healthcare Policy Legal Tech", "subsector_node": "AI_LEGAL_REGTECH_HEALTH_POLICY", "role": "No Surprises Act (NSA) Federal IDR Arbitration Analytics, Out-of-Network Payment Integrity & ERISA Price Transparency", "sbc_pct_rev": 4.5, "rev_growth_pct": -2.5, "fcf_margin_pct": 8.0, "net_debt_ebitda": 6.8, "citator_sor_score": 6.2, "llm_commoditization_vuln": 4.0, "agentic_uplift_score": 6.5, "ediscovery_gb_deflation_risk": 0.5, "litigation_counter_cyclical": 5.5, "gov_mandate_score": 7.5, "hc_policy_exposure": 9.4, "devils_advocate_risk": 7.5, "devils_advocate_note": "Severe 6.8x Net Debt/EBITDA leverage and consolidated federal antitrust MDL lawsuits from hospitals/providers alleging out-of-network reimbursement suppression.", "catalyst": "Debt maturity extension & No Surprises Act IDR arbitration services", "r0_score": 38.0, "true_fcf_margin_pct": 3.5, "sbc_adj_rule_of_x": -1.5, "r1_delta": -27.2, "r1_score": 18.0, "r2_delta": -10.0, "r2_score": 16.0, "r3_delta": -6.7, "r3_score": 15.0, "r4_delta": -6.2, "r4_score": 14.0, "r5_delta": -18.5, "r5_score": 12.0, "buy_zone": "$22.46 - $23.82", "stop_loss": 20.12, "target_12m": 27.22, "reward_risk": 1.1, "upside_12m_pct": 15.8, "downside_risk_pct": 14.4, "hat_legal_moat": 5.2, "hat_cfo_forensic": 1.5, "hat_health_gov_policy": 6.2, "hat_quant_technical": 3.6, "hat_cro_redteam": 1.5, "survivability_5yr_pct": 59.2, "growth_prob_3yr_pct": 25.0, "rank_r5": 38, "action": "AVOID / STRUCTURAL TRAP", "portfolio_weight_pct": 0.0, "rank_r0": 38, "rank_change_r0_to_r5": 0}];
+const SUB_SKILLS = [{"round": 1, "name": "legal-sbc-leverage-cash-audit", "title": "SBC-Adjusted Rule of X & PE Debt Roll-Up Impairment Filter", "critic_finding": "Baseline R0 rewards high-SBC legal SaaS (LAW 23.4% SBC, DOCU 19.8% SBC, WK 19.2% SBC) and ignores multi-billion-dollar PE roll-up debt burdens (CTEV 6.8x, CLVT 4.4x, OTEX 3.7x Net Debt/EBITDA).", "formula": "SBC_Adj_Rule_of_X = (2.0 * Rev_Growth_Pct) + (FCF_Margin_Pct - SBC_Pct_Rev) + Leverage_Adjustment"}, {"round": 2, "name": "legal-citator-system-of-record-moat", "title": "Proprietary Primary Law Citator & Judicial/Regulatory System-of-Record Moat vs. Zero-Shot LLM Commoditization", "critic_finding": "Financial metrics alone cannot separate authoritative primary-law citators (Westlaw KeyCite, Lexis Shepard's) and statutory court/SEC systems of record (TYL, BR, VEEV, WAY, CLBT, FICO) from SMB legal templates (LZ) and basic document tools (DBX) exposed to Frontier LLMs and Microsoft Word Copilot.", "formula": "R2_Delta = (Citator_SoR_Score - 7.0) * 3.8 - max(0, LLM_Commoditization_Vuln - 2.2) * 3.4"}, {"round": 3, "name": "legal-agentic-pricing-litigation-hedge", "title": "Agentic AI Tier Migration (+15-25% ACV Uplift) vs. Per-GB eDiscovery Deflation & Counter-Cyclical Litigation Hedge", "critic_finding": "GenAI early case assessment (ECA) compresses the volume and duration of per-GB eDiscovery cloud hosting (penalizing LAW), whereas agentic suites (Lexis+ Prot\u00e9g\u00e9, CoCounsel, Axon AI Era, Waystar AltitudeAI) expand ACV +15-30% and expert litigation/restructuring practices (FCN, CRAI, HURN) provide counter-cyclical macro protection.", "formula": "R3_Delta = (Agentic_Uplift - 7.5) * 3.2 - (eDiscovery_GB_Deflation_Risk * 2.2) + (Litigation_Counter_Cyclical - 7.0) * 1.8"}, {"round": 4, "name": "legal-gov-agency-health-policy-mandate", "title": "Government Agency & Healthcare Policy Enforcement Mandate Moat (CMS-0057-F, NSA IDR, DOJ FCA, FRCP/FRE, SEC EDGAR, FDA 21 CFR 11)", "critic_finding": "Non-discretionary regulatory mandates create recession-proof demand for compliance/appeal infrastructure (WAY, VEEV, TYL, BR, CLBT, HURN, EXLS, DFIN), while active DOJ/MDL algorithmic-denial investigations penalize exposed payers/intermediaries (UNH, CTEV).", "formula": "R4_Delta = (Gov_Mandate_Score - 7.2) * 2.6 + Healthcare_Policy_Enforcement_Adjustment"}, {"round": 5, "name": "legal-devils-advocate-weinstein-gate", "title": "Devil's Advocate Red-Team Stress Test + Multi-Timeframe RSI-14 & Weinstein Stage Technical Gate (R:R >= 2.0x)", "critic_finding": "Applies red-team thesis haircuts (associate seat consolidation, federal procurement timing, valuation multiple compression) and enforces Weinstein Stage 1/2 alignment, RSI-14 entry zones, 2.2x ATR stop-losses, and Reward-to-Risk >= 2.0x.", "formula": "R5_Delta = Technical_Stage_RSI_Adjustment - max(0, Devils_Advocate_Risk - 2.0) * 2.4"}];
+
+// Render 5-Round Sub-Skill Cards
+const subSkillsEl = document.getElementById("subSkillsContainer");
+SUB_SKILLS.forEach(s => {
+  const d = document.createElement("div");
+  d.className = "round-card";
+  d.innerHTML = `
+    <h3>Round ${s.round}: ${s.name}</h3>
+    <div style="font-size:12.5px;font-weight:700;color:#f3f4f6;margin-bottom:6px;">${s.title}</div>
+    <p><strong>Critic Diagnosis:</strong> ${s.critic_finding}</p>
+    <div class="formula-box">${s.formula}</div>
+  `;
+  subSkillsEl.appendChild(d);
+});
+
+// Table Filtering & Rendering
+let activeLayerFilter = "ALL";
+function setLayerFilter(f, btn) {
+  activeLayerFilter = f;
+  btn.parentElement.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderTable();
+}
+
+function badgeClass(action) {
+  if (action.includes("STRONG BUY")) return "act-badge act-strong";
+  if (action.includes("BUY")) return "act-badge act-buy";
+  if (action.includes("ACCUMULATE")) return "act-badge act-accum";
+  if (action.includes("HOLD")) return "act-badge act-hold";
+  return "act-badge act-avoid";
+}
+
+function renderTable() {
+  const q = (document.getElementById("searchInput").value || "").toLowerCase();
+  const tbody = document.getElementById("matrixBody");
+  tbody.innerHTML = "";
+
+  EQUITIES.filter(r => {
+    if (activeLayerFilter === "BUY_ONLY" && r.portfolio_weight_pct <= 0) return false;
+    if (activeLayerFilter === "AVOID" && !r.action.includes("AVOID")) return false;
+    if (activeLayerFilter.startsWith("AI_LEGAL_") && r.subsector_node !== activeLayerFilter) return false;
+    if (q) {
+      const hay = `${r.ticker} ${r.name} ${r.role} ${r.layer} ${r.action} ${r.catalyst}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }).forEach(r => {
+    const rankDiff = r.rank_change_r0_to_r5;
+    const diffBadge = rankDiff > 0 ? `<span style="color:#34d399;font-size:10.5px;">(+${rankDiff})</span>`
+                    : rankDiff < 0 ? `<span style="color:#fb7185;font-size:10.5px;">(${rankDiff})</span>`
+                    : `<span style="color:#94a3b8;font-size:10.5px;">(0)</span>`;
+    const tr = document.createElement("tr");
+    tr.style.cursor = "pointer";
+    tr.onclick = () => inspectEquity(r.ticker);
+    tr.innerHTML = `
+      <td style="font-weight:800;color:#f8fafc;">#${String(r.rank_r5).padStart(2, '0')} ${diffBadge}</td>
+      <td style="font-weight:800;color:#2dd4bf;">${r.ticker}</td>
+      <td>
+        <div style="font-weight:700;color:#f3f4f6;">${r.name}</div>
+        <div style="font-size:11px;color:#9ca3af;max-width:310px;overflow:hidden;text-overflow:ellipsis;">${r.role}</div>
+      </td>
+      <td><span style="font-size:11px;color:#38bdf8;">${r.subsector_node.replace('AI_LEGAL_', '')}</span></td>
+      <td>${r.r0_score.toFixed(1)} <span style="color:#64748b;">(#${r.rank_r0})</span></td>
+      <td>${r.r1_score.toFixed(1)}</td>
+      <td>${r.r2_score.toFixed(1)}</td>
+      <td>${r.r3_score.toFixed(1)}</td>
+      <td>${r.r4_score.toFixed(1)}</td>
+      <td style="font-weight:800;font-size:13px;color:#5eead4;">${r.r5_score.toFixed(1)}</td>
+      <td style="font-weight:700;">$${r.price.toFixed(2)}</td>
+      <td style="color:${r.rsi14 > 75 ? '#fbbf24' : r.rsi14 < 35 ? '#fb7185' : '#34d399'};font-weight:700;">${r.rsi14.toFixed(1)}</td>
+      <td style="font-size:11px;">${r.weinstein_stage}</td>
+      <td style="color:#93c5fd;font-family:monospace;">${r.buy_zone}</td>
+      <td style="color:#fb7185;font-family:monospace;">$${r.stop_loss.toFixed(2)}</td>
+      <td style="color:#34d399;font-family:monospace;">$${r.target_12m.toFixed(2)} <span style="font-size:10px;">(+${r.upside_12m_pct}%)</span></td>
+      <td style="font-weight:700;color:${r.reward_risk >= 2.5 ? '#34d399' : '#cbd5e1'};">${r.reward_risk.toFixed(2)}x</td>
+      <td style="font-family:monospace;font-size:11px;">${r.hat_legal_moat} / ${r.hat_cfo_forensic} / ${r.hat_health_gov_policy} / ${r.hat_quant_technical} / ${r.hat_cro_redteam}</td>
+      <td style="font-weight:800;color:${r.portfolio_weight_pct > 0 ? '#34d399' : '#64748b'};">${r.portfolio_weight_pct.toFixed(1)}%</td>
+      <td><span class="${badgeClass(r.action)}">${r.action}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Interactive Canvas Graph Definition
+const GRAPH_NODES = [
+  // Core AI Legal Roll-Up & 5 Subsector Nodes
+  { id: "AI_LEGAL", label: "AI_LEGAL (Roll-Up)", x: 510, y: 300, r: 28, color: "#14b8a6", group: "Core AI Legal Node", tickers: ["MSFT","CLBT","VEEV","PLTR","NOW","WAY","TYL","MCO","SPGI","NICE","RELX","TRI"], desc: "Sector Roll-Up Node in agentic-bridgewater representing the $1.1T global legal, regulatory & healthcare compliance stack." },
+  { id: "AI_LEGAL_RESEARCH_MONOPOLIES", label: "L1: Citators & Legal Research", x: 310, y: 165, r: 23, color: "#14b8a6", group: "AI Legal Sub-Sector", tickers: ["RELX","TRI","WTKWY","SPGI","MCO","FDS","CSGP","G"], desc: "Primary law & citator duopoly (Lexis Shepard's, Westlaw KeyCite, VitalLaw) + entity/covenant intelligence (Moody's Orbis, S&P Kensho)." },
+  { id: "AI_LEGAL_CLM_ENTERPRISE", label: "L2: CLM & Agreement AI", x: 710, y: 165, r: 23, color: "#14b8a6", group: "AI Legal Sub-Sector", tickers: ["MSFT","NOW","ADBE","WK","DOCU","BOX","OTEX","DBX"], desc: "Contract Lifecycle Management, Word Copilot drafting, SEC XBRL statutory disclosure (Workiva) & Legal Service Delivery (ServiceNow)." },
+  { id: "AI_LEGAL_EDISCOVERY_LITIGATION", label: "L3: eDiscovery, Forensics & Courts", x: 260, y: 380, r: 23, color: "#14b8a6", group: "AI Legal Sub-Sector", tickers: ["TYL","CLBT","AXON","PLTR","NICE","EXLS","LAW","VRNT"], desc: "State/county court eFiling (Tyler Odyssey), FRE 901 mobile forensics (Cellebrite), prosecutor evidence (Axon/NICE) & cloud eDiscovery." },
+  { id: "AI_LEGAL_IP_PATENT_ENTITY", label: "L4: IP/Patents, SMB & Advisory", x: 760, y: 380, r: 23, color: "#14b8a6", group: "AI Legal Sub-Sector", tickers: ["INTU","HURN","FCN","CRAI","LZ","CLVT"], desc: "Counter-cyclical Chapter 11 restructuring & DOJ HSR antitrust economists (FTI, CRA, Huron) + tax/entity & patent renewals (Intuit, LegalZoom, Clarivate)." },
+  { id: "AI_LEGAL_REGTECH_HEALTH_POLICY", label: "L5: RegTech & Healthcare Policy AI", x: 510, y: 490, r: 25, color: "#14b8a6", group: "AI Legal Sub-Sector", tickers: ["VEEV","WAY","BR","FICO","SSNC","DFIN","UNH","CTEV"], desc: "Healthcare policy claim-denial appeal AI (Waystar), FDA 21 CFR Part 11/MLR (Veeva), NSA IDR arbitration (Claritev), and SEC proxy/VDR rails (Broadridge, DFIN, SS&C)." },
+
+  // Government & Judicial Enforcement Agencies
+  { id: "US_COURTS_FRCP_FRE", label: "US Courts (FRCP 11/26/37 & FRE 702/901)", x: 115, y: 265, r: 18, color: "#f59e0b", group: "Gov / Judicial Agency", tickers: ["TYL","CLBT","RELX","TRI","AXON"], desc: "Federal & State Courts enforcing FRCP Rule 11 citation accuracy, Rule 26/37 eDiscovery, and FRE 702/901 digital forensics & expert admissibility." },
+  { id: "DOJ_FTC_SEC_USPTO", label: "DOJ Antitrust/FCA · SEC EDGAR · USPTO", x: 895, y: 270, r: 18, color: "#f59e0b", group: "Gov / Regulatory Agency", tickers: ["FCN","CRAI","BR","WK","DFIN","PLTR"], desc: "DOJ Civil Fraud ($2.9B+ False Claims Act), FTC/DOJ 100-hr HSR merger rules, SEC Tailored Shareholder Reports/EDGAR Next, and USPTO." },
+
+  // Healthcare Policy & Medical-Legal Nodes
+  { id: "HEALTHCARE_POLICY", label: "HEALTHCARE_POLICY (CMS-0057-F / NSA IDR)", x: 320, y: 555, r: 20, color: "#f43f5e", group: "Healthcare Policy Node", tickers: ["WAY","VEEV","HURN","EXLS","UNH","CTEV"], desc: "CMS-0057-F Prior Authorization API & 72-hr turnaround rule, >1.3M/yr No Surprises Act IDR arbitrations, HRSA 340B & FDA 21 CFR Part 11." },
+  { id: "HC_MANAGED_CARE_MA", label: "HC_MANAGED_CARE_MA & Hospitals", x: 700, y: 555, r: 19, color: "#f43f5e", group: "Healthcare Ecosystem Node", tickers: ["WAY","HURN","UNH","CTEV","VEEV"], desc: "Bilateral claim denial & appeal war between Managed Care payers (UNH/Optum) and hospital systems using Waystar & Huron AI appeals." },
+
+  // Macro Drivers
+  { id: "AI_DEMAND", label: "AI_DEMAND & AI_CAPABILITY", x: 510, y: 65, r: 20, color: "#38bdf8", group: "Macro Driver", tickers: ["MSFT","PLTR","NOW","RELX","TRI"], desc: "Enterprise GenAI deployment velocity vs. zero-shot foundation model commoditization of ungrounded legal wrappers." },
+  { id: "CREDIT_RATES_TARIFFS", label: "CREDIT_SPREADS · FED_RATE · TARIFFS", x: 885, y: 485, r: 18, color: "#38bdf8", group: "Macro Driver", tickers: ["FCN","CRAI","MCO","SPGI","CLVT","CTEV"], desc: "Credit stress triggers Chapter 11 restructurings (boosting FCN/CRAI) while penalizing 4x-6x levered PE roll-ups (CLVT, CTEV, OTEX); tariffs boost MCO/RELX sanctions screening." },
+
+  // Private Challengers Cluster
+  { id: "PRIVATE_UNICORNS", label: "Private AI Unicorns (Harvey, Clio, Ironclad, EvenUp)", x: 135, y: 95, r: 18, color: "#a855f7", group: "Private Challengers", tickers: ["RELX","TRI","MSFT","DOCU","LAW"], desc: "Harvey ($3B+, allied with LexisNexis), Clio ($3B), Ironclad ($3.2B), EvenUp ($1B+ PI demands), RelativityOne, Everlaw ($2B)." }
+];
+
+const GRAPH_EDGES = [
+  { from: "AI_DEMAND", to: "AI_LEGAL_RESEARCH_MONOPOLIES", weight: "+0.82", label: "Lexis+ Protégé & CoCounsel ACV uplift" },
+  { from: "AI_DEMAND", to: "AI_LEGAL_CLM_ENTERPRISE", weight: "+0.68 / -0.42", label: "Agentic CLM vs Word Copilot bundling" },
+  { from: "PRIVATE_UNICORNS", to: "AI_LEGAL_RESEARCH_MONOPOLIES", weight: "+0.45", label: "Harvey-LexisNexis Shepard's grounding" },
+  { from: "PRIVATE_UNICORNS", to: "AI_LEGAL_CLM_ENTERPRISE", weight: "-0.50", label: "Ironclad/Harvey pressure legacy CLM" },
+  { from: "US_COURTS_FRCP_FRE", to: "AI_LEGAL_EDISCOVERY_LITIGATION", weight: "+0.88", label: "FRE 901/702 & Odyssey eFiling mandate" },
+  { from: "US_COURTS_FRCP_FRE", to: "AI_LEGAL_RESEARCH_MONOPOLIES", weight: "+0.78", label: "FRCP Rule 11 anti-hallucination moat" },
+  { from: "DOJ_FTC_SEC_USPTO", to: "AI_LEGAL_IP_PATENT_ENTITY", weight: "+0.80", label: "100-hr HSR Second Requests & FCA" },
+  { from: "DOJ_FTC_SEC_USPTO", to: "AI_LEGAL_REGTECH_HEALTH_POLICY", weight: "+0.76", label: "SEC TSR, Proxy & EDGAR Next mandates" },
+  { from: "HEALTHCARE_POLICY", to: "AI_LEGAL_REGTECH_HEALTH_POLICY", weight: "+0.88", label: "CMS-0057-F Prior Auth & NSA IDR surge" },
+  { from: "HC_MANAGED_CARE_MA", to: "AI_LEGAL_REGTECH_HEALTH_POLICY", weight: "+0.74", label: "Payer denial spike -> Waystar AI appeals" },
+  { from: "CREDIT_RATES_TARIFFS", to: "AI_LEGAL_IP_PATENT_ENTITY", weight: "+0.72", label: "Ch. 11 bankruptcy boom at FTI/CRAI" },
+  { from: "CREDIT_RATES_TARIFFS", to: "AI_LEGAL_EDISCOVERY_LITIGATION", weight: "+0.58", label: "Default & fraud litigation discovery" },
+  { from: "AI_LEGAL_RESEARCH_MONOPOLIES", to: "AI_LEGAL", weight: "+0.90", label: "L1 Core Citator Roll-Up" },
+  { from: "AI_LEGAL_CLM_ENTERPRISE", to: "AI_LEGAL", weight: "+0.85", label: "L2 CLM Roll-Up" },
+  { from: "AI_LEGAL_EDISCOVERY_LITIGATION", to: "AI_LEGAL", weight: "+0.88", label: "L3 eDiscovery/Court Roll-Up" },
+  { from: "AI_LEGAL_IP_PATENT_ENTITY", to: "AI_LEGAL", weight: "+0.78", label: "L4 IP/Advisory Roll-Up" },
+  { from: "AI_LEGAL_REGTECH_HEALTH_POLICY", to: "AI_LEGAL", weight: "+0.92", label: "L5 RegTech/Health Policy Roll-Up" }
+];
+
+const SCENARIOS = {
+  baseline: {
+    title: "Baseline Equilibrium",
+    desc: "Click any node on the canvas or any stock in the 38-equity table below to inspect its 5-Round RSI progression, Government/Healthcare Policy links, and Weinstein technical levels.",
+    shocks: {}
+  },
+  AI_LEG_R1: {
+    title: "AI_LEG_R1: AmLaw 200 Agentic Citator Upgrade Supercycle",
+    desc: "Trigger: AI_DEMAND > +1.0σ & AI_CAPABILITY > +0.8σ. Law firms and Fortune 500 legal departments upgrade to Lexis+ AI Protégé (RELX) and Westlaw CoCounsel 2.0 (TRI) at +18-25% ACV uplift because FRCP Rule 11 sanctions prohibit ungrounded LLM citations.",
+    shocks: { "AI_LEGAL_RESEARCH_MONOPOLIES": "+1.35σ", "AI_LEGAL": "+1.10σ", "AI_DEMAND": "+1.20σ", "US_COURTS_FRCP_FRE": "+0.85σ" }
+  },
+  AI_LEG_R2: {
+    title: "AI_LEG_R2: Frontier LLM & Word Copilot CLM Bundling Squeeze",
+    desc: "Trigger: AI_CAPABILITY > +1.2σ & Microsoft Word Copilot / Harvey / Ironclad bundle contract redlining. Standalone SMB legal templates (LZ) and basic e-signature/storage wrappers (DBX, DOCU) suffer NRR compression, while MSFT, NOW, and WK outperform.",
+    shocks: { "AI_LEGAL_CLM_ENTERPRISE": "-0.65σ (Point Tools) / +1.15σ (MSFT/NOW)", "PRIVATE_UNICORNS": "+1.10σ", "AI_LEGAL_IP_PATENT_ENTITY": "-0.80σ (LZ)" }
+  },
+  AI_LEG_R3: {
+    title: "AI_LEG_R3: Corporate Default, Cyber Breach & Antitrust Discovery Boom",
+    desc: "Trigger: CREDIT_SPREADS > +1.0σ & SEC 4-day cyber incident enforcement. Surges encrypted mobile forensic extraction at Cellebrite (CLBT), state/federal court filings at Tyler (TYL), and complex MDL ontologies at Palantir (PLTR), while per-GB hosting at CS Disco (LAW) faces AI compression.",
+    shocks: { "AI_LEGAL_EDISCOVERY_LITIGATION": "+1.28σ (CLBT/TYL/PLTR)", "US_COURTS_FRCP_FRE": "+0.95σ", "CREDIT_RATES_TARIFFS": "+1.15σ" }
+  },
+  AI_LEG_R5: {
+    title: "AI_LEG_R5: CMS-0057-F Prior-Auth, NSA IDR Arbitration & DOJ FCA Wave",
+    desc: "Trigger: HEALTHCARE_POLICY > +1.0σ & Payer Claim Denials > +0.8σ. Hospitals deploy Waystar AltitudeAI (WAY), Huron (HURN), and ExlService (EXLS) to automate clinical-legal denial appeals and NSA IDR arbitrations, while Veeva (VEEV) locks in FDA 21 CFR Part 11 MLR compliance and UNH/CTEV face DOJ/MDL legal headwinds.",
+    shocks: { "AI_LEGAL_REGTECH_HEALTH_POLICY": "+1.42σ (WAY/VEEV) / -1.10σ (CTEV/UNH)", "HEALTHCARE_POLICY": "+1.35σ", "HC_MANAGED_CARE_MA": "+0.90σ", "DOJ_FTC_SEC_USPTO": "+1.05σ" }
+  }
+};
+
+let selectedNode = GRAPH_NODES[0];
+let currentScenario = "baseline";
+
+const canvas = document.getElementById("networkCanvas");
+const ctx = canvas.getContext("2d");
+
+function drawGraph() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const scen = SCENARIOS[currentScenario];
+
+  // Draw edges
+  GRAPH_EDGES.forEach(e => {
+    const n1 = GRAPH_NODES.find(n => n.id === e.from);
+    const n2 = GRAPH_NODES.find(n => n.id === e.to);
+    if (!n1 || !n2) return;
+    const isHighlighted = selectedNode && (selectedNode.id === n1.id || selectedNode.id === n2.id);
+    ctx.beginPath();
+    ctx.moveTo(n1.x, n1.y);
+    ctx.lineTo(n2.x, n2.y);
+    ctx.strokeStyle = isHighlighted ? "#2dd4bf" : "rgba(148, 163, 184, 0.25)";
+    ctx.lineWidth = isHighlighted ? 2.4 : 1.2;
+    ctx.stroke();
+
+    if (isHighlighted) {
+      const mx = (n1.x + n2.x) / 2;
+      const my = (n1.y + n2.y) / 2;
+      ctx.fillStyle = "#5eead4";
+      ctx.font = "600 10.5px Inter, sans-serif";
+      ctx.fillText(`${e.weight}`, mx + 4, my - 4);
+    }
+  });
+
+  // Draw nodes
+  GRAPH_NODES.forEach(n => {
+    const isSel = selectedNode && selectedNode.id === n.id;
+    const shockLabel = scen.shocks[n.id];
+
+    if (isSel || shockLabel) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + 7, 0, Math.PI * 2);
+      ctx.fillStyle = shockLabel ? "rgba(244, 63, 94, 0.22)" : "rgba(20, 184, 166, 0.22)";
+      ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = n.color;
+    ctx.fill();
+    ctx.lineWidth = isSel ? 3 : 1.5;
+    ctx.strokeStyle = isSel ? "#ffffff" : "#0b0f17";
+    ctx.stroke();
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = "700 11.5px Inter, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(n.label, n.x, n.y + n.r + 15);
+
+    if (shockLabel) {
+      ctx.fillStyle = "#fde047";
+      ctx.font = "800 11px monospace";
+      ctx.fillText(shockLabel, n.x, n.y - n.r - 8);
+    }
+  });
+}
+
+function renderInspectorNode(node) {
+  const scen = SCENARIOS[currentScenario];
+  const nodeStocks = EQUITIES.filter(e => node.tickers.includes(e.ticker));
+  const edges = GRAPH_EDGES.filter(e => e.from === node.id || e.to === node.id);
+
+  let html = `
+    <span class="node-tag" style="background:${node.color}22;color:${node.color};border:1px solid ${node.color}66;">${node.group}</span>
+    <h3 style="font-size:16px;font-weight:800;color:#f8fafc;margin-bottom:6px;">${node.label}</h3>
+    <p style="font-size:12.5px;color:#cbd5e1;margin-bottom:12px;">${node.desc}</p>
+  `;
+
+  if (currentScenario !== "baseline") {
+    html += `
+      <div class="prop-row" style="border-color:#f59e0b;background:rgba(245,158,11,0.1);margin-bottom:12px;">
+        <div style="font-weight:700;color:#fbbf24;">Active Tail Rule: ${scen.title}</div>
+        <div style="color:#e2e8f0;margin-top:4px;">${scen.desc}</div>
+      </div>
+    `;
+  }
+
+  html += `<div style="font-size:11.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:8px;">Connected E1 Causal Edges (${edges.length})</div><div class="prop-list">`;
+  edges.forEach(e => {
+    html += `<div class="prop-row"><strong>${e.from} → ${e.to}</strong> <span style="color:#2dd4bf;font-family:monospace;">(${e.weight})</span><br/><span style="color:#9ca3af;">${e.label}</span></div>`;
+  });
+  html += `</div>`;
+
+  html += `<div style="font-size:11.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:14px;">Mapped Public Equities (Click to Inspect 5-Round RSI)</div><div class="prop-list">`;
+  nodeStocks.forEach(s => {
+    html += `
+      <div class="prop-row" style="cursor:pointer;" onclick="inspectEquity('${s.ticker}')">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <strong>#${s.rank_r5} ${s.ticker} — ${s.name}</strong>
+          <span class="${badgeClass(s.action)}">${s.r5_score.toFixed(1)}</span>
+        </div>
+        <div style="color:#9ca3af;font-size:11px;margin-top:3px;">Price: $${s.price.toFixed(2)} | RSI: ${s.rsi14.toFixed(1)} | Buy: ${s.buy_zone} | R:R: ${s.reward_risk.toFixed(2)}x</div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  document.getElementById("inspectorPanel").innerHTML = html;
+}
+
+function inspectEquity(ticker) {
+  const s = EQUITIES.find(x => x.ticker === ticker);
+  if (!s) return;
+  document.getElementById("inspectorPanel").innerHTML = `
+    <span class="node-tag" style="background:rgba(20,184,166,0.18);color:#2dd4bf;border:1px solid #14b8a6;">${s.layer}</span>
+    <h3 style="font-size:17px;font-weight:800;color:#f8fafc;">#${s.rank_r5} ${s.ticker} — ${s.name}</h3>
+    <p style="font-size:12px;color:#93c5fd;margin:4px 0 10px;">${s.role}</p>
+    <div style="margin-bottom:10px;"><span class="${badgeClass(s.action)}">${s.action} (Portfolio Weight: ${s.portfolio_weight_pct.toFixed(1)}%)</span></div>
+    <div class="prop-list">
+      <div class="prop-row">
+        <strong>5-Round RSI Score Trajectory (Rank Change: ${s.rank_change_r0_to_r5 >= 0 ? '+' + s.rank_change_r0_to_r5 : s.rank_change_r0_to_r5})</strong><br/>
+        R0 Baseline: <b>${s.r0_score.toFixed(1)}</b> (#${s.rank_r0}) →
+        R1 SBC/Debt: <b>${s.r1_score.toFixed(1)}</b> →
+        R2 Citator/SoR: <b>${s.r2_score.toFixed(1)}</b> →
+        R3 Agentic/Hedge: <b>${s.r3_score.toFixed(1)}</b> →
+        R4 Gov/Health: <b>${s.r4_score.toFixed(1)}</b> →
+        <span style="color:#2dd4bf;font-weight:800;">R5 Final: ${s.r5_score.toFixed(1)} (#${s.rank_r5})</span>
+      </div>
+      <div class="prop-row">
+        <strong>Forensic Fundamentals &amp; Survivability</strong><br/>
+        Rev Growth: <b>${s.rev_growth_pct}%</b> | FCF Margin: <b>${s.fcf_margin_pct}%</b> | SBC/Rev: <b>${s.sbc_pct_rev}%</b><br/>
+        True SBC-Adj FCF: <b>${s.true_fcf_margin_pct}%</b> | Net Debt/EBITDA: <b>${s.net_debt_ebitda}x</b><br/>
+        5-Yr Survivability: <b>${s.survivability_5yr_pct}%</b> | 3-Yr Growth Prob: <b>${s.growth_prob_3yr_pct}%</b>
+      </div>
+      <div class="prop-row">
+        <strong>Technical Setup &amp; Institutional Execution Levels</strong><br/>
+        Price: <b>$${s.price.toFixed(2)}</b> | RSI-14: <b>${s.rsi14.toFixed(1)}</b> | Stage: <b>${s.weinstein_stage}</b><br/>
+        SMA50: $${s.sma50.toFixed(2)} | SMA200: $${s.sma200.toFixed(2)} | ATR-14: $${s.atr14.toFixed(2)}<br/>
+        <span style="color:#93c5fd;">Buy Zone: <b>${s.buy_zone}</b></span> | <span style="color:#fb7185;">Stop: <b>$${s.stop_loss.toFixed(2)}</b></span> | <span style="color:#34d399;">12M Target: <b>$${s.target_12m.toFixed(2)} (${s.reward_risk.toFixed(2)}x R:R)</b></span>
+      </div>
+      <div class="prop-row">
+        <strong>Key Catalyst:</strong> ${s.catalyst}<br/>
+        <strong style="color:#fbbf24;">Devil's Advocate Red-Team Note:</strong> ${s.devils_advocate_note}
+      </div>
+    </div>
+  `;
+}
+
+function runScenario(scenKey, btn) {
+  currentScenario = scenKey;
+  document.getElementById("activeScenarioBadge").textContent = scenKey;
+  btn.parentElement.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  drawGraph();
+  renderInspectorNode(selectedNode);
+}
+
+canvas.addEventListener("click", e => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+  for (const n of GRAPH_NODES) {
+    const dx = mx - n.x;
+    const dy = my - n.y;
+    if (Math.sqrt(dx*dx + dy*dy) <= n.r + 8) {
+      selectedNode = n;
+      drawGraph();
+      renderInspectorNode(n);
+      break;
+    }
+  }
+});
+
+drawGraph();
+renderInspectorNode(selectedNode);
+renderTable();
+</script>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

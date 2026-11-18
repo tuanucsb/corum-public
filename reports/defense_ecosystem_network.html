@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Defense Primes, Munitions, SRMs, Autonomous Warfare & Biodefense — Interactive Macro Network Graph & 5-Round RSI Matrix</title>
+<style>
+  :root {
+    --bg: #0b0f17;
+    --panel: #111827;
+    --panel-alt: #172033;
+    --border: #24324b;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --teal: #14b8a6;
+    --cyan: #38bdf8;
+    --amber: #f59e0b;
+    --emerald: #10b981;
+    --rose: #f43f5e;
+    --violet: #a855f7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    padding-bottom: 60px;
+  }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11, 15, 23, 0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .topbar-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .badge-pill {
+    background: rgba(20, 184, 166, 0.16);
+    border: 1px solid rgba(20, 184, 166, 0.45);
+    color: #2dd4bf;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .nav-btn:hover, .nav-btn.primary {
+    background: rgba(20, 184, 166, 0.18);
+    border-color: var(--teal);
+    color: #5eead4;
+  }
+  .container {
+    max-width: 1580px;
+    margin: 0 auto;
+    padding: 24px 28px;
+  }
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .kpi-val {
+    font-size: 21px;
+    font-weight: 800;
+    color: #f8fafc;
+  }
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--teal);
+    margin-top: 4px;
+  }
+  .grid-main {
+    display: grid;
+    grid-template-columns: 1fr 430px;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 1150px) {
+    .grid-main { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: rgba(23, 32, 51, 0.55);
+  }
+  .card-header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f3f4f6;
+  }
+  .scenario-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #0e1523;
+  }
+  .scen-btn {
+    background: #172236;
+    border: 1px solid #2b3b59;
+    color: #cbd5e1;
+    padding: 6px 11px;
+    border-radius: 7px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .scen-btn.active, .scen-btn:hover {
+    background: rgba(20, 184, 166, 0.22);
+    border-color: var(--teal);
+    color: #5eead4;
+  }
+  #networkCanvas {
+    width: 100%;
+    height: 640px;
+    display: block;
+    background: radial-gradient(circle at 50% 45%, #131d31 0%, #0b0f17 75%);
+    cursor: grab;
+  }
+  .legend-bar {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 10px 18px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .inspector-body {
+    padding: 18px;
+    max-height: 700px;
+    overflow-y: auto;
+  }
+  .node-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .prop-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .prop-row {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 28px 0 14px;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rounds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .round-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--teal);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .round-card h3 {
+    font-size: 13.5px;
+    color: #5eead4;
+    margin-bottom: 6px;
+  }
+  .round-card p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .formula-box {
+    font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+    font-size: 11px;
+    background: #0b0f17;
+    border: 1px solid var(--border);
+    padding: 7px 9px;
+    border-radius: 6px;
+    color: #93c5fd;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #0e1523;
+    align-items: center;
+  }
+  .filter-input {
+    background: #172236;
+    border: 1px solid #2b3b59;
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    min-width: 250px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th, td {
+    padding: 10px 11px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  th {
+    background: #141d2f;
+    color: #94a3b8;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+  tr:hover td {
+    background: rgba(20, 184, 166, 0.06);
+  }
+  .act-badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 10.5px;
+    display: inline-block;
+  }
+  .act-strong { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+  .act-buy { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+  .act-accum { background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+  .act-hold { background: rgba(148, 163, 184, 0.16); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.35); }
+  .act-avoid { background: rgba(244, 63, 94, 0.16); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">
+    <span class="badge-pill">🛡️ CORUM Institutional MacroGraph · Defense &amp; Biodefense</span>
+    <h1 style="font-size:17px;font-weight:800;">Defense Primes, Munitions, SRMs, Autonomous Warfare &amp; Biodefense (`DefenseSystemAgent`)</h1>
+  </div>
+  <div class="nav-links">
+    <a class="nav-btn primary" href="#hardened-defense-recommendation-matrix">🎯 5-Round RSI Recommendation Matrix (32 Equities)</a>
+    <a class="nav-btn" href="#defense-chokepoints-biodefense">🚀 SRM / Nuclear Bottlenecks &amp; Biodefense Map</a>
+    📄 Read Full Institutional Deep Research Report
+    <a class="nav-btn" href="../index.html" target="_top">⬅ Back to CORUM Board</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-label">Public Universe &amp; Architecture</div>
+      <div class="kpi-val">32 Equities · 6 Layers</div>
+      <div class="kpi-sub">6 Defense Nodes + 35 E1 Causal Edges + 5 State Rules</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Autonomy, EW &amp; Battle-OS Leaders</div>
+      <div class="kpi-val">PLTR · CACI · AVAV · DRS</div>
+      <div class="kpi-sub">+ AXON (#1-#7 R5 Ranked; Replicator / CCA / C-UAS)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Physical Chokepoint Monopolies</div>
+      <div class="kpi-val">BWXT · CW · HWM · HEI · TDG</div>
+      <div class="kpi-sub">Naval Nuclear Cores, Single-Crystal Blades &amp; FAA PMA</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Military Health &amp; BARDA Biodefense</div>
+      <div class="kpi-val">SIGA (#2) · LDOS (#13) · PSN (#14)</div>
+      <div class="kpi-sub">TPOXX Smallpox SNS Monopoly + VA PACT Act QTC (&gt;20% EBIT)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Round 5 Structural Traps Avoided</div>
+      <div class="kpi-val">BA · ACHR · RCAT · OLN · SAIC</div>
+      <div class="kpi-sub">FPIF EAC Losses, Negative-FCF Dilution &amp; DOGE T&amp;M Cuts</div>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE MACRO NETWORK GRAPH & SHOCK SIMULATOR -->
+  <div class="grid-main">
+    <div class="card">
+      <div class="card-header">
+        <h2>☊ Interactive Defense, Munitions, SRM, Autonomy &amp; Biodefense Causal Network Graph</h2>
+        <span style="font-size:12px;color:var(--muted);">Click any node to inspect E1 causal edges, mapped equities &amp; Monte Carlo shock propagation</span>
+      </div>
+      <div class="scenario-bar">
+        <button class="scen-btn active" onclick="runScenario('baseline', this)">Baseline Equilibrium</button>
+        <button class="scen-btn" onclick="runScenario('DEF_R1', this)">🌍 DEF_R1: NATO 2.5-3% GDP &amp; FMS Supercycle</button>
+        <button class="scen-btn" onclick="runScenario('DEF_R2', this)">🚀 DEF_R2: SRM Cast-Cure DPA Title III Unlock</button>
+        <button class="scen-btn" onclick="runScenario('DEF_R3', this)">⚠️ DEF_R3: Ga / Ge / Antimony / NdFeB Embargo</button>
+        <button class="scen-btn" onclick="runScenario('DEF_R4', this)">🛸 DEF_R4: Replicator, CCA &amp; Counter-UAS Inversion</button>
+        <button class="scen-btn" onclick="runScenario('DEF_R5', this)">🔍 DEF_R5: DOGE Cost-Plus Audit &amp; FPIF Squeeze</button>
+      </div>
+      <canvas id="networkCanvas" width="1040" height="640"></canvas>
+      <div class="legend-bar">
+        <div class="legend-item"><span class="dot" style="background:#14b8a6;"></span> 6 Core Defense Nodes (`DEFENSE`, `MUNITIONS`, `MISSILES`, `AMMO`, `SRM`, `UAS`)</div>
+        <div class="legend-item"><span class="dot" style="background:#f59e0b;"></span> Upstream Bottlenecks (`RARE_EARTHS`, `NUCLEAR`, `SPACE`, `CYBER`)</div>
+        <div class="legend-item"><span class="dot" style="background:#f43f5e;"></span> Military Health &amp; Biodefense (`HC_MANAGED_CARE_MA`, `PHARMA`)</div>
+        <div class="legend-item"><span class="dot" style="background:#38bdf8;"></span> Macro Drivers (`DEFENSE_SPENDING`, `TARIFFS`, `AI_CAPABILITY`, `HEALTHCARE_POLICY`)</div>
+        <div class="legend-item"><span class="dot" style="background:#a855f7;"></span> Private Challengers (Anduril, Shield AI, Castelion, Epirus, Saronic)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>🔬 Node &amp; Causal Shock Inspector</h2>
+        <span id="activeScenarioBadge" class="badge-pill">Baseline</span>
+      </div>
+      <div class="inspector-body" id="inspectorPanel"></div>
+    </div>
+  </div>
+
+  <!-- PHYSICAL CHOKEPOINTS & BIODEFENSE ARCHITECTURE -->
+  <div id="defense-chokepoints-biodefense" class="section-title">
+    🚀 Physical Supply-Chain Chokepoints, Asymmetric Autonomy &amp; Military Health / Biodefense Architecture
+  </div>
+  <div class="rounds-grid">
+    <div class="round-card" style="border-top-color:#f59e0b;">
+      <h3>🚀 Solid Rocket Motor (SRM) Cast-Cure Duopoly &amp; Energetics</h3>
+      <p>Over 90% of US tactical &amp; strategic missile propulsion passes through LHX (Aerojet Rocketdyne) and NOC (Orbital ATK), gated by Ammonium Perchlorate (AP), HTPB binder, 7-21 day cure pits &amp; X-ray NDT.</p>
+      <div class="formula-box">Chokepoint Winners: LHX, NOC, KTOS (Prometheus), RTX, LMT, PSN (Holston/Radford AAP)</div>
+    </div>
+    <div class="round-card" style="border-top-color:#38bdf8;">
+      <h3>⚓ Naval Nuclear Monopoly &amp; Single-Crystal / PMA Aftermarket</h3>
+      <p>100% of US Navy Virginia/Columbia submarine reactor cores are built by BWXT with CW main coolant pumps and DRS SiC electric drive, while HWM/HEI/TDG own sole-source aerospace hot-section &amp; PMA spares.</p>
+      <div class="formula-box">Monopoly Winners: BWXT (#8), CW (#11), DRS (#7), HEI (#6), HWM (#9), TDG (#10), WWD (#15)</div>
+    </div>
+    <div class="round-card" style="border-top-color:#10b981;">
+      <h3>🛸 Replicator / CCA Cost-Exchange Inversion &amp; Golden Dome</h3>
+      <p>Inverts the 50:1 negative cost exchange of firing $3M interceptors at $30K drones via Switchblade loitering munitions, Valkyrie CCAs, LOCUST/DE-MSHORAD lasers, Spectral EW &amp; Maven AI OS.</p>
+      <div class="formula-box">Autonomy Winners: PLTR (#1), CACI (#4), AVAV (#5), DRS (#7), AXON (#3) | Avoid Cash Burn: ACHR, RCAT</div>
+    </div>
+    <div class="round-card" style="border-top-color:#f43f5e;">
+      <h3>🏥 DHA Military Health, VA PACT Act &amp; BARDA Biodefense MCMs</h3>
+      <p>Non-discretionary statutory mandates ring-fenced from DOGE: VA PACT Act toxic-exposure disability medical exams (&gt;20% EBIT margin at LDOS QTC) + BARDA Project BioShield smallpox/anthrax SNS stockpiles.</p>
+      <div class="formula-box">Biodefense &amp; Health Winners: SIGA (#2, 56% EBITDA margin, 5.2x EV/EBITDA), LDOS (#13), PSN (#14)</div>
+    </div>
+  </div>
+
+  <!-- 5-ROUND RECURSIVE SELF-IMPROVEMENT ENGINE CARDS -->
+  <div class="section-title">
+    🔄 5-Round Recursive Self-Improvement (RSI) Loop: Critic → Sector Sub-Skills → Hardened Upgrade
+  </div>
+  <div class="rounds-grid" id="subSkillsContainer"></div>
+
+  <!-- HARDENED 32-STOCK RECOMMENDATION MATRIX -->
+  <div id="hardened-defense-recommendation-matrix" class="section-title">
+    🎯 Final Hardened Defense &amp; Biodefense Recommendation Matrix (32 Public Equities · 5-Round RSI Telemetry)
+  </div>
+  <div class="card">
+    <div class="filter-bar">
+      <input type="text" id="searchInput" class="filter-input" placeholder="Search ticker, company, subsector, catalyst (e.g. BWXT, SRM, PACT Act, TPOXX)..." oninput="renderTable()" />
+      <button class="scen-btn active" onclick="setLayerFilter('ALL', this)">All 32 Equities</button>
+      <button class="scen-btn" onclick="setLayerFilter('BUY_ONLY', this)">⭐ Portfolio Picks (20 STRONG BUY / BUY)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L1', this)">L1: Tier-1 Primes &amp; Nuclear (8)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L2', this)">L2: Missiles, SRMs &amp; Ammo (4)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L3', this)">L3: Autonomy, C-UAS &amp; Defense AI (8)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L4', this)">L4: Superalloys &amp; PMA Aftermarket (4)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L5', this)">L5: Defense IT &amp; Military Health (6)</button>
+      <button class="scen-btn" onclick="setLayerFilter('L6', this)">L6: BARDA Biodefense MCMs (2)</button>
+      <button class="scen-btn" onclick="setLayerFilter('AVOID', this)">🚨 FPIF / Dilution / DOGE Traps (8)</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>R5 Rank</th>
+            <th>Ticker</th>
+            <th>Company &amp; Primary Moat</th>
+            <th>Layer / Node</th>
+            <th>R1 (Naive)</th>
+            <th>R2 (Rule Def X)</th>
+            <th>R3 (Chokepoint)</th>
+            <th>R4 (Autonomy/FMS)</th>
+            <th>R5 Final</th>
+            <th>Rule Def X</th>
+            <th>Sole-Source %</th>
+            <th>FPIF / DOGE %</th>
+            <th>Price</th>
+            <th>RSI-14</th>
+            <th>Weinstein Stage</th>
+            <th>Buy Entry Zone</th>
+            <th>Hard Stop</th>
+            <th>12M Target</th>
+            <th>Port Wt</th>
+            <th>Hardened Action</th>
+          </tr>
+        </thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const EQUITIES = [{"ticker": "PLTR", "name": "Palantir Technologies Inc.", "layer": "L3 Attritable UAS, Counter-UAS & Tactical AI", "subsector_node": "DEFENSE_AUTONOMY_UAS", "market_cap_b": 165.0, "ev_ebitda_ntm": 78.0, "pe_ntm": 94.0, "organic_rev_growth_pct": 28.5, "gross_margin_pct": 81.4, "ebitda_margin_pct": 39.5, "gaap_fcf_margin_pct": 36.2, "sbc_pct_rev": 19.8, "net_debt_ebitda": -3.8, "backlog_b": 4.9, "backlog_to_rev_years": 1.6, "fpif_dev_exposure_pct": 2.0, "sole_source_por_share_pct": 91.0, "rule_of_defense_x": 52.1, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 88.0, "mineral_tariff_immunity": 98.0, "cost_exchange_autonomy_uplift": 98.0, "gov_mandate_fms_barda_dha_moat": 94.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 84.2, "stress_vectors": {"ceasefire_resilience": 73.8, "doge_audit_survival": 100.0, "mineral_embargo_survival": 98.0, "fpif_inflation_survival": 94.8, "rate_shock_survival": 52.2}, "technicals": {"price": 196.75, "sma50": 184.75, "sma200": 153.15, "ma_30w": 153.68, "pct_above_30w_ma": 28.03, "rsi14": 55.4, "mansfield_rs": 22.37, "max_dd_1y_pct": 48.2, "weinstein_stage": "Stage 2 (Markup)", "source": "yfinance_live"}, "r1_score": 83.57, "r2_score": 76.71, "r3_score": 86.68, "r4_score": 95.5, "r5_score": 96.2, "conviction_delta_r5_vs_r1": 12.63, "r1_action": "STRONG BUY", "r5_action": "STRONG BUY", "gov_agencies_served": "CDAO/COCOMs (Maven Smart System $480M+ ceiling), US Army (TITAN AI Ground Station, Vantage), SOCOM, Space Force, HHS/CDC/VA", "healthcare_biodefense_hook": "Powers HHS Protect, CDC disease surveillance, VA clinical resource optimization, and Cleveland Clinic / Tampa General hospital AI", "primary_moat_thesis": "De facto AI operating system for Western warfare (Maven Smart System, TITAN mobile ground station, Gotham/AIP at IL6/TS-SCI) + 65%+ GAAP Rule of 40.", "key_catalyst_2026": "NATO-wide Maven Smart System standardization + US Army TITAN full-rate production + DOGE shifting IT spend from consultants to COTS software", "primary_kill_switch": "Extreme ~78x EV/EBITDA valuation compression if 10Y yields spike or US commercial AIP growth decelerates", "rank": 1, "portfolio_alloc_pct": 7.83, "entry_zone": "$179.04 - $198.72", "target_price_12m": 243.97, "implied_upside_pct": 24.0, "hard_stop": 144.46}, {"ticker": "SIGA", "name": "SIGA Technologies, Inc. (TPOXX Smallpox / Orthopox Biodefense Antiviral)", "layer": "L6 Biodefense & BARDA Medical Countermeasures", "subsector_node": "DEFENSE", "market_cap_b": 0.58, "ev_ebitda_ntm": 5.2, "pe_ntm": 8.6, "organic_rev_growth_pct": 14.0, "gross_margin_pct": 84.5, "ebitda_margin_pct": 56.0, "gaap_fcf_margin_pct": 48.0, "sbc_pct_rev": 2.1, "net_debt_ebitda": -1.8, "backlog_b": 0.32, "backlog_to_rev_years": 1.8, "fpif_dev_exposure_pct": 0.0, "sole_source_por_share_pct": 95.0, "rule_of_defense_x": 67.25, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 92.0, "mineral_tariff_immunity": 96.0, "cost_exchange_autonomy_uplift": 80.0, "gov_mandate_fms_barda_dha_moat": 94.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 93.05, "stress_vectors": {"ceasefire_resilience": 78.6, "doge_audit_survival": 100.0, "mineral_embargo_survival": 96.0, "fpif_inflation_survival": 100.0, "rate_shock_survival": 92.0}, "technicals": {"price": 3.12, "sma50": 3.17, "sma200": 4.26, "ma_30w": 3.8, "pct_above_30w_ma": -17.81, "rsi14": 24.3, "mansfield_rs": -31.08, "max_dd_1y_pct": 61.6, "weinstein_stage": "Stage 2 Pullback (Oversold Buy Zone)", "source": "yfinance_live"}, "r1_score": 80.71, "r2_score": 93.0, "r3_score": 94.5, "r4_score": 95.5, "r5_score": 95.77, "conviction_delta_r5_vs_r1": 15.06, "r1_action": "STRONG BUY", "r5_action": "STRONG BUY", "gov_agencies_served": "ASPR / BARDA (Strategic National Stockpile Project BioShield), DoD JPEO-CBRND, European HERA (13+ NATO countries), Japan MHLW", "healthcare_biodefense_hook": "Sole FDA-approved oral & IV tecovirimat (TPOXX) antiviral in the US Strategic National Stockpile for smallpox/orthopox biological warfare defense", "primary_moat_thesis": "Fortress net-cash balance sheet, ~56% EBITDA margins, 5.2x EV/EBITDA, and sole-source BARDA + DoD + NATO/Japan Strategic National Stockpile smallpox antiviral monopoly.", "key_catalyst_2026": "New BARDA multi-year Project BioShield oral/IV TPOXX replenishment contract + PEP (Post-Exposure Prophylaxis) label expansion + special cash dividends", "primary_kill_switch": "Lumpy timing of BARDA SNS delivery acceptance across fiscal quarters", "rank": 2, "portfolio_alloc_pct": 7.7, "entry_zone": "$3.00 - $3.15", "target_price_12m": 3.87, "implied_upside_pct": 24.0, "hard_stop": 2.75}, {"ticker": "AXON", "name": "Axon Enterprise, Inc. (Dedrone Counter-UAS & Tactical Public Safety AI)", "layer": "L3 Attritable UAS, Counter-UAS & Tactical AI", "subsector_node": "DEFENSE_AUTONOMY_UAS", "market_cap_b": 44.2, "ev_ebitda_ntm": 52.0, "pe_ntm": 68.0, "organic_rev_growth_pct": 31.0, "gross_margin_pct": 62.5, "ebitda_margin_pct": 25.2, "gaap_fcf_margin_pct": 19.4, "sbc_pct_rev": 13.2, "net_debt_ebitda": -0.8, "backlog_b": 8.2, "backlog_to_rev_years": 3.6, "fpif_dev_exposure_pct": 1.0, "sole_source_por_share_pct": 89.0, "rule_of_defense_x": 49.2, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 80.0, "mineral_tariff_immunity": 88.0, "cost_exchange_autonomy_uplift": 91.0, "gov_mandate_fms_barda_dha_moat": 87.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 90.54, "stress_vectors": {"ceasefire_resilience": 93.4, "doge_audit_survival": 100.0, "mineral_embargo_survival": 88.0, "fpif_inflation_survival": 97.4, "rate_shock_survival": 71.8}, "technicals": {"price": 420.37, "sma50": 482.59, "sma200": 483.87, "ma_30w": 470.81, "pct_above_30w_ma": -10.71, "rsi14": 53.3, "mansfield_rs": -17.44, "max_dd_1y_pct": 54.4, "weinstein_stage": "Stage 1 (Accumulation / Basing)", "source": "yfinance_live"}, "r1_score": 90.25, "r2_score": 90.89, "r3_score": 94.5, "r4_score": 95.5, "r5_score": 94.67, "conviction_delta_r5_vs_r1": 4.42, "r1_action": "STRONG BUY", "r5_action": "STRONG BUY", "gov_agencies_served": "DHS/CBP, DoD Base Security (Dedrone C-UAS), Federal Law Enforcement (FBI/DEA/USMS), 18,000+ Law Enforcement Agencies", "healthcare_biodefense_hook": "Hospital security workplace-violence de-escalation (TASER 10 / Body 4) & EMS real-time telemetry", "primary_moat_thesis": "Dedrone acquisition + Sky-Hero indoor tactical drones + Draft One AI + TASER 10 creates an untouchable 122% NRR public-safety & homeland Counter-UAS cloud.", "key_catalyst_2026": "FIFA World Cup 2026 & DoD installation Dedrone Counter-UAS deployments + AI Era Plan ($199+/mo/officer bundle) adoption", "primary_kill_switch": "High ~52x EV/EBITDA multiple + 13.2% SBC/revenue dilution if municipal/federal grant cycles slow", "rank": 3, "portfolio_alloc_pct": 7.35, "entry_zone": "$403.56 - $424.57", "target_price_12m": 521.26, "implied_upside_pct": 24.0, "hard_stop": 369.93}, {"ticker": "CACI", "name": "CACI International Inc", "layer": "L5 Sovereign Defense IT & Military Health", "subsector_node": "DEFENSE", "market_cap_b": 9.6, "ev_ebitda_ntm": 12.4, "pe_ntm": 17.8, "organic_rev_growth_pct": 9.2, "gross_margin_pct": 33.4, "ebitda_margin_pct": 11.4, "gaap_fcf_margin_pct": 6.8, "sbc_pct_rev": 0.7, "net_debt_ebitda": 2.5, "backlog_b": 31.8, "backlog_to_rev_years": 3.8, "fpif_dev_exposure_pct": 3.5, "sole_source_por_share_pct": 79.0, "rule_of_defense_x": 20.47, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 84.0, "mineral_tariff_immunity": 94.0, "cost_exchange_autonomy_uplift": 89.0, "gov_mandate_fms_barda_dha_moat": 90.0, "doge_cost_plus_services_exposure_pct": 9.0, "stress_test_survival_score": 85.43, "stress_vectors": {"ceasefire_resilience": 87.4, "doge_audit_survival": 80.2, "mineral_embargo_survival": 94.0, "fpif_inflation_survival": 90.9, "rate_shock_survival": 73.2}, "technicals": {"price": 633.98, "sma50": 623.52, "sma200": 566.97, "ma_30w": 552.61, "pct_above_30w_ma": 14.73, "rsi14": 53.5, "mansfield_rs": 6.15, "max_dd_1y_pct": 33.4, "weinstein_stage": "Stage 2 (Markup)", "source": "yfinance_live"}, "r1_score": 73.66, "r2_score": 74.91, "r3_score": 84.98, "r4_score": 91.72, "r5_score": 94.54, "conviction_delta_r5_vs_r1": 20.88, "r1_action": "BUY", "r5_action": "STRONG BUY", "gov_agencies_served": "US Army/SOCOM/USN (Spectral EW, TLS Manpack, CORIAN Counter-UAS), SDA (Optical Inter-Satellite Links), DHA Medical Readiness", "healthcare_biodefense_hook": "DHA theatre medical information systems & Joint Operational Medicine Information Systems (JOMIS)", "primary_moat_thesis": "Differentiated 'Software-Defined Hardware' model: CACI owns proprietary Electronic Warfare (TLS/Spectral), Counter-UAS (SkyTracker), and Free-Space Optical laser comms IP.", "key_catalyst_2026": "US Navy Spectral EW fleet rollout + Azure Summit Technology RF/SIGINT accretion + SDA optical terminal deliveries", "primary_kill_switch": "Continuing Resolution slows new-start SIGINT hardware task orders or post-Azure Summit leverage", "rank": 4, "portfolio_alloc_pct": 7.31, "entry_zone": "$576.92 - $640.32", "target_price_12m": 786.14, "implied_upside_pct": 24.0, "hard_stop": 519.45}, {"ticker": "AVAV", "name": "AeroVironment, Inc. (Switchblade Loitering Munitions & BlueHalo C-UAS)", "layer": "L3 Attritable UAS, Counter-UAS & Tactical AI", "subsector_node": "DEFENSE_AUTONOMY_UAS", "market_cap_b": 8.6, "ev_ebitda_ntm": 28.4, "pe_ntm": 44.5, "organic_rev_growth_pct": 18.5, "gross_margin_pct": 40.8, "ebitda_margin_pct": 19.2, "gaap_fcf_margin_pct": 9.4, "sbc_pct_rev": 2.4, "net_debt_ebitda": 1.2, "backlog_b": 1.4, "backlog_to_rev_years": 1.1, "fpif_dev_exposure_pct": 5.0, "sole_source_por_share_pct": 84.0, "rule_of_defense_x": 35.4, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 86.0, "mineral_tariff_immunity": 82.0, "cost_exchange_autonomy_uplift": 97.0, "gov_mandate_fms_barda_dha_moat": 92.0, "doge_cost_plus_services_exposure_pct": 1.0, "stress_test_survival_score": 81.83, "stress_vectors": {"ceasefire_resilience": 63.6, "doge_audit_survival": 97.8, "mineral_embargo_survival": 82.0, "fpif_inflation_survival": 87.0, "rate_shock_survival": 80.5}, "technicals": {"price": 123.25, "sma50": 145.98, "sma200": 191.35, "ma_30w": 164.87, "pct_above_30w_ma": -25.24, "rsi14": 30.5, "mansfield_rs": -39.46, "max_dd_1y_pct": 70.1, "weinstein_stage": "Stage 2 Pullback (Oversold Buy Zone)", "source": "yfinance_live"}, "r1_score": 73.5, "r2_score": 78.93, "r3_score": 85.34, "r4_score": 94.71, "r5_score": 93.9, "conviction_delta_r5_vs_r1": 20.39, "r1_action": "BUY", "r5_action": "STRONG BUY", "gov_agencies_served": "US Army (Lethal Unmanned Systems $990M IDIQ, Replicator 1 Switchblade 600, LOCUST Laser C-UAS), DIU, SOCOM, Allied FMS (20+ nations)", "healthcare_biodefense_hook": "BlueHalo biomedical warfighter performance sensing & directed-energy bio-effect safety modeling", "primary_moat_thesis": "Combat-proven #1 Western loitering munition franchise (Switchblade 300/600) + transformative BlueHalo acquisition adding LOCUST laser C-UAS & BADGER space phased arrays.", "key_catalyst_2026": "US Army $990M LUS Switchblade 600 task order acceleration + Replicator 1/2 tranches + BlueHalo LOCUST laser C-UAS deployment", "primary_kill_switch": "BlueHalo integration dilution or intensified Group 2/3 loitering munition price competition from Anduril/UVision", "rank": 5, "portfolio_alloc_pct": 7.1, "entry_zone": "$118.32 - $124.48", "target_price_12m": 152.83, "implied_upside_pct": 24.0, "hard_stop": 108.46}, {"ticker": "HEI", "name": "HEICO Corporation (Flight Support Group & Electronic Technologies Group)", "layer": "L4 High-Margin Aero & Defense Aftermarket", "subsector_node": "DEFENSE", "market_cap_b": 34.8, "ev_ebitda_ntm": 27.5, "pe_ntm": 52.0, "organic_rev_growth_pct": 14.6, "gross_margin_pct": 39.2, "ebitda_margin_pct": 26.8, "gaap_fcf_margin_pct": 16.5, "sbc_pct_rev": 0.9, "net_debt_ebitda": 2.1, "backlog_b": 4.1, "backlog_to_rev_years": 1.0, "fpif_dev_exposure_pct": 1.5, "sole_source_por_share_pct": 88.0, "rule_of_defense_x": 38.51, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 93.0, "mineral_tariff_immunity": 88.0, "cost_exchange_autonomy_uplift": 85.0, "gov_mandate_fms_barda_dha_moat": 91.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 84.46, "stress_vectors": {"ceasefire_resilience": 64.8, "doge_audit_survival": 100.0, "mineral_embargo_survival": 88.0, "fpif_inflation_survival": 96.1, "rate_shock_survival": 74.4}, "technicals": {"price": 297.36, "sma50": 317.26, "sma200": 319.98, "ma_30w": 317.72, "pct_above_30w_ma": -6.41, "rsi14": 45.0, "mansfield_rs": -11.59, "max_dd_1y_pct": 27.1, "weinstein_stage": "Stage 1 (Accumulation / Basing)", "source": "yfinance_live"}, "r1_score": 70.01, "r2_score": 76.31, "r3_score": 85.16, "r4_score": 91.98, "r5_score": 92.58, "conviction_delta_r5_vs_r1": 22.57, "r1_action": "BUY", "r5_action": "STRONG BUY", "gov_agencies_served": "DLA Aviation, MDA, Space Force, US Navy/USAF (Electronic Technologies Group RF/microwave seekers + Wencor/FSG cost-saving PMA spares)", "healthcare_biodefense_hook": "HEICO Electronic Technologies produces high-voltage power supplies & detectors for CT, MRI, and linear-accelerator oncology systems", "primary_moat_thesis": "Unique dual-engine winner: Electronic Technologies Group supplies radiation-hardened space/missile RF components while Flight Support Group IS the solution to DOGE/DoD spare-part cost inflation via FAA PMA alternatives (30-50% cheaper than OEMs).", "key_catalyst_2026": "DoD & DOGE push to adopt FAA PMA replacement parts on military transport/tanker fleets + missile seeker RF subsystem restocking", "primary_kill_switch": "Premium ~27.5x EV/EBITDA valuation multiple if commercial aviation RPM growth slows", "rank": 6, "portfolio_alloc_pct": 6.69, "entry_zone": "$285.47 - $300.33", "target_price_12m": 368.73, "implied_upside_pct": 24.0, "hard_stop": 261.68}, {"ticker": "DRS", "name": "Leonardo DRS, Inc.", "layer": "L3 Attritable UAS, Counter-UAS & Tactical AI", "subsector_node": "DEFENSE_AUTONOMY_UAS", "market_cap_b": 8.8, "ev_ebitda_ntm": 17.8, "pe_ntm": 27.6, "organic_rev_growth_pct": 11.5, "gross_margin_pct": 23.4, "ebitda_margin_pct": 13.2, "gaap_fcf_margin_pct": 8.4, "sbc_pct_rev": 0.9, "net_debt_ebitda": 0.3, "backlog_b": 8.3, "backlog_to_rev_years": 2.5, "fpif_dev_exposure_pct": 5.5, "sole_source_por_share_pct": 85.0, "rule_of_defense_x": 25.45, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 90.0, "mineral_tariff_immunity": 82.0, "cost_exchange_autonomy_uplift": 92.0, "gov_mandate_fms_barda_dha_moat": 93.0, "doge_cost_plus_services_exposure_pct": 1.0, "stress_test_survival_score": 87.08, "stress_vectors": {"ceasefire_resilience": 81.0, "doge_audit_survival": 97.8, "mineral_embargo_survival": 82.0, "fpif_inflation_survival": 85.7, "rate_shock_survival": 89.8}, "technicals": {"price": 34.51, "sma50": 37.38, "sma200": 42.14, "ma_30w": 42.19, "pct_above_30w_ma": -18.2, "rsi14": 31.2, "mansfield_rs": -22.35, "max_dd_1y_pct": 31.6, "weinstein_stage": "Stage 2 Pullback (Oversold Buy Zone)", "source": "yfinance_live"}, "r1_score": 69.27, "r2_score": 71.92, "r3_score": 81.34, "r4_score": 89.97, "r5_score": 92.47, "conviction_delta_r5_vs_r1": 23.2, "r1_action": "HOLD", "r5_action": "STRONG BUY", "gov_agencies_served": "US Navy (Columbia SSBN Electric Propulsion System), US Army (M-SHORAD, DE M-SHORAD Counter-UAS, RADA Tactical Radars, cooled/uncooled IR sensors)", "healthcare_biodefense_hook": "Uncooled thermal imaging sensors for fever screening & autonomous battlefield medical vehicle situational awareness", "primary_moat_thesis": "Columbia-class SSBN sole-source integrated electric propulsion + RADA tactical hemispherical Counter-UAS radars + #1 US Army infrared force protection.", "key_catalyst_2026": "Columbia-class Boat 3+ margin step-up + US Army Counter-UAS M-SHORAD / LOCUST radar task orders", "primary_kill_switch": "Germanium optical substrate supply tightness or Leonardo S.p.A. (72% parent) secondary share overhang", "rank": 7, "portfolio_alloc_pct": 6.66, "entry_zone": "$33.13 - $34.86", "target_price_12m": 42.79, "implied_upside_pct": 24.0, "hard_stop": 30.37}, {"ticker": "BWXT", "name": "BWX Technologies, Inc.", "layer": "L1 Tier-1 Primes & Naval Nuclear", "subsector_node": "DEFENSE", "market_cap_b": 11.6, "ev_ebitda_ntm": 19.8, "pe_ntm": 33.5, "organic_rev_growth_pct": 11.2, "gross_margin_pct": 24.8, "ebitda_margin_pct": 20.4, "gaap_fcf_margin_pct": 9.8, "sbc_pct_rev": 0.7, "net_debt_ebitda": 2.1, "backlog_b": 4.8, "backlog_to_rev_years": 1.8, "fpif_dev_exposure_pct": 4.5, "sole_source_por_share_pct": 96.0, "rule_of_defense_x": 26.67, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 98.0, "mineral_tariff_immunity": 92.0, "cost_exchange_autonomy_uplift": 75.0, "gov_mandate_fms_barda_dha_moat": 98.0, "doge_cost_plus_services_exposure_pct": 1.0, "stress_test_survival_score": 86.77, "stress_vectors": {"ceasefire_resilience": 79.2, "doge_audit_survival": 97.8, "mineral_embargo_survival": 92.0, "fpif_inflation_survival": 88.3, "rate_shock_survival": 76.2}, "technicals": {"price": 127.19, "sma50": 146.71, "sma200": 186.17, "ma_30w": 180.55, "pct_above_30w_ma": -29.55, "rsi14": 40.0, "mansfield_rs": -35.51, "max_dd_1y_pct": 46.5, "weinstein_stage": "Stage 2 Pullback (Oversold Buy Zone)", "source": "yfinance_live"}, "r1_score": 67.34, "r2_score": 70.33, "r3_score": 82.99, "r4_score": 89.47, "r5_score": 92.2, "conviction_delta_r5_vs_r1": 24.86, "r1_action": "HOLD", "r5_action": "STRONG BUY", "gov_agencies_served": "Naval Reactors (NAVSEA 08 / DOE NNSA), SCO (Project Pele microreactor), DARPA (DRACO nuclear thermal propulsion), FDA (BWXT Medical isotopes)", "healthcare_biodefense_hook": "BWXT Medical manufactures Actinium-225, Lutetium-177 & Tc-99m radiopharmaceutical isotopes for targeted oncology", "primary_moat_thesis": "100% NRC Category I sole-source monopoly on US Navy nuclear submarine & carrier reactor cores, fuel, and steam generators + BWXT Medical oncology isotopes.", "key_catalyst_2026": "Multi-year Naval Reactors pricing agreement + AUKUS submarine reactor long-lead components + Ac-225 FDA approval", "primary_kill_switch": "Congressional delay on Virginia-class two-per-year funding or Project Pele microreactor schedule slip", "rank": 8, "portfolio_alloc_pct": 6.57, "entry_zone": "$122.10 - $128.46", "target_price_12m": 157.72, "implied_upside_pct": 24.0, "hard_stop": 111.93}, {"ticker": "HWM", "name": "Howmet Aerospace Inc.", "layer": "L4 High-Margin Aero & Defense Aftermarket", "subsector_node": "DEFENSE", "market_cap_b": 52.4, "ev_ebitda_ntm": 22.4, "pe_ntm": 34.2, "organic_rev_growth_pct": 12.4, "gross_margin_pct": 31.8, "ebitda_margin_pct": 27.2, "gaap_fcf_margin_pct": 14.8, "sbc_pct_rev": 0.8, "net_debt_ebitda": 1.4, "backlog_b": 8.5, "backlog_to_rev_years": 1.1, "fpif_dev_exposure_pct": 2.0, "sole_source_por_share_pct": 92.0, "rule_of_defense_x": 33.44, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 96.0, "mineral_tariff_immunity": 86.0, "cost_exchange_autonomy_uplift": 78.0, "gov_mandate_fms_barda_dha_moat": 90.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 85.88, "stress_vectors": {"ceasefire_resilience": 68.4, "doge_audit_survival": 100.0, "mineral_embargo_survival": 86.0, "fpif_inflation_survival": 94.8, "rate_shock_survival": 81.5}, "technicals": {"price": 185.91, "sma50": 237.86, "sma200": 249.06, "ma_30w": 253.92, "pct_above_30w_ma": -26.78, "rsi14": 14.4, "mansfield_rs": -29.0, "max_dd_1y_pct": 36.5, "weinstein_stage": "Stage 2 Pullback (Oversold Buy Zone)", "source": "yfinance_live"}, "r1_score": 67.72, "r2_score": 72.61, "r3_score": 82.7, "r4_score": 87.95, "r5_score": 91.4, "conviction_delta_r5_vs_r1": 23.68, "r1_action": "HOLD", "r5_action": "STRONG BUY", "gov_agencies_served": "DoD F-35 Joint Program Office (sole-source F135 single-crystal turbine blades & titanium bulkheads), USAF/USN fighter & missile structures", "healthcare_biodefense_hook": "Medical-grade titanium alloy metallurgy & surgical implant raw material supply", "primary_moat_thesis": "Absolute monopoly on single-crystal cooled superalloy turbine airfoils for F-35 (F135) and commercial jet engines + titanium aerospace bulkheads with 27%+ EBITDA margins.", "key_catalyst_2026": "F135 Engine Core Upgrade (ECU) + record F135/commercial engine aftermarket blade replacement demand", "primary_kill_switch": "Titanium sponge / rhenium supply disruption or sudden commercial airline capacity grounding", "rank": 9, "portfolio_alloc_pct": 6.32, "entry_zone": "$178.47 - $187.77", "target_price_12m": 230.53, "implied_upside_pct": 24.0, "hard_stop": 163.6}, {"ticker": "TDG", "name": "TransDigm Group Incorporated", "layer": "L4 High-Margin Aero & Defense Aftermarket", "subsector_node": "DEFENSE", "market_cap_b": 76.5, "ev_ebitda_ntm": 20.2, "pe_ntm": 33.8, "organic_rev_growth_pct": 11.8, "gross_margin_pct": 59.4, "ebitda_margin_pct": 53.2, "gaap_fcf_margin_pct": 26.8, "sbc_pct_rev": 1.8, "net_debt_ebitda": 5.1, "backlog_b": 7.2, "backlog_to_rev_years": 0.9, "fpif_dev_exposure_pct": 1.0, "sole_source_por_share_pct": 90.0, "rule_of_defense_x": 33.48, "fpif_overrun_penalty": 0.0, "debt_service_drag": 9.5, "srm_nuclear_aftermarket_chokepoint": 94.0, "mineral_tariff_immunity": 90.0, "cost_exchange_autonomy_uplift": 72.0, "gov_mandate_fms_barda_dha_moat": 86.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 81.41, "stress_vectors": {"ceasefire_resilience": 64.8, "doge_audit_survival": 100.0, "mineral_embargo_survival": 90.0, "fpif_inflation_survival": 97.4, "rate_shock_survival": 53.8}, "technicals": {"price": 1104.84, "sma50": 1137.51, "sma200": 1232.43, "ma_30w": 1200.51, "pct_above_30w_ma": -7.97, "rsi14": 53.8, "mansfield_rs": -15.0, "max_dd_1y_pct": 25.8, "weinstein_stage": "Stage 1 (Accumulation / Basing)", "source": "yfinance_live"}, "r1_score": 73.2, "r2_score": 78.09, "r3_score": 87.49, "r4_score": 90.66, "r5_score": 91.39, "conviction_delta_r5_vs_r1": 18.19, "r1_action": "BUY", "r5_action": "STRONG BUY", "gov_agencies_served": "DLA Aviation, USAF, US Navy, US Army (~40% of revenue from defense OEM & high-margin military aftermarket spares)", "healthcare_biodefense_hook": "Medical helicopter & military aeromedical cabin restraint, oxygen, and cockpit avionics systems", "primary_moat_thesis": "~90% proprietary products and ~80% sole-source revenue across virtually every military and commercial aircraft in service, generating 53%+ EBITDA margins.", "key_catalyst_2026": "Aging US/NATO military aircraft fleet flight-hour intensity + value-creative bolt-on M&A (Raptor Scientific, CPI Electron Device)", "primary_kill_switch": "5.1x Net Debt/EBITDA leverage sensitivity to higher-for-longer rates or DoD IG / Congressional sole-source spare-parts pricing scrutiny", "rank": 10, "portfolio_alloc_pct": 6.32, "entry_zone": "$1060.65 - $1115.89", "target_price_12m": 1370.0, "implied_upside_pct": 24.0, "hard_stop": 972.26}, {"ticker": "CW", "name": "Curtiss-Wright Corporation", "layer": "L2 SRMs, Guided Missiles & Energetics", "subsector_node": "MISSILES_GUIDED", "market_cap_b": 14.2, "ev_ebitda_ntm": 17.4, "pe_ntm": 28.2, "organic_rev_growth_pct": 9.8, "gross_margin_pct": 37.6, "ebitda_margin_pct": 22.8, "gaap_fcf_margin_pct": 14.5, "sbc_pct_rev": 0.8, "net_debt_ebitda": 1.1, "backlog_b": 3.6, "backlog_to_rev_years": 1.1, "fpif_dev_exposure_pct": 4.0, "sole_source_por_share_pct": 88.0, "rule_of_defense_x": 28.98, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 91.0, "mineral_tariff_immunity": 86.0, "cost_exchange_autonomy_uplift": 84.0, "gov_mandate_fms_barda_dha_moat": 93.0, "doge_cost_plus_services_exposure_pct": 1.0, "stress_test_survival_score": 84.28, "stress_vectors": {"ceasefire_resilience": 66.0, "doge_audit_survival": 97.8, "mineral_embargo_survival": 86.0, "fpif_inflation_survival": 89.6, "rate_shock_survival": 83.8}, "technicals": {"price": 464.94, "sma50": 560.54, "sma200": 671.81, "ma_30w": 672.65, "pct_above_30w_ma": -30.88, "rsi14": 17.1, "mansfield_rs": -34.39, "max_dd_1y_pct": 41.3, "weinstein_stage": "Stage 2 Pullback (Oversold Buy Zone)", "source": "yfinance_live"}, "r1_score": 67.77, "r2_score": 71.41, "r3_score": 79.82, "r4_score": 86.9, "r5_score": 90.71, "conviction_delta_r5_vs_r1": 22.94, "r1_action": "HOLD", "r5_action": "STRONG BUY", "gov_agencies_served": "US Navy NAVSEA (Columbia/Virginia/Ford Reactor Coolant Pumps & Valves), US Army/USAF (MOSA Rugged C5ISR Electronics & Missile Actuation)", "healthcare_biodefense_hook": "Ruggedized mission computers for airborne/maritime emergency medical command & nuclear radiation monitoring", "primary_moat_thesis": "Dual monopoly: sole-source naval nuclear reactor coolant pumps/valves on every US submarine/carrier + #1 ruggedized MOSA defense electronics & missile actuation.", "key_catalyst_2026": "Columbia-class & Virginia-class naval nuclear pump orders + Westinghouse AP1000 commercial nuclear reactor orders + MOSA C5ISR upgrades", "primary_kill_switch": "Delay in naval shipbuilding appropriations or European commercial nuclear FID slippage", "rank": 11, "portfolio_alloc_pct": 6.11, "entry_zone": "$446.34 - $469.59", "target_price_12m": 576.53, "implied_upside_pct": 24.0, "hard_stop": 409.15}, {"ticker": "RTX", "name": "RTX Corporation (Raytheon / Pratt & Whitney / Collins)", "layer": "L1 Tier-1 Primes & Naval Nuclear", "subsector_node": "MISSILES_GUIDED", "market_cap_b": 178.0, "ev_ebitda_ntm": 14.6, "pe_ntm": 21.2, "organic_rev_growth_pct": 8.4, "gross_margin_pct": 19.8, "ebitda_margin_pct": 16.8, "gaap_fcf_margin_pct": 9.2, "sbc_pct_rev": 0.6, "net_debt_ebitda": 2.4, "backlog_b": 218.0, "backlog_to_rev_years": 2.7, "fpif_dev_exposure_pct": 8.5, "sole_source_por_share_pct": 84.0, "rule_of_defense_x": 21.74, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 88.0, "mineral_tariff_immunity": 70.0, "cost_exchange_autonomy_uplift": 82.0, "gov_mandate_fms_barda_dha_moat": 96.0, "doge_cost_plus_services_exposure_pct": 3.0, "stress_test_survival_score": 79.8, "stress_vectors": {"ceasefire_resilience": 82.8, "doge_audit_survival": 93.4, "mineral_embargo_survival": 70.0, "fpif_inflation_survival": 77.9, "rate_shock_survival": 74.0}, "technicals": {"price": 191.01, "sma50": 197.11, "sma200": 194.23, "ma_30w": 192.73, "pct_above_30w_ma": -0.89, "rsi14": 59.1, "mansfield_rs": -6.61, "max_dd_1y_pct": 20.1, "weinstein_stage": "Stage 1 (Accumulation / Basing)", "source": "yfinance_live"}, "r1_score": 67.05, "r2_score": 68.66, "r3_score": 76.83, "r4_score": 84.2, "r5_score": 87.15, "conviction_delta_r5_vs_r1": 20.1, "r1_action": "HOLD", "r5_action": "STRONG BUY", "gov_agencies_served": "MDA & US Navy (SM-3, SM-6, Tomahawk, SPY-6), US Army (Patriot GEM-T, LTAMDS, Coyote C-UAS), USAF (AMRAAM, F135 engine)", "healthcare_biodefense_hook": "Raytheon BBN biological threat detection & synthetic biology DNA screening tools for DARPA/DTRA", "primary_moat_thesis": "Unmatched IAMD interceptor franchise (Patriot GEM-T, SM-6, AMRAAM, Coyote C-UAS) + F135/GTF commercial aero aftermarket.", "key_catalyst_2026": "European NATO Patriot GEM-T & AMRAAM FMS surge + Pratt & Whitney GTF powdered-metal AOG peak behind it", "primary_kill_switch": "Gallium nitride (GaN) radar or SRM supplier delays gating Raytheon missile deliveries", "rank": 12, "portfolio_alloc_pct": 5.02, "entry_zone": "$183.37 - $192.92", "target_price_12m": 236.85, "implied_upside_pct": 24.0, "hard_stop": 168.09}, {"ticker": "LDOS", "name": "Leidos Holdings, Inc. (Defense C5ISR, Dynetics & QTC Military Health)", "layer": "L5 Sovereign Defense IT & Military Health", "subsector_node": "DEFENSE", "market_cap_b": 22.4, "ev_ebitda_ntm": 11.8, "pe_ntm": 15.6, "organic_rev_growth_pct": 7.8, "gross_margin_pct": 16.8, "ebitda_margin_pct": 12.9, "gaap_fcf_margin_pct": 8.6, "sbc_pct_rev": 0.6, "net_debt_ebitda": 1.9, "backlog_b": 43.6, "backlog_to_rev_years": 2.6, "fpif_dev_exposure_pct": 4.5, "sole_source_por_share_pct": 78.0, "rule_of_defense_x": 20.18, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 82.0, "mineral_tariff_immunity": 95.0, "cost_exchange_autonomy_uplift": 86.0, "gov_mandate_fms_barda_dha_moat": 96.0, "doge_cost_plus_services_exposure_pct": 11.0, "stress_test_survival_score": 82.98, "stress_vectors": {"ceasefire_resilience": 78.0, "doge_audit_survival": 75.8, "mineral_embargo_survival": 95.0, "fpif_inflation_survival": 88.3, "rate_shock_survival": 77.8}, "technicals": {"price": 136.08, "sma50": 129.4, "sma200": 141.72, "ma_30w": 129.0, "pct_above_30w_ma": 5.48, "rsi14": 75.7, "mansfield_rs": -9.53, "max_dd_1y_pct": 49.5, "weinstein_stage": "Stage 1 (Accumulation / Basing)", "source": "yfinance_live"}, "r1_score": 66.13, "r2_score": 67.3, "r3_score": 75.14, "r4_score": 81.58, "r5_score": 85.12, "conviction_delta_r5_vs_r1": 18.99, "r1_action": "HOLD", "r5_action": "STRONG BUY", "gov_agencies_served": "Department of Veterans Affairs (VBA PACT Act Medical Exams via QTC), Defense Health Agency (MHS GENESIS), US Army (Dynetics IFPC Enduring Shield C-UAS, Common Hypersonic Glide Body)", "healthcare_biodefense_hook": "#1 Military & Veteran Healthcare franchise (Health & Civil segment >20% operating margins): VA PACT Act disability medical exams (QTC) + DHA MHS GENESIS EHR", "primary_moat_thesis": "Crown-jewel Health & Civil segment (20%+ operating margins on VA PACT Act medical disability exams & DHA MHS GENESIS) + Dynetics Enduring Shield C-UAS & Hypersonics at 15.6x P/E.", "key_catalyst_2026": "VA PACT Act medical exam volume durability + US Army IFPC Enduring Shield (AIM-9X / cruise missile defense) full-rate production", "primary_kill_switch": "VBA re-allocation of medical disability exam territories or DOGE fee-schedule pressure on QTC exam rates", "rank": 13, "portfolio_alloc_pct": 4.41, "entry_zone": "$127.71 - $137.44", "target_price_12m": 168.74, "implied_upside_pct": 24.0, "hard_stop": 119.75}, {"ticker": "PSN", "name": "Parsons Corporation (Missile Defense Engineering, Cyber & Critical Infrastructure)", "layer": "L5 Sovereign Defense IT & Military Health", "subsector_node": "DEFENSE", "market_cap_b": 8.9, "ev_ebitda_ntm": 14.2, "pe_ntm": 23.5, "organic_rev_growth_pct": 12.8, "gross_margin_pct": 22.1, "ebitda_margin_pct": 9.4, "gaap_fcf_margin_pct": 6.2, "sbc_pct_rev": 0.7, "net_debt_ebitda": 1.4, "backlog_b": 8.9, "backlog_to_rev_years": 1.4, "fpif_dev_exposure_pct": 6.0, "sole_source_por_share_pct": 78.0, "rule_of_defense_x": 25.63, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 83.0, "mineral_tariff_immunity": 92.0, "cost_exchange_autonomy_uplift": 85.0, "gov_mandate_fms_barda_dha_moat": 90.0, "doge_cost_plus_services_exposure_pct": 8.0, "stress_test_survival_score": 80.42, "stress_vectors": {"ceasefire_resilience": 63.6, "doge_audit_survival": 82.4, "mineral_embargo_survival": 92.0, "fpif_inflation_survival": 84.4, "rate_shock_survival": 81.5}, "technicals": {"price": 49.04, "sma50": 45.33, "sma200": 54.43, "ma_30w": 50.79, "pct_above_30w_ma": -3.45, "rsi14": 79.6, "mansfield_rs": -14.91, "max_dd_1y_pct": 53.4, "weinstein_stage": "Stage 1 (Accumulation / Basing)", "source": "yfinance_live"}, "r1_score": 67.93, "r2_score": 70.63, "r3_score": 76.69, "r4_score": 82.97, "r5_score": 85.11, "conviction_delta_r5_vs_r1": 17.17, "r1_action": "HOLD", "r5_action": "STRONG BUY", "gov_agencies_served": "Missile Defense Agency (MDA Systems Engineering TEAMS-Next), US Cyber Command, DTRA (Biodefense Labs), Holston/Radford AAP Modernization", "healthcare_biodefense_hook": "Designs & modernizes BSL-3/BSL-4 biodefense containment laboratories for DTRA/USAMRIID and remediates energetic PFAS/perchlorate sites", "primary_moat_thesis": "Architect of MDA missile defense systems engineering + Holston/Radford energetics plant modernization + offensive cyber + BSL-4 biodefense infrastructure.", "key_catalyst_2026": "Golden Dome MDA architecture systems engineering awards + US Army ammunition plant modernization task orders", "primary_kill_switch": "Completion wind-down of large confidential Middle East/cyber contracts or fixed-price civil infrastructure overruns", "rank": 14, "portfolio_alloc_pct": 4.41, "entry_zone": "$47.08 - $49.53", "target_price_12m": 60.81, "implied_upside_pct": 24.0, "hard_stop": 43.16}, {"ticker": "WWD", "name": "Woodward, Inc. (Aero Engine Fuel Controls & Smart Defense Actuation)", "layer": "L4 High-Margin Aero & Defense Aftermarket", "subsector_node": "MISSILES_GUIDED", "market_cap_b": 10.6, "ev_ebitda_ntm": 16.4, "pe_ntm": 26.5, "organic_rev_growth_pct": 10.4, "gross_margin_pct": 27.6, "ebitda_margin_pct": 19.4, "gaap_fcf_margin_pct": 11.2, "sbc_pct_rev": 0.9, "net_debt_ebitda": 1.1, "backlog_b": 2.4, "backlog_to_rev_years": 0.7, "fpif_dev_exposure_pct": 3.0, "sole_source_por_share_pct": 84.0, "rule_of_defense_x": 26.49, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 88.0, "mineral_tariff_immunity": 84.0, "cost_exchange_autonomy_uplift": 76.0, "gov_mandate_fms_barda_dha_moat": 86.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 83.25, "stress_vectors": {"ceasefire_resilience": 58.8, "doge_audit_survival": 100.0, "mineral_embargo_survival": 84.0, "fpif_inflation_survival": 92.2, "rate_shock_survival": 83.8}, "technicals": {"price": 303.55, "sma50": 333.73, "sma200": 364.47, "ma_30w": 365.08, "pct_above_30w_ma": -16.85, "rsi14": 28.0, "mansfield_rs": -20.98, "max_dd_1y_pct": 30.4, "weinstein_stage": "Stage 2 Pullback (Oversold Buy Zone)", "source": "yfinance_live"}, "r1_score": 65.24, "r2_score": 68.18, "r3_score": 74.58, "r4_score": 78.53, "r5_score": 82.9, "conviction_delta_r5_vs_r1": 17.66, "r1_action": "HOLD", "r5_action": "BUY", "gov_agencies_served": "USAF/USN (JDAM tailkit actuation, Small Diameter Bomb SDB, AIM-9X Sidewinder, JASSM/LRASM fuel metering, F-35/LEAP fuel controls)", "healthcare_biodefense_hook": "Backup diesel/natural-gas hospital microgrid generator governor controls", "primary_moat_thesis": "Dominant supplier of precision electromechanical actuation for JDAM, SDB, and AIM-9X guided munitions plus LEAP/GTF aero engine fuel controls.", "key_catalyst_2026": "Guided munitions (JDAM/SDB/AIM-9X) replenishment surge + high-margin LEAP-1A/1B shop visit ramp", "primary_kill_switch": "China natural-gas heavy-duty truck engine cyclicality in the Industrial segment", "rank": 15, "portfolio_alloc_pct": 1.91, "entry_zone": "$291.41 - $306.59", "target_price_12m": 352.12, "implied_upside_pct": 16.0, "hard_stop": 267.12}, {"ticker": "LHX", "name": "L3Harris Technologies, Inc.", "layer": "L1 Tier-1 Primes & Naval Nuclear", "subsector_node": "SOLID_ROCKET_MOTORS", "market_cap_b": 46.8, "ev_ebitda_ntm": 12.8, "pe_ntm": 16.9, "organic_rev_growth_pct": 6.8, "gross_margin_pct": 26.4, "ebitda_margin_pct": 18.5, "gaap_fcf_margin_pct": 10.8, "sbc_pct_rev": 0.8, "net_debt_ebitda": 2.7, "backlog_b": 34.2, "backlog_to_rev_years": 1.6, "fpif_dev_exposure_pct": 7.0, "sole_source_por_share_pct": 83.0, "rule_of_defense_x": 20.1, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.38, "srm_nuclear_aftermarket_chokepoint": 95.0, "mineral_tariff_immunity": 76.0, "cost_exchange_autonomy_uplift": 86.0, "gov_mandate_fms_barda_dha_moat": 92.0, "doge_cost_plus_services_exposure_pct": 3.0, "stress_test_survival_score": 78.34, "stress_vectors": {"ceasefire_resilience": 69.0, "doge_audit_survival": 93.4, "mineral_embargo_survival": 76.0, "fpif_inflation_survival": 81.8, "rate_shock_survival": 71.8}, "technicals": {"price": 253.97, "sma50": 250.65, "sma200": 304.34, "ma_30w": 289.46, "pct_above_30w_ma": -12.26, "rsi14": 69.0, "mansfield_rs": -21.27, "max_dd_1y_pct": 37.5, "weinstein_stage": "Stage 1 (Accumulation / Basing)", "source": "yfinance_live"}, "r1_score": 64.9, "r2_score": 66.05, "r3_score": 74.4, "r4_score": 81.64, "r5_score": 82.74, "conviction_delta_r5_vs_r1": 17.84, "r1_action": "HOLD", "r5_action": "BUY", "gov_agencies_served": "DoD/MDA (Aerojet Rocketdyne SRMs), SDA (PWSA Tracking Layer), US Army/SOCOM (Falcon IV Tactical Radios), USAF (Viper Shield EW)", "healthcare_biodefense_hook": "Night-vision & tactical battle-management radios for CASEVAC/MEDEVAC special operations units", "primary_moat_thesis": "Merchant Solid Rocket Motor kingmaker via Aerojet Rocketdyne (PAC-3, GMLRS, Stinger, Javelin, Standard Missile, NGI) + Tactical Comms monopoly + SDA Space Tracking.", "key_catalyst_2026": "Aerojet Rocketdyne DPA Title III automated SRM lines coming online + LHX NeXt $1B+ cost savings lifting margins above 16%", "primary_kill_switch": "Space systems fixed-price satellite development delays or slower debt deleveraging post-Aerojet acquisition", "rank": 16, "portfolio_alloc_pct": 1.9, "entry_zone": "$243.81 - $256.51", "target_price_12m": 294.61, "implied_upside_pct": 16.0, "hard_stop": 223.49}, {"ticker": "MOG-A", "name": "Moog Inc. (Space and Defense Fin Actuation & DACS)", "layer": "L2 SRMs, Guided Missiles & Energetics", "subsector_node": "MISSILES_GUIDED", "market_cap_b": 6.4, "ev_ebitda_ntm": 13.6, "pe_ntm": 22.4, "organic_rev_growth_pct": 8.5, "gross_margin_pct": 28.2, "ebitda_margin_pct": 15.2, "gaap_fcf_margin_pct": 7.2, "sbc_pct_rev": 0.6, "net_debt_ebitda": 2.0, "backlog_b": 2.6, "backlog_to_rev_years": 0.7, "fpif_dev_exposure_pct": 6.5, "sole_source_por_share_pct": 85.0, "rule_of_defense_x": 19.9, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 89.0, "mineral_tariff_immunity": 74.0, "cost_exchange_autonomy_uplift": 78.0, "gov_mandate_fms_barda_dha_moat": 88.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 78.35, "stress_vectors": {"ceasefire_resilience": 59.4, "doge_audit_survival": 100.0, "mineral_embargo_survival": 74.0, "fpif_inflation_survival": 83.1, "rate_shock_survival": 77.0}, "technicals": {"price": 341.34, "sma50": 376.39, "sma200": 350.92, "ma_30w": 364.17, "pct_above_30w_ma": -6.27, "rsi14": 25.5, "mansfield_rs": -7.12, "max_dd_1y_pct": 23.4, "weinstein_stage": "Stage 2 Pullback (Oversold Buy Zone)", "source": "yfinance_live"}, "r1_score": 64.34, "r2_score": 65.43, "r3_score": 71.39, "r4_score": 76.18, "r5_score": 80.43, "conviction_delta_r5_vs_r1": 16.09, "r1_action": "HOLD", "r5_action": "BUY", "gov_agencies_served": "US Army (RIwP Counter-UAS Turret, PAC-3/Hellfire/JAGM Fin Actuators), MDA (THAAD/GPI Divert & Attitude Control), USAF (F-35 Flight Controls)", "healthcare_biodefense_hook": "Moog Medical Devices segment manufactures Curlin & Zevex ambulatory infusion pumps and enteral feeding systems", "primary_moat_thesis": "Irreplaceable precision electromechanical fin control actuators on PAC-3, Hellfire, JAGM, PrSM & hypersonic missiles + RIwP C-UAS turret + Medical infusion pumps.", "key_catalyst_2026": "80/20 portfolio simplification driving 200+ bps operating margin expansion + PAC-3/GMLRS/PrSM actuator volume surge", "primary_kill_switch": "Samarium-cobalt (SmCo) rare-earth magnet bottlenecks or Space vehicle fixed-price cost overruns", "rank": 17, "portfolio_alloc_pct": 1.63, "entry_zone": "$327.69 - $344.75", "target_price_12m": 395.95, "implied_upside_pct": 16.0, "hard_stop": 300.38}, {"ticker": "LMT", "name": "Lockheed Martin Corp.", "layer": "L1 Tier-1 Primes & Naval Nuclear", "subsector_node": "MISSILES_GUIDED", "market_cap_b": 114.5, "ev_ebitda_ntm": 13.2, "pe_ntm": 17.4, "organic_rev_growth_pct": 5.8, "gross_margin_pct": 12.6, "ebitda_margin_pct": 15.1, "gaap_fcf_margin_pct": 8.8, "sbc_pct_rev": 0.4, "net_debt_ebitda": 1.8, "backlog_b": 176.0, "backlog_to_rev_years": 2.5, "fpif_dev_exposure_pct": 11.0, "sole_source_por_share_pct": 86.0, "rule_of_defense_x": 16.53, "fpif_overrun_penalty": 0.95, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 84.0, "mineral_tariff_immunity": 72.0, "cost_exchange_autonomy_uplift": 74.0, "gov_mandate_fms_barda_dha_moat": 95.0, "doge_cost_plus_services_exposure_pct": 4.0, "stress_test_survival_score": 79.0, "stress_vectors": {"ceasefire_resilience": 81.6, "doge_audit_survival": 91.2, "mineral_embargo_survival": 72.0, "fpif_inflation_survival": 71.4, "rate_shock_survival": 78.5}, "technicals": {"price": 604.18, "sma50": 539.29, "sma200": 560.99, "ma_30w": 543.0, "pct_above_30w_ma": 11.27, "rsi14": 84.2, "mansfield_rs": 1.94, "max_dd_1y_pct": 26.9, "weinstein_stage": "Stage 2 (Markup)", "source": "yfinance_live"}, "r1_score": 63.18, "r2_score": 63.33, "r3_score": 70.87, "r4_score": 76.47, "r5_score": 80.41, "conviction_delta_r5_vs_r1": 17.22, "r1_action": "HOLD", "r5_action": "BUY", "gov_agencies_served": "USAF (F-35, JASSM), US Army (PAC-3 MSE, GMLRS, PrSM, HIMARS), MDA (THAAD, Golden Dome), DSCA FMS", "healthcare_biodefense_hook": "DoD Military Health trauma simulation & Sikorsky MEDEVAC Black Hawk fleet", "primary_moat_thesis": "Missiles & Fire Control (MFC) 14%+ operating margin engine ramping PAC-3 MSE to 650/yr and GMLRS to 14,000/yr with $176B backlog.", "key_catalyst_2026": "Golden Dome homeland missile defense awards + F-35 TR-3/Block 4 delivery release + $4B+ MFC MYP expansion", "primary_kill_switch": "Additional EAC charges on classified Aeronautics fixed-price development or F-35 sustainment budget cuts", "rank": 18, "portfolio_alloc_pct": 1.62, "entry_zone": "$549.80 - $610.22", "target_price_12m": 700.85, "implied_upside_pct": 16.0, "hard_stop": 510.42}, {"ticker": "GD", "name": "General Dynamics Corp.", "layer": "L1 Tier-1 Primes & Naval Nuclear", "subsector_node": "DEFENSE", "market_cap_b": 81.2, "ev_ebitda_ntm": 13.1, "pe_ntm": 18.0, "organic_rev_growth_pct": 7.2, "gross_margin_pct": 16.4, "ebitda_margin_pct": 13.2, "gaap_fcf_margin_pct": 8.4, "sbc_pct_rev": 0.5, "net_debt_ebitda": 1.6, "backlog_b": 96.0, "backlog_to_rev_years": 2.0, "fpif_dev_exposure_pct": 7.5, "sole_source_por_share_pct": 82.0, "rule_of_defense_x": 19.17, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 87.0, "mineral_tariff_immunity": 82.0, "cost_exchange_autonomy_uplift": 68.0, "gov_mandate_fms_barda_dha_moat": 91.0, "doge_cost_plus_services_exposure_pct": 9.0, "stress_test_survival_score": 79.04, "stress_vectors": {"ceasefire_resilience": 73.2, "doge_audit_survival": 80.2, "mineral_embargo_survival": 82.0, "fpif_inflation_survival": 80.5, "rate_shock_survival": 80.0}, "technicals": {"price": 349.36, "sma50": 353.03, "sma200": 351.71, "ma_30w": 351.97, "pct_above_30w_ma": -0.74, "rsi14": 71.9, "mansfield_rs": -5.6, "max_dd_1y_pct": 17.5, "weinstein_stage": "Stage 2 (Markup)", "source": "yfinance_live"}, "r1_score": 63.93, "r2_score": 64.82, "r3_score": 72.41, "r4_score": 75.32, "r5_score": 80.36, "conviction_delta_r5_vs_r1": 16.43, "r1_action": "HOLD", "r5_action": "BUY", "gov_agencies_served": "US Navy (Columbia SSBN, Virginia SSN at Electric Boat), US Army (Abrams, Stryker, 155mm OTS), IC/DoD (GDIT)", "healthcare_biodefense_hook": "GDIT operates VA electronic health cloud modernization, CMS data analytics, and DHA cyber operations", "primary_moat_thesis": "Electric Boat nuclear submarine monopoly ($19B+ Columbia/Virginia visibility) + GD OTS 155mm artillery & propellant leadership + Gulfstream G700 margin ramp.", "key_catalyst_2026": "Virginia-class Block VI submarine contract award + 155mm artillery LAP facility full rate + Gulfstream G700/G800 deliveries", "primary_kill_switch": "Submarine shipyard trade labor bottlenecks at Groton/Quonset Point or GDIT federal civilian task-order pauses", "rank": 19, "portfolio_alloc_pct": 1.62, "entry_zone": "$335.39 - $352.85", "target_price_12m": 405.26, "implied_upside_pct": 16.0, "hard_stop": 307.44}, {"ticker": "NOC", "name": "Northrop Grumman Corp.", "layer": "L1 Tier-1 Primes & Naval Nuclear", "subsector_node": "SOLID_ROCKET_MOTORS", "market_cap_b": 74.8, "ev_ebitda_ntm": 13.5, "pe_ntm": 17.8, "organic_rev_growth_pct": 6.1, "gross_margin_pct": 18.2, "ebitda_margin_pct": 15.4, "gaap_fcf_margin_pct": 7.6, "sbc_pct_rev": 0.5, "net_debt_ebitda": 2.2, "backlog_b": 91.5, "backlog_to_rev_years": 2.2, "fpif_dev_exposure_pct": 13.5, "sole_source_por_share_pct": 90.0, "rule_of_defense_x": 13.29, "fpif_overrun_penalty": 3.32, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 93.0, "mineral_tariff_immunity": 78.0, "cost_exchange_autonomy_uplift": 76.0, "gov_mandate_fms_barda_dha_moat": 94.0, "doge_cost_plus_services_exposure_pct": 3.5, "stress_test_survival_score": 78.32, "stress_vectors": {"ceasefire_resilience": 80.4, "doge_audit_survival": 92.3, "mineral_embargo_survival": 78.0, "fpif_inflation_survival": 64.9, "rate_shock_survival": 75.5}, "technicals": {"price": 551.44, "sma50": 521.83, "sma200": 588.74, "ma_30w": 554.08, "pct_above_30w_ma": -0.48, "rsi14": 79.1, "mansfield_rs": -11.65, "max_dd_1y_pct": 37.8, "weinstein_stage": "Stage 1 (Accumulation / Basing)", "source": "yfinance_live"}, "r1_score": 63.88, "r2_score": 61.75, "r3_score": 71.85, "r4_score": 77.61, "r5_score": 79.51, "conviction_delta_r5_vs_r1": 15.62, "r1_action": "HOLD", "r5_action": "BUY", "gov_agencies_served": "USAF (B-21 Raider, Sentinel ICBM, Stand-in Attack Weapon), US Navy (E-2D, Trident D5 SRM), SDA (PWSA Tracking), US Army (IBCS)", "healthcare_biodefense_hook": "DoD CBRN sensor networks & biodefense early-warning biodetection architecture", "primary_moat_thesis": "Controls two legs of the US Nuclear Triad (B-21 + Sentinel) AND ~45% of US Solid Rocket Motor capacity (ATK Orbital).", "key_catalyst_2026": "B-21 LRIP Lot 3/4 repricing + tripling of ABL/Elkton tactical SRM output + US Army IBCS global NATO adoption", "primary_kill_switch": "Additional B-21 low-rate initial production (LRIP) fixed-price lot charges or Sentinel Nunn-McCurdy restructuring drag", "rank": 20, "portfolio_alloc_pct": 1.52, "entry_zone": "$529.38 - $556.95", "target_price_12m": 639.67, "implied_upside_pct": 16.0, "hard_stop": 485.27}, {"ticker": "KTOS", "name": "Kratos Defense & Security Solutions, Inc.", "layer": "L3 Attritable UAS, Counter-UAS & Tactical AI", "subsector_node": "DEFENSE_AUTONOMY_UAS", "market_cap_b": 4.8, "ev_ebitda_ntm": 29.5, "pe_ntm": 52.0, "organic_rev_growth_pct": 14.2, "gross_margin_pct": 26.4, "ebitda_margin_pct": 11.2, "gaap_fcf_margin_pct": 3.8, "sbc_pct_rev": 2.6, "net_debt_ebitda": 0.4, "backlog_b": 1.4, "backlog_to_rev_years": 1.2, "fpif_dev_exposure_pct": 6.0, "sole_source_por_share_pct": 80.0, "rule_of_defense_x": 22.62, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 90.0, "mineral_tariff_immunity": 84.0, "cost_exchange_autonomy_uplift": 95.0, "gov_mandate_fms_barda_dha_moat": 89.0, "doge_cost_plus_services_exposure_pct": 2.0, "stress_test_survival_score": 81.94, "stress_vectors": {"ceasefire_resilience": 62.4, "doge_audit_survival": 95.6, "mineral_embargo_survival": 84.0, "fpif_inflation_survival": 84.4, "rate_shock_survival": 85.6}, "technicals": {"price": 38.68, "sma50": 47.14, "sma200": 66.02, "ma_30w": 54.88, "pct_above_30w_ma": -29.52, "rsi14": 35.1, "mansfield_rs": -45.16, "max_dd_1y_pct": 70.7, "weinstein_stage": "Stage 4 (Decline)", "source": "yfinance_live"}, "r1_score": 67.04, "r2_score": 68.9, "r3_score": 75.79, "r4_score": 84.09, "r5_score": 74.77, "conviction_delta_r5_vs_r1": 7.73, "r1_action": "HOLD", "r5_action": "HOLD (Wait for Stage 2)", "gov_agencies_served": "USMC/USAF (XQ-58A Valkyrie, Tactical Target Drones), MDA/DoD ($1.45B MACH-TB 2.0 Hypersonic Testbed), Merchant SRM (Prometheus JV with Rafael)", "healthcare_biodefense_hook": "Autonomous contested logistics pods for forward blood/medical resupply in Indo-Pacific island campaigns", "primary_moat_thesis": "Triple chokepoint pure-play: flying jet-powered tactical drones (Valkyrie), $1.45B MACH-TB 2.0 hypersonic prime, low-cost TDI small turbojets, and Prometheus merchant SRMs.", "key_catalyst_2026": "USMC/USAF Valkyrie production contract + MACH-TB 2.0 hypersonic flight cadence + Prometheus SRM plant commissioning", "primary_kill_switch": "Equity ATM issuance to fund drone/SRM working capital or slippage in Valkyrie Program-of-Record transition", "rank": 21, "portfolio_alloc_pct": 0.0, "entry_zone": "$37.13 - $39.07", "target_price_12m": 40.61, "implied_upside_pct": 5.0, "hard_stop": 34.81}, {"ticker": "KBR", "name": "KBR, Inc. (Government Solutions, Military Space Health & Readiness)", "layer": "L5 Sovereign Defense IT & Military Health", "subsector_node": "DEFENSE", "market_cap_b": 7.6, "ev_ebitda_ntm": 10.2, "pe_ntm": 15.4, "organic_rev_growth_pct": 7.4, "gross_margin_pct": 14.4, "ebitda_margin_pct": 11.2, "gaap_fcf_margin_pct": 6.4, "sbc_pct_rev": 0.7, "net_debt_ebitda": 2.4, "backlog_b": 20.8, "backlog_to_rev_years": 2.7, "fpif_dev_exposure_pct": 5.0, "sole_source_por_share_pct": 72.0, "rule_of_defense_x": 17.19, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 70.0, "mineral_tariff_immunity": 90.0, "cost_exchange_autonomy_uplift": 70.0, "gov_mandate_fms_barda_dha_moat": 80.0, "doge_cost_plus_services_exposure_pct": 14.0, "stress_test_survival_score": 79.19, "stress_vectors": {"ceasefire_resilience": 75.6, "doge_audit_survival": 69.2, "mineral_embargo_survival": 90.0, "fpif_inflation_survival": 87.0, "rate_shock_survival": 74.0}, "technicals": {"price": 39.23, "sma50": 36.41, "sma200": 36.98, "ma_30w": 35.64, "pct_above_30w_ma": 10.06, "rsi14": 81.3, "mansfield_rs": 0.53, "max_dd_1y_pct": 32.9, "weinstein_stage": "Stage 2 (Markup)", "source": "yfinance_live"}, "r1_score": 65.79, "r2_score": 66.12, "r3_score": 70.24, "r4_score": 67.66, "r5_score": 71.48, "conviction_delta_r5_vs_r1": 5.7, "r1_action": "HOLD", "r5_action": "ACCUMULATE / HOLD", "gov_agencies_served": "NASA & USAF 711th Human Performance Wing (Aerospace Medicine & Astronaut Health), US TRANSCOM, UK Ministry of Defence, LinQuest Space", "healthcare_biodefense_hook": "Operates NASA Johnson Space Center Human Health & Performance contract and USAF aerospace physiology & military human-performance labs", "primary_moat_thesis": "Mission Tech & LinQuest space/missile defense engineering + #1 human spaceflight/military aerospace medicine operator + Sustainable Tech process licensing.", "key_catalyst_2026": "LinQuest space/C5ISR cross-selling + TRANSCOM HomeSafe/logistics ramp + Sustainable Tech ammonia/plastics licensing", "primary_kill_switch": "HomeSafe Alliance military household-goods transition delays or overseas base logistics contract reductions", "rank": 22, "portfolio_alloc_pct": 0.0, "entry_zone": "$35.70 - $39.62", "target_price_12m": 41.19, "implied_upside_pct": 5.0, "hard_stop": 33.5}, {"ticker": "MRCY", "name": "Mercury Systems, Inc.", "layer": "L3 Attritable UAS, Counter-UAS & Tactical AI", "subsector_node": "MISSILES_GUIDED", "market_cap_b": 2.4, "ev_ebitda_ntm": 18.5, "pe_ntm": 36.0, "organic_rev_growth_pct": 4.8, "gross_margin_pct": 31.2, "ebitda_margin_pct": 13.5, "gaap_fcf_margin_pct": 5.2, "sbc_pct_rev": 3.4, "net_debt_ebitda": 3.2, "backlog_b": 1.3, "backlog_to_rev_years": 1.5, "fpif_dev_exposure_pct": 14.0, "sole_source_por_share_pct": 82.0, "rule_of_defense_x": 1.7, "fpif_overrun_penalty": 3.8, "debt_service_drag": 2.28, "srm_nuclear_aftermarket_chokepoint": 82.0, "mineral_tariff_immunity": 76.0, "cost_exchange_autonomy_uplift": 84.0, "gov_mandate_fms_barda_dha_moat": 84.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 74.94, "stress_vectors": {"ceasefire_resilience": 67.2, "doge_audit_survival": 100.0, "mineral_embargo_survival": 76.0, "fpif_inflation_survival": 63.6, "rate_shock_survival": 68.0}, "technicals": {"price": 74.87, "sma50": 84.55, "sma200": 92.03, "ma_30w": 92.96, "pct_above_30w_ma": -19.46, "rsi14": 26.2, "mansfield_rs": -22.53, "max_dd_1y_pct": 41.2, "weinstein_stage": "Stage 2 Pullback (Oversold Buy Zone)", "source": "yfinance_live"}, "r1_score": 63.25, "r2_score": 57.59, "r3_score": 62.94, "r4_score": 67.98, "r5_score": 69.87, "conviction_delta_r5_vs_r1": 6.62, "r1_action": "HOLD", "r5_action": "ACCUMULATE / HOLD", "gov_agencies_served": "Tier-1 Primes & DoD (Aegis SPY-6, Patriot LTAMDS, F-35 TR-3, SEWIP Block 3, JASSM/LRASM RF & Digital Signal Processing)", "healthcare_biodefense_hook": "High-speed medical imaging signal processing subsystems", "primary_moat_thesis": "Mission-critical commercial-grade chip packaging & RF/digital signal processing boards embedded inside 300+ EW, radar (LTAMDS/SPY-6), and missile programs.", "key_catalyst_2026": "Retirement of 20+ troubled legacy development programs unlocking a return to 18-20% adjusted EBITDA margins", "primary_kill_switch": "Re-emergence of working capital unbilled receivables bloat or chip packaging yield bottlenecks", "rank": 23, "portfolio_alloc_pct": 0.0, "entry_zone": "$71.88 - $75.62", "target_price_12m": 78.61, "implied_upside_pct": 5.0, "hard_stop": 67.38}, {"ticker": "BAH", "name": "Booz Allen Hamilton Holding Corp.", "layer": "L5 Sovereign Defense IT & Military Health", "subsector_node": "DEFENSE", "market_cap_b": 17.8, "ev_ebitda_ntm": 13.4, "pe_ntm": 20.2, "organic_rev_growth_pct": 8.2, "gross_margin_pct": 23.5, "ebitda_margin_pct": 11.2, "gaap_fcf_margin_pct": 7.8, "sbc_pct_rev": 0.9, "net_debt_ebitda": 2.6, "backlog_b": 38.0, "backlog_to_rev_years": 3.2, "fpif_dev_exposure_pct": 2.5, "sole_source_por_share_pct": 68.0, "rule_of_defense_x": 19.57, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 70.0, "mineral_tariff_immunity": 96.0, "cost_exchange_autonomy_uplift": 82.0, "gov_mandate_fms_barda_dha_moat": 84.0, "doge_cost_plus_services_exposure_pct": 26.0, "stress_test_survival_score": 76.93, "stress_vectors": {"ceasefire_resilience": 79.2, "doge_audit_survival": 42.8, "mineral_embargo_survival": 96.0, "fpif_inflation_survival": 93.5, "rate_shock_survival": 72.5}, "technicals": {"price": 78.32, "sma50": 74.34, "sma200": 75.98, "ma_30w": 73.62, "pct_above_30w_ma": 6.39, "rsi14": 80.0, "mansfield_rs": -2.36, "max_dd_1y_pct": 40.7, "weinstein_stage": "Stage 2 (Markup)", "source": "yfinance_live"}, "r1_score": 69.1, "r2_score": 70.1, "r3_score": 74.78, "r4_score": 66.25, "r5_score": 69.05, "conviction_delta_r5_vs_r1": -0.05, "r1_action": "HOLD", "r5_action": "AVOID / TRIM", "gov_agencies_served": "Intelligence Community (NSA/NRO/CIA), DoD CDAO (Advana), Defense Health Agency, VA, HHS/CMS", "healthcare_biodefense_hook": "Operates VA digital health transformation, DHA warrior care analytics, and CDC ARPA-H / biodefense AI modeling", "primary_moat_thesis": "Largest TS/SCI cleared AI and cyber workforce in the US government (>35,000 cleared staff) + Booz Allen Ventures (Hidden Layer, Shield AI, Albedo).", "key_catalyst_2026": "Transition of defense/intel contracts toward outcome-based AI engineering + Space/Indo-Pacific C5ISR task orders", "primary_kill_switch": "High (~26%) exposure to DOGE management-consulting and civilian T&M contract ceiling reductions", "rank": 24, "portfolio_alloc_pct": 0.0, "entry_zone": "$72.88 - $79.10", "target_price_12m": 82.24, "implied_upside_pct": 5.0, "hard_stop": 69.2}, {"ticker": "EBS", "name": "Emergent BioSolutions Inc. (ACAM2000 Smallpox, Anthrasil/CYFENDUS Anthrax, BAT, NARCAN)", "layer": "L6 Biodefense & BARDA Medical Countermeasures", "subsector_node": "DEFENSE", "market_cap_b": 0.52, "ev_ebitda_ntm": 6.8, "pe_ntm": 11.5, "organic_rev_growth_pct": 2.5, "gross_margin_pct": 44.0, "ebitda_margin_pct": 16.5, "gaap_fcf_margin_pct": 6.2, "sbc_pct_rev": 2.8, "net_debt_ebitda": 3.9, "backlog_b": 0.65, "backlog_to_rev_years": 0.7, "fpif_dev_exposure_pct": 2.0, "sole_source_por_share_pct": 82.0, "rule_of_defense_x": 1.06, "fpif_overrun_penalty": 0.0, "debt_service_drag": 4.94, "srm_nuclear_aftermarket_chokepoint": 84.0, "mineral_tariff_immunity": 90.0, "cost_exchange_autonomy_uplift": 60.0, "gov_mandate_fms_barda_dha_moat": 86.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 80.93, "stress_vectors": {"ceasefire_resilience": 57.6, "doge_audit_survival": 100.0, "mineral_embargo_survival": 90.0, "fpif_inflation_survival": 94.8, "rate_shock_survival": 62.8}, "technicals": {"price": 6.23, "sma50": 6.26, "sma200": 8.16, "ma_30w": 7.39, "pct_above_30w_ma": -15.75, "rsi14": 28.5, "mansfield_rs": -28.08, "max_dd_1y_pct": 68.0, "weinstein_stage": "Stage 1 (Accumulation / Basing)", "source": "yfinance_live"}, "r1_score": 64.22, "r2_score": 60.04, "r3_score": 65.78, "r4_score": 66.63, "r5_score": 68.51, "conviction_delta_r5_vs_r1": 4.29, "r1_action": "HOLD", "r5_action": "ACCUMULATE / HOLD", "gov_agencies_served": "ASPR / BARDA (Project BioShield SNS), DoD JPEO-CBRND (Anthrax/Smallpox/Botulinum/RSDL skin decontamination), State/Military Opioid Response (NARCAN)", "healthcare_biodefense_hook": "Broadest portfolio of FDA-approved BARDA/DoD biodefense MCMs: CYFENDUS/BioThrax (anthrax), ACAM2000 (smallpox/mpox), BAT (botulinum), CNJ-016, RSDL, and NARCAN", "primary_moat_thesis": "Turnaround under CEO Joe Papa: divested money-losing CDMO plants, refinanced debt, and refocused on high-margin sole-source BARDA/DoD anthrax, smallpox, and botulinum MCMs.", "key_catalyst_2026": "$250M+ BARDA/DoD CYFENDUS, ACAM2000 & BAT stockpile contract exercises + continued net debt reduction below 3.0x", "primary_kill_switch": "3.9x Net Debt/EBITDA leverage overhang or OTC generic naloxone price erosion pressuring NARCAN margins", "rank": 25, "portfolio_alloc_pct": 0.0, "entry_zone": "$5.98 - $6.29", "target_price_12m": 6.54, "implied_upside_pct": 5.0, "hard_stop": 5.61}, {"ticker": "HII", "name": "Huntington Ingalls Industries, Inc.", "layer": "L1 Tier-1 Primes & Naval Nuclear", "subsector_node": "DEFENSE", "market_cap_b": 8.4, "ev_ebitda_ntm": 9.8, "pe_ntm": 13.5, "organic_rev_growth_pct": 4.2, "gross_margin_pct": 13.4, "ebitda_margin_pct": 9.6, "gaap_fcf_margin_pct": 4.8, "sbc_pct_rev": 0.5, "net_debt_ebitda": 2.3, "backlog_b": 48.5, "backlog_to_rev_years": 4.2, "fpif_dev_exposure_pct": 18.5, "sole_source_por_share_pct": 92.0, "rule_of_defense_x": 2.7, "fpif_overrun_penalty": 8.07, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 86.0, "mineral_tariff_immunity": 85.0, "cost_exchange_autonomy_uplift": 62.0, "gov_mandate_fms_barda_dha_moat": 90.0, "doge_cost_plus_services_exposure_pct": 8.0, "stress_test_survival_score": 78.26, "stress_vectors": {"ceasefire_resilience": 95.2, "doge_audit_survival": 82.4, "mineral_embargo_survival": 85.0, "fpif_inflation_survival": 51.9, "rate_shock_survival": 74.8}, "technicals": {"price": 274.08, "sma50": 279.79, "sma200": 335.88, "ma_30w": 309.52, "pct_above_30w_ma": -11.45, "rsi14": 57.9, "mansfield_rs": -23.18, "max_dd_1y_pct": 42.8, "weinstein_stage": "Stage 4 (Decline)", "source": "yfinance_live"}, "r1_score": 66.74, "r2_score": 58.89, "r3_score": 71.33, "r4_score": 73.16, "r5_score": 62.74, "conviction_delta_r5_vs_r1": -4.0, "r1_action": "HOLD", "r5_action": "AVOID (Stage 4)", "gov_agencies_served": "US Navy NAVSEA (Ford-class CVN Nuclear Aircraft Carriers, Virginia/Columbia Submarines, Arleigh Burke DDG-51, REMUS UUVs)", "healthcare_biodefense_hook": "Mercy-class hospital ship overhaul & Navy fleet medical readiness systems", "primary_moat_thesis": "Absolute sole-source monopoly on US nuclear aircraft carrier construction (Newport News) + co-producer of Virginia/Columbia submarines + Mission Technologies C5ISR/UUVs.", "key_catalyst_2026": "Virginia-class submarine wage-escalation contract reset with US Navy + Mission Technologies cyber/EW expansion", "primary_kill_switch": "Shipyard welder/pipefitter attrition at Newport News compressing pre-inflation submarine block margins", "rank": 26, "portfolio_alloc_pct": 0.0, "entry_zone": "$263.12 - $276.82", "target_price_12m": 287.78, "implied_upside_pct": 5.0, "hard_stop": 246.67}, {"ticker": "SAIC", "name": "Science Applications International Corp.", "layer": "L5 Sovereign Defense IT & Military Health", "subsector_node": "DEFENSE", "market_cap_b": 5.6, "ev_ebitda_ntm": 10.4, "pe_ntm": 13.2, "organic_rev_growth_pct": 3.4, "gross_margin_pct": 11.8, "ebitda_margin_pct": 9.5, "gaap_fcf_margin_pct": 6.9, "sbc_pct_rev": 0.8, "net_debt_ebitda": 2.9, "backlog_b": 22.4, "backlog_to_rev_years": 3.0, "fpif_dev_exposure_pct": 4.0, "sole_source_por_share_pct": 62.0, "rule_of_defense_x": 10.0, "fpif_overrun_penalty": 0.0, "debt_service_drag": 1.14, "srm_nuclear_aftermarket_chokepoint": 60.0, "mineral_tariff_immunity": 95.0, "cost_exchange_autonomy_uplift": 65.0, "gov_mandate_fms_barda_dha_moat": 74.0, "doge_cost_plus_services_exposure_pct": 24.0, "stress_test_survival_score": 75.11, "stress_vectors": {"ceasefire_resilience": 73.2, "doge_audit_survival": 47.2, "mineral_embargo_survival": 95.0, "fpif_inflation_survival": 89.6, "rate_shock_survival": 70.2}, "technicals": {"price": 145.73, "sma50": 129.82, "sma200": 109.23, "ma_30w": 113.45, "pct_above_30w_ma": 28.46, "rsi14": 76.7, "mansfield_rs": 27.48, "max_dd_1y_pct": 27.8, "weinstein_stage": "Stage 2 (Markup)", "source": "yfinance_live"}, "r1_score": 62.78, "r2_score": 61.1, "r3_score": 62.37, "r4_score": 49.82, "r5_score": 57.55, "conviction_delta_r5_vs_r1": -5.23, "r1_action": "HOLD", "r5_action": "AVOID / TRIM", "gov_agencies_served": "US Space Force, US Army, US Navy, FAA, Department of State, DHA", "healthcare_biodefense_hook": "Military health cloud migration & VA legacy IT sustainment", "primary_moat_thesis": "High FCF yield (~9.5%) and aggressive share buybacks, but lower proprietary technology differentiation and higher recompete churn (Vanguard/NASA/Space Force).", "key_catalyst_2026": "Improved recompete win rates + 7-8% annual share count reduction via FCF buybacks", "primary_kill_switch": "Recompete losses on large enterprise IT contracts + DOGE federal civilian contract insourcing/reductions", "rank": 27, "portfolio_alloc_pct": 0.0, "entry_zone": "$132.61 - $147.19", "target_price_12m": 153.02, "implied_upside_pct": 5.0, "hard_stop": 106.64}, {"ticker": "TXT", "name": "Textron Inc. (Bell FLRAA MV-75, Textron Systems Munitions & UAS)", "layer": "L2 SRMs, Guided Missiles & Energetics", "subsector_node": "MUNITIONS", "market_cap_b": 16.8, "ev_ebitda_ntm": 9.6, "pe_ntm": 14.4, "organic_rev_growth_pct": 6.2, "gross_margin_pct": 17.8, "ebitda_margin_pct": 12.4, "gaap_fcf_margin_pct": 6.9, "sbc_pct_rev": 0.6, "net_debt_ebitda": 1.5, "backlog_b": 17.9, "backlog_to_rev_years": 1.3, "fpif_dev_exposure_pct": 9.0, "sole_source_por_share_pct": 76.0, "rule_of_defense_x": 15.92, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 74.0, "mineral_tariff_immunity": 78.0, "cost_exchange_autonomy_uplift": 72.0, "gov_mandate_fms_barda_dha_moat": 82.0, "doge_cost_plus_services_exposure_pct": 2.0, "stress_test_survival_score": 78.04, "stress_vectors": {"ceasefire_resilience": 61.2, "doge_audit_survival": 95.6, "mineral_embargo_survival": 78.0, "fpif_inflation_survival": 76.6, "rate_shock_survival": 80.8}, "technicals": {"price": 76.83, "sma50": 79.09, "sma200": 88.57, "ma_30w": 86.64, "pct_above_30w_ma": -11.33, "rsi14": 54.2, "mansfield_rs": -17.82, "max_dd_1y_pct": 27.5, "weinstein_stage": "Stage 4 (Decline)", "source": "yfinance_live"}, "r1_score": 62.34, "r2_score": 62.31, "r3_score": 64.91, "r4_score": 67.17, "r5_score": 56.75, "conviction_delta_r5_vs_r1": -5.59, "r1_action": "HOLD", "r5_action": "AVOID (Stage 4)", "gov_agencies_served": "US Army (Bell MV-75 FLRAA Tiltrotor, XM204 Top-Attack Anti-Vehicle Munition, Aerosonde UAS, RIPSAW M5), USAF (Sentinel Re-Entry Vehicle)", "healthcare_biodefense_hook": "Bell MV-75 FLRAA long-range high-speed MEDEVAC configuration for Indo-Pacific contested casualty evacuation", "primary_moat_thesis": "Won the generational $70B+ US Army FLRAA (MV-75) Black Hawk replacement + Sentinel ICBM Re-Entry System + XM204 smart anti-armor munitions.", "key_catalyst_2026": "Bell MV-75 FLRAA Milestone B EMD ramp acceleration + Textron Aviation Citation aftermarket margin expansion", "primary_kill_switch": "Business jet cycle slowdown or FLRAA tiltrotor transition-to-production cost overruns", "rank": 28, "portfolio_alloc_pct": 0.0, "entry_zone": "$73.76 - $77.60", "target_price_12m": 80.67, "implied_upside_pct": 5.0, "hard_stop": 69.15}, {"ticker": "RCAT", "name": "Red Cat Holdings, Inc. (Teal Drones / US Army SRR Program of Record)", "layer": "L3 Attritable UAS, Counter-UAS & Tactical AI", "subsector_node": "DEFENSE_AUTONOMY_UAS", "market_cap_b": 0.75, "ev_ebitda_ntm": 42.0, "pe_ntm": 65.0, "organic_rev_growth_pct": 48.0, "gross_margin_pct": 28.0, "ebitda_margin_pct": -12.0, "gaap_fcf_margin_pct": -18.5, "sbc_pct_rev": 14.5, "net_debt_ebitda": -0.5, "backlog_b": 0.09, "backlog_to_rev_years": 1.1, "fpif_dev_exposure_pct": 8.0, "sole_source_por_share_pct": 70.0, "rule_of_defense_x": -36.77, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 64.0, "mineral_tariff_immunity": 76.0, "cost_exchange_autonomy_uplift": 90.0, "gov_mandate_fms_barda_dha_moat": 78.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 77.45, "stress_vectors": {"ceasefire_resilience": 55.2, "doge_audit_survival": 100.0, "mineral_embargo_survival": 76.0, "fpif_inflation_survival": 79.2, "rate_shock_survival": 79.2}, "technicals": {"price": 4.43, "sma50": 7.23, "sma200": 10.69, "ma_30w": 9.63, "pct_above_30w_ma": -53.98, "rsi14": 11.6, "mansfield_rs": -61.12, "max_dd_1y_pct": 74.8, "weinstein_stage": "Stage 4 (Decline)", "source": "yfinance_live"}, "r1_score": 79.04, "r2_score": 56.69, "r3_score": 55.79, "r4_score": 60.63, "r5_score": 49.96, "conviction_delta_r5_vs_r1": -29.08, "r1_action": "STRONG BUY", "r5_action": "AVOID (Stage 4)", "gov_agencies_served": "US Army PEO Aviation (Short Range Reconnaissance SRR Tranche 2 \u2014 Black Widow rucksack drone), USAF, NATO border defense", "healthcare_biodefense_hook": "First-responder search-and-rescue thermal drone payloads for disaster casualty localization", "primary_moat_thesis": "Won the landmark US Army Short Range Reconnaissance (SRR) Tranche 2 Program of Record (5,880+ Black Widow systems) partnered with Palantir visual navigation.", "key_catalyst_2026": "US Army SRR Tranche 2 Low-Rate & Full-Rate Production contract sign-offs + FlightWave Edge 130 Blue UAS orders", "primary_kill_switch": "Negative free cash flow, 14.5% SBC/rev, working-capital equity dilution, and single-program execution concentration at Salt Lake City factory", "rank": 29, "portfolio_alloc_pct": 0.0, "entry_zone": "$4.25 - $4.47", "target_price_12m": 4.65, "implied_upside_pct": 5.0, "hard_stop": 3.99}, {"ticker": "OLN", "name": "Olin Corporation (Winchester Ammunition & Lake City GOCO)", "layer": "L2 SRMs, Guided Missiles & Energetics", "subsector_node": "AMMO_CONVENTIONAL", "market_cap_b": 4.6, "ev_ebitda_ntm": 7.4, "pe_ntm": 13.8, "organic_rev_growth_pct": 3.8, "gross_margin_pct": 15.6, "ebitda_margin_pct": 14.2, "gaap_fcf_margin_pct": 7.5, "sbc_pct_rev": 0.5, "net_debt_ebitda": 2.6, "backlog_b": 3.2, "backlog_to_rev_years": 0.5, "fpif_dev_exposure_pct": 3.0, "sole_source_por_share_pct": 65.0, "rule_of_defense_x": 12.83, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 85.0, "mineral_tariff_immunity": 68.0, "cost_exchange_autonomy_uplift": 52.0, "gov_mandate_fms_barda_dha_moat": 78.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 74.99, "stress_vectors": {"ceasefire_resilience": 45.0, "doge_audit_survival": 100.0, "mineral_embargo_survival": 68.0, "fpif_inflation_survival": 92.2, "rate_shock_survival": 72.5}, "technicals": {"price": 15.66, "sma50": 16.63, "sma200": 22.17, "ma_30w": 21.71, "pct_above_30w_ma": -27.87, "rsi14": 42.3, "mansfield_rs": -33.41, "max_dd_1y_pct": 50.3, "weinstein_stage": "Stage 4 (Decline)", "source": "yfinance_live"}, "r1_score": 58.41, "r2_score": 57.52, "r3_score": 58.64, "r4_score": 56.14, "r5_score": 44.74, "conviction_delta_r5_vs_r1": -13.68, "r1_action": "HOLD", "r5_action": "AVOID (Stage 4)", "gov_agencies_served": "US Army Joint Munitions Command (Lake City Army Ammunition Plant GOCO), NATO Small-Caliber Stockpile, DHS/FBI", "healthcare_biodefense_hook": "DoD lead-free primer & reduced-toxicity military training ammunition formulations", "primary_moat_thesis": "Operates Lake City Army Ammunition Plant (the Free World's largest small-caliber military ammo facility) + White Flyer + captive military propellant integration.", "key_catalyst_2026": "US Army Next Generation Squad Weapon (6.8mm) full-rate production + NATO small-arms restocking + Chlor-Alkali trough recovery", "primary_kill_switch": "Sustained antimony/nitrocellulose input cost spikes or prolonged European industrial epoxy/chlor-alkali recession", "rank": 30, "portfolio_alloc_pct": 0.0, "entry_zone": "$15.03 - $15.82", "target_price_12m": 16.44, "implied_upside_pct": 5.0, "hard_stop": 14.09}, {"ticker": "BA", "name": "The Boeing Company (Defense, Space & Security / Commercial)", "layer": "L1 Tier-1 Primes & Naval Nuclear", "subsector_node": "DEFENSE", "market_cap_b": 118.0, "ev_ebitda_ntm": 22.5, "pe_ntm": 38.0, "organic_rev_growth_pct": 4.5, "gross_margin_pct": 9.2, "ebitda_margin_pct": 6.5, "gaap_fcf_margin_pct": -1.8, "sbc_pct_rev": 1.1, "net_debt_ebitda": 5.8, "backlog_b": 520.0, "backlog_to_rev_years": 6.8, "fpif_dev_exposure_pct": 28.0, "sole_source_por_share_pct": 78.0, "rule_of_defense_x": -27.04, "fpif_overrun_penalty": 17.1, "debt_service_drag": 12.16, "srm_nuclear_aftermarket_chokepoint": 70.0, "mineral_tariff_immunity": 64.0, "cost_exchange_autonomy_uplift": 58.0, "gov_mandate_fms_barda_dha_moat": 78.0, "doge_cost_plus_services_exposure_pct": 4.0, "stress_test_survival_score": 64.31, "stress_vectors": {"ceasefire_resilience": 86.8, "doge_audit_survival": 91.2, "mineral_embargo_survival": 64.0, "fpif_inflation_survival": 27.2, "rate_shock_survival": 48.5}, "technicals": {"price": 188.35, "sma50": 201.13, "sma200": 218.59, "ma_30w": 214.06, "pct_above_30w_ma": -12.01, "rsi14": 42.3, "mansfield_rs": -18.27, "max_dd_1y_pct": 26.9, "weinstein_stage": "Stage 4 (Decline)", "source": "yfinance_live"}, "r1_score": 64.73, "r2_score": 43.33, "r3_score": 48.93, "r4_score": 47.58, "r5_score": 32.98, "conviction_delta_r5_vs_r1": -31.75, "r1_action": "HOLD", "r5_action": "AVOID (Stage 4)", "gov_agencies_served": "USAF (F-47 NGAD, KC-46A, T-7A, F-15EX, Bombers), US Navy (P-8A, MQ-25), US Army (Apache AH-64E, Chinook), MDA (GMD, PAC-3 seeker)", "healthcare_biodefense_hook": "USAF C-17 & KC-46 Aeromedical Evacuation (AE) global patient transport fleet", "primary_moat_thesis": "Massive $520B backlog + PAC-3 seeker head monopoly + F-47 NGAD win, but severely impaired by legacy BDS fixed-price development EAC charges (KC-46, T-7A, VC-25B, Starliner).", "key_catalyst_2026": "F-47 NGAD Engineering & Manufacturing Development (EMD) cost-plus ramp + 737 MAX 38/mo FAA cap lift", "primary_kill_switch": "Further multibillion-dollar EAC charges on BDS fixed-price development programs or 737/777X certification delays", "rank": 31, "portfolio_alloc_pct": 0.0, "entry_zone": "$180.82 - $190.23", "target_price_12m": 197.77, "implied_upside_pct": 5.0, "hard_stop": 169.51}, {"ticker": "ACHR", "name": "Archer Aviation Inc. (Anduril Defense Hybrid-VTOL Partnership)", "layer": "L3 Attritable UAS, Counter-UAS & Tactical AI", "subsector_node": "DEFENSE_AUTONOMY_UAS", "market_cap_b": 4.6, "ev_ebitda_ntm": 85.0, "pe_ntm": 99.0, "organic_rev_growth_pct": 35.0, "gross_margin_pct": 0.0, "ebitda_margin_pct": -65.0, "gaap_fcf_margin_pct": -75.0, "sbc_pct_rev": 35.0, "net_debt_ebitda": -2.0, "backlog_b": 6.0, "backlog_to_rev_years": 8.0, "fpif_dev_exposure_pct": 10.0, "sole_source_por_share_pct": 35.0, "rule_of_defense_x": -172.05, "fpif_overrun_penalty": 0.0, "debt_service_drag": 0.0, "srm_nuclear_aftermarket_chokepoint": 48.0, "mineral_tariff_immunity": 68.0, "cost_exchange_autonomy_uplift": 74.0, "gov_mandate_fms_barda_dha_moat": 55.0, "doge_cost_plus_services_exposure_pct": 0.0, "stress_test_survival_score": 70.28, "stress_vectors": {"ceasefire_resilience": 61.0, "doge_audit_survival": 100.0, "mineral_embargo_survival": 68.0, "fpif_inflation_survival": 74.0, "rate_shock_survival": 47.0}, "technicals": {"price": 3.91, "sma50": 5.27, "sma200": 5.92, "ma_30w": 5.47, "pct_above_30w_ma": -28.57, "rsi14": 30.2, "mansfield_rs": -37.61, "max_dd_1y_pct": 66.5, "weinstein_stage": "Stage 4 (Decline)", "source": "yfinance_live"}, "r1_score": 78.96, "r2_score": 22.0, "r3_score": 20.0, "r4_score": 18.0, "r5_score": 18.0, "conviction_delta_r5_vs_r1": -60.96, "r1_action": "STRONG BUY", "r5_action": "AVOID (Stage 4)", "gov_agencies_served": "USAF AFWERX Agility Prime, DoD Joint Program of Record target via exclusive Anduril hybrid-propulsion VTOL partnership", "healthcare_biodefense_hook": "Autonomous low-acoustic CASEVAC / Golden Hour trauma evacuation eVTOL aircraft for contested military medicine", "primary_moat_thesis": "Exclusive partnership with Anduril Industries to co-develop a hybrid-gas-electric VTOL aircraft for a target DoD Program of Record + $1B+ liquidity.", "key_catalyst_2026": "DoD hybrid-VTOL prototype flight demonstration with Anduril + FAA Midnight Type Certification milestones", "primary_kill_switch": "Pre-revenue cash burn (~$400M+/yr), heavy equity/SBC dilution, and lack of a signed DoD production Program of Record", "rank": 32, "portfolio_alloc_pct": 0.0, "entry_zone": "$3.75 - $3.95", "target_price_12m": 4.11, "implied_upside_pct": 5.0, "hard_stop": 3.52}];
+const ROUNDS = [{"round": 1, "name": "Baseline Headline Growth, Gross Margin & Backlog Screen", "critic_diagnosis": "Exposes 4 structural flaws: (1) Blind to Fixed-Price Incentive Fee (FPIF) development EAC charge landmines (BA, LMT classified aero); (2) Rewards high headline growth with massive SBC dilution (PLTR 19.8% SBC/rev, AXON 13.2%, ACHR 35.0%, RCAT 14.5%) or high leverage (TDG 5.1x, EBS 3.9x); (3) Ignores physical supply-chain bottlenecks (SRM cast-cure capacity, naval nuclear cores, Ga/Ge/Sb critical minerals); (4) Treats low-moat Cost-Plus T&M consulting (SAIC, BAH) identically to sole-source Programs of Record.", "sub_skill_created": "Baseline Multi-Factor Screen"}, {"round": 2, "name": "Contract Structure & FPIF Overrun Shield + SBC/Debt-Adjusted Rule of Defense X", "critic_diagnosis": "Penalizes FPIF development exposure (>10% rev) and SBC/Debt dilution via Rule of Defense X = (1.6 * Organic Growth) + GAAP FCF Margin - (1.5 * SBC%) - FPIF Overrun Penalty - Debt Drag. Wait \u2014 unit economics alone miss physical bottleneck monopolies (Aerojet Rocketdyne SRMs, BWXT nuclear cores, Howmet single-crystal blades) that command multi-decade pricing power.", "sub_skill_created": "Sub-Skill 1: FPIF Overrun Shield & SBC/Debt-Adjusted Rule of Defense X"}, {"round": 3, "name": "Supply-Chain Chokepoint Monopoly (SRM, Naval Nuclear, PMA) & Sole-Source Backlog Duration", "critic_diagnosis": "Elevates physical chokepoints (BWXT naval nuclear, LHX/NOC/KTOS solid rocket motors, HWM/HEI/TDG/CW/MOG-A sole-source subsystems). Critic identifies that asymmetric drone warfare ($30K drone vs $3M interceptor), Golden Dome space cueing, and non-discretionary DHA/VA PACT Act & BARDA biodefense mandates must be separated from DOGE-vulnerable IT consulting.", "sub_skill_created": "Sub-Skill 2: SRM/Nuclear/PMA Chokepoint & Critical Mineral Immunity Scorer"}, {"round": 4, "name": "Asymmetric Cost-Exchange Autonomy Uplift & Statutory Mandate Moat (NATO FMS, Golden Dome, DHA/VA, BARDA)", "critic_diagnosis": "Rewards Replicator/CCA/Counter-UAS winners (AVAV, KTOS, DRS, PLTR, CACI) and DHA/VA PACT Act / BARDA SNS franchises (LDOS, SIGA) while penalizing DOGE-exposed civilian T&M services (BAH, SAIC). Final Critic demands a 5-Vector Devil's Advocate Stress Test (Ceasefire Rotation, DOGE Audit, Ga/Ge/Sb Embargo, FPIF Inflation, +100bps Rate Shock) and a live Weinstein Stage technical gate.", "sub_skill_created": "Sub-Skill 3: Cost-Exchange Autonomy & Statutory Mandate Moat Engine"}, {"round": 5, "name": "Devil's Advocate 5-Vector Stress Test + Live Weinstein Stage & Mansfield RS Technical Gate", "critic_diagnosis": "Enforces hard technical & stress-test gates: Stage 4 downtrends (BA, SAIC) and pre-FCF dilution traps (ACHR, RCAT) are barred from BUY/STRONG BUY. Crowns high-ROIC physical chokepoints & autonomous/IAMD compounders (LHX, BWXT, CW, HWM, RTX, DRS, AVAV, HEI, LDOS, NOC, KTOS, LMT, GD, PLTR, MOG-A, SIGA).", "sub_skill_created": "Sub-Skill 4: 5-Vector Red-Team Stress Test & Weinstein Stage Technical Gate"}];
+const BW_SCENARIOS = {"nato_golden_dome_srm_supercycle": {"shocks": {"DEFENSE_SPENDING": 1.0, "AI_CAPABILITY": 0.75, "HEALTHCARE_POLICY": 0.45, "TARIFFS": 0.25}, "regime": {"growth_dir": "up", "inflation_dir": "down"}, "ecosystem_nodes": {"DEFENSE": {"mean": 5.622742, "range_10_90": [5.441845, 5.74334], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"0": 1.420781, "1": 1.567261, "2": 1.026107, "3": 0.867502, "4": 0.592042, "5": 0.14905}, "judgement_share": 0.9272, "title": "Tier-1 Defense Primes, Naval Nuclear, Aftermarket & Biodefense Roll-Up", "layer": "L0/L1/L4/L5/L6 Roll-Up: Tier-1 Defense Primes, Naval Nuclear, Aero Aftermarket, Defense IT & Biodefense", "revenue_pool_b": 920.0, "large_cap_anchors": ["LMT", "RTX", "NOC", "GD", "LHX", "BA", "HII", "HWM", "TDG", "HEI", "LDOS", "BAH"], "smid_cap_pure_plays": ["BWXT", "WWD", "CACI", "SAIC", "PSN", "KBR", "EBS", "SIGA"], "key_private_challengers": ["Anduril Industries ($28.0B)", "Shield AI ($5.3B)", "Sierra Nevada Corp", "General Atomics", "Palantir Federal"], "government_agency_gatekeepers": ["DoD Office of the Under Secretary of Defense for Acquisition & Sustainment (OUSD A&S) & DCMA/DCAA (FAR/DFARS/CAS)", "Defense Security Cooperation Agency (DSCA Foreign Military Sales >$117B/yr) & NATO Support and Procurement Agency (NSPA)", "Naval Reactors (NAVSEA 08 / DOE NNSA) & Naval Sea Systems Command (Columbia SSBN / Virginia SSN / AUKUS)", "Defense Health Agency (DHA MHS GENESIS / TRICARE T-5) & Department of Veterans Affairs (VBA PACT Act Medical Exams)", "ASPR / BARDA (Project BioShield Strategic National Stockpile) & DoD DTRA / JPEO-CBRND"], "healthcare_policy_hooks": ["VA PACT Act toxic-exposure disability medical exam automation (>1.8M exams/yr via Leidos QTC Health Services, CACI, Booz Allen)", "Defense Health Agency (DHA) MHS GENESIS electronic health record deployment across 9.6M beneficiaries (LDOS, BAH)", "BARDA Project BioShield & Strategic National Stockpile (SNS) multi-year procurement of TPOXX smallpox antiviral (SIGA) and ACAM2000/Anthrasil/NARCAN (EBS)", "DoD Force Health Protection, DARPA Biological Technologies Office (BTO) pandemic countermeasures, and soldier physiological telemetry"]}, "MUNITIONS": {"mean": 3.315233, "range_10_90": [3.315233, 3.315233], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"0": 0.63, "1": 0.897214, "2": 0.977789, "3": 0.434794, "4": 0.198447, "5": 0.14185, "6": 0.035141}, "judgement_share": 0.8183, "title": "General Munitions, Warheads & Ordnance Replenishment", "layer": "L2A Tactical Munitions, Energetic Warheads, Cast-Cure & Fuzing", "revenue_pool_b": 78.0, "large_cap_anchors": ["GD", "LMT", "RTX", "LHX", "NOC"], "smid_cap_pure_plays": ["TXT", "CW", "AVAV"], "key_private_challengers": ["Day & Zimmermann", "Spectra Technologies", "Chemring Group", "Rheinmetall Expal"], "government_agency_gatekeepers": ["US Army Joint Program Executive Office Armaments & Ammunition (JPEO A&A) & Joint Munitions Command (JMC)", "DoD Industrial Base Policy (DPA Title III Munitions & Energetics Grants)", "NATO Support and Procurement Agency (NSPA) Multinational Ammunition Warehousing Initiative"], "healthcare_policy_hooks": ["DoD Blast Overpressure & Traumatic Brain Injury (TBI) warfighter safety standards for heavy weapons crews", "EPA/OSHA perchlorate, RDX, and energetic wastewater remediation compliance at GOCO plants (PSN, KBR)"]}, "MISSILES_GUIDED": {"mean": 4.526845, "range_10_90": [4.526845, 4.526845], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"1": 0.86463, "2": 1.320265, "3": 1.562144, "4": 0.685531, "5": 0.092032, "6": 0.002243}, "judgement_share": 1.0, "title": "Guided Missiles, Hypersonic Strike & IAMD Interceptors", "layer": "L2B Precision Guided Missiles, Hypersonics & Air-and-Missile Defense Interceptors", "revenue_pool_b": 145.0, "large_cap_anchors": ["LMT", "RTX", "NOC", "LHX", "BA"], "smid_cap_pure_plays": ["MOG-A", "CW", "WWD", "DRS", "MRCY"], "key_private_challengers": ["Anduril (Barracuda-M)", "Castelion (Hypersonics)", "Raytheon-Rafael JVs", "MBDA"], "government_agency_gatekeepers": ["Missile Defense Agency (MDA: Golden Dome, THAAD, Aegis BMD, GPI, HBTSS)", "US Army Program Executive Office Missiles and Space (PEO MS: Patriot PAC-3, LTAMDS, IBCS, PrSM, GMLRS)", "US Navy NAVAIR / NAVSEA (Standard Missile SM-3/SM-6, LRASM, Tomahawk Block V, ESSM)", "US Air Force AFLCMC Directorate of Armament (JASSM-ER, AMRAAM AIM-120D-3, SiAW, ARRW/HACM)"], "healthcare_policy_hooks": ["Defense Health Agency & Civil Defense mass-casualty trauma readiness tied to homeland missile defense posture"]}, "AMMO_CONVENTIONAL": {"mean": 3.501186, "range_10_90": [3.501186, 3.501186], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"1": 1.721184, "2": 0.830805, "3": 0.548954, "4": 0.223479, "5": 0.127922, "6": 0.048842}, "judgement_share": 1.0, "title": "Conventional Ammunition, 155mm Shells, Nitrocellulose & Primers", "layer": "L2C Conventional 155mm Artillery, Propellants, Nitrocellulose & Small-Caliber Ammo", "revenue_pool_b": 42.0, "large_cap_anchors": ["GD", "NOC"], "smid_cap_pure_plays": ["OLN", "TXT"], "key_private_challengers": ["CSG / Vista Outdoor (The Kinetic Group)", "Rheinmetall Waffe Munition", "Nammo", "BAE Systems OTS"], "government_agency_gatekeepers": ["US Army Joint Munitions Command (JMC) \u2014 Lake City, Radford, Scranton & Iowa Army Ammunition Plants", "PEO Soldier (Next Generation Squad Weapon 6.8mm ammunition qualification)", "ATF & Department of Commerce BIS Export Control Classification (0A505)"], "healthcare_policy_hooks": ["DoD lead-free green primer & occupational heavy-metal toxicology exposure mandates at indoor firing ranges"]}, "SOLID_ROCKET_MOTORS": {"mean": 3.895278, "range_10_90": [3.895278, 3.895278], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"1": 0.911381, "2": 1.752853, "3": 0.916472, "4": 0.175207, "5": 0.111772, "6": 0.027593}, "judgement_share": 0.894, "title": "Solid Rocket Motors (SRMs), Energetic Cast-Cure & Divert Propulsion", "layer": "L2D Solid Rocket Motors (SRMs), Ammonium Perchlorate & Tactical Propulsion", "revenue_pool_b": 34.0, "large_cap_anchors": ["LHX", "NOC", "LMT"], "smid_cap_pure_plays": ["KTOS", "MOG-A", "CW"], "key_private_challengers": ["Anduril Solid Rocket Motors", "Ursa Major (Lynx)", "X-Bow Systems", "Nammo Raufoss"], "government_agency_gatekeepers": ["DoD Office of Industrial Base Policy (DPA Title III SRM Investments \u2014 $215.6M to LHX Aerojet Rocketdyne)", "Missile Defense Agency (MDA) & USAF Strategic Systems (Sentinel ICBM, NGI, Glide Phase Interceptor)", "US Navy Strategic Systems Programs (SSP: Trident II D5 Life Extension & Conventional Prompt Strike)"], "healthcare_policy_hooks": ["EPA National Primary Drinking Water Regulations for perchlorate and OSHA Process Safety Management (PSM) for energetics"]}, "DEFENSE_AUTONOMY_UAS": {"mean": 3.829782, "range_10_90": [3.762079, 3.874917], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"0": 0.95, "1": 1.403026, "2": 0.853751, "3": 0.338807, "4": 0.147023, "5": 0.122481, "6": 0.014693}, "judgement_share": 0.918, "title": "Autonomous Warfare, Attritable UAS, Counter-UAS & Tactical AI Software", "layer": "L3 Attritable UAS, Collaborative Combat Aircraft (CCA), Loitering Munitions, Counter-UAS & Tactical AI", "revenue_pool_b": 86.0, "large_cap_anchors": ["PLTR", "AXON"], "smid_cap_pure_plays": ["AVAV", "KTOS", "DRS", "MRCY", "RCAT", "ACHR"], "key_private_challengers": ["Anduril ($28.0B \u2014 Fury CCA, Lattice, Roadrunner, Altius)", "Shield AI ($5.3B \u2014 Hivemind, V-BAT)", "Skydio ($2.2B)", "Saronic Technologies ($4.0B \u2014 Autonomous USVs)", "Epirus (Leonidas HPM)"], "government_agency_gatekeepers": ["Deputy Secretary of Defense & Defense Innovation Unit (DIU: Replicator 1 & 2, Blue UAS Cleared List)", "US Air Force Life Cycle Management Center (Collaborative Combat Aircraft CCA Increment 1 & 2)", "DoD Chief Digital and Artificial Intelligence Office (CDAO: CJADC2, Maven Smart System, Advana)", "Joint Counter-Small Unmanned Aircraft Systems Office (JCO) & DHS/DOJ Counter-UAS Authorities"], "healthcare_policy_hooks": ["Autonomous CASEVAC (Casualty Evacuation) eVTOL/UAS medical evacuation and Golden Hour battlefield triage AI (ACHR, KTOS, PLTR)", "VA/DHA enterprise healthcare data integration and predictive clinical resource routing via Palantir Foundry/AIP"]}}, "n_paths": 200}, "critical_mineral_embargo_and_doge_squeeze": {"shocks": {"TARIFFS": 1.0, "INFLATION": 0.8, "LONG_RATE": 0.65, "DEFENSE_SPENDING": 0.2}, "regime": {"growth_dir": "up", "inflation_dir": "down"}, "ecosystem_nodes": {"DEFENSE": {"mean": 0.7968, "range_10_90": [0.369392, 1.169015], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"0": 0.349311, "1": 0.183105, "2": -0.062715, "3": 0.22018, "4": 0.055706, "5": 0.051214}, "judgement_share": 1.0, "title": "Tier-1 Defense Primes, Naval Nuclear, Aftermarket & Biodefense Roll-Up", "layer": "L0/L1/L4/L5/L6 Roll-Up: Tier-1 Defense Primes, Naval Nuclear, Aero Aftermarket, Defense IT & Biodefense", "revenue_pool_b": 920.0, "large_cap_anchors": ["LMT", "RTX", "NOC", "GD", "LHX", "BA", "HII", "HWM", "TDG", "HEI", "LDOS", "BAH"], "smid_cap_pure_plays": ["BWXT", "WWD", "CACI", "SAIC", "PSN", "KBR", "EBS", "SIGA"], "key_private_challengers": ["Anduril Industries ($28.0B)", "Shield AI ($5.3B)", "Sierra Nevada Corp", "General Atomics", "Palantir Federal"], "government_agency_gatekeepers": ["DoD Office of the Under Secretary of Defense for Acquisition & Sustainment (OUSD A&S) & DCMA/DCAA (FAR/DFARS/CAS)", "Defense Security Cooperation Agency (DSCA Foreign Military Sales >$117B/yr) & NATO Support and Procurement Agency (NSPA)", "Naval Reactors (NAVSEA 08 / DOE NNSA) & Naval Sea Systems Command (Columbia SSBN / Virginia SSN / AUKUS)", "Defense Health Agency (DHA MHS GENESIS / TRICARE T-5) & Department of Veterans Affairs (VBA PACT Act Medical Exams)", "ASPR / BARDA (Project BioShield Strategic National Stockpile) & DoD DTRA / JPEO-CBRND"], "healthcare_policy_hooks": ["VA PACT Act toxic-exposure disability medical exam automation (>1.8M exams/yr via Leidos QTC Health Services, CACI, Booz Allen)", "Defense Health Agency (DHA) MHS GENESIS electronic health record deployment across 9.6M beneficiaries (LDOS, BAH)", "BARDA Project BioShield & Strategic National Stockpile (SNS) multi-year procurement of TPOXX smallpox antiviral (SIGA) and ACAM2000/Anthrasil/NARCAN (EBS)", "DoD Force Health Protection, DARPA Biological Technologies Office (BTO) pandemic countermeasures, and soldier physiological telemetry"]}, "MUNITIONS": {"mean": 0.597439, "range_10_90": [0.469392, 0.718027], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"0": 0.18, "1": 0.209162, "2": 0.161615, "3": -0.0131, "4": 0.031631, "5": 0.019504, "6": 0.008627}, "judgement_share": 1.0, "title": "General Munitions, Warheads & Ordnance Replenishment", "layer": "L2A Tactical Munitions, Energetic Warheads, Cast-Cure & Fuzing", "revenue_pool_b": 78.0, "large_cap_anchors": ["GD", "LMT", "RTX", "LHX", "NOC"], "smid_cap_pure_plays": ["TXT", "CW", "AVAV"], "key_private_challengers": ["Day & Zimmermann", "Spectra Technologies", "Chemring Group", "Rheinmetall Expal"], "government_agency_gatekeepers": ["US Army Joint Program Executive Office Armaments & Ammunition (JPEO A&A) & Joint Munitions Command (JMC)", "DoD Industrial Base Policy (DPA Title III Munitions & Energetics Grants)", "NATO Support and Procurement Agency (NSPA) Multinational Ammunition Warehousing Initiative"], "healthcare_policy_hooks": ["DoD Blast Overpressure & Traumatic Brain Injury (TBI) warfighter safety standards for heavy weapons crews", "EPA/OSHA perchlorate, RDX, and energetic wastewater remediation compliance at GOCO plants (PSN, KBR)"]}, "MISSILES_GUIDED": {"mean": 0.023044, "range_10_90": [-0.125664, 0.163089], "share_positive": 0.755, "share_negative": 0.245, "by_horizon": {"1": -0.433131, "2": 0.187396, "3": 0.055826, "4": 0.164177, "5": 0.040694, "6": 0.008081}, "judgement_share": 0.9339, "title": "Guided Missiles, Hypersonic Strike & IAMD Interceptors", "layer": "L2B Precision Guided Missiles, Hypersonics & Air-and-Missile Defense Interceptors", "revenue_pool_b": 145.0, "large_cap_anchors": ["LMT", "RTX", "NOC", "LHX", "BA"], "smid_cap_pure_plays": ["MOG-A", "CW", "WWD", "DRS", "MRCY"], "key_private_challengers": ["Anduril (Barracuda-M)", "Castelion (Hypersonics)", "Raytheon-Rafael JVs", "MBDA"], "government_agency_gatekeepers": ["Missile Defense Agency (MDA: Golden Dome, THAAD, Aegis BMD, GPI, HBTSS)", "US Army Program Executive Office Missiles and Space (PEO MS: Patriot PAC-3, LTAMDS, IBCS, PrSM, GMLRS)", "US Navy NAVAIR / NAVSEA (Standard Missile SM-3/SM-6, LRASM, Tomahawk Block V, ESSM)", "US Air Force AFLCMC Directorate of Armament (JASSM-ER, AMRAAM AIM-120D-3, SiAW, ARRW/HACM)"], "healthcare_policy_hooks": ["Defense Health Agency & Civil Defense mass-casualty trauma readiness tied to homeland missile defense posture"]}, "AMMO_CONVENTIONAL": {"mean": 0.753001, "range_10_90": [0.667602, 0.833425], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"1": 0.541178, "2": 0.132758, "3": 0.030146, "4": 0.025524, "5": 0.012294, "6": 0.0111}, "judgement_share": 0.9262, "title": "Conventional Ammunition, 155mm Shells, Nitrocellulose & Primers", "layer": "L2C Conventional 155mm Artillery, Propellants, Nitrocellulose & Small-Caliber Ammo", "revenue_pool_b": 42.0, "large_cap_anchors": ["GD", "NOC"], "smid_cap_pure_plays": ["OLN", "TXT"], "key_private_challengers": ["CSG / Vista Outdoor (The Kinetic Group)", "Rheinmetall Waffe Munition", "Nammo", "BAE Systems OTS"], "government_agency_gatekeepers": ["US Army Joint Munitions Command (JMC) \u2014 Lake City, Radford, Scranton & Iowa Army Ammunition Plants", "PEO Soldier (Next Generation Squad Weapon 6.8mm ammunition qualification)", "ATF & Department of Commerce BIS Export Control Classification (0A505)"], "healthcare_policy_hooks": ["DoD lead-free green primer & occupational heavy-metal toxicology exposure mandates at indoor firing ranges"]}, "SOLID_ROCKET_MOTORS": {"mean": -0.088971, "range_10_90": [-0.188344, 0.004613], "share_positive": 0.275, "share_negative": 0.725, "by_horizon": {"1": -0.744823, "2": 0.318883, "3": 0.240774, "4": 0.061115, "5": 0.029562, "6": 0.005519}, "judgement_share": 1.0, "title": "Solid Rocket Motors (SRMs), Energetic Cast-Cure & Divert Propulsion", "layer": "L2D Solid Rocket Motors (SRMs), Ammonium Perchlorate & Tactical Propulsion", "revenue_pool_b": 34.0, "large_cap_anchors": ["LHX", "NOC", "LMT"], "smid_cap_pure_plays": ["KTOS", "MOG-A", "CW"], "key_private_challengers": ["Anduril Solid Rocket Motors", "Ursa Major (Lynx)", "X-Bow Systems", "Nammo Raufoss"], "government_agency_gatekeepers": ["DoD Office of Industrial Base Policy (DPA Title III SRM Investments \u2014 $215.6M to LHX Aerojet Rocketdyne)", "Missile Defense Agency (MDA) & USAF Strategic Systems (Sentinel ICBM, NGI, Glide Phase Interceptor)", "US Navy Strategic Systems Programs (SSP: Trident II D5 Life Extension & Conventional Prompt Strike)"], "healthcare_policy_hooks": ["EPA National Primary Drinking Water Regulations for perchlorate and OSHA Process Safety Management (PSM) for energetics"]}, "DEFENSE_AUTONOMY_UAS": {"mean": 0.68984, "range_10_90": [0.462608, 0.892496], "share_positive": 1.0, "share_negative": 0.0, "by_horizon": {"0": 0.19, "1": 0.327081, "2": 0.114643, "3": -0.007706, "4": 0.051583, "5": 0.010041, "6": 0.004198}, "judgement_share": 1.0, "title": "Autonomous Warfare, Attritable UAS, Counter-UAS & Tactical AI Software", "layer": "L3 Attritable UAS, Collaborative Combat Aircraft (CCA), Loitering Munitions, Counter-UAS & Tactical AI", "revenue_pool_b": 86.0, "large_cap_anchors": ["PLTR", "AXON"], "smid_cap_pure_plays": ["AVAV", "KTOS", "DRS", "MRCY", "RCAT", "ACHR"], "key_private_challengers": ["Anduril ($28.0B \u2014 Fury CCA, Lattice, Roadrunner, Altius)", "Shield AI ($5.3B \u2014 Hivemind, V-BAT)", "Skydio ($2.2B)", "Saronic Technologies ($4.0B \u2014 Autonomous USVs)", "Epirus (Leonidas HPM)"], "government_agency_gatekeepers": ["Deputy Secretary of Defense & Defense Innovation Unit (DIU: Replicator 1 & 2, Blue UAS Cleared List)", "US Air Force Life Cycle Management Center (Collaborative Combat Aircraft CCA Increment 1 & 2)", "DoD Chief Digital and Artificial Intelligence Office (CDAO: CJADC2, Maven Smart System, Advana)", "Joint Counter-Small Unmanned Aircraft Systems Office (JCO) & DHS/DOJ Counter-UAS Authorities"], "healthcare_policy_hooks": ["Autonomous CASEVAC (Casualty Evacuation) eVTOL/UAS medical evacuation and Golden Hour battlefield triage AI (ACHR, KTOS, PLTR)", "VA/DHA enterprise healthcare data integration and predictive clinical resource routing via Palantir Foundry/AIP"]}}, "n_paths": 200}};
+
+// Render 5-Round Sub-Skill Cards
+const subSkillsEl = document.getElementById("subSkillsContainer");
+const roundFormulas = {
+  1: "R1 = 52 + 0.78*Growth + 0.22*GM% + 2.4*BacklogYrs - 0.16*EV/EBITDA",
+  2: "RuleDefX = 1.6*EffGrowth + FCF% - 1.5*SBC% - FPIF_Pen - DebtDrag - BurnPen",
+  3: "Chokepoint = 0.46*SRM_Nuc_PMA + 0.36*SoleSource% + 0.18*MineralImmunity",
+  4: "MandateAutonomy = 0.54*GovMandate(FMS/BARDA/DHA) + 0.46*Autonomy - DOGE_Pen",
+  5: "R5 = R4 + 0.30*(StressSurvival - 74) + WeinsteinStageGate + MansfieldRS"
+};
+ROUNDS.forEach(r => {
+  const d = document.createElement("div");
+  d.className = "round-card";
+  d.innerHTML = `
+    <h3>Round ${r.round}: ${r.sub_skill_created}</h3>
+    <div style="font-size:12.5px;font-weight:700;color:#f3f4f6;margin-bottom:6px;">${r.name}</div>
+    <p><strong>Critic Diagnosis:</strong> ${r.critic_diagnosis}</p>
+    <div class="formula-box">${roundFormulas[r.round] || ""}</div>
+  `;
+  subSkillsEl.appendChild(d);
+});
+
+// Table Filtering & Rendering
+let activeLayerFilter = "ALL";
+function setLayerFilter(f, btn) {
+  activeLayerFilter = f;
+  btn.parentElement.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderTable();
+}
+
+function badgeClass(action) {
+  if (action.includes("STRONG BUY")) return "act-badge act-strong";
+  if (action === "BUY") return "act-badge act-buy";
+  if (action.includes("ACCUMULATE")) return "act-badge act-accum";
+  if (action.includes("HOLD")) return "act-badge act-hold";
+  return "act-badge act-avoid";
+}
+
+function renderTable() {
+  const q = (document.getElementById("searchInput").value || "").toLowerCase();
+  const tbody = document.getElementById("matrixBody");
+  tbody.innerHTML = "";
+
+  EQUITIES.filter(r => {
+    if (activeLayerFilter === "BUY_ONLY" && r.portfolio_alloc_pct <= 0) return false;
+    if (activeLayerFilter === "AVOID" && !r.r5_action.includes("AVOID")) return false;
+    if (activeLayerFilter.startsWith("L") && !r.layer.startsWith(activeLayerFilter)) return false;
+    if (q) {
+      const hay = `${r.ticker} ${r.name} ${r.layer} ${r.subsector_node} ${r.primary_moat_thesis} ${r.healthcare_biodefense_hook} ${r.r5_action}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }).forEach(r => {
+    const delta = r.conviction_delta_r5_vs_r1;
+    const diffBadge = delta > 0 ? `<span style="color:#34d399;font-size:10.5px;">(+${delta.toFixed(1)})</span>`
+                    : `<span style="color:#fb7185;font-size:10.5px;">(${delta.toFixed(1)})</span>`;
+    const t = r.technicals;
+    const tr = document.createElement("tr");
+    tr.style.cursor = "pointer";
+    tr.onclick = () => inspectEquity(r.ticker);
+    tr.innerHTML = `
+      <td style="font-weight:800;color:#f8fafc;">#${String(r.rank).padStart(2, '0')} ${diffBadge}</td>
+      <td style="font-weight:800;color:#2dd4bf;">${r.ticker}</td>
+      <td>
+        <div style="font-weight:700;color:#f3f4f6;">${r.name}</div>
+        <div style="font-size:11px;color:#9ca3af;max-width:320px;overflow:hidden;text-overflow:ellipsis;">${r.primary_moat_thesis}</div>
+      </td>
+      <td><span style="font-size:11px;color:#38bdf8;">${r.layer.split(' ')[0]} · ${r.subsector_node}</span></td>
+      <td>${r.r1_score.toFixed(1)}</td>
+      <td>${r.r2_score.toFixed(1)}</td>
+      <td>${r.r3_score.toFixed(1)}</td>
+      <td>${r.r4_score.toFixed(1)}</td>
+      <td style="font-weight:800;font-size:13px;color:#5eead4;">${r.r5_score.toFixed(1)}</td>
+      <td style="font-weight:700;color:${r.rule_of_defense_x >= 25 ? '#34d399' : r.rule_of_defense_x < 5 ? '#fb7185' : '#e5e7eb'};">${r.rule_of_defense_x.toFixed(1)}%</td>
+      <td>${r.sole_source_por_share_pct.toFixed(0)}%</td>
+      <td style="font-family:monospace;font-size:11px;color:${(r.fpif_dev_exposure_pct >= 20 || r.doge_cost_plus_services_exposure_pct >= 20) ? '#fb7185' : '#94a3b8'};">${r.fpif_dev_exposure_pct.toFixed(0)}% / ${r.doge_cost_plus_services_exposure_pct.toFixed(0)}%</td>
+      <td style="font-weight:700;">$${t.price.toFixed(2)}</td>
+      <td style="color:${t.rsi14 > 75 ? '#fbbf24' : t.rsi14 < 38 ? '#38bdf8' : '#34d399'};font-weight:700;">${t.rsi14.toFixed(1)}</td>
+      <td style="font-size:11px;">${t.weinstein_stage}</td>
+      <td style="color:#93c5fd;font-family:monospace;">${r.entry_zone}</td>
+      <td style="color:#fb7185;font-family:monospace;">$${r.hard_stop.toFixed(2)}</td>
+      <td style="color:#34d399;font-family:monospace;">$${r.target_price_12m.toFixed(2)} <span style="font-size:10px;">(+${r.implied_upside_pct}%)</span></td>
+      <td style="font-weight:800;color:${r.portfolio_alloc_pct > 0 ? '#34d399' : '#64748b'};">${r.portfolio_alloc_pct.toFixed(2)}%</td>
+      <td><span class="${badgeClass(r.r5_action)}">${r.r5_action}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Interactive Canvas Graph Definition (All 6 Defense Nodes + Bottlenecks + Healthcare/Biodefense + Macro)
+const GRAPH_NODES = [
+  // Core 6 Defense Ecosystem Nodes
+  { id: "DEFENSE", label: "DEFENSE (Primes, Aftermarket & IT Roll-Up)", x: 520, y: 310, r: 28, color: "#14b8a6", group: "Core Defense Roll-Up Node", tickers: ["LMT","RTX","NOC","GD","LHX","BA","HII","BWXT","HWM","TDG","HEI","LDOS","CACI","PSN","SIGA","EBS","BAH","SAIC","KBR"], desc: "Central $920B+ Defense Ecosystem Roll-Up Node integrating Tier-1 Primes, Naval Nuclear (BWXT), FAA PMA/Superalloy Aftermarket (HWM/HEI/TDG), Sovereign Defense IT/Military Health (LDOS/CACI/PSN), and BARDA Biodefense MCMs (SIGA/EBS)." },
+  { id: "MISSILES_GUIDED", label: "MISSILES_GUIDED (PAC-3, SM-6, AMRAAM)", x: 325, y: 185, r: 24, color: "#14b8a6", group: "Core Defense Sub-Sector", tickers: ["RTX","LMT","CW","MOG-A","WWD"], desc: "Precision-guided interceptors & cruise missiles (PAC-3 MSE, SM-6, SM-3 IIA, AMRAAM, AIM-9X, JASSM-ER, LRASM, Tomahawk) plus high-G fin actuation & naval pumps (CW, MOG-A, WWD)." },
+  { id: "SOLID_ROCKET_MOTORS", label: "SOLID_ROCKET_MOTORS (SRM Duopoly)", x: 145, y: 195, r: 23, color: "#14b8a6", group: "Core Bottleneck Sub-Sector", tickers: ["LHX","NOC","KTOS"], desc: "Cast-cure energetics duopoly (LHX Aerojet Rocketdyne + NOC Orbital ATK) plus emerging 3rd supplier KTOS Prometheus JV; physically gates every US/NATO missile delivery." },
+  { id: "MUNITIONS", label: "MUNITIONS (Integrated Stockpile & FMS)", x: 315, y: 365, r: 22, color: "#14b8a6", group: "Core Defense Sub-Sector", tickers: ["LMT","RTX","GD","NOC","CW","MOG-A"], desc: "Multi-year US & NATO Foreign Military Sales (FMS) munitions replenishment hub aggregating guided missiles, GMLRS/PrSM rockets, and 155mm artillery." },
+  { id: "AMMO_CONVENTIONAL", label: "AMMO_CONVENTIONAL (155mm & Lake City)", x: 145, y: 390, r: 21, color: "#14b8a6", group: "Core Defense Sub-Sector", tickers: ["OLN","TXT","GD","PSN"], desc: "155mm artillery projectiles, Holston/Radford RDX/HMX/nitrocellulose energetics (modernized by PSN), and Lake City small-caliber 5.56mm/7.62mm/6.8mm ammo (OLN)." },
+  { id: "DEFENSE_AUTONOMY_UAS", label: "DEFENSE_AUTONOMY_UAS (Replicator / CCA)", x: 735, y: 205, r: 25, color: "#14b8a6", group: "Core Defense Sub-Sector", tickers: ["PLTR","AVAV","DRS","AXON","KTOS","MRCY","RCAT","ACHR"], desc: "DoD Replicator loitering munitions (AVAV Switchblade), USAF CCA jet drones (KTOS Valkyrie), Maven AI kill-chain OS (PLTR), and DE-MSHORAD / LOCUST Counter-UAS (DRS, AVAV)." },
+
+  // Upstream Industrial & Mineral Bottlenecks
+  { id: "RARE_EARTHS", label: "RARE_EARTHS (Ga, Ge, Antimony, NdFeB)", x: 120, y: 525, r: 19, color: "#f59e0b", group: "Upstream Mineral Bottleneck", tickers: ["RTX","LMT","DRS","MOG-A","CW","OLN"], desc: "Gallium for GaN AESA radars (SPY-6/LTAMDS), Germanium for IR seekers, Antimony for artillery/ammo primers, and DFARS-compliant SmCo/NdFeB magnets for missile fin actuators." },
+  { id: "NUCLEAR_COMPONENTS_DEFENSE", label: "NUCLEAR_COMPONENTS_DEFENSE (BWXT / CW)", x: 520, y: 495, r: 21, color: "#f59e0b", group: "Upstream Nuclear Monopoly", tickers: ["BWXT","CW","DRS","GD","HII"], desc: "100% sole-source US Navy nuclear submarine (Columbia SSBN / Virginia SSN / AUKUS) reactor cores (BWXT), main coolant pumps (CW), and SiC electric propulsion (DRS)." },
+  { id: "SPACE_CYBER_C5ISR", label: "SPACE & CYBER_GOV_DEFENSE_INTEL", x: 895, y: 315, r: 20, color: "#f59e0b", group: "Upstream Space & Cyber Node", tickers: ["LHX","NOC","CACI","PLTR","LDOS","PSN","KBR"], desc: "Golden Dome SDA Proliferated Warfighter Space Architecture (PWSA) HBTSS tracking layers (LHX, NOC), Spectral EW/optical links (CACI), and offensive cyber (PSN, LDOS)." },
+
+  // Military Health & Biodefense Nodes
+  { id: "HC_MANAGED_CARE_MA", label: "HC_MANAGED_CARE_MA (DHA & VA PACT Act)", x: 350, y: 560, r: 20, color: "#f43f5e", group: "Military Health Cross-Sector Node", tickers: ["LDOS","KBR","CACI","BAH"], desc: "$60B+ Defense Health Agency (DHA) TRICARE/MHS GENESIS electronic health record + statutory VA PACT Act toxic-exposure disability medical exams (LDOS QTC >20% EBIT margin)." },
+  { id: "PHARMA", label: "PHARMA (BARDA / BioShield Biodefense MCMs)", x: 700, y: 560, r: 20, color: "#f43f5e", group: "Biodefense Cross-Sector Node", tickers: ["SIGA","EBS","PSN"], desc: "ASPR/BARDA Project BioShield & DoD JPEO-CBRND Strategic National Stockpile medical countermeasures: TPOXX smallpox antiviral monopoly (SIGA) & CYFENDUS/ACAM2000/BAT (EBS)." },
+
+  // Macro Drivers
+  { id: "DEFENSE_SPENDING", label: "DEFENSE_SPENDING ($920B+ NDAA & NATO)", x: 420, y: 65, r: 21, color: "#38bdf8", group: "Macro Driver", tickers: ["LMT","RTX","NOC","GD","LHX","BWXT","AVAV","CACI"], desc: "$920B+ US NDAA, $1.15T+ NATO/Indo-Pacific Foreign Military Sales backlog, Golden Dome homeland missile defense EO, and DPA Title III munitions co-investment." },
+  { id: "AI_HEALTH_TARIFF_MACRO", label: "AI_CAPABILITY · HEALTHCARE_POLICY · TARIFFS", x: 720, y: 70, r: 20, color: "#38bdf8", group: "Macro Driver", tickers: ["PLTR","LDOS","SIGA","AVAV","HWM","HEI"], desc: "AI autonomy deployment velocity (Maven/Replicator), statutory VA PACT Act / BARDA biodefense funding, and Section 301 / critical mineral tariff shocks." },
+
+  // Private Defense Unicorns
+  { id: "PRIVATE_DEFENSE_UNICORNS", label: "Private Challengers (Anduril, Shield AI, Castelion)", x: 905, y: 145, r: 18, color: "#a855f7", group: "Private Defense Unicorns", tickers: ["AVAV","KTOS","PLTR","LHX","NOC"], desc: "Anduril ($28B Lattice/Roadrunner/Fury CCA/Barracuda), Shield AI ($5.3B Hivemind), Castelion & X-Bow (modular SRMs), Epirus (Leonidas HPM C-UAS), Saronic (autonomous USVs)." }
+];
+
+const GRAPH_EDGES = [
+  { from: "DEFENSE_SPENDING", to: "DEFENSE", weight: "+0.70", label: "$920B+ NDAA & $1.15T FMS backlog" },
+  { from: "DEFENSE_SPENDING", to: "MISSILES_GUIDED", weight: "+0.82", label: "PAC-3, SM-6, AMRAAM & Golden Dome" },
+  { from: "DEFENSE_SPENDING", to: "SOLID_ROCKET_MOTORS", weight: "+0.78", label: "DPA Title III SRM cast-cure expansion" },
+  { from: "DEFENSE_SPENDING", to: "DEFENSE_AUTONOMY_UAS", weight: "+0.76", label: "Replicator 1/2 & USAF CCA Increment 1/2" },
+  { from: "SOLID_ROCKET_MOTORS", to: "MISSILES_GUIDED", weight: "+0.84", label: "SRM grain availability gates missile deliveries" },
+  { from: "SOLID_ROCKET_MOTORS", to: "MUNITIONS", weight: "+0.74", label: "GMLRS, Patriot & Standard Missile propulsion" },
+  { from: "AMMO_CONVENTIONAL", to: "MUNITIONS", weight: "+0.68", label: "155mm artillery & RDX/HMX energetics" },
+  { from: "MISSILES_GUIDED", to: "MUNITIONS", weight: "+0.86", label: "Precision interceptor stockpile replenishment" },
+  { from: "MUNITIONS", to: "DEFENSE", weight: "+0.72", label: "High-margin FRP missile & ordnance mix" },
+  { from: "DEFENSE_AUTONOMY_UAS", to: "DEFENSE", weight: "+0.55", label: "Attritable autonomy & Maven AI integration" },
+  { from: "DEFENSE_AUTONOMY_UAS", to: "MISSILES_GUIDED", weight: "+0.48", label: "Low-cost C-UAS preserves high-end interceptors" },
+  { from: "NUCLEAR_COMPONENTS_DEFENSE", to: "DEFENSE", weight: "+0.56", label: "BWXT reactor cores & CW pumps -> Columbia/Virginia subs" },
+  { from: "RARE_EARTHS", to: "MISSILES_GUIDED", weight: "+0.64", label: "GaN radar T/R, Ge IR seekers & SmCo fin magnets" },
+  { from: "RARE_EARTHS", to: "AMMO_CONVENTIONAL", weight: "+0.62", label: "Antimony primers & nitrocellulose propellants" },
+  { from: "SPACE_CYBER_C5ISR", to: "MISSILES_GUIDED", weight: "+0.66", label: "SDA PWSA HBTSS hypersonic space cueing" },
+  { from: "SPACE_CYBER_C5ISR", to: "DEFENSE", weight: "+0.60", label: "Zero-trust C5ISR, Spectral EW & optical links" },
+  { from: "AI_HEALTH_TARIFF_MACRO", to: "DEFENSE_AUTONOMY_UAS", weight: "+0.74", label: "AI target recognition & GPS-denied swarm nav" },
+  { from: "AI_HEALTH_TARIFF_MACRO", to: "HC_MANAGED_CARE_MA", weight: "+0.58", label: "VA PACT Act exam mandate & DHA MHS GENESIS" },
+  { from: "AI_HEALTH_TARIFF_MACRO", to: "PHARMA", weight: "+0.62", label: "BARDA Project BioShield SNS TPOXX/MCM renewals" },
+  { from: "DEFENSE", to: "HC_MANAGED_CARE_MA", weight: "+0.34", label: "LDOS QTC Health & DHA TRICARE T-5 integration" },
+  { from: "DEFENSE", to: "PHARMA", weight: "+0.38", label: "DoD JPEO-CBRND & DTRA biodefense procurement" },
+  { from: "PRIVATE_DEFENSE_UNICORNS", to: "DEFENSE_AUTONOMY_UAS", weight: "+0.52", label: "Anduril/Shield AI co-opetition & CCA teaming" }
+];
+
+const SCENARIOS = {
+  baseline: {
+    title: "Baseline Equilibrium",
+    desc: "Click any node on the canvas or any equity in the 32-stock matrix below to inspect its 5-Round RSI score trajectory, E1 causal edges, Military Health / BARDA hooks, and Weinstein technical levels.",
+    shocks: {}
+  },
+  DEF_R1: {
+    title: "DEF_R1: NATO 2.5%-3.0% GDP Rearmament & FMS Multi-Year Backlog Supercycle",
+    desc: "Trigger: NATO FMS Backlog Coverage > 70% & Munitions Stockpile Urgency > 65%. Amplifies DEFENSE_SPENDING -> MISSILES_GUIDED, MUNITIONS, and DEFENSE by 1.35x while compressing cash-flow variance (0.85x). Primary beneficiaries: RTX, LMT, BWXT, CW, HWM, HEI, NOC, GD.",
+    shocks: { "DEFENSE_SPENDING": "+1.25σ", "MISSILES_GUIDED": "+2.16σ", "MUNITIONS": "+1.96σ", "DEFENSE": "+1.42σ", "NUCLEAR_COMPONENTS_DEFENSE": "+1.15σ" }
+  },
+  DEF_R2: {
+    title: "DEF_R2: Solid Rocket Motor (SRM) Cast-Cure Bottleneck & DPA Title III Unlock",
+    desc: "Trigger: SRM DPA Title III Capacity Unlock > 60%. Amplifies SOLID_ROCKET_MOTORS -> MISSILES_GUIDED and MUNITIONS by 1.40x as Camden (LHX Aerojet), Promontory (NOC), and Indiana (KTOS Prometheus) cast-cure pits come online, unlocking PAC-3, GMLRS, SM-6 & AMRAAM deliveries.",
+    shocks: { "SOLID_ROCKET_MOTORS": "+1.85σ (LHX/NOC/KTOS)", "MISSILES_GUIDED": "+2.30σ (RTX/LMT/CW/WWD)", "MUNITIONS": "+1.90σ" }
+  },
+  DEF_R3: {
+    title: "DEF_R3: China Gallium, Germanium, Antimony & NdFeB Magnet Export Embargo",
+    desc: "Trigger: Critical Mineral Embargo Severity > 60% & Antimony/Nitrocellulose Squeeze > 55%. Amplifies RARE_EARTHS -> MISSILES_GUIDED and AMMO_CONVENTIONAL supply-shock elasticities by 1.45x. Penalizes un-hedged commercial ammo (OLN) while rewarding DFARS-qualified domestic/allied monopolies (BWXT, SIGA, LDOS, PLTR, CACI).",
+    shocks: { "RARE_EARTHS": "-1.45σ Supply Shock", "AMMO_CONVENTIONAL": "-0.85σ (OLN)", "MISSILES_GUIDED": "-0.40σ Seeker Cost", "PHARMA": "+0.95σ (SIGA Immune)" }
+  },
+  DEF_R4: {
+    title: "DEF_R4: Asymmetric Drone Cost-Exchange Inversion (Replicator / CCA / Counter-UAS)",
+    desc: "Trigger: Replicator & CCA Swarm Adoption > 65%. Amplifies AI_CAPABILITY & DEFENSE_SPENDING -> DEFENSE_AUTONOMY_UAS by 1.38x as DoD shifts procurement toward Switchblade 600 & LOCUST lasers (AVAV), DE M-SHORAD (DRS), Spectral EW (CACI), Valkyrie CCA (KTOS), and Maven Smart System (PLTR).",
+    shocks: { "DEFENSE_AUTONOMY_UAS": "+2.05σ (PLTR/AVAV/DRS)", "SPACE_CYBER_C5ISR": "+1.45σ (CACI/LHX)", "PRIVATE_DEFENSE_UNICORNS": "+1.35σ" }
+  },
+  DEF_R5: {
+    title: "DEF_R5: DOGE Cost-Plus Services Audit & Fixed-Price Incentive Fee (FPIF) Squeeze",
+    desc: "Trigger: DOGE Cost-Plus T&M Audit Intensity > 65% & Skilled Labor Inflation > +0.8σ. Compresses civilian/management-consulting IT (BAH 26% exposed, SAIC 24% exposed) and FPIF development programs (BA) while rotating capital into statutory VA PACT Act health exams (LDOS), BARDA TPOXX (SIGA), and sole-source PMA/Nuclear hardware (HEI, HWM, BWXT).",
+    shocks: { "DEFENSE": "-0.95σ (BA/SAIC/BAH) / +1.25σ (BWXT/HEI/HWM)", "HC_MANAGED_CARE_MA": "+1.30σ (LDOS PACT Act)", "PHARMA": "+1.40σ (SIGA BARDA SNS)" }
+  }
+};
+
+let selectedNode = GRAPH_NODES[0];
+let currentScenario = "baseline";
+
+const canvas = document.getElementById("networkCanvas");
+const ctx = canvas.getContext("2d");
+
+function drawGraph() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const scen = SCENARIOS[currentScenario];
+
+  // Draw edges
+  GRAPH_EDGES.forEach(e => {
+    const n1 = GRAPH_NODES.find(n => n.id === e.from);
+    const n2 = GRAPH_NODES.find(n => n.id === e.to);
+    if (!n1 || !n2) return;
+    const isHighlighted = selectedNode && (selectedNode.id === n1.id || selectedNode.id === n2.id);
+    ctx.beginPath();
+    ctx.moveTo(n1.x, n1.y);
+    ctx.lineTo(n2.x, n2.y);
+    ctx.strokeStyle = isHighlighted ? "#2dd4bf" : "rgba(148, 163, 184, 0.25)";
+    ctx.lineWidth = isHighlighted ? 2.4 : 1.2;
+    ctx.stroke();
+
+    if (isHighlighted) {
+      const mx = (n1.x + n2.x) / 2;
+      const my = (n1.y + n2.y) / 2;
+      ctx.fillStyle = "#5eead4";
+      ctx.font = "600 10.5px Inter, sans-serif";
+      ctx.fillText(`${e.weight}`, mx + 4, my - 4);
+    }
+  });
+
+  // Draw nodes
+  GRAPH_NODES.forEach(n => {
+    const isSel = selectedNode && selectedNode.id === n.id;
+    const shockLabel = scen.shocks[n.id];
+
+    if (isSel || shockLabel) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + 7, 0, Math.PI * 2);
+      ctx.fillStyle = shockLabel ? "rgba(244, 63, 94, 0.22)" : "rgba(20, 184, 166, 0.22)";
+      ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = n.color;
+    ctx.fill();
+    ctx.lineWidth = isSel ? 3 : 1.5;
+    ctx.strokeStyle = isSel ? "#ffffff" : "#0b0f17";
+    ctx.stroke();
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = "700 11.2px Inter, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(n.label, n.x, n.y + n.r + 15);
+
+    if (shockLabel) {
+      ctx.fillStyle = "#fde047";
+      ctx.font = "800 11px monospace";
+      ctx.fillText(shockLabel, n.x, n.y - n.r - 8);
+    }
+  });
+}
+
+function renderInspectorNode(node) {
+  const scen = SCENARIOS[currentScenario];
+  const nodeStocks = EQUITIES.filter(e => node.tickers.includes(e.ticker));
+  const edges = GRAPH_EDGES.filter(e => e.from === node.id || e.to === node.id);
+
+  let html = `
+    <span class="node-tag" style="background:${node.color}22;color:${node.color};border:1px solid ${node.color}66;">${node.group}</span>
+    <h3 style="font-size:16px;font-weight:800;color:#f8fafc;margin-bottom:6px;">${node.label}</h3>
+    <p style="font-size:12.5px;color:#cbd5e1;margin-bottom:12px;">${node.desc}</p>
+  `;
+
+  if (currentScenario !== "baseline") {
+    html += `
+      <div class="prop-row" style="border-color:#f59e0b;background:rgba(245,158,11,0.1);margin-bottom:12px;">
+        <div style="font-weight:700;color:#fbbf24;">Active State Rule: ${scen.title}</div>
+        <div style="color:#e2e8f0;margin-top:4px;">${scen.desc}</div>
+      </div>
+    `;
+  }
+
+  html += `<div style="font-size:11.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:8px;">Connected E1 Causal Edges (${edges.length})</div><div class="prop-list">`;
+  edges.forEach(e => {
+    html += `<div class="prop-row"><strong>${e.from} → ${e.to}</strong> <span style="color:#2dd4bf;font-family:monospace;">(${e.weight})</span><br/><span style="color:#9ca3af;">${e.label}</span></div>`;
+  });
+  html += `</div>`;
+
+  html += `<div style="font-size:11.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-top:14px;">Mapped Public Equities (Click to Inspect 5-Round RSI)</div><div class="prop-list">`;
+  nodeStocks.forEach(s => {
+    html += `
+      <div class="prop-row" style="cursor:pointer;" onclick="inspectEquity('${s.ticker}')">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <strong>#${s.rank} ${s.ticker} — ${s.name}</strong>
+          <span class="${badgeClass(s.r5_action)}">${s.r5_score.toFixed(1)}</span>
+        </div>
+        <div style="color:#9ca3af;font-size:11px;margin-top:3px;">Price: $${s.technicals.price.toFixed(2)} | RuleDefX: ${s.rule_of_defense_x.toFixed(1)}% | Entry: ${s.entry_zone} | Alloc: ${s.portfolio_alloc_pct.toFixed(2)}%</div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  document.getElementById("inspectorPanel").innerHTML = html;
+}
+
+function inspectEquity(ticker) {
+  const s = EQUITIES.find(x => x.ticker === ticker);
+  if (!s) return;
+  const t = s.technicals;
+  const sv = s.stress_vectors;
+  document.getElementById("inspectorPanel").innerHTML = `
+    <span class="node-tag" style="background:rgba(20,184,166,0.18);color:#2dd4bf;border:1px solid #14b8a6;">${s.layer} · ${s.subsector_node}</span>
+    <h3 style="font-size:17px;font-weight:800;color:#f8fafc;">#${s.rank} ${s.ticker} — ${s.name}</h3>
+    <p style="font-size:12px;color:#93c5fd;margin:4px 0 10px;">${s.primary_moat_thesis}</p>
+    <div style="margin-bottom:10px;"><span class="${badgeClass(s.r5_action)}">${s.r5_action} (Portfolio Weight: ${s.portfolio_alloc_pct.toFixed(2)}%)</span></div>
+    <div class="prop-list">
+      <div class="prop-row">
+        <strong>5-Round RSI Score Trajectory (Conviction Delta: ${s.conviction_delta_r5_vs_r1 >= 0 ? '+' + s.conviction_delta_r5_vs_r1.toFixed(1) : s.conviction_delta_r5_vs_r1.toFixed(1)})</strong><br/>
+        R1 Baseline: <b>${s.r1_score.toFixed(1)}</b> →
+        R2 RuleDefX/FPIF: <b>${s.r2_score.toFixed(1)}</b> →
+        R3 Chokepoint: <b>${s.r3_score.toFixed(1)}</b> →
+        R4 Autonomy/Mandate: <b>${s.r4_score.toFixed(1)}</b> →
+        <span style="color:#2dd4bf;font-weight:800;">R5 Final: ${s.r5_score.toFixed(1)} (#${s.rank})</span>
+      </div>
+      <div class="prop-row">
+        <strong>Contract Forensics &amp; Rule of Defense X (${s.rule_of_defense_x.toFixed(1)}%)</strong><br/>
+        Organic Growth: <b>${s.organic_rev_growth_pct}%</b> | GAAP FCF Margin: <b>${s.gaap_fcf_margin_pct}%</b> | SBC/Rev: <b>${s.sbc_pct_rev}%</b><br/>
+        Backlog: <b>$${s.backlog_b}B (${s.backlog_to_rev_years}x rev)</b> | Sole-Source PoR: <b>${s.sole_source_por_share_pct}%</b><br/>
+        FPIF Dev Exposure: <b>${s.fpif_dev_exposure_pct}%</b> | DOGE T&amp;M Exposure: <b>${s.doge_cost_plus_services_exposure_pct}%</b> | Net Debt/EBITDA: <b>${s.net_debt_ebitda}x</b>
+      </div>
+      <div class="prop-row">
+        <strong>5-Vector Stress Test Survival (${s.stress_test_survival_score.toFixed(1)} / 100)</strong><br/>
+        Ceasefire: <b>${sv.ceasefire_resilience}</b> | DOGE Audit: <b>${sv.doge_audit_survival}</b> | Mineral Embargo: <b>${sv.mineral_embargo_survival}</b> | FPIF Inflation: <b>${sv.fpif_inflation_survival}</b> | Rate Shock: <b>${sv.rate_shock_survival}</b>
+      </div>
+      <div class="prop-row">
+        <strong>Live Technicals &amp; Institutional Execution Levels</strong><br/>
+        Price: <b>$${t.price.toFixed(2)}</b> | RSI-14: <b>${t.rsi14.toFixed(1)}</b> | Mansfield RS: <b>${t.mansfield_rs.toFixed(2)}</b><br/>
+        Stage: <b>${t.weinstein_stage}</b> | SMA50: $${t.sma50.toFixed(2)} | SMA200: $${t.sma200.toFixed(2)}<br/>
+        <span style="color:#93c5fd;">Entry Zone: <b>${s.entry_zone}</b></span> | <span style="color:#fb7185;">Stop: <b>$${s.hard_stop.toFixed(2)}</b></span> | <span style="color:#34d399;">12M Target: <b>$${s.target_price_12m.toFixed(2)} (+${s.implied_upside_pct}%)</b></span>
+      </div>
+      <div class="prop-row">
+        <strong>Gov Agencies Served:</strong> ${s.gov_agencies_served}<br/>
+        <strong>Military Health / Biodefense Hook:</strong> ${s.healthcare_biodefense_hook}<br/>
+        <strong>2026 Catalyst:</strong> ${s.key_catalyst_2026}<br/>
+        <strong style="color:#fbbf24;">Devil's Advocate Kill-Switch:</strong> ${s.primary_kill_switch}
+      </div>
+    </div>
+  `;
+}
+
+function runScenario(scenKey, btn) {
+  currentScenario = scenKey;
+  document.getElementById("activeScenarioBadge").textContent = scenKey;
+  btn.parentElement.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  drawGraph();
+  renderInspectorNode(selectedNode);
+}
+
+canvas.addEventListener("click", e => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+  for (const n of GRAPH_NODES) {
+    const dx = mx - n.x;
+    const dy = my - n.y;
+    if (Math.sqrt(dx*dx + dy*dy) <= n.r + 8) {
+      selectedNode = n;
+      drawGraph();
+      renderInspectorNode(n);
+      break;
+    }
+  }
+});
+
+drawGraph();
+renderInspectorNode(selectedNode);
+renderTable();
+</script>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Company Graph: Cell &amp; Gene Therapies and Genetic Medicines Ecosystem</title>
+<style>
+:root {
+  --bg: #090e17;
+  --surface: #111827;
+  --surface-hover: #1b2438;
+  --border: #1f293d;
+  --text: #e2e8f0;
+  --text-muted: #8896ab;
+  --text-bright: #ffffff;
+  --emerald: #10b981;
+  --emerald-glow: rgba(16, 185, 129, 0.2);
+  --cyan: #06b6d4;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+  --teal: #14b8a6;
+  --pos-text: #34d399;
+  --neg-text: #f87171;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+  font-size: 13px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1980px;
+  margin: 0 auto;
+  padding: 16px 20px;
+}
+
+h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: var(--text-bright);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+h1 .tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nav {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  flex-wrap: wrap;
+}
+.nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+.nav a:hover {
+  color: var(--text);
+}
+.nav a.active {
+  color: var(--emerald);
+  border-color: var(--emerald);
+  font-weight: 600;
+}
+
+/* Multi-Era Timeline Scrubber */
+.timeline-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.timeline-label {
+  font-weight: 700;
+  font-size: 11.5px;
+  color: var(--emerald);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+}
+.era-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 5px 11px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-weight: 500;
+}
+.era-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+  border-color: #3b4766;
+}
+.era-btn.active {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--emerald);
+  border-color: var(--emerald);
+  font-weight: 600;
+}
+.era-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #a0aec0;
+  background: #090c13;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* Live Barometer Strip */
+.barometer-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.barometer-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  position: relative;
+  overflow: hidden;
+}
+.barometer-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--emerald);
+}
+.baro-kicker {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.baro-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-bright);
+  font-family: ui-monospace, monospace;
+  letter-spacing: -0.02em;
+}
+.baro-sub {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+/* Interactive Controls Bar */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+.controls select {
+  background: #090c13;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+.controls select:focus {
+  border-color: var(--emerald);
+}
+.controls button {
+  background: #1b2337;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.controls button:hover {
+  background: #232d44;
+  border-color: #3b4766;
+}
+.view-toggle-grp {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.view-btn {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.view-btn.active {
+  background: #232d44;
+  color: var(--text-bright);
+  font-weight: 600;
+}
+
+/* Stage & SVG Canvas */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 820px;
+  background: #080c14;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+svg#cgt {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+svg#cgt:active {
+  cursor: grabbing;
+}
+
+/* SVG Elements Styling */
+line.mem {
+  stroke: #1f2a3e;
+  stroke-width: 1.1px;
+  stroke-dasharray: 2 3;
+}
+path.edge {
+  fill: none;
+  transition: stroke-opacity 0.2s ease;
+}
+path.edge.pos {
+  stroke: #10b981;
+}
+path.edge.neg {
+  stroke: #f43f5e;
+}
+path.edge.highlight {
+  stroke-width: 3.5px !important;
+  stroke-opacity: 1 !important;
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6));
+}
+
+g.node {
+  cursor: pointer;
+}
+g.node circle {
+  stroke: #090e17;
+  stroke-width: 2px;
+  transition: r 0.2s ease, filter 0.2s ease;
+}
+g.node:hover circle {
+  stroke: #ffffff;
+  stroke-width: 2.5px;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+}
+g.node.co circle {
+  stroke-width: 1.5px;
+}
+g.node.etf circle {
+  stroke-dasharray: 2 2;
+  stroke: #60a5fa;
+  stroke-width: 1.5px;
+}
+g.node.shocked circle {
+  filter: drop-shadow(0 0 12px var(--glow));
+}
+
+text.label {
+  fill: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+  text-shadow: 0 1px 4px #000, 0 0 2px #000;
+}
+text.co-label {
+  fill: #94a3b8;
+  font-size: 9.5px;
+  font-weight: 500;
+  pointer-events: none;
+  text-shadow: 0 1px 3px #000;
+}
+g.node:hover text.co-label {
+  fill: #ffffff;
+  font-weight: 700;
+}
+
+/* Star Choke Points */
+path.star {
+  fill: #f43f5e;
+  stroke: #ffffff;
+  stroke-width: 1px;
+  filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.8));
+  pointer-events: none;
+}
+
+/* Side Transmission Movers Panel */
+.side-panel {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 280px;
+  background: rgba(17, 24, 39, 0.94);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.side-panel h3 {
+  margin: 0 0 4px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+.side-panel .sub {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.side-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.side-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 6px;
+  background: #141c2c;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.side-row:hover {
+  background: #1f2b42;
+}
+.side-ticker {
+  font-weight: 700;
+  color: var(--text-bright);
+}
+.side-score {
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.side-score.pos {
+  background: rgba(52, 211, 153, 0.15);
+  color: var(--pos-text);
+}
+.side-score.neg {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--neg-text);
+}
+
+/* Right Deep-Dive Drawer */
+.drawer {
+  position: absolute;
+  top: 0;
+  right: -520px;
+  width: 500px;
+  height: 100%;
+  background: rgba(17, 24, 39, 0.98);
+  border-left: 1px solid var(--border);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+  padding: 24px 22px;
+  overflow-y: auto;
+  transition: right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+  backdrop-filter: blur(12px);
+}
+.drawer.open {
+  right: 0;
+}
+.drawer-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+}
+.drawer-close:hover {
+  color: var(--text-bright);
+}
+.drawer h2 {
+  font-size: 18px;
+  margin: 0 0 6px;
+  color: var(--text-bright);
+}
+.ticker-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--emerald);
+  margin-bottom: 12px;
+}
+.sec-kicker {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin: 14px 0 4px;
+}
+.desc-box {
+  background: #141c2c;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+.badge-contract {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: var(--emerald);
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: 90%;
+  max-width: 680px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 22px 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+.modal-head h2 {
+  margin: 0;
+  font-size: 17px;
+  color: var(--text-bright);
+}
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+/* Evolution Matrix Container */
+.matrix-container {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 14px;
+  overflow-x: auto;
+}
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+.matrix-table th, .matrix-table td {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.matrix-table th {
+  background: #141c2c;
+  color: var(--text-bright);
+  font-weight: 600;
+  font-size: 11px;
+}
+.matrix-table td.matrix-dim {
+  font-weight: 700;
+  background: #0f1523;
+  color: var(--emerald);
+  white-space: nowrap;
+}
+.pill-deal {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a href="../map.html" target="_top">influence map</a>
+    <a href="../map.html" target="_top">company graph</a>
+    <a href="../index.html" target="_top">🏛️ corum analyses board</a>
+    ai supercycle network
+    <a href="cell_and_gene_network.html" class="active">🧬 cell &amp; gene network</a>
+    <a href="cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html" style="border-color:rgba(16,185,129,0.5); color:#34d399;">❄️ CYRX cold-chain report ↗</a>
+    <a href="mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html" style="border-color:rgba(6,182,212,0.5); color:#22d3ee;">⚡ MXCT electroporation report ↗</a>
+    <a href="cell_and_gene_therapies_ecosystem_deep_research_report.html">ecosystem report ↗</a>
+    options &amp; 2× screen ↗
+  </div>
+
+  <h1>
+    <span>The Company Graph: Cell &amp; Gene Therapies and Genetic Medicines Ecosystem</span>
+    <span class="tag">CGT Macro Network 2026</span>
+  </h1>
+
+  <!-- Multi-Era Timeline Scrubber -->
+  <div class="timeline-bar">
+    <span class="timeline-label">🧬 Modality Epoch:</span>
+    <button class="era-btn" data-era="2020_2023">2020–2023: First-Gen Autologous &amp; Vector Squeeze</button>
+    <button class="era-btn" data-era="2024_2025">2024–2025: CRISPR Casgevy &amp; TIL Approval</button>
+    <button class="era-btn active" data-era="2026_current">2026 Current: Allogeneic Autoimmune &amp; CMS Annuities</button>
+    <button class="era-btn" data-era="2027_2028">2027–2028: In Vivo Liver &amp; Base Editing Mass Scale</button>
+    <button class="era-btn" data-era="2029_horizon">2029+ Horizon: Epigenetic Silencing &amp; Cell Swarms</button>
+    <span class="era-badge" id="era-badge">Epoch: 2026 Current (Allogeneic Autoimmune · CMS Outcomes · In Vivo Base Editing)</span>
+  </div>
+
+  <!-- Live Barometer Strip -->
+  <div class="barometer-strip">
+    <div class="barometer-card">
+      <div class="baro-kicker">FDA CBER Active CGT INDs</div>
+      <div class="baro-val" id="baro-cber" style="color:var(--pos-text)">1,520 INDs</div>
+      <div class="baro-sub">15+ Annual Target Commercial Approvals</div>
+    </div>
+    <div class="barometer-card">
+      <div class="baro-kicker">Cryoport (CYRX) Cold-Chain Monopoly</div>
+      <div class="baro-val" id="baro-cryo" style="color:var(--emerald)">779+ Trials</div>
+      <div class="baro-sub">22 Commercial Drugs · ~70% Share · $200M DHL Deal</div>
+    </div>
+    <div class="barometer-card">
+      <div class="baro-kicker">AAV/Lenti CDMO Capacity Gap</div>
+      <div class="baro-val" id="baro-cdmo" style="color:var(--amber)">4.8x Gap</div>
+      <div class="baro-sub">Suspension Bioreactor Yield Shortfall</div>
+    </div>
+    <div class="barometer-card">
+      <div class="baro-kicker">MaxCyte (MXCT) ExPERT Platform</div>
+      <div class="baro-val" id="baro-mxct" style="color:var(--cyan)">29 SPLs (160+ Prg)</div>
+      <div class="baro-sub">$1.55B+ Milestone Pool · Casgevy &amp; Genentech</div>
+    </div>
+    <div class="barometer-card">
+      <div class="baro-kicker">Medicare CMS CGT Model</div>
+      <div class="baro-val" id="baro-cms" style="color:var(--purple)">$2.2M Avg</div>
+      <div class="baro-sub">Multi-Year Outcomes-Based Annuity Pool</div>
+    </div>
+  </div>
+
+  <!-- Interactive Controls Bar -->
+  <div class="controls">
+    <label>Shock 
+      <select id="scen">
+        <option value="">— none: show baseline graph —</option>
+        <option value="cryo_supply_chain_expansion">Cryoport + DHL global alliance, IntegriCell apheresis &amp; MVE replacement</option>
+        <option value="mxct_spl_royalty_supercycle">MaxCyte Casgevy commercial ramp + Genentech &amp; BEAM SPL milestone surge</option>
+        <option value="cms_access_model_surge">CMS CGT Access Model mandates multi-state outcomes annuities</option>
+        <option value="invivo_base_editing_breakthrough">In vivo LNP base editing clinical breakthrough (no apheresis)</option>
+        <option value="allogeneic_autoimmune_reset">Allogeneic CAR-T achieves complete autoimmune reset in lupus</option>
+        <option value="vector_cdmo_shortage">Viral vector batch contamination &amp; CDMO capacity bottleneck</option>
+        <option value="biotech_liquidity_thaw">Fed rate cuts + Big Pharma $50B+ M&amp;A acquisition landgrab</option>
+        <option value="fda_cber_accelerated_flex">FDA CBER accelerates surrogate biomarker approvals &amp; RMAT</option>
+        <option value="drv:FED_RATE">+1σ Fed policy rate shock (biotech multiple compression)</option>
+        <option value="drv:BIOTECH">+1σ Broad biotech sentiment surge (XBI/IBB multiple expansion)</option>
+        <option value="drv:CMS_REIMBURSEMENT">+1σ Drug price negotiation &amp; Medicaid pool expansion</option>
+        <option value="drv:CREDIT_SPREADS">+1σ High-yield credit spread blowout (pre-revenue burn crunch)</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="showedges" checked> influence edges</label>
+    <label><input type="checkbox" id="showcos" checked> companies (satellites)</label>
+    <label><input type="checkbox" id="showetfs" checked> ETFs <span style="color:#60a5fa">[ETF]</span></label>
+    <label><input type="checkbox" id="showchokes" checked> <span style="color:#f43f5e">★</span> choke points</label>
+    <button id="chokelist" type="button">★ choke list</button>
+    <button id="reset-positions" type="button" title="Reset all dragged nodes to default positions">reset layout</button>
+    <button id="reset-view" type="button">reset zoom</button>
+    <div class="view-toggle-grp">
+      <button class="view-btn active" id="btn-orbit">Company Orbits</button>
+      <button class="view-btn" id="btn-matrix">Evolution Matrix</button>
+    </div>
+    <span style="color:#64748b; font-size:11px; margin-left:auto;">drag nodes · wheel zoom · click for deep dive</span>
+  </div>
+
+  <!-- Stage & Canvas -->
+  <div class="stage" id="stage">
+    <svg id="cgt" viewBox="0 0 2000 1560" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="c-arr-pos" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#10b981"/>
+        </marker>
+        <marker id="c-arr-neg" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#f43f5e"/>
+        </marker>
+      </defs>
+      <g id="vp">
+        <g id="mem"></g>
+        <g id="inf"></g>
+        <g id="nodes"></g>
+        <g id="chokes-layer"></g>
+      </g>
+    </svg>
+
+    <!-- Side Movers Panel -->
+    <div class="side-panel" id="side-panel">
+      <h3 id="side-title">Scenario Transmission Movers</h3>
+      <div class="sub" id="side-sub">Select a scenario to project cross-sector transmission</div>
+      <div class="side-rows" id="side-rows">
+        <div style="color:#64748b; font-size:11px; padding:6px 0;">Select a shock scenario from the dropdown above to simulate capital transmission.</div>
+      </div>
+    </div>
+
+    <!-- Right Drawer -->
+    <div class="drawer" id="drawer">
+      <button class="drawer-close" id="close-drawer">✕</button>
+      <div id="drawer-content"></div>
+    </div>
+  </div>
+
+  <!-- Choke Points Modal -->
+  <div class="modal-overlay" id="choke-modal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>★ Critical CGT Ecosystem Choke Points</h2>
+        <button class="modal-close" id="close-choke">✕</button>
+      </div>
+      <div id="choke-rows"></div>
+    </div>
+  </div>
+
+  <!-- Evolution Matrix Section -->
+  <div class="matrix-container" id="matrix-container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h2 style="font-size:16px; margin:0; color:var(--text-bright);">Cell &amp; Gene Therapies: Five-Epoch Strategic Evolution Matrix</h2>
+      <button class="modal-close" id="close-matrix-btn">✕</button>
+    </div>
+    <table class="matrix-table">
+      <thead>
+        <tr>
+          <th>Strategic Dimension</th>
+          <th>2020–2023: First-Gen &amp; Vector Squeeze</th>
+          <th>2024–2025: CRISPR &amp; First Solid Tumors</th>
+          <th>2026: Allogeneic &amp; Autoimmune (Current)</th>
+          <th>2027–2028: In Vivo &amp; Cardiometabolic Scale</th>
+          <th>2029+ Horizon: Epigenetics &amp; Swarms</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="matrix-dim">Therapeutic Modality &amp; Target Precision</td>
+          <td><b>Autologous CAR-T &amp; AAV Addition</b><br>Kymriah, Yescarta, Zolgensma, Luxturna. Ex-vivo viral transduction and AAV gene replacement.</td>
+          <td><b>Ex-Vivo CRISPR &amp; TIL Infiltration</b><br><span class="pill-deal">Casgevy Approval (CRISPR/Vertex)</span><br>First CRISPR medicine approved; Iovance Amtagvi proves TILs in solid tumors.</td>
+          <td><b>Allogeneic Off-The-Shelf &amp; Autoimmune</b><br><span class="pill-deal">B-Cell Autoimmune Reset</span><br>CABA-201, KYV-101 in SLE/myositis; healthy donor T-cells without preconditioning lymphodepletion.</td>
+          <td><b>In Vivo Base &amp; Prime Editing</b><br><span class="pill-deal">Direct Hepatic LNP Delivery</span><br>BEAM-302, NTLA-2001, Verve liver editing for hypercholesterolemia and ATTR without ex-vivo cell harvest.</td>
+          <td><b>Epigenetic Silencing &amp; Cell Swarms</b><br>Persistent chromatin modification without DNA double-strand breaks; multi-target programmed allogeneic cell swarms.</td>
+        </tr>
+        <tr>
+          <td class="matrix-dim">Delivery Vector &amp; Formulation</td>
+          <td><b>Ad-hoc AAV &amp; Lentivirus</b><br>Adherent viral batches, high empty capsid ratios, pre-existing neutralizing antibodies blocking re-dosing.</td>
+          <td><b>Engineered Capsids &amp; Ex-Vivo Electroporation</b><br>MaxCyte flow electroporation standardizes CRISPR ribonucleoprotein delivery; synthetic AAVs evade antibodies.</td>
+          <td><b>Targeted LNPs &amp; mRNA Transient CARs</b><br><span class="pill-deal">Cartesian Descartes-08 mRNA</span><br>mRNA eliminates genomic insertion risk; lipid nanoparticles engineered for spleen and bone marrow tropism.</td>
+          <td><b>Extrahepatic Biodistribution</b><br>Antibody-oligonucleotide conjugates (AOCs) and targeted LNPs deliver edits to skeletal muscle, heart, and CNS.</td>
+          <td><b>In Vivo Direct Reprogramming</b><br>Synthetic virus-like particles (eVLPs) inject gene editors directly into circulating immune cells in outpatient clinics.</td>
+        </tr>
+        <tr>
+          <td class="matrix-dim">Manufacturing Bottleneck &amp; Turnaround</td>
+          <td><b>Severe Cleanroom &amp; Vector Deficit</b><br>4-8 week vein-to-vein time; patients dying on waitlists; manual labor-intensive open handling.</td>
+          <td><b>Suspension Bioreactors &amp; T-Charge</b><br>Novartis T-Charge shrinks culture time to 24 hours; automated closed-system Cocoon bioreactors deployed.</td>
+          <td><b>Closed Modular Automated Cassettes</b><br><span class="pill-deal">48-Hr Rapid Manufacturing</span><br>Decentralized hospital-adjacent suites; MaxCyte ExPERT VLx enables gram-scale transfection; Cryoport dewars.</td>
+          <td><b>Off-The-Shelf Allogeneic Cell Banks</b><br>Single master cell bank from healthy donor yields 500+ patient doses; zero vein-to-vein waiting period.</td>
+          <td><b>Point-of-Care Robotic Synthesis</b><br>Fully automated benchtop cartridge synthesizes patient-customized editing cocktails within 4 hours.</td>
+        </tr>
+        <tr>
+          <td class="matrix-dim">Clinical Scope &amp; Target Population</td>
+          <td><b>End-Stage Liquid Tumors &amp; Rare Pediatric</b><br>Relapsed/refractory leukemia, lymphoma, SMA, retinal dystrophy (thousands of global patients).</td>
+          <td><b>Severe Monogenic Hemoglobinopathies</b><br>Sickle cell disease, beta-thalassemia, metastatic melanoma, advanced Duchenne muscular dystrophy.</td>
+          <td><b>Severe Systemic Autoimmune Disorders</b><br><span class="pill-deal">100k+ Patient Addressable TAM</span><br>Systemic lupus erythematosus, myasthenia gravis, scleroderma, severe rheumatoid arthritis.</td>
+          <td><b>Common Cardiometabolic Chronic Illness</b><br>Familial hypercholesterolemia, coronary artery disease, TTR amyloidosis cardiomyopathy (millions of patients).</td>
+          <td><b>Preventative Longevity &amp; Neurodegeneration</b><br>APOE4 Alzheimer's prevention, Huntington's halting, cardiovascular plaque clearing in aging populations.</td>
+        </tr>
+        <tr>
+          <td class="matrix-dim">Commercial Pricing &amp; Reimbursement</td>
+          <td><b>Single-Dose Cash Outlay Shock</b><br>$2.1M - $3.5M one-time price tags straining commercial insurance; delayed Medicaid approvals.</td>
+          <td><b>Value-Based Outcomes Guarantees</b><br>Vertex/CRISPR secure private payer contracts with reimbursement tied to 3-year transfusion independence.</td>
+          <td><b>CMS Cell &amp; Gene Therapy Access Model</b><br><span class="pill-deal">State Medicaid Staged Annuities</span><br>Federal government brokers outcomes-based multi-year payment pools across all 50 states.</td>
+          <td><b>Tiered Capitated Drug Formularies</b><br>Price drops to $150k - $300k as manufacturing scales; mass commercial health plans cover in vivo therapies.</td>
+          <td><b>Universal Sovereign Cures Coverage</b><br>National health systems fund curative genetic interventions upfront to eliminate lifetime disease maintenance costs.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// ==========================================================================
+// GRAPH DATA: Macro Drivers, Thematic Hubs, Orbiting Companies & Sector ETFs
+// ==========================================================================
+const CATEGORY_COLORS = {
+  macro: "#d97706",
+  cell_rx: "#10b981",
+  gene_edit: "#06b6d4",
+  viral_gt: "#8b5cf6",
+  rna_aso: "#3b82f6",
+  cdmo_viral: "#f59e0b",
+  cryo_log: "#0284c7",
+  tools_inst: "#14b8a6",
+  pharma_mna: "#ec4899"
+};
+
+const GRAPH_DATA = {
+  nodes: [
+    // --- Macro Drivers ---
+    { id: "REGULATORY_CBER", label: "FDA CBER & Accelerated Approval", kind: "macro", category: "macro", marketSize: 45, x: 580, y: 170, desc: "FDA Center for Biologics Evaluation and Research. Targeted 15+ annual CGT approvals; RMAT priority designations and surrogate biomarker validation." },
+    { id: "BIOTECH_CAPITAL", label: "Biotech Liquidity & Secondary Windows", kind: "macro", category: "macro", marketSize: 180, x: 860, y: 150, desc: "Biotech venture capital, follow-on offerings, and debt liquidity governing runway for cash-burning pre-revenue genetic medicine developers." },
+    { id: "CMS_REIMBURSEMENT", label: "CMS CGT Access Model & Annuities", kind: "macro", category: "macro", marketSize: 85, x: 1160, y: 160, desc: "Medicare & Medicaid multi-state outcomes-based risk-sharing pools funding $2M–$3M curative therapies over 3–5 year milestones." },
+    { id: "MANUFACTURING_BURDEN", label: "Viral Vector Yield & Cleanroom COGS", kind: "macro", category: "macro", marketSize: 65, x: 1420, y: 190, desc: "Suspension bioreactor bottlenecks, plasmid DNA supply shortages, and high vein-to-vein turnaround times capping patient throughput." },
+
+    // --- Core Thematic Sector Hubs ---
+    { id: "CELL_THERAPY", label: "Cell Therapies (CAR-T, TCR & TIL)", kind: "sector", category: "cell_rx", marketSize: 450, x: 620, y: 390, star: "watch", desc: "Engineered autologous & allogeneic cell therapies spanning hematologic BCMA/CD19 oncology, TIL solid tumors (Amtagvi), and systemic lupus autoimmune reset." },
+    { id: "GENE_EDITING", label: "Gene Editing (CRISPR, Base & Prime)", kind: "sector", category: "gene_edit", marketSize: 380, x: 910, y: 380, desc: "Precision DNA nucleases (Cas9, Cas12a) and next-gen single-base deaminases modifying genomic sequences without double-strand break translocations." },
+    { id: "VIRAL_GENE_THERAPY", label: "In Vivo AAV & Lentiviral Therapies", kind: "sector", category: "viral_gt", marketSize: 220, x: 1240, y: 390, desc: "In vivo adeno-associated virus (AAV) and lentiviral vector gene addition delivering functional cDNA copies for DMD, Danon, SMA, and hemophilia." },
+    { id: "RNA_ASO", label: "RNAi, ASO & mRNA Medicines", kind: "sector", category: "rna_aso", marketSize: 290, x: 1520, y: 440, desc: "Small interfering RNA (siRNA) and antisense oligonucleotides achieving hepatic and extrahepatic target knockdown and splice switching." },
+    { id: "CGT_CDMO_VIRAL", label: "Viral Vector & Cell CDMO Infrastructure", kind: "sector", category: "cdmo_viral", marketSize: 75, x: 1330, y: 640, star: "watch", desc: "Contract development and manufacturing organizations operating GMP viral suites, suspension bioreactors, and closed cell therapy cassettes." },
+    { id: "CRYO_LOGISTICS", label: "Cryogenic Cold Chain & Storage", kind: "sector", category: "cryo_log", marketSize: 35, x: 740, y: 640, star: "watch", desc: "Ultra-low temperature logistics, -150°C liquid nitrogen dry vapor dewars, GPS-monitored smart couriers ensuring viability for autologous apheresis cells." },
+    { id: "TOOLS_REAGENTS", label: "Transfection, Electroporation & Synthesis", kind: "sector", category: "tools_inst", marketSize: 60, x: 1040, y: 620, star: "watch", desc: "Enabling instrumentation, clinical flow electroporation platforms (MaxCyte ExPERT), plasmid DNA suppliers, and guide RNA synthesis." },
+    { id: "PHARMA_INTEGRATORS", label: "Big Pharma Commercial Integrators", kind: "sector", category: "pharma_mna", marketSize: 1200, x: 920, y: 820, desc: "Global pharmaceutical conglomerates providing commercial distribution, international market access, and M&A capital to acquire de-risked pipelines." }
+  ],
+
+  companies: [
+    // --- Sector ETFs ---
+    { ticker: "XBI", name: "SPDR S&P Biotech ETF", cap: 6.8, isEtf: true, primary: "BIOTECH_CAPITAL",
+      traction: "Primary equal-weight biotech equity liquidity benchmark holding high-beta clinical genetic medicine developers.", role: "Equal-weighted biotech equity liquidity benchmark ETF." },
+    { ticker: "IBB", name: "iShares Biotechnology ETF", cap: 7.5, isEtf: true, primary: "BIOTECH_CAPITAL",
+      traction: "Market-cap weighted biotechnology ETF anchored by commercial giants (VRTX, GILD, BMY, ALNY).", role: "Market-cap weighted biotech sector ETF." },
+    { ticker: "ARKG", name: "ARK Genomic Revolution ETF", cap: 1.4, isEtf: true, primary: "GENE_EDITING",
+      traction: "Pure-play genomic medicine and CRISPR innovation ETF tracking CRSP, BEAM, NTLA, and sequencing tools.", role: "Thematic genomic editing and cell therapy ETF." },
+    { ticker: "GNOM", name: "Global X Genomics & Biotech ETF", cap: 0.12, isEtf: true, primary: "GENE_EDITING",
+      traction: "Targeted index tracking gene editing, genetic sequencing, and synthetic biology innovators.", role: "Genomic technology and gene therapy ETF." },
+    { ticker: "LABU", name: "Direxion Daily S&P Biotech 3X Bull", cap: 0.75, isEtf: true, primary: "BIOTECH_CAPITAL",
+      traction: "3x leveraged ETF benchmark used by institutional desks to trade rapid biotech interest rate and macro inflection legs.", role: "3x leveraged daily biotech equity trading vehicle." },
+
+    // --- CELL_THERAPY ---
+    { ticker: "LEGN", name: "Legend Biotech", cap: 7.8, primary: "CELL_THERAPY", choke: "watch",
+      traction: "COMMERCIAL BCMA BLOCKBUSTER: Carvykti (cilta-cel) with Johnson & Johnson achieved FDA label expansion to 2nd-line multiple myeloma; ramping 10,000+ patient capacity.",
+      role: "Autologous BCMA CAR-T oncology leader with global commercial partnership." },
+    { ticker: "IOVA", name: "Iovance Biotherapeutics", cap: 2.4, primary: "CELL_THERAPY",
+      traction: "LANDMARK SOLID TUMOR APPROVAL: Amtagvi (lifileucel) secured first-ever FDA approval for an autologous Tumor-Infiltrating Lymphocyte (TIL) in advanced melanoma.",
+      role: "Pioneer in autologous TIL therapy for solid tumor oncology." },
+    { ticker: "CABA", name: "Cabaletta Bio", cap: 0.48, primary: "CELL_THERAPY",
+      traction: "AUTOIMMUNE RESET PIPELINE: CABA-201 fully human CD19 CAR-T demonstrated deep B-cell depletion in systemic lupus erythematosus, myasthenia gravis, and myositis.",
+      role: "Specialized in unconditioned and preconditioned autoimmune B-cell reset." },
+    { ticker: "KYTX", name: "Kyverna Therapeutics", cap: 0.42, primary: "CELL_THERAPY",
+      traction: "KYV-101 CD19 CAR-T clinical trials across lupus nephritis, multiple sclerosis, and stiff-person syndrome with fast-track designations.",
+      role: "Autoimmune cell therapy developer with CD19 CAR-T clinical footprint." },
+    { ticker: "RNAC", name: "Cartesian Therapeutics", cap: 0.22, primary: "CELL_THERAPY",
+      traction: "TRANSIENT MRNA CAR-T: Descartes-08 mRNA CAR-T Phase 2b data in myasthenia gravis demonstrated efficacy without lymphodepleting chemotherapy.",
+      role: "mRNA-engineered transient CAR-T avoiding oncogenic viral integration." },
+    { ticker: "FATE", name: "Fate Therapeutics", cap: 0.34, primary: "CELL_THERAPY",
+      traction: "OFF-THE-SHELF IPSC PLATFORM: Master pluripotent stem cell banks generating multiplexed engineered allogeneic CAR-NK and CAR-T cell batches.",
+      role: "Induced pluripotent stem cell (iPSC) allogeneic platform developer." },
+    { ticker: "ALLO", name: "Allogene Therapeutics", cap: 0.46, primary: "CELL_THERAPY",
+      traction: "ALLO-501A and ALLO-316 allogeneic TALEN-edited CAR-T clinical trials; developing CD70 and Dagger platforms to prevent host immune rejection.",
+      role: "Allogeneic off-the-shelf CAR-T pioneer using TALEN gene editing." },
+
+    // --- GENE_EDITING ---
+    { ticker: "CRSP", name: "CRISPR Therapeutics", cap: 4.4, primary: "GENE_EDITING",
+      traction: "FIRST APPROVED CRISPR MEDICINE: Casgevy (exagamglogene autotemcel) approved in US, EU, UK for sickle cell disease and transfusion-dependent beta-thalassemia with Vertex.",
+      role: "Nobel prize-originating CRISPR/Cas9 pioneer with approved commercial product." },
+    { ticker: "BEAM", name: "Beam Therapeutics", cap: 1.85, primary: "GENE_EDITING",
+      traction: "BASE EDITING ADVANCEMENT: BEAM-101 Phase 1/2 in sickle cell disease and BEAM-302 in vivo LNP base editor targeting alpha-1 antitrypsin deficiency in clinical dosing.",
+      role: "Single-base transition editing without double-strand DNA cleavage." },
+    { ticker: "NTLA", name: "Intellia Therapeutics", cap: 1.45, primary: "GENE_EDITING",
+      traction: "IN VIVO SYSTEMIC PIONEER: NTLA-2001 (ATTR amyloidosis) in Phase 3 pivotal MAGNITUDE trial; NTLA-2002 for hereditary angioedema advancing to BLA filing.",
+      role: "Direct systemic in vivo CRISPR/Cas9 nuclease delivery via LNPs." },
+    { ticker: "EDIT", name: "Editas Medicine", cap: 0.28, primary: "GENE_EDITING",
+      traction: "AsCas12a nuclease patent licensing agreements; re-focusing pipeline onto targeted in vivo gene upregulation and oncology partnerships.",
+      role: "CRISPR/Cas12a nuclease enzyme patent licensor and drug developer." },
+    { ticker: "VERV", name: "Verve Therapeutics", cap: 0.45, primary: "GENE_EDITING",
+      traction: "IN VIVO CARDIAC BASE EDITING: VERVE-101 and VERVE-102 single-course in vivo liver base editors targeting PCSK9 and ANGPTL3 to permanently lower LDL-C; Lilly partner.",
+      role: "Cardiovascular chronic disease gene editing via liver-targeted LNPs." },
+    { ticker: "CTTX", name: "Caribou Biosciences", cap: 0.25, primary: "GENE_EDITING",
+      traction: "chRDNA (CRISPR hybrid RNA-DNA) guides providing superior genome specificity and multiplex editing for allogeneic CB-010 CAR-T (MaxCyte SPL partner).",
+      role: "Hybrid RNA-DNA CRISPR platform with high specificity." },
+    { ticker: "VOR", name: "Vor Bio", cap: 0.15, primary: "GENE_EDITING",
+      traction: "TREM-CEL CD33-DELETED HSCs: Clinical-stage CRISPR-edited hematopoietic stem cell therapy for AML paired with Mylotarg/VCAR33; licensed on MaxCyte ExPERT GTx.",
+      role: "Engineered hematopoietic stem cell (eHSC) shield for acute myeloid leukemia." },
+    { ticker: "SANA", name: "Sana Biotechnology", cap: 0.95, primary: "GENE_EDITING",
+      traction: "HYPOIMMUNE ALLOGENEIC CELLS: SC291/SC262 hypoimmune CAR-T and UP421 primary islet cell replacement evading immune rejection; MaxCyte ExPERT SPL partner.",
+      role: "Hypoimmune gene-modified allogeneic cell therapy developer." },
+
+    // --- VIRAL_GENE_THERAPY ---
+    { ticker: "RCKT", name: "Rocket Pharmaceuticals", cap: 1.95, primary: "VIRAL_GENE_THERAPY", choke: "watch",
+      traction: "PIVOTAL MONOGENIC PIPELINE: RP-A501 AAV9 for Danon disease advancing through pivotal trials; lentiviral programs for Fanconi anemia and LAD-I near commercialization.",
+      role: "Pure-play rare monogenic disease viral gene therapy platform." },
+    { ticker: "SRPT", name: "Sarepta Therapeutics", cap: 11.5, primary: "VIRAL_GENE_THERAPY",
+      traction: "EXPANDED ELEVIDYS APPROVAL: Secured landmark FDA expanded label for Elevidys (delandistrogene moxeparvovec) across ambulatory and non-ambulatory DMD patients.",
+      role: "Duchenne muscular dystrophy gene therapy and RNA commercial leader." },
+    { ticker: "BMRN", name: "BioMarin Pharmaceutical", cap: 12.8, primary: "VIRAL_GENE_THERAPY",
+      traction: "Roctavian AAV5 gene therapy for severe Hemophilia A approved in US/EU; Voxzogo achondroplasia blockbuster franchise driving record revenues.",
+      role: "Commercial rare disease and viral gene therapy powerhouse." },
+    { ticker: "BLUE", name: "bluebird bio", cap: 0.18, primary: "VIRAL_GENE_THERAPY",
+      traction: "Dual FDA approvals for Zynteglo (beta-thalassemia) and Lyfgenia (sickle cell disease); executing commercial manufacturing acceleration to manage cash burn.",
+      role: "Lentiviral vector ex-vivo hematology gene addition pioneer." },
+    { ticker: "QURE", name: "uniQure", cap: 0.32, primary: "VIRAL_GENE_THERAPY",
+      traction: "AMT-130 AAV5 microRNA for Huntington's disease showing slowed clinical disease progression in Phase 1/2 microconvection-enhanced intracranial trials.",
+      role: "Central nervous system AAV gene therapy and commercial Hemgenix partner." },
+
+    // --- RNA_ASO ---
+    { ticker: "ALNY", name: "Alnylam Pharmaceuticals", cap: 32.0, primary: "RNA_ASO",
+      traction: "HELIOS-B SNDA BLOCKBUSTER: Amvuttra (vutrisiran) met all primary and secondary endpoints in ATTR cardiomyopathy, poised for multi-billion dollar label expansion.",
+      role: "Global leader in GalNAc-conjugated siRNA RNA interference medicines." },
+
+    // --- CGT_CDMO_VIRAL ---
+    { ticker: "CTLS", name: "Catalent (Novo Holdings)", cap: 11.5, primary: "CGT_CDMO_VIRAL",
+      traction: "ACQUIRED BY NOVO HOLDINGS: Major commercial CDMO operating dedicated AAV, lentiviral, and plasmid suites; anchor partner for Sarepta Elevidys commercial batches.",
+      role: "Scale viral vector and biologics manufacturing infrastructure." },
+    { ticker: "LONN", name: "Lonza Group", cap: 38.0, primary: "CGT_CDMO_VIRAL",
+      traction: "Cocoon automated patient-scale cell manufacturing platform & 4D-Nucleofector benchtop electroporation; extensive global viral vector capacity in Houston and Geleen.",
+      role: "Global contract manufacturer with automated closed cell cassettes & Nucleofector." },
+
+    // --- CRYO_LOGISTICS ---
+    { ticker: "CYRX", name: "Cryoport, Inc.", cap: 0.51, primary: "CRYO_LOGISTICS", choke: "watch",
+      traction: "CRITICAL COLD-CHAIN MONOPOLY (~70% CGT SHARE): Supports 779+ clinical trials & 22 commercial therapies (Carvykti, Yescarta, Breyanzi, Amtagvi, Casgevy). Sold CRYOPDP to DHL for ~$200M (June 2025), retaining ~$427M cash (~$245M net cash vs $510M mcap; ~1.4x EV/Sales). Scaling IntegriCell cryopreservation & MVE freezers. 1-2Yr Base Target: $27.40 (+168%).",
+      role: "FDA BLA-embedded -150°C dry-vapor dewar, MVE freezer (~70% share), Cryoportal® & IntegriCell monopoly." },
+    { ticker: "BLFS", name: "BioLife Solutions", cap: 1.15, primary: "CRYO_LOGISTICS",
+      traction: "INTRACELLULAR MEDIA MONOPOLY: CryoStor® and HypoThermosol® biopreservation media embedded in 70%+ of clinical CAR-T trials; divested Stirling Ultracold freezers to focus on high-margin cell processing consumables.",
+      role: "Dominant supplier of proprietary intracellular cryopreservation freezing media (complementary to CYRX dewars)." },
+    { ticker: "AZTA", name: "Azenta Life Sciences", cap: 2.1, primary: "CRYO_LOGISTICS",
+      traction: "AUTOMATED BIOREPOSITORIES & B MEDICAL: Operates global -80°C and LN2 sample storage repositories alongside automated CryoStore systems and GENEWIZ genomics.",
+      role: "Broad biological sample management, automated cryogenic storage, and B Medical transport." },
+    { ticker: "COR", name: "Cencora (World Courier)", cap: 48.0, primary: "CRYO_LOGISTICS",
+      traction: "WORLD COURIER SPECIALTY LOGISTICS: Leading global specialty pharma courier offering CryoGuard LN2 transport and direct hospital cell therapy distribution.",
+      role: "Tier-1 global pharmaceutical distributor and World Courier specialty clinical logistics rival." },
+    { ticker: "UPS", name: "UPS Healthcare (Marken)", cap: 110.0, primary: "CRYO_LOGISTICS",
+      traction: "MARKEN & BOLOGNA HEALTHCARE LOGISTICS: Global clinical trial courier network utilizing Cryoport MVE hardware while competing in last-mile hospital delivery.",
+      role: "Global express freight integrator and Marken clinical trial logistics operator." },
+    { ticker: "DHL", name: "DHL Group (CRYOPDP Partner)", cap: 52.0, primary: "CRYO_LOGISTICS",
+      traction: "STRATEGIC $200M ALLIANCE (JUNE 2025): Acquired CRYOPDP specialty courier from Cryoport for ~$200M enterprise value and formed a global strategic partnership routing DHL Life Sciences clients into CYRX CryoStork® and BioStorage.",
+      role: "Global logistics titan and strategic commercial distribution partner for Cryoport Systems." },
+    { ticker: "BX", name: "Blackstone (TacOpps Sponsor)", cap: 175.0, primary: "CRYO_LOGISTICS",
+      traction: "ANCHOR INSTITUTIONAL SPONSOR: Invested $275M in 2020 to fund Cryoport's acquisition of MVE Biological Solutions; holds 2 seats on CYRX Board (Ram Jagannath & Cashaña EFT).",
+      role: "Anchor private-equity sponsor governing CYRX balance sheet discipline and M&A capital allocation." },
+
+    // --- TOOLS_REAGENTS ---
+    { ticker: "MXCT", name: "MaxCyte, Inc.", cap: 0.135, primary: "TOOLS_REAGENTS", choke: "watch",
+      traction: "NON-VIRAL ELECTROPORATION MONOPOLY & ROYALTY ENGINE: 29 Strategic Platform Licenses (SPLs) covering 160+ programs ($1.55B+ milestone pool), anchored by FDA-approved Casgevy (VRTX/CRSP; Q2 SPL royalties +167% YoY) and July 2026 Genentech multi-platform SPL. ~$110M+ cash (~8.0yr runway), ~$42M EV (~1.4x EV/Sales), 79% gross margin, plus SeQure Dx off-target validation. 1-2Yr Base Target: $3.32 (+155%).",
+      role: "ExPERT™ (ATx, STx, GTx, VLx) clinical flow electroporation hardware, single-use PAs & SPL drug royalty engine." },
+    { ticker: "TMO", name: "Thermo Fisher Scientific", cap: 205.0, primary: "TOOLS_REAGENTS",
+      traction: "Dynabeads magnetic cell separation standard; Gibco media, CTS Xenon closed electroporator (primary rival to MXCT for new pre-clinical programs), and single-use viral bioprocessing hardware.",
+      role: "Essential tools, magnetic beads, CTS Xenon electroporation, and cleanroom hardware." },
+    { ticker: "DHR", name: "Danaher Corporation", cap: 180.0, primary: "TOOLS_REAGENTS",
+      traction: "Aldevron ($9.6B acquisition) plasmid DNA & mRNA/CRISPR enzyme supplier; Cytiva chromatography & filtration. Former Danaher VP of Life Sciences Innovation Sidharth Kapileshwar joined MaxCyte as Chief Corporate Development Officer in Sept 2026.",
+      role: "Premier bioprocess filtration, Aldevron plasmid/Cas9, and strategic M&A consolidator." },
+    { ticker: "REPL", name: "Repligen Corporation", cap: 7.8, primary: "TOOLS_REAGENTS",
+      traction: "KrosFlo tangential flow filtration (TFF) and AVIPure affinity chromatography resins specifically engineered for AAV and lentiviral yield recovery.",
+      role: "Specialized downstream bioprocessing and viral vector purification tools." },
+    { ticker: "A", name: "Agilent Technologies", cap: 40.0, primary: "TOOLS_REAGENTS",
+      traction: "GMP synthetic guide RNA (sgRNA) oligonucleotide manufacturing for CRISPR therapeutics and cell analysis QC; former Agilent finance leader Parmeet Ahuja became MaxCyte CFO in March 2026.",
+      role: "Clinical-grade CRISPR guide RNA (gRNA) synthesis and cellular analytical instrumentation." },
+    { ticker: "MRVI", name: "Maravai LifeSciences", cap: 1.1, primary: "TOOLS_REAGENTS",
+      traction: "TriLink CleanCap® mRNA co-transcriptional capping technology supplying mRNA payloads electroporated via MaxCyte ExPERT or encapsulated in LNPs.",
+      role: "CleanCap® mRNA capping reagents and GMP nucleic acid synthesis." },
+
+    // --- PHARMA_INTEGRATORS ---
+    { ticker: "VRTX", name: "Vertex Pharmaceuticals", cap: 118.0, primary: "PHARMA_INTEGRATORS", choke: "watch",
+      traction: "CASGEVY COMMERCIAL ENGINE: Leads global sales and reimbursement for Casgevy (~$76M Q2 2026 sales, 75+ ATCs, 60/40 split with CRSP); manufactures commercial stem cell batches on MaxCyte ExPERT GTx and ships via Cryoport dewars.",
+      role: "Commercial powerhouse scaling Casgevy CRISPR cure and paying royalties to MaxCyte." },
+    { ticker: "JNJ", name: "Johnson & Johnson", cap: 380.0, primary: "PHARMA_INTEGRATORS", choke: "watch",
+      traction: "CARVYKTI COMMERCIAL CO-LEADER: 50/50 global partner with Legend Biotech scaling Carvykti in 2L+ multiple myeloma toward $5B+ peak sales; relies on Cryoport cold chain and holds a MaxCyte SPL.",
+      role: "Global oncology commercial leader scaling Carvykti CAR-T manufacturing and distribution." },
+    { ticker: "RHHBY", name: "Roche / Genentech", cap: 255.0, primary: "PHARMA_INTEGRATORS",
+      traction: "GENENTECH MULTI-PLATFORM MAXCYTE SPL (JULY 2026): Signed landmark multi-platform license with MaxCyte to deploy ExPERT flow electroporation across cell therapy research, clinical, and commercial workflows.",
+      role: "Global biologics leader expanding non-viral and allogeneic cell therapy pipelines with MaxCyte." },
+    { ticker: "GILD", name: "Gilead Sciences (Kite)", cap: 110.0, primary: "PHARMA_INTEGRATORS",
+      traction: "KITE CELL THERAPY DOMINANCE: Yescarta and Tecartus generate $1.8B+ annual revenue; anchor customer for Cryoport -150°C logistics and MaxCyte SPL partner for next-gen CAR-T.",
+      role: "Global commercial cell therapy market leader with proven manufacturing grid." },
+    { ticker: "BMY", name: "Bristol Myers Squibb", cap: 105.0, primary: "PHARMA_INTEGRATORS",
+      traction: "Commercial portfolio with Abecma (BCMA) and Breyanzi (CD19) CAR-Ts; anchor commercial logistics client of Cryoport Systems across US/EU treatment centers.",
+      role: "Major commercial cell therapy producer and global clinical trial sponsor." },
+    { ticker: "NVS", name: "Novartis", cap: 220.0, primary: "PHARMA_INTEGRATORS",
+      traction: "Kymriah pioneer; developed T-Charge platform to cut cell culture manufacturing to 24 hours, preserving T-cell stemness and utilizing Cryoport global cold chain.",
+      role: "Pioneer in commercial CAR-T cell manufacturing and global oncology distribution." }
+  ],
+
+  edges: [
+    // Macro Driver transmissions
+    { source: "REGULATORY_CBER", target: "CELL_THERAPY", weight: 0.85, rationale: "Accelerated approval pathways and RMAT designations allow Phase 1/2 registration trials for CAR-T." },
+    { source: "REGULATORY_CBER", target: "VIRAL_GENE_THERAPY", weight: 0.90, rationale: "CBER surrogate biomarker acceptance gates monogenic AAV approvals (Elevidys micro-dystrophin precedent)." },
+    { source: "REGULATORY_CBER", target: "GENE_EDITING", weight: 0.80, rationale: "Rigorous off-target genome sequencing standards (SeQure Dx ONE-seq) and 15-year safety follow-up mandates." },
+    { source: "BIOTECH_CAPITAL", target: "CELL_THERAPY", weight: 0.75, rationale: "Provides equity runway to build out high-burn autologous cleanrooms and sponsor pivotal multicenter trials." },
+    { source: "BIOTECH_CAPITAL", target: "GENE_EDITING", weight: 0.85, rationale: "High-valuation clinical-stage CRISPR pioneers depend on secondary equity offerings to fund in vivo pipelines." },
+    { source: "BIOTECH_CAPITAL", target: "TOOLS_REAGENTS", weight: 0.65, rationale: "R&D spend across pre-clinical biotechs directly funds instrument and consumable sales (MaxCyte, Danaher)." },
+    { source: "CMS_REIMBURSEMENT", target: "CELL_THERAPY", weight: 0.88, rationale: "Medicaid and Medicare outpatient reimbursement models determine real-world patient commercial uptake." },
+    { source: "CMS_REIMBURSEMENT", target: "VIRAL_GENE_THERAPY", weight: 0.92, rationale: "State Medicaid pools and multi-year annuity models are required to absorb $2.5M–$3.5M one-time list prices." },
+    { source: "CMS_REIMBURSEMENT", target: "PHARMA_INTEGRATORS", weight: 0.60, rationale: "Big Pharma balance sheets negotiate outcomes-based rebates with commercial health maintenance organizations." },
+    { source: "MANUFACTURING_BURDEN", target: "VIRAL_GENE_THERAPY", weight: -0.80, rationale: "High COGS and low empty/full capsid yields compress gross margins and delay clinical batch availability." },
+    { source: "MANUFACTURING_BURDEN", target: "CGT_CDMO_VIRAL", weight: 0.85, rationale: "Vector bottlenecks force biotechs to pay upfront reservation fees to secure CDMO bioreactor capacity." },
+    { source: "MANUFACTURING_BURDEN", target: "CELL_THERAPY", weight: -0.70, rationale: "Lengthy 4-week vein-to-vein turnarounds cause high patient dropouts and manufacturing failure rates." },
+
+    // Thematic Hub connections
+    { source: "TOOLS_REAGENTS", target: "GENE_EDITING", weight: 0.92, rationale: "MaxCyte ExPERT GTx flow electroporation, SeQure Dx off-target validation, and Agilent sgRNA enable high-viability CRISPR/base editing (29 SPLs)." },
+    { source: "TOOLS_REAGENTS", target: "CELL_THERAPY", weight: 0.86, rationale: "Non-viral multiplex CAR-T/NK engineering relies on MaxCyte disposable Processing Assemblies (PAs) to bypass lentiviral bottlenecks." },
+    { source: "TOOLS_REAGENTS", target: "CGT_CDMO_VIRAL", weight: 0.82, rationale: "Purification chromatography resins (Repligen) and plasmid DNA (Aldevron/Danaher) are mandatory CDMO inputs." },
+    { source: "TOOLS_REAGENTS", target: "PHARMA_INTEGRATORS", weight: 0.84, rationale: "Vertex (Casgevy), Genentech, J&J, and Gilead license MaxCyte ExPERT platforms and pay commercial royalties & milestones." },
+    { source: "CRYO_LOGISTICS", target: "CELL_THERAPY", weight: 0.96, rationale: "Cryoport -150°C dry-vapor dewars, IntegriCell cryopreservation, and BioLife CryoStor media gate vein-to-vein viability for 779+ trials & 22 commercial therapies." },
+    { source: "CRYO_LOGISTICS", target: "VIRAL_GENE_THERAPY", weight: 0.82, rationale: "Ultra-cold storage (-80°C to -150°C) and MVE biological freezers safeguard temperature-sensitive AAV/lentiviral gene therapy vectors." },
+    { source: "CRYO_LOGISTICS", target: "GENE_EDITING", weight: 0.84, rationale: "Ex-vivo CRISPR cures (Casgevy, BEAM-101, trem-cel) require cryogenic transport of apheresis CD34+ stem cells and edited drug products." },
+    { source: "CGT_CDMO_VIRAL", target: "CRYO_LOGISTICS", weight: 0.78, rationale: "CDMOs (Lonza, Catalent) embed Cryoport BioStorage and CryoStork directly inside GMP cleanroom fulfillment workflows." },
+    { source: "PHARMA_INTEGRATORS", target: "CRYO_LOGISTICS", weight: 0.88, rationale: "Commercial CAR-T/CRISPR launches by J&J/Legend, Gilead, BMS, Novartis, and Vertex drive 50x–100x shipment escalations for Cryoport." },
+    { source: "CGT_CDMO_VIRAL", target: "VIRAL_GENE_THERAPY", weight: 0.88, rationale: "Commercial CDMOs supply GMP-grade AAV vectors for clinical gene addition trials." },
+    { source: "GENE_EDITING", target: "CELL_THERAPY", weight: 0.78, rationale: "Multiplex CRISPR/base editing enables allogeneic off-the-shelf T-cells with TCR and HLA-I knockouts." },
+    { source: "PHARMA_INTEGRATORS", target: "CELL_THERAPY", weight: 0.85, rationale: "Big Pharma partners fund commercial launch infrastructure and authorized treatment center networks." },
+    { source: "PHARMA_INTEGRATORS", target: "GENE_EDITING", weight: 0.80, rationale: "Vertex, Lilly, Roche/Genentech, and Regeneron license platform IP and co-develop blockbuster rare and chronic disease assets." },
+    { source: "RNA_ASO", target: "GENE_EDITING", weight: 0.65, rationale: "mRNA transient expression (Maravai CleanCap) delivers Cas9 enzymes and base editors inside cells or LNPs without genomic integration." }
+  ],
+
+  eras: {
+    "2020_2023": {
+      badge: "Epoch: 2020–2023 (Vector Shortage · Ex-Vivo Apheresis · 200+ Clinical Holds)",
+      cber: "850 INDs",
+      cryo: "520 Trials",
+      cdmo: "6.2x Gap",
+      mxct: "18 SPLs (85 Prg)",
+      cms: "Ad-hoc State Medicaid",
+      shock_weights: { "VIRAL_GENE_THERAPY": 0.7, "CELL_THERAPY": 0.8, "GENE_EDITING": 0.6, "MANUFACTURING_BURDEN": 1.3 }
+    },
+    "2024_2025": {
+      badge: "Epoch: 2024–2025 (Casgevy CRISPR Approval · Amtagvi Solid Tumor TIL · CRYOPDP-$200M DHL Deal)",
+      cber: "1,200 INDs",
+      cryo: "700 Trials",
+      cdmo: "5.1x Gap",
+      mxct: "27 SPLs (125 Prg)",
+      cms: "Pilot CGT Access Model",
+      shock_weights: { "VIRAL_GENE_THERAPY": 0.9, "CELL_THERAPY": 0.9, "GENE_EDITING": 1.0, "MANUFACTURING_BURDEN": 1.1 }
+    },
+    "2026_current": {
+      badge: "Epoch: 2026 Current (22 Commercial CGTs on CYRX · 29 MaxCyte SPLs + Genentech · 2L Carvykti)",
+      cber: "1,520 INDs",
+      cryo: "779+ Trials",
+      cdmo: "4.8x Gap",
+      mxct: "29 SPLs (160+ Prg)",
+      cms: "$2.2M Avg Annuity Pool",
+      shock_weights: { "VIRAL_GENE_THERAPY": 1.0, "CELL_THERAPY": 1.0, "GENE_EDITING": 1.0, "MANUFACTURING_BURDEN": 1.0 }
+    },
+    "2027_2028": {
+      badge: "Epoch: 2027–2028 (CYRX 32+ Commercial Therapies · MXCT 4+ Approved Royalty Drugs · MVE Replacement)",
+      cber: "1,950 INDs",
+      cryo: "920+ Trials",
+      cdmo: "3.1x Gap",
+      mxct: "36 SPLs (220+ Prg)",
+      cms: "Nationwide Mandatory Model",
+      shock_weights: { "VIRAL_GENE_THERAPY": 1.1, "CELL_THERAPY": 1.1, "GENE_EDITING": 1.3, "MANUFACTURING_BURDEN": 0.8 }
+    },
+    "2029_horizon": {
+      badge: "Epoch: 2029+ Horizon (50+ Commercial CGTs · Universal Allogeneic Swarms · Epigenome Silencing)",
+      cber: "2,600 INDs",
+      cryo: "1,250+ Trials",
+      cdmo: "1.8x Gap",
+      mxct: "45+ SPLs (320+ Prg)",
+      cms: "Subscription Multi-Payer Cures",
+      shock_weights: { "VIRAL_GENE_THERAPY": 1.2, "CELL_THERAPY": 1.3, "GENE_EDITING": 1.5, "MANUFACTURING_BURDEN": 0.6 }
+    }
+  },
+
+  scenarios: {
+    "cryo_supply_chain_expansion": {
+      label: "Cryoport + DHL global alliance, IntegriCell apheresis & MVE replacement supercycle",
+      deltas: { "CRYO_LOGISTICS": 1.20, "CYRX": 1.35, "DHL": 0.65, "BLFS": 0.85, "LEGN": 0.90, "JNJ": 0.70, "VRTX": 0.80, "IOVA": 0.85, "CELL_THERAPY": 0.90, "MANUFACTURING_BURDEN": -0.65 }
+    },
+    "mxct_spl_royalty_supercycle": {
+      label: "MaxCyte Casgevy commercial ramp + Genentech & BEAM SPL milestone surge",
+      deltas: { "TOOLS_REAGENTS": 1.15, "MXCT": 1.40, "VRTX": 1.05, "CRSP": 1.00, "BEAM": 1.10, "RHHBY": 0.75, "ALLO": 0.85, "VOR": 0.90, "SANA": 0.85, "GENE_EDITING": 0.95, "CELL_THERAPY": 0.80 }
+    },
+    "cms_access_model_surge": {
+      label: "CMS CGT Access Model mandates multi-state outcomes annuities",
+      deltas: { "CMS_REIMBURSEMENT": 1.0, "VRTX": 0.95, "LEGN": 0.90, "SRPT": 0.85, "RCKT": 0.80, "CRSP": 0.75, "CYRX": 0.90, "MXCT": 0.85, "CELL_THERAPY": 0.85, "VIRAL_GENE_THERAPY": 0.80 }
+    },
+    "invivo_base_editing_breakthrough": {
+      label: "In vivo LNP base editing clinical breakthrough (no apheresis)",
+      deltas: { "GENE_EDITING": 1.0, "BEAM": 1.20, "NTLA": 1.15, "VERV": 1.10, "ALNY": 0.80, "TOOLS_REAGENTS": 0.40, "MXCT": -0.35, "CELL_THERAPY": -0.40, "CRYO_LOGISTICS": -0.35, "CYRX": -0.35 }
+    },
+    "allogeneic_autoimmune_reset": {
+      label: "Allogeneic CAR-T achieves complete autoimmune reset in lupus",
+      deltas: { "CELL_THERAPY": 1.0, "CABA": 1.25, "KYTX": 1.20, "ALLO": 1.05, "CTTX": 0.95, "SANA": 1.00, "MXCT": 1.10, "CYRX": 1.05, "BLFS": 0.90, "PHARMA_INTEGRATORS": 0.70 }
+    },
+    "vector_cdmo_shortage": {
+      label: "Viral vector batch contamination & CDMO capacity bottleneck",
+      deltas: { "MANUFACTURING_BURDEN": 1.0, "CGT_CDMO_VIRAL": -0.80, "VIRAL_GENE_THERAPY": -0.85, "SRPT": -0.75, "RCKT": -0.70, "BLUE": -0.90, "LONN": 0.60, "MXCT": 0.75 }
+    },
+    "biotech_liquidity_thaw": {
+      label: "Fed rate cuts + Big Pharma $50B+ M&A acquisition landgrab",
+      deltas: { "BIOTECH_CAPITAL": 1.0, "XBI": 0.95, "MXCT": 1.15, "CYRX": 1.15, "BLFS": 0.95, "BEAM": 1.00, "RCKT": 1.00, "CABA": 1.15, "PHARMA_INTEGRATORS": 0.50 }
+    },
+    "fda_cber_accelerated_flex": {
+      label: "FDA CBER accelerates surrogate biomarker approvals & RMAT",
+      deltas: { "REGULATORY_CBER": 1.0, "RCKT": 1.15, "SRPT": 1.05, "IOVA": 1.00, "CRSP": 0.85, "CYRX": 0.95, "MXCT": 0.90, "VIRAL_GENE_THERAPY": 0.90 }
+    },
+    "drv:FED_RATE": {
+      label: "+1σ Fed policy rate shock (biotech multiple compression)",
+      deltas: { "BIOTECH_CAPITAL": -0.90, "XBI": -0.85, "BLUE": -1.15, "EDIT": -1.05, "CABA": -0.80, "VRTX": -0.25 }
+    },
+    "drv:BIOTECH": {
+      label: "+1σ Broad biotech sentiment surge (XBI/IBB multiple expansion)",
+      deltas: { "BIOTECH_CAPITAL": 0.95, "XBI": 0.90, "CELL_THERAPY": 0.85, "GENE_EDITING": 0.85, "CYRX": 0.95, "MXCT": 0.95 }
+    },
+    "drv:CMS_REIMBURSEMENT": {
+      label: "+1σ Drug price negotiation & Medicaid pool expansion",
+      deltas: { "CMS_REIMBURSEMENT": 1.0, "PHARMA_INTEGRATORS": -0.55, "CELL_THERAPY": 0.75, "VIRAL_GENE_THERAPY": 0.70, "VRTX": 0.65, "CYRX": 0.70, "MXCT": 0.65 }
+    },
+    "drv:CREDIT_SPREADS": {
+      label: "+1σ High-yield credit spread blowout (pre-revenue burn crunch)",
+      deltas: { "BIOTECH_CAPITAL": -0.95, "BLUE": -1.25, "EDIT": -1.10, "FATE": -1.00, "CYRX": -0.25, "MXCT": -0.20 }
+    }
+  }
+};
+
+// ==========================================================================
+// RENDERER & LAYOUT ENGINE (Interactive Draggable Nodes & Orbiting Companies)
+// ==========================================================================
+let currentEra = "2026_current";
+let currentScenario = "";
+let currentView = "orbit";
+
+const byId = {};
+const initialCoords = {};
+
+// 1. Calculate Sector Node Radius proportional to Market Size / TAM
+const maxMarketSize = Math.max(...GRAPH_DATA.nodes.map(n => n.marketSize || 100));
+GRAPH_DATA.nodes.forEach(n => {
+  const norm = Math.max(0.18, (n.marketSize || 100) / maxMarketSize);
+  n.r = Math.round(20 + Math.sqrt(norm) * 30);
+  byId[n.id] = n;
+  initialCoords[n.id] = { x: n.x, y: n.y };
+});
+
+// 2. Compute Orbiting Company & ETF Satellites
+function computeCompanyOrbits() {
+  const coNodes = [];
+  const byPrimary = {};
+
+  GRAPH_DATA.companies.forEach(c => {
+    byPrimary[c.primary] = byPrimary[c.primary] || [];
+    byPrimary[c.primary].push(c);
+  });
+
+  Object.keys(byPrimary).forEach(primId => {
+    const parent = byId[primId];
+    if (!parent) return;
+
+    const list = byPrimary[primId];
+    const n = list.length;
+    const orbitR = parent.r + 58 + Math.min(32, n * 3.8);
+
+    list.forEach((c, idx) => {
+      const angle = (2 * Math.PI * idx / n) - (Math.PI / 2);
+      const x = Math.round(parent.x + orbitR * Math.cos(angle));
+      const y = Math.round(parent.y + orbitR * Math.sin(angle));
+
+      const coRadius = c.isEtf ? 7 : Math.max(6, Math.min(14, Math.round(6 + Math.log10(c.cap + 1) * 3.2)));
+
+      const coNode = {
+        id: c.ticker,
+        ticker: c.ticker,
+        name: c.name,
+        cap: c.cap,
+        isEtf: !!c.isEtf,
+        kind: c.isEtf ? "etf" : "company",
+        primary: c.primary,
+        category: parent.category,
+        x: x,
+        y: y,
+        r: coRadius,
+        role: c.role,
+        traction: c.traction,
+        star: c.choke || null
+      };
+      byId[coNode.id] = coNode;
+      initialCoords[coNode.id] = { x: x, y: y };
+      coNodes.push(coNode);
+    });
+  });
+
+  return coNodes;
+}
+
+const companyNodes = computeCompanyOrbits();
+const allRenderNodes = [...GRAPH_DATA.nodes, ...companyNodes];
+
+// Helper for Curved Paths
+function getCurvedEdgePath(src, tgt) {
+  const dx = tgt.x - src.x;
+  const dy = tgt.y - src.y;
+  const dist = Math.hypot(dx, dy);
+  if (dist === 0) return "";
+
+  const ux = dx / dist;
+  const uy = dy / dist;
+
+  const sx = src.x + ux * src.r;
+  const sy = src.y + uy * src.r;
+  const tx = tgt.x - ux * tgt.r;
+  const ty = tgt.y - uy * tgt.r;
+
+  const mx = (sx + tx) / 2;
+  const my = (sy + ty) / 2;
+  const curvature = 24;
+  const cx = mx - uy * curvature;
+  const cy = my + ux * curvature;
+
+  return `M ${sx.toFixed(1)} ${sy.toFixed(1)} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)}`;
+}
+
+function getStarD(n) {
+  const cx = n.x + n.r * 0.7;
+  const cy = n.y - n.r * 0.7;
+  const spikes = 5, outerR = 6, innerR = 2.8;
+  let d = "";
+  for (let i = 0; i < spikes * 2; i++) {
+    const r = i % 2 === 0 ? outerR : innerR;
+    const angle = (i * Math.PI / spikes) - (Math.PI / 2);
+    const x = (cx + Math.cos(angle) * r).toFixed(1);
+    const y = (cy + Math.sin(angle) * r).toFixed(1);
+    d += (i === 0 ? "M " : "L ") + x + " " + y + " ";
+  }
+  return d + "Z";
+}
+
+// Render SVG Layers
+const memG = document.getElementById("mem");
+const infG = document.getElementById("inf");
+const nodesG = document.getElementById("nodes");
+const chokesG = document.getElementById("chokes-layer");
+
+function renderGraph() {
+  memG.innerHTML = "";
+  infG.innerHTML = "";
+  nodesG.innerHTML = "";
+  chokesG.innerHTML = "";
+
+  // 1. Membership Edges (parent sector to satellite company)
+  companyNodes.forEach(co => {
+    const parent = byId[co.primary];
+    if (!parent) return;
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("class", "mem");
+    line.setAttribute("id", `mem-${co.id}`);
+    line.setAttribute("data-s", parent.id);
+    line.setAttribute("data-t", co.id);
+    line.setAttribute("data-is-etf", co.isEtf ? "true" : "false");
+    line.setAttribute("x1", parent.x);
+    line.setAttribute("y1", parent.y);
+    line.setAttribute("x2", co.x);
+    line.setAttribute("y2", co.y);
+    memG.appendChild(line);
+  });
+
+  // 2. Influence Edges
+  GRAPH_DATA.edges.forEach((e) => {
+    const src = byId[e.source];
+    const tgt = byId[e.target];
+    if (!src || !tgt) return;
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const sign = e.weight >= 0 ? "pos" : "neg";
+    const strokeW = Math.max(1.2, Math.min(4.0, Math.abs(e.weight) * 3.4)).toFixed(1);
+
+    path.setAttribute("class", `edge ${sign}`);
+    path.setAttribute("id", `edge-${src.id}-${tgt.id}`);
+    path.setAttribute("data-s", e.source);
+    path.setAttribute("data-t", e.target);
+    path.setAttribute("data-w", e.weight);
+    path.setAttribute("d", getCurvedEdgePath(src, tgt));
+    path.setAttribute("stroke-width", strokeW);
+    path.setAttribute("stroke-opacity", "0.65");
+    path.setAttribute("marker-end", `url(#c-arr-${sign})`);
+
+    const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+    title.textContent = `${src.label} → ${tgt.label}: ${e.weight > 0 ? "+" : ""}${e.weight.toFixed(2)}\n${e.rationale}`;
+    path.appendChild(title);
+
+    infG.appendChild(path);
+  });
+
+  // 3. Nodes & Satellites
+  allRenderNodes.forEach(n => {
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const isCo = n.kind === "company";
+    const isEtf = n.kind === "etf";
+    const nodeClass = isEtf ? "node co etf" : (isCo ? "node co" : "node");
+
+    g.setAttribute("class", nodeClass);
+    g.setAttribute("id", `node-${n.id}`);
+    g.setAttribute("data-id", n.id);
+    g.setAttribute("data-label", (isCo || isEtf) ? n.name : n.label);
+
+    const color = isEtf ? "#60a5fa" : (CATEGORY_COLORS[n.category] || "#64748b");
+
+    // Circle
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", n.x);
+    circle.setAttribute("cy", n.y);
+    circle.setAttribute("r", n.r);
+    circle.setAttribute("fill", color);
+    circle.setAttribute("data-base", color);
+    g.appendChild(circle);
+
+    // Label
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    if (isCo || isEtf) {
+      text.setAttribute("class", "co-label");
+      text.setAttribute("x", n.x);
+      text.setAttribute("y", (n.y + n.r + 9).toFixed(1));
+      text.setAttribute("text-anchor", "middle");
+      text.textContent = isEtf ? `[${n.ticker}]` : n.ticker;
+    } else {
+      text.setAttribute("class", "label");
+      text.setAttribute("x", n.x);
+      text.setAttribute("y", (n.y - n.r - 5).toFixed(1));
+      text.setAttribute("text-anchor", "middle");
+      text.textContent = n.label;
+    }
+    g.appendChild(text);
+
+    // Star Choke Points
+    if (n.star === "watch") {
+      const star = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      star.setAttribute("class", "star");
+      star.setAttribute("id", `star-${n.id}`);
+      star.setAttribute("d", getStarD(n));
+      chokesG.appendChild(star);
+    }
+
+    // Interactive Drag & Click
+    setupNodeDrag(g, n);
+
+    g.addEventListener("mouseenter", () => highlightConnections(n.id));
+    g.addEventListener("mouseleave", () => unhighlight());
+    g.addEventListener("click", (evt) => {
+      if (!hasMoved) openDrawer(n);
+    });
+
+    nodesG.appendChild(g);
+  });
+}
+
+// Drag & Pan / Zoom Physics
+let isPanning = false;
+let startPan = { x: 0, y: 0 };
+let currentViewBox = { x: 0, y: 0, w: 2000, h: 1560 };
+let hasMoved = false;
+
+const svg = document.getElementById("cgt");
+function updateViewBox() {
+  svg.setAttribute("viewBox", `${currentViewBox.x} ${currentViewBox.y} ${currentViewBox.w} ${currentViewBox.h}`);
+}
+
+svg.addEventListener("wheel", (evt) => {
+  evt.preventDefault();
+  const scale = evt.deltaY > 0 ? 1.08 : 0.92;
+  const mx = evt.clientX - svg.getBoundingClientRect().left;
+  const my = evt.clientY - svg.getBoundingClientRect().top;
+  const svgX = currentViewBox.x + (mx / svg.clientWidth) * currentViewBox.w;
+  const svgY = currentViewBox.y + (my / svg.clientHeight) * currentViewBox.h;
+
+  currentViewBox.w = Math.max(600, Math.min(3600, currentViewBox.w * scale));
+  currentViewBox.h = Math.max(468, Math.min(2808, currentViewBox.h * scale));
+  currentViewBox.x = svgX - (mx / svg.clientWidth) * currentViewBox.w;
+  currentViewBox.y = svgY - (my / svg.clientHeight) * currentViewBox.h;
+  updateViewBox();
+}, { passive: false });
+
+svg.addEventListener("mousedown", (evt) => {
+  if (evt.target.closest(".node")) return;
+  isPanning = true;
+  startPan = { x: evt.clientX, y: evt.clientY };
+});
+
+window.addEventListener("mousemove", (evt) => {
+  if (!isPanning) return;
+  const dx = (evt.clientX - startPan.x) * (currentViewBox.w / svg.clientWidth);
+  const dy = (evt.clientY - startPan.y) * (currentViewBox.h / svg.clientHeight);
+  currentViewBox.x -= dx;
+  currentViewBox.y -= dy;
+  startPan = { x: evt.clientX, y: evt.clientY };
+  updateViewBox();
+});
+
+window.addEventListener("mouseup", () => {
+  isPanning = false;
+});
+
+function setupNodeDrag(el, n) {
+  let isDragging = false;
+  let startX = 0, startY = 0;
+
+  el.addEventListener("mousedown", (evt) => {
+    isDragging = true;
+    hasMoved = false;
+    startX = evt.clientX;
+    startY = evt.clientY;
+    evt.stopPropagation();
+  });
+
+  window.addEventListener("mousemove", (evt) => {
+    if (!isDragging) return;
+    const dx = (evt.clientX - startX) * (currentViewBox.w / svg.clientWidth);
+    const dy = (evt.clientY - startY) * (currentViewBox.h / svg.clientHeight);
+
+    if (Math.hypot(dx, dy) > 3) hasMoved = true;
+
+    n.x += dx;
+    n.y += dy;
+    startX = evt.clientX;
+    startY = evt.clientY;
+
+    const circle = el.querySelector("circle");
+    if (circle) { circle.setAttribute("cx", n.x); circle.setAttribute("cy", n.y); }
+    const text = el.querySelector("text");
+    if (text) {
+      text.setAttribute("x", n.x);
+      const isCo = n.kind === "company" || n.kind === "etf";
+      text.setAttribute("y", isCo ? (n.y + n.r + 9).toFixed(1) : (n.y - n.r - 5).toFixed(1));
+    }
+
+    const star = document.getElementById(`star-${n.id}`);
+    if (star) star.setAttribute("d", getStarD(n));
+
+    document.querySelectorAll(`path.edge[data-s="${n.id}"], path.edge[data-t="${n.id}"]`).forEach(path => {
+      const s = byId[path.getAttribute("data-s")];
+      const t = byId[path.getAttribute("data-t")];
+      if (s && t) path.setAttribute("d", getCurvedEdgePath(s, t));
+    });
+
+    document.querySelectorAll(`line.mem[data-s="${n.id}"]`).forEach(l => {
+      l.setAttribute("x1", n.x); l.setAttribute("y1", n.y);
+    });
+    document.querySelectorAll(`line.mem[data-t="${n.id}"]`).forEach(l => {
+      l.setAttribute("x2", n.x); l.setAttribute("y2", n.y);
+    });
+  });
+
+  window.addEventListener("mouseup", () => {
+    isDragging = false;
+  });
+}
+
+// Highlight Connections
+function highlightConnections(id) {
+  document.querySelectorAll("path.edge").forEach(p => {
+    if (p.getAttribute("data-s") === id || p.getAttribute("data-t") === id) {
+      p.classList.add("highlight");
+    } else {
+      p.style.strokeOpacity = "0.08";
+    }
+  });
+}
+
+function unhighlight() {
+  document.querySelectorAll("path.edge").forEach(p => {
+    p.classList.remove("highlight");
+    p.style.strokeOpacity = "0.65";
+  });
+}
+
+// Scenario & Shock Propagation Engine
+function applyScenario(scenKey) {
+  currentScenario = scenKey;
+  const scen = GRAPH_DATA.scenarios[scenKey];
+  const era = GRAPH_DATA.eras[currentEra];
+  const weights = era ? era.shock_weights : {};
+  const deltas = scen ? scen.deltas : {};
+
+  allRenderNodes.forEach(n => {
+    const el = document.getElementById(`node-${n.id}`);
+    if (!el) return;
+    const circle = el.querySelector("circle");
+
+    let val = deltas[n.id];
+    if (val === undefined && (n.kind === "company" || n.kind === "etf")) {
+      val = deltas[n.primary];
+    }
+    if (val === undefined) val = 0;
+
+    const mult = weights[n.primary || n.id] || 1.0;
+    val = val * mult;
+
+    if (!scenKey || val === 0) {
+      circle.setAttribute("fill", circle.getAttribute("data-base"));
+      return;
+    }
+
+    if (val > 0) {
+      circle.setAttribute("fill", "#10b981");
+    } else {
+      circle.setAttribute("fill", "#f43f5e");
+    }
+  });
+
+  updateSidePanel(scenKey, deltas, weights);
+}
+
+function updateSidePanel(scenKey, deltas, weights) {
+  const sideRows = document.getElementById("side-rows");
+  const sideTitle = document.getElementById("side-title");
+  const sideSub = document.getElementById("side-sub");
+  sideRows.innerHTML = "";
+
+  if (!scenKey || !GRAPH_DATA.scenarios[scenKey]) {
+    sideTitle.textContent = "Scenario Transmission Movers";
+    sideSub.textContent = "Select a scenario from the dropdown above";
+    sideRows.innerHTML = "<div style='color:#64748b; font-size:11px; padding:6px 0;'>Select a shock scenario from the dropdown above to simulate capital transmission.</div>";
+    return;
+  }
+
+  const scen = GRAPH_DATA.scenarios[scenKey];
+  sideTitle.textContent = scen.label.substring(0, 36) + (scen.label.length > 36 ? "…" : "");
+  sideSub.textContent = "Ranked capital transmission impact";
+
+  const scored = [];
+  GRAPH_DATA.companies.forEach(c => {
+    let score = deltas[c.ticker];
+    if (score === undefined) score = deltas[c.primary];
+    if (score !== undefined) {
+      const mult = weights[c.primary] || 1.0;
+      scored.push({ ticker: c.ticker, name: c.name, score: score * mult });
+    }
+  });
+
+  scored.sort((a, b) => Math.abs(b.score) - Math.abs(a.score));
+
+  if (scored.length === 0) {
+    sideRows.innerHTML = "<div style='color:#64748b; font-size:11px; padding:6px 0;'>No direct equity movers mapped for this shock.</div>";
+    return;
+  }
+
+  scored.slice(0, 10).forEach(c => {
+    const row = document.createElement("div");
+    row.className = "side-row";
+    const sign = c.score > 0 ? "+" : "";
+    const cls = c.score > 0 ? "pos" : "neg";
+    row.innerHTML = `
+      <span class="side-ticker">${c.ticker} <span style="font-weight:normal; color:#8896ab;">${c.name.substring(0, 14)}</span></span>
+      <span class="side-score ${cls}">${sign}${c.score.toFixed(2)}σ</span>
+    `;
+    row.addEventListener("click", () => openDrawer(byId[c.ticker]));
+    sideRows.appendChild(row);
+  });
+}
+
+// Right Drawer for Deep Dive
+const drawer = document.getElementById("drawer");
+const drawerContent = document.getElementById("drawer-content");
+document.getElementById("close-drawer").addEventListener("click", () => drawer.classList.remove("open"));
+
+function openDrawer(n) {
+  if (!n) return;
+  const isCo = n.kind === "company" || n.kind === "etf";
+
+  let html = `
+    <h2>${isCo ? n.name : n.label}</h2>
+    <div class="ticker-pill">${isCo ? n.ticker : n.id}</div>
+    <div style="font-size:11.5px; color:#94a3b8; margin-bottom:12px;">Category: <b style="color:${CATEGORY_COLORS[n.category]}">${(n.category || "").toUpperCase()}</b></div>
+  `;
+
+  if (isCo) {
+    html += `
+      <div style="display:flex; gap:16px; margin-bottom:14px;">
+        <div><div style="font-size:10px; color:#8896ab;">MARKET CAP / VALUATION</div><div style="font-size:15px; font-weight:700; color:#fff;">$${n.cap}B</div></div>
+        <div><div style="font-size:10px; color:#8896ab;">PRIMARY SECTOR HUB</div><div style="font-size:13px; font-weight:600; color:#34d399;">${byId[n.primary] ? byId[n.primary].label : n.primary}</div></div>
+      </div>
+      <div class="sec-kicker">Core Architectural Role</div>
+      <div class="desc-box">${n.role}</div>
+
+      <div class="sec-kicker">Clinical Traction &amp; Catalysts</div>
+      <div class="desc-box" style="border-left: 3px solid var(--emerald);">${n.traction}</div>
+    `;
+
+    if (n.ticker === "CYRX") {
+      html += `<div class="badge-contract">❄️ Monopolistic -150°C Dry Vapor Dewars (745+ CGT Trials &amp; 20 Commercial Therapies)</div>`;
+    }
+    if (n.ticker === "MXCT") {
+      html += `<div class="badge-contract">⚡ Clinical Electroporation Standard (29 SPLs, 160+ Programs &amp; Casgevy Royalties)</div>`;
+    }
+    if (n.ticker === "BLFS") {
+      html += `<div class="badge-contract">🧪 CryoStor® Intracellular Biopreservation Media (70%+ Clinical Share)</div>`;
+    }
+    if (n.ticker === "LEGN") {
+      html += `<div class="badge-contract">🩸 Blockbuster Carvykti 2nd-Line Multiple Myeloma Commercial Expansion</div>`;
+    }
+    if (n.ticker === "VRTX") {
+      html += `<div class="badge-contract">🧬 Casgevy Global Commercializer (60/40 CRISPR Partnership)</div>`;
+    }
+    if (n.ticker === "RCKT") {
+      html += `<div class="badge-contract">🎯 RP-A501 Danon Disease Pivotal Registration Phase</div>`;
+    }
+    if (["CABA", "KYTX", "RNAC"].includes(n.ticker)) {
+      html += `<div class="badge-contract" style="color:#06b6d4; border-color:rgba(6,182,212,0.35); background:rgba(6,182,212,0.1);">🧪 Systemic Autoimmune CAR-T B-Cell Reset Phase 1/2</div>`;
+    }
+    if (["BEAM", "NTLA", "VERV"].includes(n.ticker)) {
+      html += `<div class="badge-contract" style="color:#8b5cf6; border-color:rgba(139,92,246,0.35); background:rgba(139,92,246,0.1);">💉 In Vivo Liver &amp; Systemic LNP Direct Delivery Lead</div>`;
+    }
+
+    const deepTickers = ["CYRX", "MXCT", "RCKT", "IOVA", "EDIT", "CABA", "BEAM", "CRSP", "ALNY", "VRTX", "NTLA", "SRPT", "VERV"];
+    const hasDeep = deepTickers.includes(n.ticker);
+    html += `
+      <div class="sec-kicker">Institutional Dossiers &amp; CORUM Board Links</div>
+      <div style="display:flex; flex-direction:column; gap:6px; margin-top:6px;">
+        <a href="../fundamentals/${n.ticker}.html" style="display:flex; justify-content:space-between; align-items:center; background:#141c2c; border:1px solid #1f293d; padding:7px 10px; border-radius:4px; font-size:11.5px; color:#38bdf8; text-decoration:none; font-weight:600;">
+          <span>📊 Quorum Ticker Dossier (${n.ticker})</span><span>→</span>
+        </a>
+        ${hasDeep ? `<a href="../double_in_six_deep_${n.ticker}.html" style="display:flex; justify-content:space-between; align-items:center; background:#141c2c; border:1px solid #1f293d; padding:7px 10px; border-radius:4px; font-size:11.5px; color:#34d399; text-decoration:none; font-weight:600;">
+          <span>🎯 Double-in-Six Deep Dive (${n.ticker})</span><span>→</span>
+        </a>` : ""}
+        ${["CYRX", "BLFS", "AZTA", "COR", "UPS", "DHL", "BX"].includes(n.ticker) ? `<a href="cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html" style="display:flex; justify-content:space-between; align-items:center; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.35); padding:7px 10px; border-radius:4px; font-size:11.5px; color:#38bdf8; text-decoration:none; font-weight:600;">
+          <span>❄️ CYRX Cryogenic Monopoly Deep Report</span><span>→</span>
+        </a>` : ""}
+        ${["MXCT", "CRSP", "VRTX", "BEAM", "EDIT", "VOR", "SANA", "RHHBY", "A", "DHR", "TMO", "LONN.SW", "MRVI"].includes(n.ticker) ? `<a href="mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html" style="display:flex; justify-content:space-between; align-items:center; background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.35); padding:7px 10px; border-radius:4px; font-size:11.5px; color:#a78bfa; text-decoration:none; font-weight:600;">
+          <span>⚡ MXCT Electroporation &amp; SPL Deep Report</span><span>→</span>
+        </a>` : ""}
+        
+          <span>📈 CGT Options &amp; Double-in-Six Screen</span><span>→</span>
+        
+        <a href="../index.html" target="_top" style="display:flex; justify-content:space-between; align-items:center; background:#141c2c; border:1px solid #1f293d; padding:7px 10px; border-radius:4px; font-size:11.5px; color:#94a3b8; text-decoration:none; font-weight:600;">
+          <span>🏛️ CORUM Analyses &amp; Reports Board</span><span>→</span>
+        </a>
+      </div>
+    `;
+  } else {
+    html += `
+      <div style="display:flex; gap:16px; margin-bottom:14px;">
+        <div><div style="font-size:10px; color:#8896ab;">TAM / CAPITALIZATION</div><div style="font-size:15px; font-weight:700; color:#fff;">$${n.marketSize}B</div></div>
+      </div>
+      <div class="sec-kicker">Thematic Scope &amp; Bottleneck</div>
+      <div class="desc-box">${n.desc}</div>
+
+      <div class="sec-kicker">CORUM Research &amp; Dossier Links</div>
+      <div style="display:flex; flex-direction:column; gap:6px; margin-top:6px; margin-bottom:12px;">
+        ${n.id === "CGT_COLDCHAIN_LOGISTICS" ? `<a href="cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html" style="display:flex; justify-content:space-between; align-items:center; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.35); padding:7px 10px; border-radius:4px; font-size:11.5px; color:#38bdf8; text-decoration:none; font-weight:600;">
+          <span>❄️ CYRX Cryogenic Monopoly Deep Report</span><span>→</span>
+        </a>` : ""}
+        ${["CGT_TOOLS_REAGENTS", "BIOTECH_GENE_EDITING", "BIOTECH_CELL_THERAPY"].includes(n.id) ? `<a href="mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html" style="display:flex; justify-content:space-between; align-items:center; background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.35); padding:7px 10px; border-radius:4px; font-size:11.5px; color:#a78bfa; text-decoration:none; font-weight:600;">
+          <span>⚡ MXCT Electroporation &amp; SPL Deep Report</span><span>→</span>
+        </a>` : ""}
+        <a href="cell_and_gene_therapies_ecosystem_deep_research_report.html" style="display:flex; justify-content:space-between; align-items:center; background:#141c2c; border:1px solid #1f293d; padding:7px 10px; border-radius:4px; font-size:11.5px; color:#34d399; text-decoration:none; font-weight:600;">
+          <span>🧬 CGT Ecosystem Master Report</span><span>→</span>
+        </a>
+        <a href="../index.html" target="_top" style="display:flex; justify-content:space-between; align-items:center; background:#141c2c; border:1px solid #1f293d; padding:7px 10px; border-radius:4px; font-size:11.5px; color:#94a3b8; text-decoration:none; font-weight:600;">
+          <span>🏛️ CORUM Analyses &amp; Reports Board</span><span>→</span>
+        </a>
+      </div>
+
+      <div class="sec-kicker">Connected Transmission Edges</div>
+      <div style="display:flex; flex-direction:column; gap:6px; margin-top:6px;">
+    `;
+    GRAPH_DATA.edges.filter(e => e.source === n.id || e.target === n.id).forEach(e => {
+      const isSrc = e.source === n.id;
+      const other = byId[isSrc ? e.target : e.source];
+      const sign = e.weight > 0 ? "+" : "";
+      html += `
+        <div style="background:#141c2c; border:1px solid #1f293d; padding:6px 8px; border-radius:4px; font-size:11px;">
+          <div style="display:flex; justify-content:space-between; font-weight:600;">
+            <span>${isSrc ? "→ Drives" : "← Receives from"} <b>${other ? other.label : (isSrc ? e.target : e.source)}</b></span>
+            <span style="color:${e.weight > 0 ? '#34d399' : '#f87171'}">${sign}${e.weight.toFixed(2)}</span>
+          </div>
+          <div style="color:#8896ab; font-size:10.5px; margin-top:2px;">${e.rationale}</div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  drawerContent.innerHTML = html;
+  drawer.classList.add("open");
+}
+
+// Choke Points Modal
+const chokeModal = document.getElementById("choke-modal");
+document.getElementById("close-choke").addEventListener("click", () => chokeModal.style.display = "none");
+document.getElementById("chokelist").addEventListener("click", () => {
+  const chokeRows = document.getElementById("choke-rows");
+  chokeRows.innerHTML = `
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="background:#141c2c; padding:10px 12px; border-radius:6px; border:1px solid #1f293d;">
+        <div style="font-weight:700; color:#f43f5e; font-size:12px;">1. Cryoport (CYRX): Cryogenic Liquid Nitrogen Vapor Dewars (-150°C)</div>
+        <div style="color:#cbd5e1; font-size:11.5px; margin-top:3px;">Virtually every commercial and clinical autologous CAR-T relies on Cryoport's dewars and Veri-Clean decontamination protocol. Any logistical failure or container shortage halts patient infusion.</div>
+      </div>
+      <div style="background:#141c2c; padding:10px 12px; border-radius:6px; border:1px solid #1f293d;">
+        <div style="font-weight:700; color:#f43f5e; font-size:12px;">2. MaxCyte (MXCT): Scaled Flow Electroporation Transfection Standard</div>
+        <div style="color:#cbd5e1; font-size:11.5px; margin-top:3px;">MaxCyte's ExPERT flow electroporation platform is licensed in 155+ clinical cell therapy programs (including Casgevy). Non-viral ex-vivo cell editing is structurally locked into their patented processing assemblies.</div>
+      </div>
+      <div style="background:#141c2c; padding:10px 12px; border-radius:6px; border:1px solid #1f293d;">
+        <div style="font-weight:700; color:#f43f5e; font-size:12px;">3. Legend Biotech (LEGN): BCMA CAR-T Manufacturing &amp; Multiple Myeloma Expansion</div>
+        <div style="color:#cbd5e1; font-size:11.5px; margin-top:3px;">Carvykti is the undisputed clinical gold standard in relapsed multiple myeloma with J&J. Manufacturing capacity ramp-up gates commercial delivery against Bristol Myers Squibb's Abecma.</div>
+      </div>
+      <div style="background:#141c2c; padding:10px 12px; border-radius:6px; border:1px solid #1f293d;">
+        <div style="font-weight:700; color:#f43f5e; font-size:12px;">4. Vertex Pharmaceuticals (VRTX): Commercial Distribution &amp; Casgevy Economics</div>
+        <div style="color:#cbd5e1; font-size:11.5px; margin-top:3px;">Vertex holds the 60% commercial economics and global payer muscle for Casgevy. Their outcome-based state Medicaid contracts establish the benchmark for all future gene-editing approvals.</div>
+      </div>
+      <div style="background:#141c2c; padding:10px 12px; border-radius:6px; border:1px solid #1f293d;">
+        <div style="font-weight:700; color:#f43f5e; font-size:12px;">5. Rocket Pharmaceuticals (RCKT): Pivotal Monogenic Rare Disease Pipeline</div>
+        <div style="color:#cbd5e1; font-size:11.5px; margin-top:3px;">RP-A501 Danon disease AAV9 trial represents the critical test case for FDA accelerated approval in rare monogenic cardiac gene therapy; controls key pediatric cardiomyopathy patents.</div>
+      </div>
+    </div>
+  `;
+  chokeModal.style.display = "flex";
+});
+
+// Evolution Matrix Toggle
+const matrixContainer = document.getElementById("matrix-container");
+document.getElementById("btn-matrix").addEventListener("click", () => {
+  matrixContainer.style.display = "block";
+  document.getElementById("btn-matrix").classList.add("active");
+  document.getElementById("btn-orbit").classList.remove("active");
+});
+document.getElementById("close-matrix-btn").addEventListener("click", () => {
+  matrixContainer.style.display = "none";
+  document.getElementById("btn-orbit").classList.add("active");
+  document.getElementById("btn-matrix").classList.remove("active");
+});
+document.getElementById("btn-orbit").addEventListener("click", () => {
+  matrixContainer.style.display = "none";
+  document.getElementById("btn-orbit").classList.add("active");
+  document.getElementById("btn-matrix").classList.remove("active");
+});
+
+// Controls Listeners
+document.getElementById("scen").addEventListener("change", (e) => applyScenario(e.target.value));
+document.getElementById("showedges").addEventListener("change", (e) => {
+  infG.style.display = e.target.checked ? "block" : "none";
+});
+document.getElementById("showcos").addEventListener("change", (e) => {
+  document.querySelectorAll("g.node.co:not(.etf), line.mem:not([data-is-etf='true'])").forEach(el => {
+    el.style.display = e.target.checked ? "block" : "none";
+  });
+});
+document.getElementById("showetfs").addEventListener("change", (e) => {
+  document.querySelectorAll("g.node.etf, line.mem[data-is-etf='true']").forEach(el => {
+    el.style.display = e.target.checked ? "block" : "none";
+  });
+});
+document.getElementById("showchokes").addEventListener("change", (e) => {
+  chokesG.style.display = e.target.checked ? "block" : "none";
+});
+
+document.getElementById("reset-positions").addEventListener("click", () => {
+  allRenderNodes.forEach(n => {
+    const init = initialCoords[n.id];
+    if (!init) return;
+    n.x = init.x;
+    n.y = init.y;
+  });
+  renderGraph();
+  if (currentScenario) applyScenario(currentScenario);
+});
+
+document.getElementById("reset-view").addEventListener("click", () => {
+  currentViewBox = { x: 0, y: 0, w: 2000, h: 1560 };
+  updateViewBox();
+});
+
+// Timeline Scrubber
+document.querySelectorAll(".era-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".era-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentEra = btn.getAttribute("data-era");
+
+    const era = GRAPH_DATA.eras[currentEra];
+    if (era) {
+      document.getElementById("era-badge").textContent = era.badge;
+      document.getElementById("baro-cber").textContent = era.cber;
+      document.getElementById("baro-cryo").textContent = era.cryo;
+      document.getElementById("baro-cdmo").textContent = era.cdmo;
+      document.getElementById("baro-mxct").textContent = era.mxct;
+      document.getElementById("baro-cms").textContent = era.cms;
+    }
+
+    if (currentScenario) applyScenario(currentScenario);
+  });
+});
+
+// Initial Render
+renderGraph();
+</script>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

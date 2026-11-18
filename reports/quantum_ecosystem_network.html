@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantum Computing, PQC, Photonics & Bio-Simulation — Interactive MacroGraph & 5-Round RSI Matrix</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: #0f172a;
+      --panel-2: #131e36;
+      --border: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --cyan: #38bdf8;
+      --violet: #a855f7;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --indigo: #6366f1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      background: linear-gradient(135deg, #090f1f 0%, #111c38 50%, #1a103c 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .title-block h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #38bdf8, #c084fc, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .title-block p {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .kpi-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .kpi-pill {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+    }
+    .kpi-pill strong { color: var(--cyan); font-size: 0.9rem; }
+    .toolbar {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .btn-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .btn-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
+    button {
+      background: #1e293b;
+      color: var(--text);
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 6px 11px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    button:hover, button.active {
+      background: #2563eb;
+      border-color: #60a5fa;
+      color: #fff;
+    }
+    button.scen-btn {
+      background: #1e1b4b;
+      border-color: #4f46e5;
+    }
+    button.scen-btn:hover, button.scen-btn.active {
+      background: #6d28d9;
+      border-color: #c084fc;
+    }
+    .graph-workspace {
+      display: grid;
+      grid-template-columns: 1fr 370px;
+      height: 670px;
+      border-bottom: 1px solid var(--border);
+    }
+    #cy {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #0f172a 0%, #060913 100%);
+    }
+    .sidebar {
+      background: var(--panel);
+      border-left: 1px solid var(--border);
+      padding: 18px;
+      overflow-y: auto;
+    }
+    .sidebar h2 {
+      font-size: 1rem;
+      color: var(--cyan);
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .meta-card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+    }
+    .meta-card h3 { font-size: 0.92rem; color: #f8fafc; margin-bottom: 4px; }
+    .meta-card .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: #1e293b;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+    .edge-list { list-style: none; margin-top: 8px; }
+    .edge-list li {
+      padding: 5px 0;
+      border-bottom: 1px dashed #1e293b;
+      font-size: 0.78rem;
+    }
+    .section-container {
+      max-width: 1620px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    .section-header {
+      margin-bottom: 20px;
+    }
+    .section-header h2 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+    .section-header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+    .rounds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .round-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--violet);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .round-card h3 { font-size: 0.9rem; color: #c084fc; margin-bottom: 4px; }
+    .round-card h4 { font-size: 0.83rem; color: #f8fafc; margin-bottom: 6px; font-family: monospace; }
+    .round-card p { font-size: 0.78rem; color: var(--muted); }
+    .matrix-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .search-input {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      min-width: 240px;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.79rem;
+    }
+    th, td {
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #0b1120;
+      color: #cbd5e1;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+    }
+    tr:hover { background: rgba(30, 41, 59, 0.55); }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .tk { color: #38bdf8; font-size: 0.9rem; }
+    .sub { color: var(--muted); font-size: 0.72rem; }
+    .r5-val { font-size: 0.92rem; color: #f8fafc; }
+    .pos { color: #34d399; font-weight: 600; }
+    .neg { color: #fb7185; font-weight: 600; }
+    .verdict-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .badge-core { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid #10b981; }
+    .badge-tactical { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid #0284c7; }
+    .badge-watch { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid #d97706; }
+    .badge-avoid { background: rgba(244, 63, 94, 0.18); color: #fb7185; border: 1px solid #e11d48; }
+    .layer-pill {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .layer-L1 { background: #3b0764; color: #e9d5ff; }
+    .layer-L2 { background: #064e3b; color: #a7f3d0; }
+    .layer-L3 { background: #0c4a6e; color: #bae6fd; }
+    .layer-L4 { background: #78350f; color: #fde68a; }
+    .layer-L5 { background: #881337; color: #fecdd3; }
+    .notes-cell { min-width: 290px; max-width: 390px; font-size: 0.75rem; color: #cbd5e1; }
+    .stage-txt { font-size: 0.73rem; color: #cbd5e1; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="title-block">
+    <h1>QUANTUM COMPUTING, POST-QUANTUM CRYPTOGRAPHY, PHOTONICS & BIO-SIMULATION MACROGRAPH</h1>
+    <p>Agentic-Bridgewater Causal Network (QUANTUM_COMPUTING, POST_QUANTUM_CRYPTO, QUANTUM_PHOTONICS) + 5-Round RSI Live yfinance Matrix • As of 2026-10-25</p>
+  </div>
+  <div class="kpi-strip">
+    <div class="kpi-pill">Public Universe: <strong>29 Equities</strong></div>
+    <div class="kpi-pill">Private Unicorns: <strong>10 Tracked</strong></div>
+    <div class="kpi-pill">CORE BUY: <strong>7</strong></div>
+    <div class="kpi-pill">TACTICAL BUY: <strong>11</strong></div>
+    <div class="kpi-pill">HOLD / WATCH: <strong>4</strong></div>
+    <div class="kpi-pill">AVOID / FADE: <strong>7</strong></div>
+    <div class="kpi-pill">State Rules: <strong>QTM_R1 .. QTM_R4</strong></div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="btn-group">
+    <span class="btn-label">Layer Filter:</span>
+    <button class="active" onclick="filterGraphLayer('ALL', this)">All Layers (27 Nodes)</button>
+    <button onclick="filterGraphLayer('L1', this)">L1 Quantum Hardware</button>
+    <button onclick="filterGraphLayer('L2', this)">L2 Post-Quantum Crypto</button>
+    <button onclick="filterGraphLayer('L3', this)">L3 Photonics & InP</button>
+    <button onclick="filterGraphLayer('L4', this)">L4 Cryo & Atomic Fab</button>
+    <button onclick="filterGraphLayer('L5', this)">L5 Bio-Simulation & Tools</button>
+    <button onclick="filterGraphLayer('MACRO', this)">Gov & Macro Gatekeepers</button>
+  </div>
+  <div class="btn-group">
+    <span class="btn-label">Shock Simulator:</span>
+    <button class="scen-btn" onclick="runScenario('qec_breakthrough', this)">+1σ QEC Breakthrough (QTM_R1)</button>
+    <button class="scen-btn" onclick="runScenario('cnsa2_hipaa_pqc', this)">+1σ CNSA 2.0 & HIPAA PQC (QTM_R2)</button>
+    <button class="scen-btn" onclick="runScenario('mofcom_inp_choke', this)">+1σ MOFCOM InP Choke (QTM_R3)</button>
+    <button class="scen-btn" onclick="runScenario('rate_dilution_squeeze', this)">+1σ Real-Rate Dilution Squeeze (QTM_R4)</button>
+    <button onclick="resetScenario()">Reset View</button>
+    <a href="#hardened-quantum-recommendation-matrix" style="text-decoration:none;"><button style="background:#059669;border-color:#34d399;color:#fff;">Jump to 5-Round RSI Matrix ↓</button></a>
+  </div>
+</div>
+
+<div class="graph-workspace">
+  <div id="cy"></div>
+  <div class="sidebar" id="inspector">
+    <h2>Quantum Node & Causal Edge Inspector</h2>
+    <div id="scenario-banner" class="meta-card" style="display:none; border-color:#a855f7;">
+      <h3 id="scen-title" style="color:#e9d5ff;"></h3>
+      <p id="scen-desc" style="font-size:0.78rem; color:#cbd5e1; margin-top:4px;"></p>
+    </div>
+    <div class="meta-card" id="node-details">
+      <span class="tag" id="nd-group">Core Bridgewater Hub</span>
+      <h3 id="nd-title">QUANTUM_COMPUTING (L1 Hardware & Cloud Hub)</h3>
+      <p id="nd-desc" style="margin-top:6px; color:#cbd5e1;">Click any node in the interactive graph to inspect its value-chain role, primary KPI metrics, government/healthcare policy gatekeepers, and upstream/downstream causal elasticities.</p>
+      <div style="margin-top:10px; padding-top:8px; border-top:1px solid #1e293b;">
+        <div><strong>Primary KPI:</strong> <span id="nd-kpi" style="color:#38bdf8;">Lambda &gt; 2.0x Error Suppression | 2Q Gate Fidelity &gt;= 99.9%</span></div>
+        <div style="margin-top:4px;"><strong>Gatekeepers:</strong> <span id="nd-gate" style="color:#a7f3d0;">DARPA QBI, DOE NQISRC, NIST QED-C</span></div>
+      </div>
+    </div>
+    <div class="meta-card">
+      <h3>Connected Causal & Supply-Chain Edges</h3>
+      <ul class="edge-list" id="nd-edges">
+        <li>Select a node to inspect all incoming and outgoing elasticities.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<section class="section-container" id="hardened-quantum-recommendation-matrix">
+  <div class="section-header">
+    <h2>Hardened 5-Round Recursive Self-Improvement (RSI) Quantum Equity Recommendation Matrix</h2>
+    <p>Live yfinance technicals (RSI-14, Weekly RSI-14, ConnorsRSI, Weinstein Stage, ATR Buy Zones) fused with 5 sequential Critic -&gt; Sub-Skill audits across all 29 public equities.</p>
+  </div>
+
+  <div class="rounds-grid">
+    <div class="round-card">
+      <h3>ROUND 1 CRITIC &amp; SUB-SKILL</h3>
+      <h4>quantum-dilution-sbc-runway-filter</h4>
+      <p>Penalizes de-SPAC quantum hardware names with &gt;100% SBC/Rev, -145% to -950% FCF margins, and active ATM equity shelves (RGTI, QBTS, QUBT, ARQQ); rewards net-cash &amp; FCF-generative compounders (NVDA, GOOGL, MSFT, IBM, FN, ONTO, KEYS, FORM).</p>
+    </div>
+    <div class="round-card">
+      <h3>ROUND 2 CRITIC &amp; SUB-SKILL</h3>
+      <h4>logical-qubit-fidelity-vs-nisq-reality-audit</h4>
+      <p>Separates verified below-threshold QEC &amp; &gt;99.9% 2Q gate fidelity leaders (Google Willow Lambda=2.14, IBM Gross LDPC, HON Quantinuum QV 2^21, MSFT/Atom 24 logical qubits, NVDA CUDA-Q) from noisy NISQ/annealing/optical solvers.</p>
+    </div>
+    <div class="round-card">
+      <h3>ROUND 3 CRITIC &amp; SUB-SKILL</h3>
+      <h4>pqc-cnsa2-fips203-silicon-rot-pricing-power</h4>
+      <p>Scores NIST FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), FIPS 205 (SLH-DSA) &amp; NSA CNSA 2.0 monetization: PANW Cipher Translation, NET Edge ML-KEM SASE, LSCC MachXO5-NX TDQ Root-of-Trust FPGAs, and 6-inch InP/1.6T optical bottlenecks (COHR, LITE, FN).</p>
+    </div>
+    <div class="round-card">
+      <h3>ROUND 4 CRITIC &amp; SUB-SKILL</h3>
+      <h4>darpa-qbi-doe-hipaa-pqc-fda-midd-mandate-moat</h4>
+      <p>Integrates DARPA QBI Stage A/B/C awards, DOC BIS ECCN 3A901/4A906 &amp; China MOFCOM InP/Gallium export chokes (-5.5 pt penalty on AXTI), HHS OCR HIPAA Security Rule PQC NPRM (45 CFR 164.312), and FDA CDER MIDD quantum/FEP+ drug simulation (SDGR, TMO).</p>
+    </div>
+    <div class="round-card">
+      <h3>ROUND 5 CRITIC &amp; SUB-SKILL</h3>
+      <h4>devils-advocate-weinstein-kelly-gate</h4>
+      <p>Enforces Weinstein Stage 1/2/3 gates (barring Stage 4 downtrends from CORE BUY), multi-timeframe RSI mean-reversion timing, ATR-anchored Buy Zones/Stop-Losses, and Half-Kelly portfolio weights summing to 100%.</p>
+    </div>
+  </div>
+
+  <div class="matrix-controls">
+    <div class="btn-group">
+      <span class="btn-label">Filter Table by Verdict:</span>
+      <button class="active" onclick="filterTable('ALL', this)">All (29)</button>
+      <button onclick="filterTable('CORE BUY', this)">CORE BUY (7)</button>
+      <button onclick="filterTable('TACTICAL BUY', this)">TACTICAL BUY (11)</button>
+      <button onclick="filterTable('HOLD / WATCH', this)">HOLD / WATCH (4)</button>
+      <button onclick="filterTable('AVOID / FADE', this)">AVOID / FADE (7)</button>
+    </div>
+    <input type="text" id="tk-search" class="search-input" placeholder="Search ticker, layer, subsector, or moat..." oninput="searchTable()" />
+  </div>
+
+  <div class="table-wrap">
+    <table id="rsi-table">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Ticker / Company</th>
+          <th>Layer / Node</th>
+          <th>Price / MCap</th>
+          <th>R0</th>
+          <th>R1 (SBC)</th>
+          <th>R2 (QEC)</th>
+          <th>R3 (PQC/InP)</th>
+          <th>R4 (Gov/HC)</th>
+          <th>R5 Final (Δ)</th>
+          <th>Verdict</th>
+          <th>Rev Gr%</th>
+          <th>FCF%</th>
+          <th>SBC/Rev</th>
+          <th>RSI14 / W-RSI</th>
+          <th>Weinstein Stage</th>
+          <th>Buy Zone / Stop / 12M Tgt</th>
+          <th>Kelly / Port Wt</th>
+          <th>Institutional Moat &amp; Bear-Case Risk Audit</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+            <tr data-layer="L1" data-verdict="CORE BUY">
+              <td class="num">#01</td>
+              <td><strong class="tk">GOOGL</strong><br><span class="sub">Alphabet Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">QUANTUM_COMPUTING</span></td>
+              <td class="num">$320.21<br><span class="sub">$3,916.15B</span></td>
+              <td class="num">73.6</td>
+              <td class="num">85.9</td>
+              <td class="num">92.3</td>
+              <td class="num">95.0</td>
+              <td class="num">96.0</td>
+              <td class="num"><strong class="r5-val">96.5</strong><br><span class="pos">(+22.9)</span></td>
+              <td><span class="verdict-badge badge-core">CORE BUY</span></td>
+              <td class="num">+13.8%</td>
+              <td class="num pos">+22.5%</td>
+              <td class="num pos">6.5%</td>
+              <td class="num">31.3 / 44.6<br><span class="sub">CRSI 13.1</span></td>
+              <td><span class="stage-txt">Stage 1/2 (Accumulation / Early Breakout)</span></td>
+              <td class="num">$307.40 - $323.41<br><span class="sub">Stop $288.94 | Tgt $397.06</span></td>
+              <td class="num"><strong>12.0%</strong><br><span class="sub">Wt 6.6%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Undisputed physics milestone leader: Willow 105-qubit processor proved exponential surface-code error suppression (Lambda=2.14) alongside AlphaFold 3 / AlphaQubit AI synergy<br><strong>Risk:</strong> Quantum division is a non-monetized R&D moonshot inside a $2T+ advertising/cloud giant; DOJ antitrust remedies create headline noise</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="CORE BUY">
+              <td class="num">#02</td>
+              <td><strong class="tk">MSFT</strong><br><span class="sub">Microsoft Corp.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">QUANTUM_COMPUTING</span></td>
+              <td class="num">$524.51<br><span class="sub">$3,894.77B</span></td>
+              <td class="num">74.6</td>
+              <td class="num">86.2</td>
+              <td class="num">89.2</td>
+              <td class="num">91.7</td>
+              <td class="num">96.0</td>
+              <td class="num"><strong class="r5-val">96.5</strong><br><span class="pos">(+21.9)</span></td>
+              <td><span class="verdict-badge badge-core">CORE BUY</span></td>
+              <td class="num">+15.2%</td>
+              <td class="num pos">+29.5%</td>
+              <td class="num pos">4.4%</td>
+              <td class="num">52.6 / 63.7<br><span class="sub">CRSI 54.8</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span></td>
+              <td class="num">$500.72 - $529.76<br><span class="sub">Stop $476.43 | Tgt $650.39</span></td>
+              <td class="num"><strong>12.0%</strong><br><span class="sub">Wt 6.6%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> DARPA QBI Stage B selection for Majorana 1 topological qubits + Azure Quantum Elements monetizing AI+HPC+Quantum chemistry today<br><strong>Risk:</strong> Topological Majorana zero-modes remain controversial in academic peer review until multi-tetron logical gate braiding error rates are independently benchmarked</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="CORE BUY">
+              <td class="num">#03</td>
+              <td><strong class="tk">NVDA</strong><br><span class="sub">NVIDIA Corp.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">QUANTUM_COMPUTING</span></td>
+              <td class="num">$210.96<br><span class="sub">$5,094.05B</span></td>
+              <td class="num">80.7</td>
+              <td class="num">91.3</td>
+              <td class="num">93.5</td>
+              <td class="num">95.0</td>
+              <td class="num">96.0</td>
+              <td class="num"><strong class="r5-val">96.5</strong><br><span class="pos">(+15.8)</span></td>
+              <td><span class="verdict-badge badge-core">CORE BUY</span></td>
+              <td class="num">+68.0%</td>
+              <td class="num pos">+52.0%</td>
+              <td class="num pos">3.6%</td>
+              <td class="num">38.1 / 51.6<br><span class="sub">CRSI 30.1</span></td>
+              <td><span class="stage-txt">Stage 2/3 (Bullish Pullback to Support)</span></td>
+              <td class="num">$202.52 - $213.07<br><span class="sub">Stop $189.36 | Tgt $261.59</span></td>
+              <td class="num"><strong>12.0%</strong><br><span class="sub">Wt 6.6%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Ultimate merchant tollbooth: whether superconducting, trapped-ion, neutral-atom, or photonic wins, all require NVIDIA GPUs running CUDA-Q for real-time QEC decoding and cuQuantum simulation<br><strong>Risk:</strong> High cyclical sensitivity to hyperscaler AI capex digestion and US DOC BIS export controls</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="CORE BUY">
+              <td class="num">#04</td>
+              <td><strong class="tk">KEYS</strong><br><span class="sub">Keysight Technologies Inc.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SEMI_EQUIP</span></td>
+              <td class="num">$314.77<br><span class="sub">$53.59B</span></td>
+              <td class="num">71.2</td>
+              <td class="num">82.6</td>
+              <td class="num">88.0</td>
+              <td class="num">93.5</td>
+              <td class="num">95.7</td>
+              <td class="num"><strong class="r5-val">96.5</strong><br><span class="pos">(+25.3)</span></td>
+              <td><span class="verdict-badge badge-core">CORE BUY</span></td>
+              <td class="num">+8.5%</td>
+              <td class="num pos">+22.8%</td>
+              <td class="num pos">2.8%</td>
+              <td class="num">34.8 / 47.9<br><span class="sub">CRSI 50.8</span></td>
+              <td><span class="stage-txt">Stage 2/3 (Bullish Pullback to Support)</span></td>
+              <td class="num">$302.18 - $317.92<br><span class="sub">Stop $270.08 | Tgt $390.31</span></td>
+              <td class="num"><strong>12.0%</strong><br><span class="sub">Wt 6.6%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Essential physics instrumentation monopoly: sells the microwave qubit control systems (QCS), True-Q error-characterization software, and 1.6T PQC network stress testers to every quantum lab globally<br><strong>Risk:</strong> Wireless 5G telecom carrier test spending remains muted, partially offsetting AI 1.6T and defense/quantum strength</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="CORE BUY">
+              <td class="num">#05</td>
+              <td><strong class="tk">TMO</strong><br><span class="sub">Thermo Fisher Scientific Inc.</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">HC_DIAGNOSTICS_LABS_TOOLS</span></td>
+              <td class="num">$673.82<br><span class="sub">$249.14B</span></td>
+              <td class="num">73.1</td>
+              <td class="num">82.4</td>
+              <td class="num">85.3</td>
+              <td class="num">87.5</td>
+              <td class="num">92.4</td>
+              <td class="num"><strong class="r5-val">96.0</strong><br><span class="pos">(+22.9)</span></td>
+              <td><span class="verdict-badge badge-core">CORE BUY</span></td>
+              <td class="num">+6.5%</td>
+              <td class="num pos">+17.5%</td>
+              <td class="num pos">1.4%</td>
+              <td class="num">53.8 / 67.2<br><span class="sub">CRSI 29.5</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span></td>
+              <td class="num">$635.09 - $680.56<br><span class="sub">Stop $585.11 | Tgt $835.54</span></td>
+              <td class="num"><strong>12.0%</strong><br><span class="sub">Wt 6.6%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Physical truth oracle for quantum bio-simulation: every quantum VQE/FEP+ or AlphaFold 3 hypothesis must be validated on Thermo Fisher Krios Cryo-EM and Orbitrap Astral mass spectrometers<br><strong>Risk:</strong> NIH intramural/extramural academic grant budget noise and China analytical instrument stimulus timing</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="CORE BUY">
+              <td class="num">#06</td>
+              <td><strong class="tk">PANW</strong><br><span class="sub">Palo Alto Networks Inc.</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">POST_QUANTUM_CRYPTO</span></td>
+              <td class="num">$380.55<br><span class="sub">$311.29B</span></td>
+              <td class="num">69.6</td>
+              <td class="num">79.4</td>
+              <td class="num">80.7</td>
+              <td class="num">85.9</td>
+              <td class="num">91.0</td>
+              <td class="num"><strong class="r5-val">94.6</strong><br><span class="pos">(+25.0)</span></td>
+              <td><span class="verdict-badge badge-core">CORE BUY</span></td>
+              <td class="num">+14.8%</td>
+              <td class="num pos">+37.5%</td>
+              <td class="num pos">14.2%</td>
+              <td class="num">52.3 / 59.1<br><span class="sub">CRSI 88.5</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span></td>
+              <td class="num">$364.79 - $384.36<br><span class="sub">Stop $320.81 | Tgt $471.88</span></td>
+              <td class="num"><strong>12.0%</strong><br><span class="sub">Wt 6.6%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> PAN-OS PQC Cipher Translation solves enterprise legacy debt by terminating post-quantum ML-KEM tunnels at the firewall without rewriting backend hospital, bank, or federal code<br><strong>Risk:</strong> Platformization bundle transition creates temporary billings growth noise</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="TACTICAL BUY">
+              <td class="num">#07</td>
+              <td><strong class="tk">IBM</strong><br><span class="sub">International Business Machines Corp.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">QUANTUM_COMPUTING</span></td>
+              <td class="num">$253.56<br><span class="sub">$239.64B</span></td>
+              <td class="num">74.9</td>
+              <td class="num">82.5</td>
+              <td class="num">88.4</td>
+              <td class="num">94.1</td>
+              <td class="num">96.0</td>
+              <td class="num"><strong class="r5-val">91.8</strong><br><span class="pos">(+16.9)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+5.5%</td>
+              <td class="num pos">+20.2%</td>
+              <td class="num pos">2.2%</td>
+              <td class="num">71.2 / 53.7<br><span class="sub">CRSI 83.8</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$229.54 - $256.10<br><span class="sub">Stop $213.26 | Tgt $299.20</span></td>
+              <td class="num"><strong>11.6%</strong><br><span class="sub">Wt 6.4%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Co-authored 3 of 4 NIST PQC standards, #1 Qiskit developer ecosystem, $1B+ cumulative quantum bookings, Gross LDPC code breakthrough & Cleveland Clinic bio-moat<br><strong>Risk:</strong> Superconducting transmons require 15mK dilution refrigeration and microwave cabling density improvements to scale past 10,000 physical qubits</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="CORE BUY">
+              <td class="num">#08</td>
+              <td><strong class="tk">HON</strong><br><span class="sub">Honeywell International Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">QUANTUM_COMPUTING</span></td>
+              <td class="num">$221.15<br><span class="sub">$70.09B</span></td>
+              <td class="num">71.4</td>
+              <td class="num">79.5</td>
+              <td class="num">85.7</td>
+              <td class="num">87.7</td>
+              <td class="num">89.9</td>
+              <td class="num"><strong class="r5-val">90.7</strong><br><span class="pos">(+19.3)</span></td>
+              <td><span class="verdict-badge badge-core">CORE BUY</span></td>
+              <td class="num">+5.8%</td>
+              <td class="num pos">+14.8%</td>
+              <td class="num pos">0.9%</td>
+              <td class="num">66.3 / 49.2<br><span class="sub">CRSI 86.7</span></td>
+              <td><span class="stage-txt">Stage 1 (Base Building / Recovery)</span></td>
+              <td class="num">$209.12 - $223.36<br><span class="sub">Stop $197.09 | Tgt $274.23</span></td>
+              <td class="num"><strong>12.0%</strong><br><span class="sub">Wt 6.6%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Owns ~54% of Quantinuum ($10B pre-IPO valuation), the world's highest-fidelity trapped-ion QPU (99.9%+ 2Q fidelity, QV 2^21) plus Aerospace breakup value unlock<br><strong>Risk:</strong> Trapped-ion physical gate speeds (microseconds/milliseconds) are slower than superconducting nanoseconds, requiring QCCD ion shuttling optimization</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="TACTICAL BUY">
+              <td class="num">#09</td>
+              <td><strong class="tk">FORM</strong><br><span class="sub">FormFactor Inc.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SEMI_EQUIP</span></td>
+              <td class="num">$98.51<br><span class="sub">$7.68B</span></td>
+              <td class="num">70.3</td>
+              <td class="num">80.8</td>
+              <td class="num">83.8</td>
+              <td class="num">88.2</td>
+              <td class="num">89.6</td>
+              <td class="num"><strong class="r5-val">86.8</strong><br><span class="pos">(+16.5)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+16.5%</td>
+              <td class="num pos">+13.5%</td>
+              <td class="num pos">5.2%</td>
+              <td class="num">35.2 / 45.5<br><span class="sub">CRSI 56.5</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$94.57 - $99.50<br><span class="sub">Stop $74.88 | Tgt $116.24</span></td>
+              <td class="num"><strong>11.1%</strong><br><span class="sub">Wt 6.1%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Purest profitable cryogenic + photonics picks-and-shovels play: IQ3000 sub-4K wafer probers screen superconducting/spin qubits at the wafer level, backed by booming HBM4 & Silicon Photonics probe card cash flow<br><strong>Risk:</strong> Quarterly gross margins fluctuate with client CPU/foundry node transition timing</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="TACTICAL BUY">
+              <td class="num">#10</td>
+              <td><strong class="tk">NET</strong><br><span class="sub">Cloudflare Inc.</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">POST_QUANTUM_CRYPTO</span></td>
+              <td class="num">$325.73<br><span class="sub">$115.99B</span></td>
+              <td class="num">71.7</td>
+              <td class="num">71.1</td>
+              <td class="num">72.7</td>
+              <td class="num">78.3</td>
+              <td class="num">80.5</td>
+              <td class="num"><strong class="r5-val">84.1</strong><br><span class="pos">(+12.4)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+27.5%</td>
+              <td class="num pos">+14.5%</td>
+              <td class="num pos">21.5%</td>
+              <td class="num">50.6 / 60.1<br><span class="sub">CRSI 79.5</span></td>
+              <td><span class="stage-txt">Stage 2 (Advancing Uptrend)</span></td>
+              <td class="num">$312.70 - $328.99<br><span class="sub">Stop $271.19 | Tgt $384.36</span></td>
+              <td class="num"><strong>10.0%</strong><br><span class="sub">Wt 5.5%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> World's largest live production deployment of NIST FIPS 203 Post-Quantum Cryptography (>35% of global human web traffic encrypted with ML-KEM across 330+ cities)<br><strong>Risk:</strong> Premium EV/Sales multiple (~18x-22x) and 21.5% SBC/Rev create rate-sensitivity during macro risk-off drawdowns</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="TACTICAL BUY">
+              <td class="num">#11</td>
+              <td><strong class="tk">FN</strong><br><span class="sub">Fabrinet</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">QUANTUM_PHOTONICS</span></td>
+              <td class="num">$314.94<br><span class="sub">$11.29B</span></td>
+              <td class="num">63.3</td>
+              <td class="num">80.2</td>
+              <td class="num">82.1</td>
+              <td class="num">86.8</td>
+              <td class="num">87.9</td>
+              <td class="num"><strong class="r5-val">81.5</strong><br><span class="pos">(+18.2)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+19.5%</td>
+              <td class="num pos">+11.2%</td>
+              <td class="num pos">2.4%</td>
+              <td class="num">26.6 / 35.9<br><span class="sub">CRSI 33.4</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$302.34 - $318.09<br><span class="sub">Stop $238.14 | Tgt $371.63</span></td>
+              <td class="num"><strong>9.0%</strong><br><span class="sub">Wt 4.9%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Unrivaled sub-micron photonic packaging monopoly with $900M+ net cash, 2.4% SBC/Rev, and exclusive NVIDIA/Lumentum 1.6T & quantum optical assembly lock-in<br><strong>Risk:</strong> Structurally lower EMS gross margin (~12.6%) though operating expense discipline yields ~11% FCF margin and >25% ROIC</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="TACTICAL BUY">
+              <td class="num">#12</td>
+              <td><strong class="tk">SDGR</strong><br><span class="sub">Schrodinger Inc.</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">AI_MATERIALS_CHEMISTRY</span></td>
+              <td class="num">$23.80<br><span class="sub">$1.78B</span></td>
+              <td class="num">81.0</td>
+              <td class="num">72.9</td>
+              <td class="num">75.5</td>
+              <td class="num">73.9</td>
+              <td class="num">79.0</td>
+              <td class="num"><strong class="r5-val">81.2</strong><br><span class="pos">(+0.2)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+18.5%</td>
+              <td class="num neg">-35.0%</td>
+              <td class="num pos">22.0%</td>
+              <td class="num">44.8 / 57.2<br><span class="sub">CRSI 66.7</span></td>
+              <td><span class="stage-txt">Stage 2/3 (Bullish Pullback to Support)</span></td>
+              <td class="num">$22.85 - $24.04<br><span class="sub">Stop $18.47 | Tgt $28.08</span></td>
+              <td class="num"><strong>8.9%</strong><br><span class="sub">Wt 4.9%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> 30-year physics-based QM/MM and FEP+ Hamiltonian simulation moat licensed by 100% of Top-20 Pharma; immediate bridge between classical GPU clusters and fault-tolerant quantum chemistry<br><strong>Risk:</strong> Internal proprietary oncology clinical trials (SGR-1505, SGR-2921, SGR-3515) create biotech binary cash burn that obscures the high-margin software business</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="TACTICAL BUY">
+              <td class="num">#13</td>
+              <td><strong class="tk">LITE</strong><br><span class="sub">Lumentum Holdings Inc.</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">QUANTUM_PHOTONICS</span></td>
+              <td class="num">$756.17<br><span class="sub">$68.50B</span></td>
+              <td class="num">71.1</td>
+              <td class="num">72.8</td>
+              <td class="num">74.7</td>
+              <td class="num">79.3</td>
+              <td class="num">80.1</td>
+              <td class="num"><strong class="r5-val">80.9</strong><br><span class="pos">(+9.8)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+24.5%</td>
+              <td class="num pos">+11.5%</td>
+              <td class="num pos">9.8%</td>
+              <td class="num">34.5 / 45.6<br><span class="sub">CRSI 46.0</span></td>
+              <td><span class="stage-txt">Stage 1/2 (Accumulation / Early Breakout)</span></td>
+              <td class="num">$725.92 - $763.73<br><span class="sub">Stop $568.14 | Tgt $892.28</span></td>
+              <td class="num"><strong>8.8%</strong><br><span class="sub">Wt 4.8%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Scarcest bottleneck asset in photonics: captive US/UK/Japan Indium Phosphide (InP) EML & CW laser fabs sold out through 2026 for 800G/1.6T AI & quantum optical links<br><strong>Risk:</strong> Convertible debt leverage (~2.4x Net Debt/EBITDA) and customer concentration across top cloud hyperscalers</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="TACTICAL BUY">
+              <td class="num">#14</td>
+              <td><strong class="tk">COHR</strong><br><span class="sub">Coherent Corp.</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">QUANTUM_PHOTONICS</span></td>
+              <td class="num">$209.29<br><span class="sub">$41.22B</span></td>
+              <td class="num">68.3</td>
+              <td class="num">76.1</td>
+              <td class="num">79.0</td>
+              <td class="num">83.9</td>
+              <td class="num">85.9</td>
+              <td class="num"><strong class="r5-val">79.5</strong><br><span class="pos">(+11.2)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+18.5%</td>
+              <td class="num pos">+12.8%</td>
+              <td class="num pos">4.8%</td>
+              <td class="num">30.3 / 38.6<br><span class="sub">CRSI 47.7</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$200.92 - $211.38<br><span class="sub">Stop $153.03 | Tgt $246.96</span></td>
+              <td class="num"><strong>8.2%</strong><br><span class="sub">Wt 4.5%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Triple crown: (1) World's leading 6-inch domestic InP wafer fab in Sherman, TX, (2) #1 supplier of optical tweezer/cooling lasers for trapped-ion & neutral-atom QPUs, (3) 800G/1.6T AI transceiver scale<br><strong>Risk:</strong> Industrial & SiC materials segments carry cyclical macro sensitivity alongside acquisition debt paydown</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="TACTICAL BUY">
+              <td class="num">#15</td>
+              <td><strong class="tk">ENTG</strong><br><span class="sub">Entegris Inc.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SEMI_EQUIP</span></td>
+              <td class="num">$134.52<br><span class="sub">$20.49B</span></td>
+              <td class="num">70.7</td>
+              <td class="num">73.3</td>
+              <td class="num">75.2</td>
+              <td class="num">75.9</td>
+              <td class="num">77.0</td>
+              <td class="num"><strong class="r5-val">79.2</strong><br><span class="pos">(+8.5)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+11.5%</td>
+              <td class="num pos">+14.5%</td>
+              <td class="num pos">2.6%</td>
+              <td class="num">40.2 / 47.6<br><span class="sub">CRSI 62.9</span></td>
+              <td><span class="stage-txt">Stage 1/2 (Accumulation / Early Breakout)</span></td>
+              <td class="num">$129.14 - $135.87<br><span class="sub">Stop $109.67 | Tgt $158.73</span></td>
+              <td class="num"><strong>8.1%</strong><br><span class="sub">Wt 4.4%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Parts-per-trillion chemical purity and isotopically enriched Silicon-28 / Tantalum precursors that directly determine qubit coherence time (T1/T2)<br><strong>Risk:</strong> Elevated net leverage (~3.1x Net Debt/EBITDA) from CMC Materials acquisition limits near-term multiple expansion</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="TACTICAL BUY">
+              <td class="num">#16</td>
+              <td><strong class="tk">AMAT</strong><br><span class="sub">Applied Materials Inc.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SEMI_EQUIP</span></td>
+              <td class="num">$377.24<br><span class="sub">$299.38B</span></td>
+              <td class="num">63.8</td>
+              <td class="num">78.9</td>
+              <td class="num">81.1</td>
+              <td class="num">82.7</td>
+              <td class="num">84.4</td>
+              <td class="num"><strong class="r5-val">78.0</strong><br><span class="pos">(+14.2)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+10.5%</td>
+              <td class="num pos">+26.5%</td>
+              <td class="num pos">2.1%</td>
+              <td class="num">26.1 / 39.7<br><span class="sub">CRSI 46.8</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$362.15 - $381.01<br><span class="sub">Stop $316.92 | Tgt $445.14</span></td>
+              <td class="num"><strong>7.7%</strong><br><span class="sub">Wt 4.2%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Atomic-scale materials engineering monopoly reducing two-level-system (TLS) decoherence in superconducting & silicon-spin qubits while generating $7B+ annual FCF<br><strong>Risk:</strong> DOC BIS China WFE export restriction headwinds and DOJ subpoena over legacy China shipment routing</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="TACTICAL BUY">
+              <td class="num">#17</td>
+              <td><strong class="tk">LRCX</strong><br><span class="sub">Lam Research Corp.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SEMI_EQUIP</span></td>
+              <td class="num">$230.10<br><span class="sub">$287.95B</span></td>
+              <td class="num">64.2</td>
+              <td class="num">79.1</td>
+              <td class="num">81.2</td>
+              <td class="num">82.6</td>
+              <td class="num">84.0</td>
+              <td class="num"><strong class="r5-val">77.6</strong><br><span class="pos">(+13.4)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+14.2%</td>
+              <td class="num pos">+27.5%</td>
+              <td class="num pos">1.9%</td>
+              <td class="num">24.6 / 39.2<br><span class="sub">CRSI 28.5</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$220.90 - $232.40<br><span class="sub">Stop $186.73 | Tgt $271.52</span></td>
+              <td class="num"><strong>7.5%</strong><br><span class="sub">Wt 4.1%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Dominant supplier of Through-Silicon Via (TSV) deep etch and Atomic Layer Etch (ALE) essential for 3D multi-layer superconducting quantum interposers and HBM3e/4 stacks<br><strong>Risk:</strong> NAND flash memory capex recovery pace and China domestic WFE normalization</td>
+            </tr>
+            
+            <tr data-layer="L4" data-verdict="TACTICAL BUY">
+              <td class="num">#18</td>
+              <td><strong class="tk">ONTO</strong><br><span class="sub">Onto Innovation Inc.</span></td>
+              <td><span class="layer-pill layer-L4">L4</span><br><span class="sub">SEMI_EQUIP</span></td>
+              <td class="num">$198.68<br><span class="sub">$9.75B</span></td>
+              <td class="num">63.2</td>
+              <td class="num">79.8</td>
+              <td class="num">81.2</td>
+              <td class="num">82.4</td>
+              <td class="num">83.4</td>
+              <td class="num"><strong class="r5-val">77.0</strong><br><span class="pos">(+13.8)</span></td>
+              <td><span class="verdict-badge badge-tactical">TACTICAL BUY</span></td>
+              <td class="num">+18.0%</td>
+              <td class="num pos">+22.0%</td>
+              <td class="num pos">3.4%</td>
+              <td class="num">26.5 / 39.5<br><span class="sub">CRSI 43.7</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$190.73 - $200.67<br><span class="sub">Stop $154.52 | Tgt $234.44</span></td>
+              <td class="num"><strong>7.3%</strong><br><span class="sub">Wt 4.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Debt-free advanced packaging metrology leader inspecting micro-bump and TSV interconnects across AI CoWoS, Silicon Photonics, and multi-chip QPU tiles<br><strong>Risk:</strong> Quarterly order lumpiness tied to TSMC CoWoS and HBM capacity expansion schedules</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="HOLD / WATCH">
+              <td class="num">#19</td>
+              <td><strong class="tk">CIEN</strong><br><span class="sub">Ciena Corp.</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">QUANTUM_PHOTONICS</span></td>
+              <td class="num">$320.26<br><span class="sub">$45.42B</span></td>
+              <td class="num">64.3</td>
+              <td class="num">71.5</td>
+              <td class="num">73.1</td>
+              <td class="num">76.0</td>
+              <td class="num">77.4</td>
+              <td class="num"><strong class="r5-val">73.2</strong><br><span class="pos">(+8.9)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH</span></td>
+              <td class="num">+12.0%</td>
+              <td class="num pos">+11.5%</td>
+              <td class="num pos">3.5%</td>
+              <td class="num">39.2 / 43.0<br><span class="sub">CRSI 32.6</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$307.45 - $323.46<br><span class="sub">Stop $240.39 | Tgt $339.48</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> 18-24 month technology lead in 1.6T coherent optical DSPs (WaveLogic 6) combined with NIST PQC + QKD Layer-1 optical fiber encryption against HNDL attacks<br><strong>Risk:</strong> Telecom Tier-1 carrier capex remains cyclical even as hyperscaler MOFN/DCI orders accelerate</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="HOLD / WATCH">
+              <td class="num">#20</td>
+              <td><strong class="tk">LSCC</strong><br><span class="sub">Lattice Semiconductor Corp.</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">POST_QUANTUM_CRYPTO</span></td>
+              <td class="num">$96.19<br><span class="sub">$13.63B</span></td>
+              <td class="num">60.8</td>
+              <td class="num">68.2</td>
+              <td class="num">69.2</td>
+              <td class="num">74.5</td>
+              <td class="num">76.5</td>
+              <td class="num"><strong class="r5-val">70.1</strong><br><span class="pos">(+9.3)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH</span></td>
+              <td class="num">+12.5%</td>
+              <td class="num pos">+26.5%</td>
+              <td class="num pos">13.5%</td>
+              <td class="num">29.6 / 40.0<br><span class="sub">CRSI 27.8</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$92.34 - $97.15<br><span class="sub">Stop $78.50 | Tgt $101.96</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Crypto-agility monopoly in server Platform Root-of-Trust (PRoT): MachXO5-NX TDQ delivers full NSA CNSA 2.0 bitstream & firmware authentication in field-programmable silicon<br><strong>Risk:</strong> Recovering from 2024 industrial/telecom FPGA channel inventory digestion; competes with Altera and AMD/Xilinx at mid-range densities</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="HOLD / WATCH">
+              <td class="num">#21</td>
+              <td><strong class="tk">IONQ</strong><br><span class="sub">IonQ Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">QUANTUM_COMPUTING</span></td>
+              <td class="num">$31.27<br><span class="sub">$13.43B</span></td>
+              <td class="num">73.4</td>
+              <td class="num">52.0</td>
+              <td class="num">53.9</td>
+              <td class="num">54.0</td>
+              <td class="num">55.4</td>
+              <td class="num"><strong class="r5-val">51.2</strong><br><span class="neg">(-22.2)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH</span></td>
+              <td class="num">+78.0%</td>
+              <td class="num neg">-145.0%</td>
+              <td class="num neg">165.0%</td>
+              <td class="num">34.4 / 40.3<br><span class="sub">CRSI 54.1</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$30.02 - $31.58<br><span class="sub">Stop $24.56 | Tgt $33.15</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> 99.9% Barium-ion 2Q gate fidelity, all-to-all connectivity, AFRL Rome Lab quantum networking contracts & $650M+ cash war chest<br><strong>Risk:</strong> Trading >60x EV/Sales with ~165% SBC/Rev and active ATM equity shelf dilution; fault-tolerant scale requires optical chiplet transduction</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="HOLD / WATCH">
+              <td class="num">#22</td>
+              <td><strong class="tk">ABSI</strong><br><span class="sub">Absci Corp.</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">AI_MATERIALS_CHEMISTRY</span></td>
+              <td class="num">$9.18<br><span class="sub">$1.58B</span></td>
+              <td class="num">71.8</td>
+              <td class="num">46.1</td>
+              <td class="num">45.8</td>
+              <td class="num">43.2</td>
+              <td class="num">43.8</td>
+              <td class="num"><strong class="r5-val">46.0</strong><br><span class="neg">(-25.8)</span></td>
+              <td><span class="verdict-badge badge-watch">HOLD / WATCH</span></td>
+              <td class="num">+65.0%</td>
+              <td class="num neg">-620.0%</td>
+              <td class="num neg">140.0%</td>
+              <td class="num">48.4 / 55.2<br><span class="sub">CRSI 32.3</span></td>
+              <td><span class="stage-txt">Stage 2/3 (Bullish Pullback to Support)</span></td>
+              <td class="num">$8.81 - $9.27<br><span class="sub">Stop $6.85 | Tgt $9.73</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Validated zero-shot de novo antibody generation in wet-lab assays (SoluPro E. coli screening millions of variants per week)<br><strong>Risk:</strong> Early-stage clinical pipeline (Phase 1 ABS-101 in crowded TL1A space) with >600% negative FCF margin and dilution overhang</td>
+            </tr>
+            
+            <tr data-layer="L3" data-verdict="AVOID / FADE">
+              <td class="num">#23</td>
+              <td><strong class="tk">AXTI</strong><br><span class="sub">AXT Inc.</span></td>
+              <td><span class="layer-pill layer-L3">L3</span><br><span class="sub">QUANTUM_PHOTONICS</span></td>
+              <td class="num">$52.08<br><span class="sub">$3.42B</span></td>
+              <td class="num">66.5</td>
+              <td class="num">59.0</td>
+              <td class="num">59.0</td>
+              <td class="num">58.9</td>
+              <td class="num">48.2</td>
+              <td class="num"><strong class="r5-val">44.0</strong><br><span class="neg">(-22.5)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / FADE</span></td>
+              <td class="num">+28.0%</td>
+              <td class="num neg">-14.0%</td>
+              <td class="num pos">8.5%</td>
+              <td class="num">37.2 / 44.8<br><span class="sub">CRSI 47.0</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$50.00 - $52.60<br><span class="sub">Stop $36.07 | Tgt $40.62</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> One of only 3 global merchant suppliers (alongside Sumitomo and JX Nippon) of 3-inch to 6-inch Indium Phosphide (InP) epi-ready substrates<br><strong>Risk:</strong> Extreme geopolitical choke risk: factories located in China (Beijing Tongmei) face recurring China MOFCOM Indium/Gallium export licensing delays and US tariff exposure</td>
+            </tr>
+            
+            <tr data-layer="L5" data-verdict="AVOID / FADE">
+              <td class="num">#24</td>
+              <td><strong class="tk">RXRX</strong><br><span class="sub">Recursion Pharmaceuticals Inc.</span></td>
+              <td><span class="layer-pill layer-L5">L5</span><br><span class="sub">AI_MATERIALS_CHEMISTRY</span></td>
+              <td class="num">$3.70<br><span class="sub">$1.98B</span></td>
+              <td class="num">70.3</td>
+              <td class="num">44.4</td>
+              <td class="num">44.7</td>
+              <td class="num">42.5</td>
+              <td class="num">43.3</td>
+              <td class="num"><strong class="r5-val">40.5</strong><br><span class="neg">(-29.8)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / FADE</span></td>
+              <td class="num">+35.0%</td>
+              <td class="num neg">-450.0%</td>
+              <td class="num neg">115.0%</td>
+              <td class="num">48.1 / 49.3<br><span class="sub">CRSI 66.6</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$3.55 - $3.74<br><span class="sub">Stop $2.63 | Tgt $2.89</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> 60+ petabytes of proprietary wet-lab phenomic/transcriptomic data paired with BioHive-2 (#1 biopharma supercomputer) and Exscientia's QM/MM chemistry platform<br><strong>Risk:</strong> Mixed Phase 2 clinical trial efficacy readouts to date (REC-994, REC-2282), heavy SBC (>100% of revenue), and ongoing ATM dilution</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="AVOID / FADE">
+              <td class="num">#25</td>
+              <td><strong class="tk">LAES</strong><br><span class="sub">SEALSQ Corp.</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">POST_QUANTUM_CRYPTO</span></td>
+              <td class="num">$1.55<br><span class="sub">$0.35B</span></td>
+              <td class="num">43.9</td>
+              <td class="num">38.3</td>
+              <td class="num">29.6</td>
+              <td class="num">28.7</td>
+              <td class="num">28.1</td>
+              <td class="num"><strong class="r5-val">21.7</strong><br><span class="neg">(-22.2)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / FADE</span></td>
+              <td class="num">-12.0%</td>
+              <td class="num neg">-65.0%</td>
+              <td class="num neg">32.0%</td>
+              <td class="num">21.2 / 31.0<br><span class="sub">CRSI 48.5</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$1.49 - $1.57<br><span class="sub">Stop $1.20 | Tgt $1.21</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> FIPS 140-3 / Common Criteria EAL5+ certified secure elements upgrading to hardware-accelerated ML-KEM/ML-DSA (QS7001)<br><strong>Risk:</strong> Legacy semiconductor secure-element revenue declined during customer inventory destocking; small scale vs. Lattice (LSCC), NXP, and Infineon</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="AVOID / FADE">
+              <td class="num">#26</td>
+              <td><strong class="tk">RGTI</strong><br><span class="sub">Rigetti Computing Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">QUANTUM_COMPUTING</span></td>
+              <td class="num">$11.52<br><span class="sub">$3.85B</span></td>
+              <td class="num">48.2</td>
+              <td class="num">27.6</td>
+              <td class="num">25.0</td>
+              <td class="num">21.7</td>
+              <td class="num">20.3</td>
+              <td class="num"><strong class="r5-val">13.9</strong><br><span class="neg">(-34.3)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / FADE</span></td>
+              <td class="num">-10.5%</td>
+              <td class="num neg">-420.0%</td>
+              <td class="num neg">210.0%</td>
+              <td class="num">30.6 / 40.1<br><span class="sub">CRSI 56.0</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$11.06 - $11.64<br><span class="sub">Stop $9.32 | Tgt $8.99</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Captive Fremont Fab-1 superconducting quantum foundry and modular multi-chip tile coupler IP<br><strong>Risk:</strong> Severe structural headwind competing head-to-head against IBM and Google in superconducting transmons with ~$11M revenue and heavy ATM share dilution</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="AVOID / FADE">
+              <td class="num">#27</td>
+              <td><strong class="tk">QBTS</strong><br><span class="sub">D-Wave Quantum Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">QUANTUM_COMPUTING</span></td>
+              <td class="num">$11.66<br><span class="sub">$4.43B</span></td>
+              <td class="num">50.3</td>
+              <td class="num">30.7</td>
+              <td class="num">22.0</td>
+              <td class="num">18.2</td>
+              <td class="num">16.2</td>
+              <td class="num"><strong class="r5-val">12.0</strong><br><span class="neg">(-38.3)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / FADE</span></td>
+              <td class="num">+42.0%</td>
+              <td class="num neg">-380.0%</td>
+              <td class="num neg">195.0%</td>
+              <td class="num">28.3 / 37.2<br><span class="sub">CRSI 53.4</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$11.19 - $11.78<br><span class="sub">Stop $9.45 | Tgt $9.09</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Only commercial 4,400+ qubit quantum annealer generating production logistics, telecom & defense scheduling workloads today<br><strong>Risk:</strong> Quantum annealing cannot run fault-tolerant gate-model algorithms (Shor's, Grover's, universal QEC) and faces classical GPU/simulated bifurcation competition</td>
+            </tr>
+            
+            <tr data-layer="L1" data-verdict="AVOID / FADE">
+              <td class="num">#28</td>
+              <td><strong class="tk">QUBT</strong><br><span class="sub">Quantum Computing Inc.</span></td>
+              <td><span class="layer-pill layer-L1">L1</span><br><span class="sub">QUANTUM_COMPUTING</span></td>
+              <td class="num">$6.56<br><span class="sub">$1.48B</span></td>
+              <td class="num">44.6</td>
+              <td class="num">22.1</td>
+              <td class="num">15.0</td>
+              <td class="num">14.0</td>
+              <td class="num">12.0</td>
+              <td class="num"><strong class="r5-val">12.0</strong><br><span class="neg">(-32.6)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / FADE</span></td>
+              <td class="num">+35.0%</td>
+              <td class="num neg">-950.0%</td>
+              <td class="num neg">380.0%</td>
+              <td class="num">35.7 / 39.5<br><span class="sub">CRSI 37.3</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$6.30 - $6.63<br><span class="sub">Stop $5.40 | Tgt $5.12</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Early domestic Thin-Film Lithium Niobate (TFLN) photonic wafer fabrication facility in Tempe, Arizona<br><strong>Risk:</strong> Extreme valuation disconnect (>500x EV/Sales on <$2M revenue), heavy PIPE/ATM equity dilution, and past accounting restatement governance flags</td>
+            </tr>
+            
+            <tr data-layer="L2" data-verdict="AVOID / FADE">
+              <td class="num">#29</td>
+              <td><strong class="tk">ARQQ</strong><br><span class="sub">Arqit Quantum Inc.</span></td>
+              <td><span class="layer-pill layer-L2">L2</span><br><span class="sub">POST_QUANTUM_CRYPTO</span></td>
+              <td class="num">$16.41<br><span class="sub">$0.29B</span></td>
+              <td class="num">42.5</td>
+              <td class="num">20.0</td>
+              <td class="num">15.0</td>
+              <td class="num">14.0</td>
+              <td class="num">12.0</td>
+              <td class="num"><strong class="r5-val">12.0</strong><br><span class="neg">(-30.5)</span></td>
+              <td><span class="verdict-badge badge-avoid">AVOID / FADE</span></td>
+              <td class="num">+15.0%</td>
+              <td class="num neg">-580.0%</td>
+              <td class="num neg">180.0%</td>
+              <td class="num">41.2 / 45.2<br><span class="sub">CRSI 65.7</span></td>
+              <td><span class="stage-txt">Stage 4 (Declining / Below 200d SMA)</span></td>
+              <td class="num">$15.75 - $16.57<br><span class="sub">Stop $11.72 | Tgt $12.80</span></td>
+              <td class="num"><strong>0.0%</strong><br><span class="sub">Wt 0.0%</span></td>
+              <td class="notes-cell"><strong>Moat:</strong> Lightweight symmetric key rotation software overlay for legacy IPsec VPNs and telecom edge nodes<br><strong>Risk:</strong> Existential commoditization risk: NIST FIPS 203 (ML-KEM) is baked directly into Cloudflare, Chrome, AWS, and Palo Alto firewalls at zero standalone license cost; severe dilution trap</td>
+            </tr>
+            
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+  const GRAPH_NODES = [{"id": "MAC_AI_CAP", "label": "AI Capability & Neural QEC\n(AlphaQubit / CUDA-Q)", "layer": "MACRO", "group": "Macro & Sovereign Policy", "size": 50, "desc": "GPU-accelerated syndrome decoding (NVIDIA CUDA-Q, Google AlphaQubit) & IBM Gross LDPC bicycle codes compressing logical-to-physical qubit overhead by 5-10x.", "kpis": "QEC Decoding Latency < 1 us | LDPC Overhead 10x Compression", "gatekeepers": "NVIDIA, Google Quantum AI, IBM Research"}, {"id": "GOV_DARPA_DOE", "label": "DARPA QBI & DOE NQISRC\n($2.7B NQI / $300M QBI)", "layer": "MACRO", "group": "Macro & Sovereign Policy", "size": 52, "desc": "DARPA Quantum Benchmarking Initiative (QBI Stage A/B/C up to $300M/awardee), AFRL Rome Lab trapped-ion networking, and 5 DOE National Quantum Information Science Research Centers.", "kpis": "DARPA QBI Stage B/C Verification | 2033 Utility-Scale Logical Qubit Target", "gatekeepers": "DARPA, DOE Office of Science, DoD OUSD(R&E), AFRL"}, {"id": "GOV_NIST_NSA", "label": "NIST FIPS 203-205 &\nNSA CNSA 2.0 Mandate", "layer": "MACRO", "group": "Macro & Sovereign Policy", "size": 54, "desc": "Finalized NIST FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), FIPS 205 (SLH-DSA), OMB M-23-02 ($7.1B Fed PQC migration), and NSA CNSA 2.0 mandatory 2025-2030 transition.", "kpis": "2025-2026 CNSA 2.0 Firmware/Web Mandate | 2030 RSA-2048 Deprecation", "gatekeepers": "NIST, NSA, CISA, OMB, CA/Browser Forum"}, {"id": "GOV_BIS_MOFCOM", "label": "US DOC BIS (3A901/4A906) &\nChina MOFCOM InP Choke", "layer": "MACRO", "group": "Macro & Sovereign Policy", "size": 48, "desc": "US DOC BIS Interim Final Rule restricting <45mK dilution fridges, cryo-CMOS & >=34Q QPUs; China MOFCOM export licensing controls on Indium Phosphide (InP), Gallium & Germanium.", "kpis": "ECCN 3A901/4A906 Thresholds | China MOFCOM InP Export License Windows", "gatekeepers": "US DOC BIS, China MOFCOM, CHIPS Program Office"}, {"id": "GOV_HC_POLICY", "label": "HIPAA PQC NPRM (164.312) &\nFDA MIDD / Section 524B", "layer": "MACRO", "group": "Macro & Sovereign Policy", "size": 50, "desc": "HHS OCR HIPAA Security Rule PQC NPRM mitigating HNDL genomic/ePHI exfiltration, FDA Section 524B cyber-device PQC firmware signing, CMS-0057-F FHIR APIs, and FDA CDER MIDD in-silico drug simulation.", "kpis": "45 CFR 164.312 Mandatory ePHI Encryption | FDA PDUFA VII MIDD IND Acceptance", "gatekeepers": "HHS OCR, FDA CDER/CDRH, CMS, NIH NCATS, ARPA-H"}, {"id": "MAC_RATES_CREDIT", "label": "10Y Real Yield & HY Credit\n(SMID Dilution Valve)", "layer": "MACRO", "group": "Macro & Sovereign Policy", "size": 46, "desc": "10Y real Treasury yields and high-yield credit spreads governing valuation multiples and ATM equity dilution cost for pre-profit SMID quantum hardware names (State Rule QTM_R4).", "kpis": "10Y Real Yield > 2.2% | HY OAS > 420 bps Triggers QTM_R4", "gatekeepers": "Federal Reserve, US Treasury, Equity Capital Markets"}, {"id": "QUANTUM_COMPUTING", "label": "QUANTUM_COMPUTING\n(L1 Hardware & Cloud Hub)", "layer": "L1", "group": "L1 Quantum Hardware & Cloud", "size": 62, "desc": "Core Bridgewater Node: Fault-tolerant & NISQ superconducting, trapped-ion, neutral-atom, topological, and photonic QPU systems ($18.5B 2026-2030 ecosystem TAM). Governed by State Rules QTM_R1 & QTM_R4.", "kpis": "Lambda > 2.0x Error Suppression | 2Q Gate Fidelity >= 99.9%", "gatekeepers": "DARPA QBI, DOE NQISRC, NIST QED-C"}, {"id": "POST_QUANTUM_CRYPTO", "label": "POST_QUANTUM_CRYPTO\n(L2 PQC & Silicon RoT Hub)", "layer": "L2", "group": "L2 Post-Quantum Cryptography", "size": 60, "desc": "Core Bridgewater Node: Enterprise cryptographic discovery, hybrid ML-KEM TLS 1.3 SASE, firewall cipher translation, and CNSA 2.0 FPGA hardware roots of trust ($14.2B TAM). Governed by State Rule QTM_R2.", "kpis": ">35% Web Traffic on ML-KEM | CNSA 2.0 Silicon Root-of-Trust Share", "gatekeepers": "NIST, NSA, CISA, HHS OCR, G7 Cyber Expert Group"}, {"id": "QUANTUM_PHOTONICS", "label": "QUANTUM_PHOTONICS\n(L3 InP & Coherent Hub)", "layer": "L3", "group": "L3 Quantum Photonics & InP", "size": 58, "desc": "Core Bridgewater Node: Indium Phosphide (InP) epitaxial wafers, narrow-linewidth optical trap lasers, TFLN modulators, and 1.6T quantum-safe coherent optical engines ($24.8B TAM). Governed by State Rule QTM_R3.", "kpis": "6-Inch InP Fab Utilization > 85% | 1.6T EML/CW Book-to-Bill", "gatekeepers": "US DOC BIS, China MOFCOM, DARPA LUMOS/PIPES"}, {"id": "GOOGL", "label": "GOOGL (Alphabet)\nWillow 105Q & AlphaQubit", "layer": "L1", "group": "L1 Quantum Hardware & Cloud", "size": 48, "desc": "Willow 105-qubit processor achieved historic below-threshold surface code error suppression (Lambda=2.14, Nature Dec 2024) + AlphaQubit neural decoder + SandboxAQ spinout + AlphaFold 3.", "kpis": "Lambda = 2.14 (d=3->5->7) | T1 Coherence ~100 us", "gatekeepers": "Google Quantum AI Santa Barbara, Isomorphic Labs"}, {"id": "IBM", "label": "IBM\nHeron 156Q / Gross LDPC / PQC", "layer": "L1", "group": "L1 Quantum Hardware & Cloud", "size": 48, "desc": "Global quantum bookings leader ($1B+ cumulative): Heron r2 156Q, Gross bicycle LDPC codes (10x lower overhead), 2029 Starling fault-tolerant system, #1 Qiskit SDK, and co-author of NIST FIPS 203/204/205.", "kpis": "$1B+ Quantum Bookings | 200 Logical Qubits (Starling 2029)", "gatekeepers": "DARPA QBI, Cleveland Clinic, RIKEN, NIST"}, {"id": "HON", "label": "HON (Honeywell)\nQuantinuum H2 / Helios (QV 2^21)", "layer": "L1", "group": "L1 Quantum Hardware & Cloud", "size": 47, "desc": "Majority owner (~54%) of Quantinuum ($10B pre-IPO valuation), operator of H2-1 (56Q) & Helios trapped-ion QCCD processors with 99.9%+ 2Q fidelity and 800x logical error suppression with Microsoft.", "kpis": "99.9%+ 2Q Gate Fidelity | Quantum Volume 2^21", "gatekeepers": "DARPA QBI, DoD Quantum Inertial PNT, Amgen/JPMorgan"}, {"id": "MSFT", "label": "MSFT (Microsoft)\nMajorana 1 & Azure Quantum", "layer": "L1", "group": "L1 Quantum Hardware & Cloud", "size": 47, "desc": "DARPA QBI Stage B finalist for Majorana 1 Indium Arsenide topological tetron qubits; co-designed 12 logical qubits with Quantinuum and 24 logical qubits with Atom Computing; monetizes Azure Quantum Elements.", "kpis": "DARPA QBI Stage B Selected | 24 Neutral-Atom Logical Qubits", "gatekeepers": "DARPA QBI, NSA/Azure Gov, Unilever/1910 Genetics"}, {"id": "NVDA", "label": "NVDA (NVIDIA)\nCUDA-Q & DGX Quantum", "layer": "L1", "group": "L1 Quantum Hardware & Cloud", "size": 50, "desc": "Merchant GPU-QPU tollbooth: every fault-tolerant quantum computer requires NVIDIA Grace Hopper/Blackwell GPUs running CUDA-Q and cuQuantum for microsecond real-time QEC syndrome decoding.", "kpis": "<4 us GPU-QPU Feedback Loop | 100% Top QPU Vendor CUDA-Q Adoption", "gatekeepers": "DOE Supercomputing Labs, NERSC, RIKEN, EuroHPC"}, {"id": "IONQ", "label": "IONQ\nBarium Trapped-Ion & Qubitekk", "layer": "L1", "group": "L1 Quantum Hardware & Cloud", "size": 40, "desc": "Leading pure-play SMID trapped-ion vendor (Forte Enterprise #AQ 36 / Tempo #AQ 64) shifting to Barium ions (99.9% fidelity) and photonic interconnects (Qubitekk/IDQ acquisitions); $650M+ cash vs high SBC/ATM dilution.", "kpis": "#AQ 36 -> #AQ 64 Tempo | $75M+ AFRL Networking Contracts", "gatekeepers": "AFRL Rome Lab, DARPA QBI Stage A, ARLIS"}, {"id": "SMID_QPU_TRAP", "label": "RGTI / QBTS / QUBT\n(High-Dilution NISQ / Annealing)", "layer": "L1", "group": "L1 Quantum Hardware & Cloud", "size": 36, "desc": "De-SPAC SMID quantum hardware basket: Rigetti (Ankaa-3 84Q superconducting), D-Wave (Advantage2 4,400Q annealer), QUBT (Dirac-3 photonic solver). High retail beta offset by -380% to -950% FCF margins and >190% SBC/Rev.", "kpis": "SBC/Rev 195%-380% | Active ATM Equity Dilution Overhang", "gatekeepers": "SEC S-3 ATM Shelves, Retail Options Gamma"}, {"id": "PANW", "label": "PANW (Palo Alto Networks)\nPAN-OS PQC Cipher Translation", "layer": "L2", "group": "L2 Post-Quantum Cryptography", "size": 47, "desc": "Enterprise zero-trust firewall & SASE leader: PAN-OS 11.2+ PQC Cipher Translation wraps legacy non-PQC hospital, bank, and federal applications in NIST FIPS 203 ML-KEM tunnels without code changes.", "kpis": "Rule of 50+ | Automated CBOM Discovery & Hardware PQC Offload", "gatekeepers": "CISA, FedRAMP High, DoD IL6, Hospital CISOs"}, {"id": "NET", "label": "NET (Cloudflare)\nGlobal Edge ML-KEM SASE", "layer": "L2", "group": "L2 Post-Quantum Cryptography", "size": 46, "desc": "World's largest production NIST FIPS 203 PQC deployment: encrypts >35% of global human web traffic and Cloudflare One Zero-Trust SASE tunnels with hybrid X25519+ML-KEM-768 across 330+ cities.", "kpis": ">35% Global Web PQC Share | Zero-Latency Edge PQC Handshakes", "gatekeepers": "IETF TLS WG, CISA, FedRAMP High"}, {"id": "LSCC", "label": "LSCC (Lattice Semi)\nMachXO5-NX TDQ CNSA 2.0 FPGA", "layer": "L2", "group": "L2 Post-Quantum Cryptography", "size": 43, "desc": "Crypto-agile silicon Root-of-Trust leader: MachXO5-NX TDQ and Avant FPGAs deliver the industry's first NSA CNSA 2.0-compliant (ML-KEM, ML-DSA, LMS, XMSS) hardware Root-of-Trust for AI servers, defense, and MedTech.", "kpis": "68.2% Gross Margin | First CNSA 2.0 Compliant Control FPGA", "gatekeepers": "NSA CNSA 2.0 Firmware Mandate, FDA Section 524B, Hyperscaler BMCs"}, {"id": "LAES_ARQQ", "label": "LAES (SEALSQ) & ARQQ (Arqit)\n(SMID PQC Microcap Basket)", "layer": "L2", "group": "L2 Post-Quantum Cryptography", "size": 34, "desc": "SEALSQ (QS7001 RISC-V PQC secure microcontroller for IoT/MedTech) and Arqit Quantum (Symmetric Key Agreement software overlay facing severe dilution and bundling headwinds from PANW/NET).", "kpis": "LAES QS7001 Tape-Out vs. ARQQ -580% FCF Margin Dilution", "gatekeepers": "FIPS 140-3 Labs, Common Criteria EAL5+"}, {"id": "COHR", "label": "COHR (Coherent)\n6-Inch InP Fab & QPU Trap Lasers", "layer": "L3", "group": "L3 Quantum Photonics & InP", "size": 47, "desc": "Operates the world's first commercial 6-inch Indium Phosphide (InP) wafer fab (Sherman, TX) + #1 supplier of narrow-linewidth UV/visible optical tweezer & cooling lasers for trapped-ion/neutral-atom QPUs + 800G/1.6T transceivers.", "kpis": "6-Inch Domestic InP Cost Moat | #1 Quantum Trap Laser Share", "gatekeepers": "US CHIPS Act, IonQ/Quantinuum/QuEra, Hyperscale AI Clusters"}, {"id": "LITE", "label": "LITE (Lumentum)\nInP EML/CW Lasers & 1.6T Optics", "layer": "L3", "group": "L3 Quantum Photonics & InP", "size": 46, "desc": "#1 merchant supplier of Indium Phosphide (InP) EML and CW laser chips (US/UK/Japan fabs) powering 800G/1.6T AI datacom, Co-Packaged Optics, and photonic quantum computing sources.", "kpis": "Sold-Out InP EML/CW Capacity | +24.5% Rev Growth", "gatekeepers": "NVIDIA, Google, AWS, PsiQuantum/Photonic Foundries"}, {"id": "FN", "label": "FN (Fabrinet)\nSub-Micron Optical Packaging", "layer": "L3", "group": "L3 Quantum Photonics & InP", "size": 46, "desc": "Exclusive precision sub-micron optical packaging foundry for NVIDIA (800G/1.6T Spectrum-X/Quantum-X), Lumentum, Ciena, and quantum photonic assemblies; $900M+ net cash and 2.4% SBC/Rev.", "kpis": "$900M+ Net Cash | 2.4% SBC/Rev | Sole-Source 1.6T Packaging", "gatekeepers": "NVIDIA, Lumentum, Ciena, Thailand/US Cleanrooms"}, {"id": "CIEN", "label": "CIEN (Ciena)\nWaveLogic 6 & Quantum-Safe DCI", "layer": "L3", "group": "L3 Quantum Photonics & InP", "size": 43, "desc": "3nm WaveLogic 6 1.6T coherent optical DSP leader with integrated NIST PQC + QKD Layer-1 optical transport encryption protecting regional AI data center interconnects and hospital/defense fiber rings against HNDL.", "kpis": "1.6T WaveLogic 6 Lead | Layer-1 Optical PQC/QKD Encryption", "gatekeepers": "DoD DISA, Cloud MOFN, Global Tier-1 Carriers"}, {"id": "AXTI", "label": "AXTI (AXT Inc.)\nInP & GaAs Wafer Substrates", "layer": "L3", "group": "L3 Quantum Photonics & InP", "size": 36, "desc": "Merchant supplier of Indium Phosphide (InP) and Gallium Arsenide (GaAs) epi-ready wafer substrates via Beijing Tongmei; critical upstream bottleneck exposed to China MOFCOM export permit controls (QTM_R3).", "kpis": "Top-3 Global InP Substrate Share | China MOFCOM Permit Choke", "gatekeepers": "China MOFCOM Export Licensing, STAR Market IPO"}, {"id": "KEYS", "label": "KEYS (Keysight)\nQuantumPro AWG & Cryo-RF Test", "layer": "L4", "group": "L4 Cryo, Probe & Atomic Fab", "size": 47, "desc": "Supplies Quantum Control Systems (QCS), phase-coherent microwave AWGs, True-Q error diagnostics, sub-4K cryo-RF metrology, and 1.6T PQC network stress testers to every major quantum lab globally.", "kpis": "64.5% Gross Margin | 22.8% FCF Margin | NIST QED-C Anchor", "gatekeepers": "NIST, DARPA QBI, IBM/Google/DOE Quantum Labs"}, {"id": "FORM", "label": "FORM (FormFactor)\nSub-4K Cryo Wafer Probers & HBM", "layer": "L4", "group": "L4 Cryo, Probe & Atomic Fab", "size": 45, "desc": "Monopoly in automated sub-4-Kelvin and 50mK cryogenic 300mm wafer probe systems (IQ3000 + Bluefors partnership) screening superconducting/spin qubits pre-packaging, plus HBM3e/4 & Silicon Photonics MEMS probe cards.", "kpis": "Sub-4K Wafer Probe Monopoly | Net Cash Balance Sheet", "gatekeepers": "IBM, Google, Intel, TSMC, SK Hynix"}, {"id": "AMAT_LRCX_ONTO_ENTG", "label": "AMAT / LRCX / ONTO / ENTG\n(Atomic Josephson Fab & Si-28)", "layer": "L4", "group": "L4 Cryo, Probe & Atomic Fab", "size": 46, "desc": "Atomic-layer deposition (AMAT) for low-TLS Josephson junctions, cryo/ALE & deep TSV etch (LRCX) for 3D quantum interposers, 3D metrology (ONTO), and isotopically pure Si-28 / Tantalum materials (ENTG).", "kpis": "Sub-Angstrom ALD/ALE Precision | ppt Isotopic Si-28 Purity", "gatekeepers": "US DOC BIS, CHIPS Act EPIC Center, Global Foundries/TSMC"}, {"id": "SDGR", "label": "SDGR (Schrodinger)\nFEP+ Physics & Hybrid Quantum Bio", "layer": "L5", "group": "L5 Quantum Bio-Simulation & Tools", "size": 43, "desc": "Gold-standard QM/MM Free Energy Perturbation (FEP+) molecular simulation platform deployed across 100% of Top-20 Pharma; active IBM/Quantinuum VQE & SQD covalent/metalloenzyme Hamiltonian co-design.", "kpis": "~80% Software Gross Margin | $150M Novartis Upfront | FDA MIDD", "gatekeepers": "FDA CDER MIDD (PDUFA VII), Top-20 Pharma R&D"}, {"id": "TMO", "label": "TMO (Thermo Fisher)\nKrios G4 Cryo-EM & Astral MS", "layer": "L5", "group": "L5 Quantum Bio-Simulation & Tools", "size": 48, "desc": "Physical ground-truth oracle for quantum bio-simulation: Krios G4 Cryo-EM and Orbitrap Astral mass spectrometers resolve sub-2-Angstrom protein/ligand structures required to parameterize quantum Hamiltonians.", "kpis": "$7B+ Annual FCF | >80% Global Cryo-EM Share | 1.4% SBC/Rev", "gatekeepers": "NIH, Cleveland Clinic, Global Biopharma"}, {"id": "RXRX_ABSI", "label": "RXRX (Recursion) & ABSI (Absci)\n(AI + Quantum Phenomics / De Novo)", "layer": "L5", "group": "L5 Quantum Bio-Simulation & Tools", "size": 37, "desc": "Recursion (BioHive-2 504x H100 supercomputer + Exscientia QM/MM active learning) and Absci (zero-shot de novo antibody generation + SoluPro wet lab); high long-term optionality tempered by >100% SBC/Rev and clinical burn.", "kpis": "60+ PB Phenomic Data | High Cash Burn & Clinical Readout Risk", "gatekeepers": "FDA CDER, Roche/Sanofi/Merck/AstraZeneca Partner Milestones"}, {"id": "PRIV_QUANTUM_UNICORNS", "label": "Private Quantum Unicorns\n(PsiQuantum, QuEra, Bluefors, SandboxAQ)", "layer": "PRIV", "group": "Private Challengers", "size": 46, "desc": "10 Key Private Challengers: Quantinuum ($10B, HON-owned), PsiQuantum ($6B, BTO/SiPh), QuEra (neutral-atom), Atom Computing, Alice & Bob (cat qubits), Xanadu, Bluefors (>75% dilution fridge monopoly), SandboxAQ, PQShield, QuSecure.", "kpis": "Bluefors >75% 10mK Cryo Share | PsiQuantum $1B+ Sovereign Awards", "gatekeepers": "DARPA QBI, GlobalFoundries Fab 8, Harvard/MIT/Google"}];
+  const GRAPH_EDGES = [{"source": "MAC_AI_CAP", "target": "QUANTUM_COMPUTING", "weight": 0.72, "type": "positive", "label": "+0.72 Neural QEC & LDPC"}, {"source": "MAC_AI_CAP", "target": "NVDA", "weight": 0.85, "type": "positive", "label": "+0.85 CUDA-Q Syndrome Decoding"}, {"source": "MAC_AI_CAP", "target": "GOOGL", "weight": 0.78, "type": "positive", "label": "+0.78 AlphaQubit + Willow"}, {"source": "GOV_DARPA_DOE", "target": "QUANTUM_COMPUTING", "weight": 0.68, "type": "positive", "label": "+0.68 DARPA QBI & DOE NQISRC"}, {"source": "GOV_DARPA_DOE", "target": "IBM", "weight": 0.74, "type": "positive", "label": "+0.74 DARPA QBI / DOE Anchor"}, {"source": "GOV_DARPA_DOE", "target": "MSFT", "weight": 0.72, "type": "positive", "label": "+0.72 DARPA QBI Stage B (Majorana 1)"}, {"source": "GOV_DARPA_DOE", "target": "HON", "weight": 0.7, "type": "positive", "label": "+0.70 Quantinuum DARPA + DoD PNT"}, {"source": "GOV_DARPA_DOE", "target": "IONQ", "weight": 0.66, "type": "positive", "label": "+0.66 AFRL $75M+ Quantum Net"}, {"source": "GOV_DARPA_DOE", "target": "PRIV_QUANTUM_UNICORNS", "weight": 0.75, "type": "positive", "label": "+0.75 PsiQuantum / QuEra Awards"}, {"source": "GOV_NIST_NSA", "target": "POST_QUANTUM_CRYPTO", "weight": 0.74, "type": "positive", "label": "+0.74 FIPS 203-205 & CNSA 2.0 (QTM_R2)"}, {"source": "GOV_NIST_NSA", "target": "PANW", "weight": 0.8, "type": "positive", "label": "+0.80 Federal & G-SIB PQC Firewall"}, {"source": "GOV_NIST_NSA", "target": "NET", "weight": 0.82, "type": "positive", "label": "+0.82 Hybrid ML-KEM TLS Mandate"}, {"source": "GOV_NIST_NSA", "target": "LSCC", "weight": 0.84, "type": "positive", "label": "+0.84 CNSA 2.0 FPGA Root-of-Trust"}, {"source": "GOV_NIST_NSA", "target": "IBM", "weight": 0.76, "type": "positive", "label": "+0.76 Guardium PQC & z17 Crypto"}, {"source": "GOV_BIS_MOFCOM", "target": "QUANTUM_PHOTONICS", "weight": -0.58, "type": "negative", "label": "-0.58 MOFCOM InP/Ga Export Curbs"}, {"source": "GOV_BIS_MOFCOM", "target": "AXTI", "weight": -0.78, "type": "negative", "label": "-0.78 Beijing Tongmei Permit Choke"}, {"source": "GOV_BIS_MOFCOM", "target": "COHR", "weight": 0.62, "type": "positive", "label": "+0.62 Domestic 6-Inch InP Pricing (QTM_R3)"}, {"source": "GOV_BIS_MOFCOM", "target": "LITE", "weight": 0.58, "type": "positive", "label": "+0.58 US/UK/JP InP Fab Scarcity"}, {"source": "GOV_HC_POLICY", "target": "POST_QUANTUM_CRYPTO", "weight": 0.55, "type": "positive", "label": "+0.55 HIPAA 164.312 ePHI PQC NPRM"}, {"source": "GOV_HC_POLICY", "target": "PANW", "weight": 0.64, "type": "positive", "label": "+0.64 Hospital HNDL PQC Upgrade"}, {"source": "GOV_HC_POLICY", "target": "SDGR", "weight": 0.72, "type": "positive", "label": "+0.72 FDA CDER MIDD In-Silico FEP+"}, {"source": "GOV_HC_POLICY", "target": "TMO", "weight": 0.65, "type": "positive", "label": "+0.65 NIH / Cryo-EM Structural Bio"}, {"source": "MAC_RATES_CREDIT", "target": "QUANTUM_COMPUTING", "weight": -0.65, "type": "negative", "label": "-0.65 Long-Duration Rate Squeeze (QTM_R4)"}, {"source": "MAC_RATES_CREDIT", "target": "SMID_QPU_TRAP", "weight": -0.86, "type": "negative", "label": "-0.86 ATM Dilution & Multiple Compression"}, {"source": "MAC_RATES_CREDIT", "target": "LAES_ARQQ", "weight": -0.78, "type": "negative", "label": "-0.78 Subscale Cash-Burn Penalty"}, {"source": "QUANTUM_COMPUTING", "target": "POST_QUANTUM_CRYPTO", "weight": 0.84, "type": "positive", "label": "+0.84 CRQC Shor's Urgency"}, {"source": "QUANTUM_PHOTONICS", "target": "QUANTUM_COMPUTING", "weight": 0.69, "type": "positive", "label": "+0.69 Trap Lasers & Optical Interconnects"}, {"source": "QUANTUM_COMPUTING", "target": "QUANTUM_PHOTONICS", "weight": 0.67, "type": "positive", "label": "+0.67 Modular QPU Optical Transduction"}, {"source": "KEYS", "target": "QUANTUM_COMPUTING", "weight": 0.74, "type": "positive", "label": "+0.74 QuantumPro Microwave Control"}, {"source": "FORM", "target": "QUANTUM_COMPUTING", "weight": 0.72, "type": "positive", "label": "+0.72 Sub-4K Cryo Wafer Probing"}, {"source": "AMAT_LRCX_ONTO_ENTG", "target": "QUANTUM_COMPUTING", "weight": 0.68, "type": "positive", "label": "+0.68 ALD Josephson Fab, TSV & Si-28"}, {"source": "PRIV_QUANTUM_UNICORNS", "target": "QUANTUM_COMPUTING", "weight": 0.76, "type": "positive", "label": "+0.76 Bluefors 10mK Dilution Fridges"}, {"source": "NVDA", "target": "QUANTUM_COMPUTING", "weight": 0.79, "type": "positive", "label": "+0.79 DGX Quantum + CUDA-Q"}, {"source": "GOOGL", "target": "QUANTUM_COMPUTING", "weight": 0.82, "type": "positive", "label": "+0.82 Willow Below-Threshold QEC"}, {"source": "IBM", "target": "QUANTUM_COMPUTING", "weight": 0.84, "type": "positive", "label": "+0.84 Heron + Gross LDPC + Qiskit"}, {"source": "HON", "target": "QUANTUM_COMPUTING", "weight": 0.8, "type": "positive", "label": "+0.80 Quantinuum 99.9%+ Trapped-Ion"}, {"source": "MSFT", "target": "QUANTUM_COMPUTING", "weight": 0.75, "type": "positive", "label": "+0.75 Tesseract Codes & Majorana 1"}, {"source": "IONQ", "target": "QUANTUM_COMPUTING", "weight": 0.62, "type": "positive", "label": "+0.62 Barium Ion & Qubitekk Net"}, {"source": "AXTI", "target": "LITE", "weight": 0.65, "type": "positive", "label": "+0.65 Raw InP Wafer Substrates"}, {"source": "AXTI", "target": "COHR", "weight": 0.52, "type": "positive", "label": "+0.52 Supplemental III-V Substrates"}, {"source": "COHR", "target": "QUANTUM_PHOTONICS", "weight": 0.84, "type": "positive", "label": "+0.84 6-Inch InP & Trap Lasers"}, {"source": "COHR", "target": "IONQ", "weight": 0.68, "type": "positive", "label": "+0.68 Narrow-Linewidth Ion Trap Lasers"}, {"source": "COHR", "target": "HON", "weight": 0.66, "type": "positive", "label": "+0.66 Optical Tweezer/Gate Lasers"}, {"source": "LITE", "target": "QUANTUM_PHOTONICS", "weight": 0.82, "type": "positive", "label": "+0.82 InP EML/CW Laser Chips"}, {"source": "LITE", "target": "FN", "weight": 0.78, "type": "positive", "label": "+0.78 1.6T Optical Assembly Feed"}, {"source": "FN", "target": "QUANTUM_PHOTONICS", "weight": 0.8, "type": "positive", "label": "+0.80 Sub-Micron Photonic Packaging"}, {"source": "FN", "target": "NVDA", "weight": 0.76, "type": "positive", "label": "+0.76 Exclusive 1.6T Spectrum-X/CPO Packager"}, {"source": "CIEN", "target": "POST_QUANTUM_CRYPTO", "weight": 0.68, "type": "positive", "label": "+0.68 WaveLogic Layer-1 Optical PQC"}, {"source": "POST_QUANTUM_CRYPTO", "target": "PANW", "weight": 0.84, "type": "positive", "label": "+0.84 NGFW PQC Cipher Translation"}, {"source": "POST_QUANTUM_CRYPTO", "target": "NET", "weight": 0.86, "type": "positive", "label": "+0.86 Edge ML-KEM SASE Refresh"}, {"source": "POST_QUANTUM_CRYPTO", "target": "LSCC", "weight": 0.82, "type": "positive", "label": "+0.82 CNSA 2.0 Server BMC FPGA Refresh"}, {"source": "PANW", "target": "LAES_ARQQ", "weight": -0.64, "type": "negative", "label": "-0.64 Bundled PQC Displaces Point Wrappers"}, {"source": "NET", "target": "LAES_ARQQ", "weight": -0.68, "type": "negative", "label": "-0.68 Free Default ML-KEM Commoditizes ARQQ"}, {"source": "QUANTUM_COMPUTING", "target": "SDGR", "weight": 0.71, "type": "positive", "label": "+0.71 Hybrid VQE/SQD + FEP+ Chemistry"}, {"source": "QUANTUM_COMPUTING", "target": "TMO", "weight": 0.56, "type": "positive", "label": "+0.56 Cryo-EM Hamiltonian Validation"}, {"source": "TMO", "target": "SDGR", "weight": 0.7, "type": "positive", "label": "+0.70 Krios G4 Sub-2A Atomic Structures"}, {"source": "NVDA", "target": "SDGR", "weight": 0.74, "type": "positive", "label": "+0.74 GPU FEP+ & CUDA-Q Acceleration"}, {"source": "NVDA", "target": "RXRX_ABSI", "weight": 0.72, "type": "positive", "label": "+0.72 BioHive-2 Supercomputing"}];
+  const SCENARIOS = {"qec_breakthrough": {"title": "+1\u03c3 Fault-Tolerant QEC Breakthrough (Rule QTM_R1 Active)", "desc": "Below-threshold surface/LDPC/tesseract error suppression (Lambda > 2.0x) + DARPA QBI Stage B/C validation triggers sovereign R&D surge and compresses CRQC timeline.", "impacts": {"MAC_AI_CAP": "+1.00\u03c3", "GOV_DARPA_DOE": "+0.85\u03c3", "QUANTUM_COMPUTING": "+1.16\u03c3", "GOOGL": "+1.12\u03c3", "IBM": "+1.10\u03c3", "HON": "+1.08\u03c3", "MSFT": "+1.04\u03c3", "NVDA": "+1.14\u03c3", "KEYS": "+0.96\u03c3", "FORM": "+0.94\u03c3", "POST_QUANTUM_CRYPTO": "+0.98\u03c3", "PANW": "+0.92\u03c3", "NET": "+0.95\u03c3", "LSCC": "+0.90\u03c3", "SDGR": "+0.82\u03c3", "TMO": "+0.74\u03c3", "IONQ": "+0.88\u03c3"}}, "cnsa2_hipaa_pqc": {"title": "+1\u03c3 NSA CNSA 2.0 & HIPAA PQC Compliance Wave (Rule QTM_R2 Active)", "desc": "Mandatory NIST FIPS 203/204/205 migration across federal NSS, G-SIB banks, and HIPAA ePHI clearinghouses drives zero-trust SASE, firewall cipher translation & FPGA Root-of-Trust refresh.", "impacts": {"GOV_NIST_NSA": "+1.00\u03c3", "GOV_HC_POLICY": "+0.90\u03c3", "POST_QUANTUM_CRYPTO": "+1.22\u03c3", "NET": "+1.18\u03c3", "PANW": "+1.15\u03c3", "LSCC": "+1.12\u03c3", "IBM": "+0.94\u03c3", "CIEN": "+0.88\u03c3", "LAES_ARQQ": "-0.45\u03c3", "TMO": "+0.62\u03c3", "SDGR": "+0.68\u03c3"}}, "mofcom_inp_choke": {"title": "+1\u03c3 China MOFCOM InP/Gallium Choke + 1.6T AI Boom (Rule QTM_R3 Active)", "desc": "China MOFCOM tightens Indium Phosphide (InP) & Gallium export permits while 800G/1.6T AI & quantum optical utilization exceeds 85%, penalizing AXTI while boosting US/Allied 6-inch InP fabs (COHR, LITE, FN).", "impacts": {"GOV_BIS_MOFCOM": "+1.00\u03c3", "AXTI": "-0.88\u03c3", "QUANTUM_PHOTONICS": "+0.75\u03c3", "COHR": "+1.06\u03c3", "LITE": "+1.02\u03c3", "FN": "+0.98\u03c3", "CIEN": "+0.82\u03c3", "FORM": "+0.78\u03c3", "AMAT_LRCX_ONTO_ENTG": "+0.72\u03c3"}}, "rate_dilution_squeeze": {"title": "+1\u03c3 Real Rate & Credit Spread Tightening (Rule QTM_R4 Active)", "desc": "10Y real yields >2.2% and HY credit spread widening crush pre-profit SMID de-SPAC quantum hardware names with >150% SBC/Rev, while FCF-generative picks-and-shovels outperform by +2,500 bps.", "impacts": {"MAC_RATES_CREDIT": "+1.00\u03c3", "SMID_QPU_TRAP": "-1.35\u03c3", "LAES_ARQQ": "-1.18\u03c3", "RXRX_ABSI": "-0.92\u03c3", "IONQ": "-0.68\u03c3", "QUANTUM_COMPUTING": "-0.51\u03c3", "IBM": "+0.28\u03c3", "HON": "+0.32\u03c3", "TMO": "+0.35\u03c3", "PANW": "+0.26\u03c3", "FN": "+0.30\u03c3"}}};
+
+  const layerColors = {
+    "MACRO": "#f59e0b",
+    "L1": "#a855f7",
+    "L2": "#10b981",
+    "L3": "#38bdf8",
+    "L4": "#f97316",
+    "L5": "#ec4899",
+    "PRIV": "#6366f1"
+  };
+
+  const elements = [];
+  GRAPH_NODES.forEach(n => {
+    elements.push({
+      data: {
+        id: n.id,
+        label: n.label,
+        layer: n.layer,
+        group: n.group,
+        size: n.size,
+        desc: n.desc,
+        kpis: n.kpis,
+        gatekeepers: n.gatekeepers,
+        color: layerColors[n.layer] || "#38bdf8"
+      }
+    });
+  });
+
+  GRAPH_EDGES.forEach((e, idx) => {
+    elements.push({
+      data: {
+        id: "e" + idx,
+        source: e.source,
+        target: e.target,
+        weight: e.weight,
+        type: e.type,
+        label: e.label,
+        width: Math.max(1.5, Math.abs(e.weight) * 4.2),
+        lineColor: e.type === "positive" ? "#38bdf8" : "#f43f5e"
+      }
+    });
+  });
+
+  const cy = cytoscape({
+    container: document.getElementById("cy"),
+    elements: elements,
+    style: [
+      {
+        selector: "node",
+        style: {
+          "background-color": "data(color)",
+          "background-opacity": 0.9,
+          "border-width": 2,
+          "border-color": "#e2e8f0",
+          "width": "data(size)",
+          "height": "data(size)",
+          "label": "data(label)",
+          "color": "#f8fafc",
+          "font-size": "10px",
+          "font-weight": "600",
+          "text-wrap": "wrap",
+          "text-max-width": "115px",
+          "text-valign": "bottom",
+          "text-margin-y": 6,
+          "text-outline-width": 2,
+          "text-outline-color": "#070b14"
+        }
+      },
+      {
+        selector: "edge",
+        style: {
+          "width": "data(width)",
+          "line-color": "data(lineColor)",
+          "target-arrow-color": "data(lineColor)",
+          "target-arrow-shape": "triangle",
+          "curve-style": "bezier",
+          "opacity": 0.72,
+          "label": "data(label)",
+          "font-size": "8px",
+          "color": "#cbd5e1",
+          "text-rotation": "autorotate",
+          "text-background-color": "#070b14",
+          "text-background-opacity": 0.75,
+          "text-background-padding": "2px"
+        }
+      },
+      {
+        selector: ".faded",
+        style: { "opacity": 0.12, "text-opacity": 0.12 }
+      },
+      {
+        selector: ".highlighted",
+        style: {
+          "border-width": 4,
+          "border-color": "#fef08a",
+          "opacity": 1
+        }
+      }
+    ],
+    layout: {
+      name: "cose",
+      padding: 45,
+      nodeRepulsion: 18000,
+      idealEdgeLength: 135,
+      animate: false
+    }
+  });
+
+  cy.on("tap", "node", function(evt) {
+    const node = evt.target;
+    const d = node.data();
+    cy.elements().removeClass("faded highlighted");
+    const neighborhood = node.closedNeighborhood();
+    cy.elements().not(neighborhood).addClass("faded");
+    node.addClass("highlighted");
+
+    document.getElementById("nd-group").textContent = d.group;
+    document.getElementById("nd-title").textContent = d.label.replace("\n", " — ");
+    document.getElementById("nd-desc").textContent = d.desc;
+    document.getElementById("nd-kpi").textContent = d.kpis;
+    document.getElementById("nd-gate").textContent = d.gatekeepers;
+
+    const edgeList = document.getElementById("nd-edges");
+    edgeList.innerHTML = "";
+    node.connectedEdges().forEach(ed => {
+      const edData = ed.data();
+      const li = document.createElement("li");
+      const signColor = edData.type === "positive" ? "#34d399" : "#fb7185";
+      li.innerHTML = `<strong style="color:${signColor}">${edData.source} → ${edData.target}</strong>: ${edData.label}`;
+      edgeList.appendChild(li);
+    });
+  });
+
+  cy.on("tap", function(evt) {
+    if (evt.target === cy) {
+      cy.elements().removeClass("faded highlighted");
+    }
+  });
+
+  function filterGraphLayer(layer, btn) {
+    document.querySelectorAll(".toolbar .btn-group:first-child button").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    cy.elements().removeClass("faded highlighted");
+    if (layer === "ALL") return;
+    const matchedNodes = cy.nodes().filter(n => n.data("layer") === layer);
+    const connected = matchedNodes.closedNeighborhood();
+    cy.elements().not(connected).addClass("faded");
+  }
+
+  function runScenario(key, btn) {
+    document.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    const scen = SCENARIOS[key];
+    if (!scen) return;
+    const banner = document.getElementById("scenario-banner");
+    banner.style.display = "block";
+    document.getElementById("scen-title").textContent = scen.title;
+    document.getElementById("scen-desc").textContent = scen.desc;
+
+    cy.elements().removeClass("faded highlighted");
+    cy.nodes().forEach(n => {
+      const id = n.data("id");
+      const baseLabel = GRAPH_NODES.find(x => x.id === id).label;
+      if (scen.impacts[id]) {
+        n.data("label", baseLabel + "\n[" + scen.impacts[id] + "]");
+        n.addClass("highlighted");
+      } else {
+        n.data("label", baseLabel);
+        n.addClass("faded");
+      }
+    });
+  }
+
+  function resetScenario() {
+    document.querySelectorAll(".scen-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById("scenario-banner").style.display = "none";
+    cy.elements().removeClass("faded highlighted");
+    cy.nodes().forEach(n => {
+      const id = n.data("id");
+      const baseLabel = GRAPH_NODES.find(x => x.id === id).label;
+      n.data("label", baseLabel);
+    });
+  }
+
+  let currentVerdictFilter = "ALL";
+  function filterTable(verdict, btn) {
+    currentVerdictFilter = verdict;
+    document.querySelectorAll(".matrix-controls .btn-group button").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    applyTableFilters();
+  }
+
+  function searchTable() {
+    applyTableFilters();
+  }
+
+  function applyTableFilters() {
+    const q = (document.getElementById("tk-search").value || "").toLowerCase();
+    const rows = document.querySelectorAll("#rsi-table tbody tr");
+    rows.forEach(r => {
+      const v = r.getAttribute("data-verdict");
+      const txt = r.textContent.toLowerCase();
+      const matchVerdict = (currentVerdictFilter === "ALL") || (v === currentVerdictFilter);
+      const matchSearch = !q || txt.includes(q);
+      r.style.display = (matchVerdict && matchSearch) ? "" : "none";
+    });
+  }
+</script>
+<div id='corum-public-bar' style='position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:14px;align-items:center;padding:7px 14px;background:#15172e;color:#f3f4fb;font:14px/1.35 system-ui,sans-serif'><span style='flex:1'>CORUM research snapshot, 19 Nov 2026. Research notes produced with AI assistance. Not investment advice. May be wrong or out of date.</span><a href='../reports.html' style='color:#9db4ff'>All reports</a><button type='button' aria-label='Hide this notice' onclick='this.parentNode.remove()' style='background:none;border:1px solid #656b87;color:inherit;border-radius:4px;padding:2px 9px;cursor:pointer'>Hide</button></div><script>if(window.top!==window.self){var b=document.getElementById('corum-public-bar');if(b)b.remove()}</script><script>(function(){var ok=["ai_for_engineers_network.html", "ai_legal_ecosystem_deep_research_report.html", "ai_legal_network.html", "ai_security_cyber_network.html", "ai_security_cybersecurity_ecosystem_deep_research_report.html", "ai_startup_landscape_network.html", "ai_startup_landscape_three_circles_oct2026_report.html", "cell_and_gene_network.html", "cell_and_gene_therapies_ecosystem_deep_research_report.html", "corum_ai_for_engineers_deep_dive_report_oct2026.html", "corum_external_overview_and_economic_trends_oct2026.html", "corum_physical_ai_and_robotics_deep_dive_report_nov2026.html", "corum_sector_board_behavior_and_drivers_deep_report.html", "cyrx_cryoport_cgt_cold_chain_monopoly_deep_research_report.html", "defense_ecosystem_network.html", "energy_utilities_grid_ecosystem_deep_research_report.html", "energy_utilities_network.html", "financials_ecosystem_network.html", "financials_private_credit_insurance_ecosystem_deep_research_report.html", "fintech_crypto_blockchain_ecosystem_deep_research_report.html", "fintech_crypto_network.html", "industrials_comms_consumer_reits_ecosystem_deep_research_report.html", "longevity_biotech_ecosystem_deep_research_report.html", "materials_critical_minerals_ecosystem_deep_research_report.html", "materials_ecosystem_network.html", "memory_datacenter_cloud_network.html", "memory_dram_hbm_hyperscaler_cloud_ecosystem_deep_research_report.html", "mxct_maxcyte_electroporation_spl_royalty_engine_deep_research_report.html", "neurodegenerative_diseases_ecosystem_deep_research_report.html", "neurodegenerative_diseases_network.html", "neurodegenerative_network.html", "parkinsons_disease_network.html", "quantum_ecosystem_deep_research_report.html", "quantum_ecosystem_network.html", "real_economy_network.html", "sector_agents_scenario_analysis.html", "space_ecosystem_deep_research_report.html", "space_ecosystem_network.html", "state_of_global_photonics_manufacturing_and_vietnam_strategy_2026.html", "thermal_acoustic_sensing_ecosystem_deep_research_report.html", "thermal_acoustic_sensing_network.html", "us_government_power_company_network.html", "us_government_secretaries_undersecretaries_congress_company_graph_report.html", "us_healthcare_system_ecosystem_deep_research_report.html", "us_healthcare_system_network.html"];document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'';if(/^(https?:|mailto:|#)/i.test(h))return;var u;try{u=new URL(h,location.href)}catch(x){return}if(u.origin!==location.origin)return;var p=u.pathname.split('/').pop().toLowerCase();if(/\.(html|md)$/.test(p)||p===''){if(/\/reports\//.test(u.pathname)&&ok.indexOf(p)<0){e.preventDefault();a.title='Not published'}}},true)})();</script></body>
+</html>

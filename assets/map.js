@@ -358,7 +358,7 @@
         /* the betas are fitted together over overlapping industries, so they can offset each other. When the name's
            number points the other way from its main industry, say so next to the number. */
         var main = s.imp[m.p];
-        if (main && (main > 0) !== (v > 0)) h += "<span class='warn'>Opposite in sign to its main industry, " + esc(C.label(m.p)) + ' (' + fmt(main) +
+        if (main && (main > 0) !== (v > 0)) h += "<span class='warn'>Opposite in sign to the industry where its share is largest, " + esc(C.label(m.p)) + ' (' + fmt(main) +
           "). A name’s βs are fitted together and can offset each other, so this is the least reliable number on the map.</span>";
         else h += "<span class='note'>A name’s βs are fitted together and can offset each other. Read the industries’ moves first.</span>";
       } else h += "<b class='big'>Not reached</b>";
@@ -371,6 +371,7 @@
       return "<li><div class='memrow'><span class='who'><button type='button' data-go='" + esc(x[0]) + "'>" + esc(C.label(x[0])) + "</button></span><span class='rs'>" +
         (bits.join(' · ') || 'listed by the map, share not measured') + '</span></div></li>';
     }).join('') + "</ul><p class='why small'>β is the measured sensitivity of its weekly returns to that industry’s price series, over about three years. A share compares only within one industry.</p>";
+    if (m.a) h += "<p class='cta'><a class='btn sm' href='t/" + esc(m.t.replace(/[^A-Za-z0-9.\-]/g, '_')) + ".html'>Its page: fundamentals, trend and peers →</a></p>";
     return h;
   }
   function drawPanel() {
